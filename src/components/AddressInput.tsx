@@ -61,7 +61,7 @@ export default function AddressInput({
                 className="m-0 p-0 font-medium text-[#151515]"
                 style={{
                     height: moderateScale(24),
-                    fontSize: moderateScale(14),
+                    fontSize: moderateScale(13),
                 }}
                 selectionColor="#79685e"
             />
@@ -92,7 +92,7 @@ export default function AddressInput({
                 className="m-0 p-0 font-medium text-[#151515]"
                 style={{
                     height: moderateScale(24),
-                    fontSize: moderateScale(14),
+                    fontSize: moderateScale(13),
                 }}
                 selectionColor="#79685e"
             />

@@ -11,6 +11,7 @@ import { scale, verticalScale, moderateScale } from "react-native-size-matters"
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
 import "../../config/googleSignIn"
 import { useToast } from "../hook/ToastContext"
+import { sendOtp } from "../Services/api-service"
 
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
@@ -37,26 +38,44 @@ export default function LoginScreen() {
         setMobileNumber(numbersOnly)
     }
 
-    const handleLogin = () => {
-        let hasError = false
-        showToast("Something Went Wrong", "warning")
-
-        if(mobileNumber.length !== 10) {
+    const handleLogin = async () => {
+        if (mobileNumber.length !== 10) {
             setMobileNumberError(true)
-            hasError = true
-            return
-        } else {
-            setMobileNumberError(false)
+            return;
         }
 
-        if(hasError) {
-            return
-        }
+        setMobileNumberError(false)
 
         router.push({
-            pathname: '/verifyOtp',
-            params: { mobileNumber: mobileNumber }
+            pathname: "/verifyOtp",
+            params: {
+                mobileNumber,
+            },
         })
+
+        // try {
+        //     console.log("Sending OTP to:", mobileNumber)
+
+        //     const res = await sendOtp({
+        //         phone: mobileNumber,
+        //     })
+
+        //     console.log("Send OTP response:", res.data)
+
+        //     router.push({
+        //         pathname: "/verifyOtp",
+        //         params: {
+        //             mobileNumber,
+        //         },
+        //     })
+        // } catch (error: any) {
+        //     console.error("Send OTP error:", error?.response?.data || error)
+
+        //     showToast(
+        //         "Unable to send OTP",
+        //         "warning"
+        //     )
+        // }
     }
 
     const handleGoogleSignIn = async () => {
@@ -128,7 +147,7 @@ export default function LoginScreen() {
                 }}
             >
                 <ImageBackground
-                    source={require("@/assets/images/foodImage.png")}
+                    source={require("@/assets/images/backgroundImage.png")}
                     resizeMode="cover"
                     className="h-full w-full"
                 >
@@ -262,16 +281,16 @@ export default function LoginScreen() {
 
                         <Text
                             className="font-extrabold text-[#1F1F1F]"
-                            style={{ marginTop: verticalScale(14), fontSize: moderateScale(24) }}
+                            style={{ marginTop: verticalScale(14), fontSize: moderateScale(22) }}
                         >
-                            Welcome Back
+                            Welcome to Brothers
                         </Text>
 
                         <Text
                             className="font-medium text-[#1F1F1F]/60 text-center"
-                            style={{ marginTop: verticalScale(3), fontSize: moderateScale(12) }}
+                            style={{ marginTop: verticalScale(3), fontSize: moderateScale(11.5) }}
                         >
-                            {`Log in to continue ordering your\nfavorite meals`}
+                            {`Log in or create an account to order\nyour favorite meals`}
                         </Text>
 
                         <Text
@@ -353,12 +372,12 @@ export default function LoginScreen() {
                         >
                             <GoogleIcon width={scale(20)} height={scale(20)} style={{ marginRight: scale(6) }} />
 
-                            <Text className="tracking-wide font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(13) }}>
+                            <Text className="tracking-wide font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(14) }}>
                                 Continue with Google
                             </Text>
                         </TouchableOpacity>
 
-                        <View
+                        {/* <View
                             className="w-full flex-row items-center justify-center"
                             style={{ marginVertical: verticalScale(8) }}
                         >
@@ -377,7 +396,7 @@ export default function LoginScreen() {
                                     Sign Up
                                 </Text>
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View> 
                 </ScrollView>
             </SafeAreaView>

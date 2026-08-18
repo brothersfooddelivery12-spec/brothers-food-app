@@ -149,7 +149,7 @@ export default function VerifyOtpScreen() {
                 </TouchableOpacity> */}
 
                 <ImageBackground
-                    source={require("@/assets/images/foodImage.png")}
+                    source={require("@/assets/images/backgroundImage.png")}
                     resizeMode="cover"
                     className="h-full w-full"
                 >
@@ -304,7 +304,7 @@ export default function VerifyOtpScreen() {
                             </Text>
 
                             <Pressable
-                                style={{ marginLeft: scale(8), paddingHorizontal: scale(4) }}
+                                style={{ marginLeft: scale(6) }}
                                 onPress={() => router.back()}
                             >
                                 <Text className="font-semibold text-[#E8B93F]" style={{ fontSize: moderateScale(13) }}>
@@ -350,7 +350,7 @@ export default function VerifyOtpScreen() {
                                                 {digit || ""}
                                             </Text>
                                         </View>
-                                    );
+                                    )
                                 })}
                             </View>
                         </View>

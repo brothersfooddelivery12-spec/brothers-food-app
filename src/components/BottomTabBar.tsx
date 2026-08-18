@@ -11,8 +11,11 @@ import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
 import ShoppingBagIcon from '@/assets/icon/ShoppingBagIcon.svg'
 import { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs"
 import { moderateScale, verticalScale } from "react-native-size-matters"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 export default function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+    const insets = useSafeAreaInsets()
+
     const getIcon = (routeName: string, focused: boolean) => {
         const color = focused ? "#1F1F1F" : "#929292"
         const size = moderateScale(24)
@@ -89,7 +92,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                             : "text-[#929292]"
                     }`}
                     style={{
-                        fontSize: moderateScale(12),
+                        fontSize: moderateScale(11),
                     }}
                 >
                     {label}
@@ -100,25 +103,17 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
 
     return (
         <View
-            className="absolute left-4 right-4 bottom-7"
+            className="absolute left-4 right-4"
             style={{
-                height: verticalScale(60),
+                bottom: insets.bottom + 8,
+                height: verticalScale(56),
             }}
         >
             <View
-                className="flex-1 flex-row items-center bg-white"
+                className="flex-1 flex-row items-center bg-white shadow-md"
                 style={{
-                    borderRadius: moderateScale(24),
-                    paddingHorizontal: moderateScale(8),
-
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 5,
-                    },
-                    shadowOpacity: 0.08,
-                    shadowRadius: 12,
-                    elevation: 6,
+                    borderRadius: moderateScale(22),
+                    paddingHorizontal: moderateScale(8)
                 }}
             >
                 {state.routes[0] &&
@@ -144,10 +139,10 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                 onPress={() => router.push("/")}
                 className="absolute items-center justify-center rounded-full"
                 style={{
-                    width: moderateScale(70),
-                    height: moderateScale(70),
+                    width: moderateScale(68),
+                    height: moderateScale(68),
                     left: "50%",
-                    marginLeft: -moderateScale(35),
+                    marginLeft: -moderateScale(33),
                     top: -moderateScale(20),
                     paddingRight: moderateScale(3.5),
                     backgroundColor: "#3F2516",

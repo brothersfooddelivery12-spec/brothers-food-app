@@ -648,7 +648,7 @@ export default function SignUpScreen() {
                         >
                             <GoogleIcon width={scale(20)} height={scale(20)} style={{ marginRight: scale(6) }} />
 
-                            <Text className="tracking-wide font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(13) }}>
+                            <Text className="tracking-wide font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(14) }}>
                                 Continue with Google
                             </Text>
                         </TouchableOpacity>
