@@ -4,7 +4,7 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
 import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { router, useLocalSearchParams } from "expo-router"
 import { Image } from "expo-image"
 import UsersIcon from '@/assets/icon/UsersIcon.svg'
@@ -19,12 +19,19 @@ import PlusIcon from '@/assets/icon/PlusIcon.svg'
 import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 
+const DONENENSSOPTIONS = [
+    "Medium Rare",
+    "Medium",
+    "Medium Well",
+]
+
 export default function FoodDetailsScreen() {
     const {id} = useLocalSearchParams<{ id?: string }>()
     const insets = useSafeAreaInsets()
     const [favourite, setFavourite] = useState(false)
     const [selectedAddons, setSelectedAddons] = useState<number[]>([])
     const [quantity, setQuantity] = useState(1)
+    const [selectedDoneness, setSelectedDoneness] = useState("Medium Rare")
 
     const itemPrice = 420
     const addonTotal = addons
@@ -33,22 +40,15 @@ export default function FoodDetailsScreen() {
 
     const totalAmount = (itemPrice + addonTotal) * quantity
 
-    const increaseQuantity = () => {
+    const increaseQuantity = useCallback(() => {
         setQuantity((prev) => prev + 1)
-    }
+    }, [])
 
-    const decreaseQuantity = () => {
+    const decreaseQuantity = useCallback(() => {
         setQuantity((prev) => Math.max(1, prev - 1))
-    }
+    }, [])
 
-    const donenessOptions = [
-        "Medium Rare",
-        "Medium",
-        "Medium Well",
-    ]
-    const [selectedDoneness, setSelectedDoneness] = useState("Medium Rare")
-
-    const handleAddonPress = (addonId: number) => {
+    const handleAddonPress = useCallback((addonId: number) => {
         setSelectedAddons((prev) => {
             if (prev.includes(addonId)) {
                 return prev.filter((id) => id !== addonId)
@@ -56,7 +56,7 @@ export default function FoodDetailsScreen() {
 
             return [...prev, addonId]
         })
-    }
+    }, [])
 
     return(
         <SafeAreaView className="flex-1">
@@ -457,7 +457,7 @@ export default function FoodDetailsScreen() {
                             className="flex-row flex-wrap gap-3"
                             style={{ marginTop: verticalScale(6) }}
                         >
-                            {donenessOptions.map((doneness) => {
+                            {DONENENSSOPTIONS.map((doneness) => {
                                 const isSelected = selectedDoneness === doneness
 
                                 return (

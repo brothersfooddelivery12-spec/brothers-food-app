@@ -200,7 +200,7 @@ export default function RestaurantDetailsScreen() {
                 keyboardDismissMode="none"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(40)
+                    paddingBottom: insets.bottom + verticalScale(20)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -636,7 +636,7 @@ export default function RestaurantDetailsScreen() {
                         />
 
                         <View
-                            className="p-4 pb-5 bg-[#E5E4E2]/35"
+                            className="p-4 pb-2 bg-[#E5E4E2]/35"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(15),

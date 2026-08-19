@@ -214,9 +214,9 @@ export default function RestaurantSearchScreen() {
                                 style={{
                                     gap: moderateScale(7),
                                     width: moderateScale(235),
-                                    borderRadius: moderateScale(18),
-                                    paddingHorizontal: moderateScale(9),
-                                    paddingVertical: moderateScale(9)
+                                    borderRadius: moderateScale(20),
+                                    paddingHorizontal: moderateScale(7),
+                                    paddingVertical: moderateScale(7)
                                 }}
                             >
                                 <View
@@ -224,7 +224,7 @@ export default function RestaurantSearchScreen() {
                                     style={{
                                         width: moderateScale(62),
                                         height: moderateScale(62),
-                                        borderRadius: moderateScale(15)
+                                        borderRadius: moderateScale(16)
                                     }}
                                 >
                                     <Image
@@ -348,7 +348,7 @@ export default function RestaurantSearchScreen() {
                 removeClippedSubviews={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(40)
+                    paddingBottom: insets.bottom + verticalScale(20)
                 }}
             />
         </SafeAreaView>

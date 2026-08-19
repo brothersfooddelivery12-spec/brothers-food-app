@@ -56,7 +56,7 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(85),
+                    paddingBottom: insets.bottom + verticalScale(65),
                 }}
                 ListHeaderComponent={
                     <View>
@@ -106,7 +106,7 @@ export default function HomeScreen() {
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                onPress={() => {}}
+                                onPress={() => router.push('/cart')}
                                 className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                 style={{
                                     width: moderateScale(44),

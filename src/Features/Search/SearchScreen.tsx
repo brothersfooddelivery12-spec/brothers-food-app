@@ -10,6 +10,7 @@ import RecommendedCard from "./Components/RecommendedCard"
 import RestaurantCard from "@/components/RestaurantCard"
 import { restaurants } from "@/constant/RestaurantData"
 import { router } from "expo-router"
+import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 const SEARCH_CATEGORIES = [
     "All",
@@ -114,47 +115,96 @@ export default function SearchScreen() {
         ]
     )
 
+    const scrollY = useSharedValue(0)
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            scrollY.value = event.contentOffset.y
+        },
+    })
+
+    const headerTitleStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(
+            scrollY.value,
+            [0, 40, 80],
+            [1, 0.5, 0],
+            Extrapolation.CLAMP
+        )
+
+        const translateY = interpolate(
+            scrollY.value,
+            [0, 80],
+            [0, -25],
+            Extrapolation.CLAMP
+        )
+
+        const height = interpolate(
+            scrollY.value,
+            [0, 80],
+            [65, 0],
+            Extrapolation.CLAMP
+        )
+
+        return {
+            opacity,
+            height,
+            transform: [{ translateY }],
+            overflow: "hidden",
+        }
+    })
+
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
-            <View
-                className="w-full"
+            <Animated.View
+                className="w-full bg-[#F5F5F5]"
                 style={{
                     paddingHorizontal: moderateScale(14),
-                    marginBottom: verticalScale(10)
+                    zIndex: 10,
                 }}
             >
-                <Text
-                    className="text-[#1F1F1F] font-extrabold"
+                <Animated.View style={headerTitleStyle}>
+                    <Text
+                        className="text-[#1F1F1F] font-extrabold"
+                        style={{
+                            fontSize: moderateScale(22),
+                            marginTop: verticalScale(10),
+                        }}
+                    >
+                        Search
+                    </Text>
+
+                    <Text
+                        className="text-[#1F1F1F]/65 font-medium"
+                        style={{
+                            fontSize: moderateScale(13),
+                            marginTop: verticalScale(4),
+                        }}
+                    >
+                        Discover restaurants & cuisines
+                    </Text>
+                </Animated.View>
+
+                <View
                     style={{
-                        fontSize: moderateScale(22),
-                        marginTop: verticalScale(10),
+                        paddingTop: verticalScale(8),
+                        paddingBottom: verticalScale(10),
                     }}
                 >
-                    Search
-                </Text>
+                    <SearchBar
+                        value={search}
+                        onChangeText={setsearch}
+                        placeholder="Search food, restaurants..."
+                        RightIcon={MicIcon}
+                        rightIconColor="#3F2516"
+                        onRightPress={() => {}}
+                    />
+                </View>
+            </Animated.View>
 
-                <Text
-                    className="text-[#1F1F1F]/65 font-medium mb-4"
-                    style={{
-                        fontSize: moderateScale(13),
-                    }}
-                >
-                    Discover restaurants & cuisines
-                </Text>
-
-                <SearchBar
-                    value={search}
-                    onChangeText={setsearch}
-                    placeholder="Search food, restaurants..."
-                    RightIcon={MicIcon}
-                    rightIconColor="#3F2516"
-                    onRightPress={() => {}}
-                />
-            </View>
-
-            <FlatList
+            <Animated.FlatList
                 data={restaurants}
                 keyExtractor={(item) => item.id}
+                onScroll={scrollHandler}
                 nestedScrollEnabled
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"

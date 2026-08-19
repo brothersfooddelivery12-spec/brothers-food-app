@@ -166,7 +166,7 @@ export default function CustomSplashScreen() {
       <Animated.View
         className="absolute w-full items-center"
         style={{
-          bottom: verticalScale(50),
+          bottom: insets.bottom + verticalScale(35),
           opacity: contentOpacity,
           transform: [
             {
@@ -185,7 +185,7 @@ export default function CustomSplashScreen() {
         <Text
           className="font-medium text-[#776153]"
           style={{
-            fontSize: moderateScale(8),
+            fontSize:  moderateScale(8),
             marginTop: verticalScale(6),
             letterSpacing: moderateScale(2.5),
           }}
