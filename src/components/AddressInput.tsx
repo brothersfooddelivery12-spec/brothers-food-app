@@ -30,7 +30,7 @@ export default function AddressInput({
             style={{
                 width: moderateScale(36),
                 height: moderateScale(36),
-                borderRadius: moderateScale(10),
+                borderRadius: moderateScale(10)
             }}
         >
             <LocationIcon width={scale(20)} height={scale(20)} color={"#655145"} /> 
@@ -38,15 +38,13 @@ export default function AddressInput({
 
         <View
             className="flex-1"
-            style={{
-                marginLeft: moderateScale(9),
-            }}
+            style={{ marginLeft: moderateScale(9) }}
         >
             <Text
                 className="font-medium text-[#777777]"
                 style={{
                     fontSize: moderateScale(11),
-                    marginBottom: moderateScale(2),
+                    marginBottom: moderateScale(2)
                 }}
             >
                 Address Line 1
@@ -61,23 +59,21 @@ export default function AddressInput({
                 className="m-0 p-0 font-medium text-[#151515]"
                 style={{
                     height: moderateScale(24),
-                    fontSize: moderateScale(13),
+                    fontSize: moderateScale(13)
                 }}
                 selectionColor="#79685e"
             />
 
             <View
                 className="h-[1px] bg-[#EEEEEE]"
-                style={{
-                    marginVertical: moderateScale(7),
-                }}
+                style={{ marginVertical: moderateScale(7) }}
             />
 
             <Text
                 className="font-medium text-[#777777]"
                 style={{
                     fontSize: moderateScale(11),
-                    marginBottom: moderateScale(2),
+                    marginBottom: moderateScale(2)
                 }}
             >
                 Address Line 2 (Optional)
@@ -92,7 +88,7 @@ export default function AddressInput({
                 className="m-0 p-0 font-medium text-[#151515]"
                 style={{
                     height: moderateScale(24),
-                    fontSize: moderateScale(13),
+                    fontSize: moderateScale(13)
                 }}
                 selectionColor="#79685e"
             />

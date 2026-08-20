@@ -10,7 +10,8 @@ import RecommendedCard from "./Components/RecommendedCard"
 import RestaurantCard from "@/components/RestaurantCard"
 import { restaurants } from "@/constant/RestaurantData"
 import { router } from "expo-router"
-import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 
 const SEARCH_CATEGORIES = [
     "All",
@@ -42,8 +43,13 @@ const RECENT_SEARCHES = [
     { id: "5", title: "South Indian" },
 ]
 
+const TITLE_HEIGHT = verticalScale(48)
+const SEARCH_BAR_HEIGHT = verticalScale(46) 
+
 export default function SearchScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
+    const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -80,9 +86,7 @@ export default function SearchScreen() {
     const renderRestaurant = useCallback(
         ({ item }: { item: any }) => (
             <View
-                style={{
-                    marginTop: moderateScale(12),
-                }}
+                style={{ marginTop: moderateScale(12) }}
             >
                 <RestaurantCard
                     {...item}
@@ -115,59 +119,68 @@ export default function SearchScreen() {
         ]
     )
 
+    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const scrollY = useSharedValue(0)
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
             scrollY.value = event.contentOffset.y
         },
+        onMomentumEnd: (event) => {
+            const y = event.contentOffset.y
+            if (y > 0 && y < titleHeight) {
+                const shouldOpen = y < titleHeight / 2
+                scrollTo(animatedRef, 0, shouldOpen ? 0 : titleHeight, true)
+            }
+        },
     })
 
-    const headerTitleStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(
-            scrollY.value,
-            [0, 40, 80],
-            [1, 0.5, 0],
-            Extrapolation.CLAMP
-        )
-
+    const headerContainerStyle = useAnimatedStyle(() => {
         const translateY = interpolate(
             scrollY.value,
-            [0, 80],
-            [0, -25],
+            [0, titleHeight],
+            [0, -titleHeight],
             Extrapolation.CLAMP
         )
-
-        const height = interpolate(
-            scrollY.value,
-            [0, 80],
-            [65, 0],
-            Extrapolation.CLAMP
-        )
-
-        return {
-            opacity,
-            height,
-            transform: [{ translateY }],
-            overflow: "hidden",
-        }
+        return { transform: [{ translateY }] }
     })
 
-    return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+    const headerTitleStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [0, titleHeight * 0.6],
+            [1, 0],
+            Extrapolation.CLAMP
+        ),
+    }))
+
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
             <Animated.View
-                className="w-full bg-[#F5F5F5]"
-                style={{
-                    paddingHorizontal: moderateScale(14),
-                    zIndex: 10,
-                }}
+                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                style={[
+                    {
+                        top: insets.top,
+                        paddingHorizontal: moderateScale(14),
+                        zIndex: 10
+                    },
+                    headerContainerStyle,
+                ]}
             >
-                <Animated.View style={headerTitleStyle}>
+                <Animated.View
+                    style={headerTitleStyle}
+                    onLayout={(e) => {
+                        const h = e.nativeEvent.layout.height
+                        if (h > 0 && Math.abs(h - titleHeight) > 1) {
+                            setTitleHeight(h)
+                        }
+                    }}
+                >
                     <Text
                         className="text-[#1F1F1F] font-extrabold"
                         style={{
-                            fontSize: moderateScale(22),
-                            marginTop: verticalScale(10),
+                            fontSize: moderateScale(20),
+                            marginTop: verticalScale(10)
                         }}
                     >
                         Search
@@ -176,8 +189,8 @@ export default function SearchScreen() {
                     <Text
                         className="text-[#1F1F1F]/65 font-medium"
                         style={{
-                            fontSize: moderateScale(13),
-                            marginTop: verticalScale(4),
+                            fontSize: moderateScale(12),
+                            marginTop: verticalScale(2)
                         }}
                     >
                         Discover restaurants & cuisines
@@ -186,8 +199,8 @@ export default function SearchScreen() {
 
                 <View
                     style={{
-                        paddingTop: verticalScale(8),
-                        paddingBottom: verticalScale(10),
+                        marginTop: verticalScale(8),
+                        marginBottom: verticalScale(10)
                     }}
                 >
                     <SearchBar
@@ -202,20 +215,23 @@ export default function SearchScreen() {
             </Animated.View>
 
             <Animated.FlatList
+                ref={animatedRef}
                 data={restaurants}
                 keyExtractor={(item) => item.id}
                 onScroll={scrollHandler}
+                scrollEventThrottle={16}
                 nestedScrollEnabled
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(75),
+                    paddingTop: SEARCH_BAR_HEIGHT,
+                    paddingBottom: insets.bottom + verticalScale(75)
                 }}
                 ListHeaderComponent={
                     <View>
-                        <View style={{ marginTop: verticalScale(2) }}>
+                        <View style={{ marginTop: verticalScale(65) }}>
                             <ScrollView
                                 horizontal
                                 nestedScrollEnabled
@@ -224,7 +240,7 @@ export default function SearchScreen() {
                                 className="-mx-5"
                                 contentContainerStyle={{
                                     paddingHorizontal: scale(14),
-                                    gap: scale(10),
+                                    gap: scale(10)
                                 }}
                             >
                                 {SEARCH_CATEGORIES.map((category) => {
@@ -238,41 +254,37 @@ export default function SearchScreen() {
                                                 setSelectedCategory(category)
 
                                                 if (category === "Food") {
-                                                    router.push({
-                                                        pathname: "/food-search",
-                                                        params: {
-                                                            category: "Food",
-                                                        },
+                                                    preventDoublePress(() => {
+                                                        router.push({
+                                                            pathname: "/food-search",
+                                                            params: { category: "Food" }
+                                                        })
                                                     })
                                                 }
 
                                                 if (category === "Restaurants") {
-                                                    router.push({
-                                                        pathname: "/restaurant-search",
-                                                        params: {
-                                                            category: "Restaurants",
-                                                        },
+                                                    preventDoublePress(() => {
+                                                        router.push({
+                                                            pathname: "/restaurant-search",
+                                                            params: { category: "Restaurants" }
+                                                        })
                                                     })
                                                 }
                                             }}
                                             className={`items-center justify-center ${
-                                                isSelected
-                                                    ? "bg-[#3F2516]"
-                                                    : "bg-[#faf5ef]"
+                                                isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
                                             }`}
                                             style={{
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(16),
                                                 paddingVertical: verticalScale(7),
                                                 borderWidth: isSelected ? 0 : 1,
-                                                borderColor: "#E8DDD3",
+                                                borderColor: "#E8DDD3"
                                             }}
                                         >
                                             <Text
                                                 className={`font-semibold ${
-                                                    isSelected
-                                                        ? "text-white"
-                                                        : "text-[#5A3825]"
+                                                    isSelected ? "text-white" : "text-[#5A3825]"
                                                 }`}
                                                 style={{ fontSize: moderateScale(13) }}
                                             >
@@ -286,10 +298,7 @@ export default function SearchScreen() {
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{
-                                fontSize: moderateScale(16),
-                                marginTop: verticalScale(15),
-                            }}
+                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(15) }}
                         >
                             Trending Searches
                         </Text>
@@ -305,19 +314,17 @@ export default function SearchScreen() {
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
                                 gap: scale(10),
-                                paddingVertical: verticalScale(4),
+                                paddingVertical: verticalScale(4)
                             }}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
                                     activeOpacity={0.85}
-                                    onPress={() =>
-                                        setSelectedTrending(item.title)
-                                    }
+                                    onPress={() => setSelectedTrending(item.title)}
                                     className="items-center justify-center bg-[#E5E4E2]/85"
                                     style={{
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(16),
-                                        paddingVertical: verticalScale(7),
+                                        paddingVertical: verticalScale(7)
                                     }}
                                 >
                                     <Text
@@ -339,10 +346,7 @@ export default function SearchScreen() {
                                     Recent Searches
                                 </Text>
 
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {}}
-                                >
+                                <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
                                     <Text
                                         className="text-[#3F2516] font-bold"
                                         style={{ fontSize: moderateScale(14) }}
@@ -354,24 +358,19 @@ export default function SearchScreen() {
 
                             <View
                                 className="flex-row flex-wrap"
-                                style={{
-                                    gap: scale(8),
-                                    marginTop: verticalScale(10),
-                                }}
+                                style={{ gap: scale(8), marginTop: verticalScale(10) }}
                             >
                                 {RECENT_SEARCHES.map((item) => (
                                     <TouchableOpacity
                                         key={item.id}
                                         activeOpacity={0.85}
-                                        onPress={() =>
-                                            setSelectedTrending(item.title)
-                                        }
+                                        onPress={() => setSelectedTrending(item.title)}
                                         className="flex-row items-center bg-white border border-[#1F1F1F]/10"
                                         style={{
                                             gap: moderateScale(5),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(12),
-                                            paddingVertical: verticalScale(7),
+                                            paddingVertical: verticalScale(7)
                                         }}
                                     >
                                         <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F" strokeWidth={2} />
@@ -390,10 +389,7 @@ export default function SearchScreen() {
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{
-                                fontSize: moderateScale(16),
-                                marginTop: verticalScale(20),
-                            }}
+                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(20) }}
                         >
                             Recommended For You
                         </Text>
@@ -408,17 +404,14 @@ export default function SearchScreen() {
                             className="-mx-5 mt-3"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
-                                gap: moderateScale(12),
+                                gap: moderateScale(12)
                             }}
                             renderItem={renderRecommended}
                         />
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{
-                                fontSize: moderateScale(16),
-                                marginTop: verticalScale(20),
-                            }}
+                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(20) }}
                         >
                             Top Restaurants Near You
                         </Text>

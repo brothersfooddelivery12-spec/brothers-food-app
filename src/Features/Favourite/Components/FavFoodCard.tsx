@@ -1,33 +1,37 @@
-import PlusIcon from "@/assets/icon/PlusIcon.svg"
-import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import { Image } from "expo-image"
-import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
+import PlusIcon from "@/assets/icon/PlusIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
+import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
+import React from "react"
 
-export interface SignatureItem {
+export interface FavFoodCard {
     id: string
     name: string
     imageUri: string
-    category: string
+    restaurantName: string
+    deliveryTime: string
+    isFavourite?: boolean
     price: number
     rating: number
 }
 
-interface RestaurantFoodCardProps {
-    item: SignatureItem
+interface FavFoodCardProps {
+    item: FavFoodCard
     onPress?: () => void
     onAddPress?: () => void
+    onFavouritePress?: () => void
 }
 
-const RestaurantFoodCard = ({ item, onPress, onAddPress }: RestaurantFoodCardProps) => {
+const FavFoodCard = ({ item, onPress, onAddPress, onFavouritePress }: FavFoodCardProps) => {
     return (
         <TouchableOpacity
             activeOpacity={0.95}
             onPress={onPress}
             className="overflow-hidden bg-white border border-[#1F1F1F]/10"
             style={{
-                width: moderateScale(140),
+                width: "100%",
                 borderRadius: moderateScale(22)
             }}
         >
@@ -48,32 +52,33 @@ const RestaurantFoodCard = ({ item, onPress, onAddPress }: RestaurantFoodCardPro
                     }}
                 />
 
-                <View
-                    className="absolute top-4 right-4 flex-row items-center bg-[#F8D56A]"
+                <TouchableOpacity
+                    activeOpacity={0.95}
+                    onPress={(event) => {
+                        event.stopPropagation()
+                        onFavouritePress?.()
+                    }}
+                    hitSlop={8}
+                    className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
                     style={{
-                        paddingHorizontal: moderateScale(6),
-                        paddingVertical: moderateScale(4),
-                        borderRadius: moderateScale(10)
+                        right: moderateScale(12),
+                        top: moderateScale(12),
+                        width: moderateScale(32),
+                        height: moderateScale(32)
                     }}
                 >
-                    <RatingIcon width={moderateScale(13)} height={moderateScale(13)} color="#3F2516" />
-
-                    <Text
-                        className="font-bold text-[#3F2516]"
-                        style={{
-                            fontSize: moderateScale(10),
-                            marginLeft: moderateScale(3)
-                        }}
-                    >
-                        {item.rating.toFixed(1)}
-                    </Text>
-                </View>
+                    {item.isFavourite ? (
+                        <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                    ) : (
+                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                    )}
+                </TouchableOpacity>
             </View>
 
             <View
                 className="px-3 pb-3"
                 style={{
-                    height: verticalScale(75),
+                    height: verticalScale(82),
                     paddingTop: moderateScale(2)
                 }}
             >
@@ -89,11 +94,11 @@ const RestaurantFoodCard = ({ item, onPress, onAddPress }: RestaurantFoodCardPro
                     numberOfLines={2}
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
-                        fontSize: moderateScale(10.5),
+                        fontSize: moderateScale(11),
                         marginTop: moderateScale(3)
                     }}
                 >
-                    {item.category}
+                    {item.restaurantName} • {item.deliveryTime}
                 </Text>
 
                 <View className="flex-row items-center mt-auto">
@@ -134,4 +139,4 @@ const RestaurantFoodCard = ({ item, onPress, onAddPress }: RestaurantFoodCardPro
     )
 }
 
-export default React.memo(RestaurantFoodCard)
+export default React.memo(FavFoodCard)

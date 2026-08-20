@@ -13,6 +13,7 @@ import GiftIcon from '@/assets/icon/GiftIcon.svg'
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import OrderPriceRow from "./Components/OrderPriceRow"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 
 export const FREQUENTLY_ADDED_TOGETHER = [
     {
@@ -51,6 +52,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
 
 export default function CartScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const [activeRestaurantId, setActiveRestaurantId] = useState<string | null>(
         CART_DATA.find((item) => item.isActive)?.id ?? null
     )
@@ -98,7 +100,7 @@ export default function CartScreen() {
             handleAddItem,
             handleIncrease,
             handleDecrease,
-            handleRemove,
+            handleRemove
         ]
     )
 
@@ -125,16 +127,16 @@ export default function CartScreen() {
                     <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
                 </TouchableOpacity>
 
-                <View className="items-center gap-1 flex-1">
+                <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold self-start"
+                        className="text-[#1F1F1F] font-extrabold"
                         style={{ fontSize: moderateScale(18) }}
                     >
                         My Cart
                     </Text>
                     
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium self-start"
+                        className="text-[#1F1F1F]/65 font-medium"
                         style={{ fontSize: moderateScale(11) }}
                     >
                         3 restaurants • 6 items 
@@ -145,7 +147,7 @@ export default function CartScreen() {
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
                         width: moderateScale(44),
-                        height: moderateScale(44),
+                        height: moderateScale(44)
                     }}
                 >
                     <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
@@ -192,7 +194,7 @@ export default function CartScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(75),
+                    paddingBottom: insets.bottom + verticalScale(75)
                 }}
                 ListFooterComponent={
                     <View className="mt-5">
@@ -213,7 +215,7 @@ export default function CartScreen() {
                             className="-mx-5 mt-3"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
-                                gap: moderateScale(10),
+                                gap: moderateScale(10)
                             }}
                             renderItem={({ item }) => (
                                 <FoodCard
@@ -304,7 +306,7 @@ export default function CartScreen() {
                                 style={{
                                     paddingHorizontal: moderateScale(10),
                                     paddingVertical: moderateScale(6),
-                                    borderRadius: moderateScale(18),
+                                    borderRadius: moderateScale(18)
                                 }}
                             >
                                 <Text
@@ -348,7 +350,7 @@ export default function CartScreen() {
                                 style={{
                                     paddingHorizontal: scale(12),
                                     paddingVertical: verticalScale(8),
-                                    borderRadius: moderateScale(12),
+                                    borderRadius: moderateScale(12)
                                 }}
                             >
                                 <Text
@@ -371,7 +373,7 @@ export default function CartScreen() {
                                 style={{
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(12),
-                                    marginHorizontal: verticalScale(2),
+                                    marginHorizontal: verticalScale(2)
                                 }}
                             />
 
@@ -411,18 +413,14 @@ export default function CartScreen() {
                 <View className="items-start gap-1 ml-4">
                     <Text
                         className="text-[#FFFFFF]/75 font-normal"
-                        style={{
-                            fontSize: moderateScale(14)
-                        }}
+                        style={{ fontSize: moderateScale(14) }}
                     >
                         Total to pay
                     </Text>
 
                     <Text
                         className="text-[#FFFFFF] font-extrabold"
-                        style={{
-                            fontSize: moderateScale(18)
-                        }}
+                        style={{ fontSize: moderateScale(18) }}
                     >
                         ₹710
                     </Text>
@@ -430,7 +428,11 @@ export default function CartScreen() {
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={() => {}}
+                    onPress={() => {
+                        preventDoublePress(() => {
+                            router.push('/checkout')
+                        })
+                    }}
                     className="flex-row ml-auto items-center justify-center bg-[#FFFFFF] border border-[#1F1F1F]/15"
                     style={{
                         gap: moderateScale(5),

@@ -50,12 +50,14 @@ const RestaurantSearchCard = ({
                 style={{ height: verticalScale(120) }}
             >
                 <Image
-                    source={{ uri: imageUri }}
+                    source={{
+                        uri: imageUri
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
-                        height: "100%",
+                        height: "100%"
                     }}
                 />
 
@@ -63,7 +65,7 @@ const RestaurantSearchCard = ({
                     className="absolute flex-row items-center gap-2"
                     style={{
                         left: moderateScale(10),
-                        top: moderateScale(10),
+                        top: moderateScale(10)
                     }}
                 >
                     <View
@@ -71,7 +73,7 @@ const RestaurantSearchCard = ({
                         style={{
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4.5),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
@@ -88,7 +90,7 @@ const RestaurantSearchCard = ({
                             gap: moderateScale(5),
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(3.5),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
@@ -116,7 +118,7 @@ const RestaurantSearchCard = ({
                         right: moderateScale(10),
                         top: moderateScale(10),
                         width: moderateScale(32),
-                        height: moderateScale(32),
+                        height: moderateScale(32)
                     }}
                 >
                     {isFavourite ? (
@@ -143,7 +145,7 @@ const RestaurantSearchCard = ({
                             gap: moderateScale(4),
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color="#5C4639" />
@@ -169,7 +171,7 @@ const RestaurantSearchCard = ({
                             gap: moderateScale(4),
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <LocationIcon width={moderateScale(15)} height={moderateScale(15)} color="#5C4639" />
@@ -187,7 +189,7 @@ const RestaurantSearchCard = ({
                     className="text-[#3F2516] font-semibold mt-4 uppercase"
                     style={{
                         fontSize: moderateScale(12),
-                        letterSpacing: moderateScale(1),
+                        letterSpacing: moderateScale(1)
                     }}
                 >
                     Signature Selection
@@ -203,7 +205,7 @@ const RestaurantSearchCard = ({
                     className="-mx-5 mt-2"
                     contentContainerStyle={{
                         paddingHorizontal: scale(14),
-                        gap: moderateScale(12),
+                        gap: moderateScale(12)
                     }}
                     renderItem={({ item }) => (
                         <RestaurantFoodCard

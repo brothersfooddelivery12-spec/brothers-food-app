@@ -29,7 +29,7 @@ const SimilarRestaurantCard = ({
             className="overflow-hidden bg-white border border-[#1F1F1F]/10"
             style={{
                 width: moderateScale(165),
-                borderRadius: moderateScale(22),
+                borderRadius: moderateScale(22)
             }}
         >
             <View
@@ -43,7 +43,7 @@ const SimilarRestaurantCard = ({
                     style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 />
             </View>
@@ -52,7 +52,7 @@ const SimilarRestaurantCard = ({
                 className="px-3 pb-3"
                 style={{
                     height: verticalScale(52),
-                    marginTop: moderateScale(2),
+                    marginTop: moderateScale(2)
                 }}
             >
                 <Text
@@ -69,7 +69,7 @@ const SimilarRestaurantCard = ({
                         style={{
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color="#5C4639" />
@@ -78,7 +78,7 @@ const SimilarRestaurantCard = ({
                             className="font-bold text-[#5C4639]"
                             style={{
                                 fontSize: moderateScale(11.5),
-                                marginRight: moderateScale(2),
+                                marginRight: moderateScale(2)
                             }}
                         >
                             {rating.toFixed(1)}
@@ -90,7 +90,7 @@ const SimilarRestaurantCard = ({
                             className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                             style={{
                                 width: moderateScale(22),
-                                height: moderateScale(22),
+                                height: moderateScale(22)
                             }}
                         >
                             <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color="#5C4639" />

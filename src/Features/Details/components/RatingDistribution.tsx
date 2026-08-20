@@ -47,14 +47,14 @@ const RatingDistribution = ({ratings}: RatingDistributionProps) => {
                                 flex: 1,
                                 height: verticalScale(8),
                                 marginLeft: moderateScale(12),
-                                borderRadius: moderateScale(10),
+                                borderRadius: moderateScale(10)
                             }}
                         >
                             <View
                                 className="h-full bg-[#E9A21B]"
                                 style={{
                                     width: `${percentage}%`,
-                                    borderRadius: moderateScale(18),
+                                    borderRadius: moderateScale(18)
                                 }}
                             />
                         </View>
@@ -65,7 +65,7 @@ const RatingDistribution = ({ratings}: RatingDistributionProps) => {
                                 width: moderateScale(38),
                                 marginLeft: moderateScale(6),
                                 fontSize: moderateScale(12),
-                                textAlign: "right",
+                                textAlign: "right"
                             }}
                         >
                             {percentage}%

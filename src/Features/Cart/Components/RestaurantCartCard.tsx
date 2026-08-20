@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react"
+import React, { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { FadeIn, FadeOut, interpolate, LinearTransition, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { Image } from "expo-image"
@@ -125,21 +125,21 @@ const RestaurantCartCard = memo(
 
         const expandedMargin = verticalScale(12)
 
-        const toggleExpanded = useCallback(() => {
-            onSelectRestaurant(restaurantId)
-
-            const next = progress.value === 0
-
-            progress.value = withTiming(next ? 1 : 0, {
+        useEffect(() => {
+            progress.value = withTiming(isActive ? 1 : 0, {
                 duration: 280,
             })
-        }, [restaurantId, onSelectRestaurant, progress])
+        }, [isActive, progress])
+
+        const toggleExpanded = useCallback(() => {
+            onSelectRestaurant(restaurantId)
+        }, [restaurantId, onSelectRestaurant])
 
         const contentAnimatedStyle = useAnimatedStyle(() => ({
             height: contentHeight.value * progress.value,
             marginTop: expandedMargin * progress.value,
             opacity: progress.value,
-            overflow: "hidden",
+            overflow: "hidden"
         }))
 
         const arrowAnimatedStyle = useAnimatedStyle(() => ({
@@ -149,7 +149,7 @@ const RestaurantCartCard = memo(
                         progress.value,
                         [0, 1],
                         [180, 0]
-                    )}deg`,
+                    )}deg`
                 },
             ],
         }))
@@ -159,7 +159,7 @@ const RestaurantCartCard = memo(
                 className="p-3 bg-white border border-[#1F1F1F]/10"
                 style={{
                     borderRadius: moderateScale(20),
-                    marginTop: verticalScale(8),
+                    marginTop: verticalScale(8)
                 }}
             >
                 <TouchableOpacity
@@ -171,17 +171,19 @@ const RestaurantCartCard = memo(
                         className="items-start overflow-hidden justify-center self-start rounded-full border border-[#1F1F1F]/10"
                         style={{
                             width: moderateScale(46),
-                            height: moderateScale(46),
+                            height: moderateScale(46)
                         }}
                     >
                         <Image
-                            source={{ uri: restaurantImage }}
+                            source={{
+                                uri: restaurantImage
+                            }}
                             contentFit="cover"
                             cachePolicy="memory-disk"
                             transition={0}
                             style={{
                                 width: "100%",
-                                height: "100%",
+                                height: "100%"
                             }}
                         />
                     </View>
@@ -205,7 +207,7 @@ const RestaurantCartCard = memo(
                                     gap: moderateScale(5),
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(3),
-                                    borderRadius: moderateScale(10),
+                                    borderRadius: moderateScale(10)
                                 }}
                             >
                                 <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
@@ -225,7 +227,7 @@ const RestaurantCartCard = memo(
                                     className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                     style={{
                                         width: moderateScale(22),
-                                        height: moderateScale(22),
+                                        height: moderateScale(22)
                                     }}
                                 >
                                     <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
@@ -247,7 +249,7 @@ const RestaurantCartCard = memo(
                             style={{
                                 paddingHorizontal: scale(6),
                                 paddingVertical: verticalScale(4),
-                                borderRadius: moderateScale(12),
+                                borderRadius: moderateScale(12)
                             }}
                         >
                             <Text
@@ -263,7 +265,7 @@ const RestaurantCartCard = memo(
                             style={{
                                 paddingHorizontal: scale(6),
                                 paddingVertical: verticalScale(4),
-                                borderRadius: moderateScale(12),
+                                borderRadius: moderateScale(12)
                             }}
                         >
                             <Text
@@ -280,7 +282,7 @@ const RestaurantCartCard = memo(
                             arrowAnimatedStyle,
                             {
                                 width: moderateScale(26),
-                                height: moderateScale(26),
+                                height: moderateScale(26)
                             },
                         ]}
                         className="items-center justify-center rounded-full bg-[#E8B93F]/15"
@@ -300,7 +302,7 @@ const RestaurantCartCard = memo(
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        opacity: 0,
+                        opacity: 0
                     }}
                     onLayout={(event) => {
                         const height =

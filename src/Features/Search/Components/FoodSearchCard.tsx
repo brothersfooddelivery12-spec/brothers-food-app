@@ -16,7 +16,7 @@ export interface FoodSearchCardProps {
     deliveryTime: string
     price: number
     discount?: string
-    image: string | number
+    image: string
     isFavourite?: boolean
     onPress?: () => void
     onFavouritePress?: () => void
@@ -48,13 +48,15 @@ const FoodSearchCard = ({
                 style={{ height: verticalScale(120) }}
             >
                 <Image
-                    source={image}
+                    source={{
+                        uri: image
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 />
 
@@ -64,14 +66,14 @@ const FoodSearchCard = ({
                         style={{
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
                             className="font-bold text-[#3F2516]"
                             style={{
                                 fontSize: moderateScale(10),
-                                marginLeft: moderateScale(3),
+                                marginLeft: moderateScale(3)
                             }}
                         >
                             {discount}
@@ -91,7 +93,7 @@ const FoodSearchCard = ({
                         right: moderateScale(12),
                         top: moderateScale(12),
                         width: moderateScale(32),
-                        height: moderateScale(32),
+                        height: moderateScale(32)
                     }}
                 >
                     {isFavourite ? (
@@ -106,7 +108,7 @@ const FoodSearchCard = ({
                 className="px-3 pb-3"
                 style={{
                     height: verticalScale(80),
-                    paddingTop: moderateScale(2),
+                    paddingTop: moderateScale(2)
                 }}
             >
                 <View className="flex-row items-center gap-3">
@@ -123,7 +125,7 @@ const FoodSearchCard = ({
                         style={{
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color="#5c4639" />
@@ -142,7 +144,7 @@ const FoodSearchCard = ({
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
                         fontSize: moderateScale(11),
-                        marginTop: moderateScale(1),
+                        marginTop: moderateScale(1)
                     }}
                 >
                     by {restaurant}
@@ -154,7 +156,7 @@ const FoodSearchCard = ({
                         style={{
                             paddingHorizontal: moderateScale(10),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
@@ -169,7 +171,7 @@ const FoodSearchCard = ({
                         className="items-center mt-1 ml-1 justify-center rounded-full bg-[#E8B93F]/15"
                         style={{
                             width: moderateScale(24),
-                            height: moderateScale(24),
+                            height: moderateScale(24)
                         }}
                     >
                         <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
@@ -192,7 +194,7 @@ const FoodSearchCard = ({
                         style={{
                             width: moderateScale(34),
                             height: moderateScale(34),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <PlusIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={2} />

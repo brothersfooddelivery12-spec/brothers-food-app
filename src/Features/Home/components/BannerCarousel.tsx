@@ -31,7 +31,9 @@ const BannerItem = memo(({ uri, width, height, gap }: BannerItemProps) => {
                 }}
             >
                 <Image
-                    source={{ uri }}
+                    source={{
+                        uri: uri
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
@@ -154,25 +156,15 @@ export default function BannerCarousel() {
                 data={carouselBanners}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-
-                keyExtractor={(_, index) =>
-                    index.toString()
-                }
-
+                keyExtractor={(_, index) => index.toString()}
                 renderItem={renderBanner}
-
                 snapToInterval={ITEM_WIDTH}
                 decelerationRate="fast"
                 disableIntervalMomentum
-
                 contentContainerStyle={{
                     paddingLeft: HORIZONTAL_PADDING,
                 }}
-
-                onMomentumScrollEnd={
-                    handleMomentumScrollEnd
-                }
-
+                onMomentumScrollEnd={handleMomentumScrollEnd}
                 getItemLayout={(_, index) => ({
                     length: ITEM_WIDTH,
                     offset:
@@ -197,21 +189,14 @@ export default function BannerCarousel() {
                     <View
                         key={index}
                         style={{
-                            width:
-                                activeIndex === index
+                            width: activeIndex === index
                                     ? moderateScale(20)
                                     : moderateScale(6),
-
-                            height:
-                                verticalScale(6),
-
-                            borderRadius:
-                                moderateScale(100),
-
-                            backgroundColor:
-                                activeIndex === index
+                            height: verticalScale(6),
+                            borderRadius: moderateScale(100),
+                            backgroundColor: activeIndex === index
                                     ? "#3F2516"
-                                    : "#D8CEC5",
+                                    : "#D8CEC5"
                         }}
                     />
                 ))}

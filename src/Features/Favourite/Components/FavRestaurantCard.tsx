@@ -1,14 +1,14 @@
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { Image } from "expo-image"
-import { moderateScale, verticalScale } from "react-native-size-matters"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import ClockIcon from "@/assets/icon/ClockIcon.svg"
 
-interface RestaurantCardProps {
+interface FavRestaurantCard {
     name: string
     imageUri: string
     rating: number
@@ -16,17 +16,16 @@ interface RestaurantCardProps {
     deliveryFee: number
     deliveryTime: string
     priceForTwo: number
-
-    onPress?: () => void
-    onFavouritePress?: () => void
     isFavourite?: boolean
 }
 
-const RestaurantCard = ({
-    name, imageUri, rating, cuisines, deliveryFee,
-    deliveryTime, priceForTwo, onPress, onFavouritePress,
-    isFavourite = false,
-}: RestaurantCardProps) => {
+interface FavRestaurantCardProps {
+    item: FavRestaurantCard
+    onPress?: () => void
+    onFavouritePress?: () => void
+}
+
+const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCardProps) => {
     return (
         <TouchableOpacity
             activeOpacity={0.95}
@@ -40,13 +39,13 @@ const RestaurantCard = ({
             >
                 <Image
                     source={{
-                        uri: imageUri
+                        uri: item.imageUri
                     }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
-                        height: "100%",
+                        height: "100%"
                     }}
                 />
 
@@ -65,7 +64,7 @@ const RestaurantCard = ({
                         height: moderateScale(32)
                     }}
                 >
-                    {isFavourite ? (
+                    {item.isFavourite ? (
                         <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
                     ) : (
                         <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
@@ -80,7 +79,7 @@ const RestaurantCard = ({
                         className="flex-1 font-bold text-[#1F1F1F]"
                         style={{ fontSize: moderateScale(14) }}
                     >
-                        {name}
+                        {item.name}
                     </Text>
 
                     <View
@@ -97,7 +96,7 @@ const RestaurantCard = ({
                             className="font-bold text-[#5c4639]"
                             style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
                         >
-                            {rating.toFixed(1)}
+                            {item.rating.toFixed(1)}
                         </Text>
                     </View>
                 </View>
@@ -107,10 +106,10 @@ const RestaurantCard = ({
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
                         fontSize: moderateScale(11),
-                        marginTop: moderateScale(1),
+                        marginTop: moderateScale(1)
                     }}
                 >
-                    {cuisines.join(" • ")}
+                    {item.cuisines.join(" • ")}
                 </Text>
 
                 <View
@@ -138,9 +137,9 @@ const RestaurantCard = ({
                             className="font-semibold text-[#5c4639]"
                             style={{ fontSize: moderateScale(11) }}
                         >
-                            {deliveryFee === 0
+                            {item.deliveryFee === 0
                                 ? "FREE"
-                                : `₹${deliveryFee}`}
+                                : `₹${item.deliveryFee}`}
                         </Text>
                     </View>
 
@@ -159,7 +158,7 @@ const RestaurantCard = ({
                             className="font-medium text-[#1F1F1F]/75"
                             style={{ fontSize: moderateScale(11) }}
                         >
-                            {deliveryTime}
+                            {item.deliveryTime}
                         </Text>
                     </View>
 
@@ -175,13 +174,55 @@ const RestaurantCard = ({
                             className="font-medium text-white"
                             style={{ fontSize: moderateScale(11) }}
                         >
-                            ₹{priceForTwo} for two
+                            ₹{item.priceForTwo} for two
                         </Text>
                     </View>
+                </View>
+
+                <View className="flex-row items-center mt-4 gap-3">
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={(event) => {
+                            event.stopPropagation()
+                        }}
+                        className="bg-[#3F2516] items-center justify-center"
+                        style={{
+                            paddingHorizontal: scale(18),
+                            paddingVertical: verticalScale(8),
+                            borderRadius: moderateScale(18)
+                        }}
+                    >
+                        <Text
+                            className="text-[#FFFFFF] font-semibold"
+                            style={{ fontSize: moderateScale(12) }}
+                        >
+                            Order Now
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={(event) => {
+                            event.stopPropagation()
+                        }}
+                        className="bg-[#E5E4E2]/85 items-center justify-center"
+                        style={{
+                            paddingHorizontal: scale(18),
+                            paddingVertical: verticalScale(8),
+                            borderRadius: moderateScale(18)
+                        }}
+                    >
+                        <Text
+                            className="text-[#3F2516] font-semibold"
+                            style={{ fontSize: moderateScale(12) }}
+                        >
+                            View Menu
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </TouchableOpacity>
     )
 }
 
-export default React.memo(RestaurantCard)
+export default React.memo(FavRestaurantCard)

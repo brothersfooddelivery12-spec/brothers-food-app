@@ -83,7 +83,7 @@ export default function CustomSplashScreen() {
           },
           shadowOpacity: 0.35,
           shadowRadius: moderateScale(32),
-          elevation: 8,
+          elevation: 8
         }}
       >
         <LinearGradient
@@ -92,7 +92,7 @@ export default function CustomSplashScreen() {
           style={{
             flex: 1,
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "center"
           }}
         >
           <View className="flex-row items-center justify-center">
@@ -100,25 +100,21 @@ export default function CustomSplashScreen() {
               className="font-bold text-[#CEAB3D]"
               style={{
                 fontSize: logoTextSize,
-                letterSpacing: scale(0.3),
+                letterSpacing: scale(0.3)
               }}
             >
               BR
             </Text>
 
             <View style={{ marginBottom: verticalScale(2) }}>
-              <LocationIcon
-                color={"#CEAB3D"}
-                width={iconSize}
-                height={iconSize}
-              />
+              <LocationIcon color={"#CEAB3D"} width={iconSize} height={iconSize} />
             </View>
 
             <Text
               className="font-bold text-[#CEAB3D]"
               style={{
                 fontSize: logoTextSize,
-                letterSpacing: scale(0.3),
+                letterSpacing: scale(0.3)
               }}
             >
               THERS
@@ -134,7 +130,7 @@ export default function CustomSplashScreen() {
               style={{
                 width: scale(5.6),
                 height: verticalScale(1),
-                marginRight: scale(2.6),
+                marginRight: scale(2.6)
               }}
             />
 
@@ -142,7 +138,7 @@ export default function CustomSplashScreen() {
               className="font-medium text-center text-[#E8B93F]/85"
               style={{
                 fontSize: taglineTextSize,
-                letterSpacing: scale(0.3),
+                letterSpacing: scale(0.3)
               }}
               numberOfLines={1}
               adjustsFontSizeToFit
@@ -156,7 +152,7 @@ export default function CustomSplashScreen() {
               style={{
                 width: scale(5.6),
                 height: verticalScale(1),
-                marginLeft: scale(1.3),
+                marginLeft: scale(1.3)
               }}
             />
           </View>
@@ -170,7 +166,7 @@ export default function CustomSplashScreen() {
           opacity: contentOpacity,
           transform: [
             {
-              translateY: contentTranslateY,
+              translateY: contentTranslateY
             },
           ],
         }}
@@ -187,7 +183,7 @@ export default function CustomSplashScreen() {
           style={{
             fontSize:  moderateScale(8),
             marginTop: verticalScale(6),
-            letterSpacing: moderateScale(2.5),
+            letterSpacing: moderateScale(2.5)
           }}
         >
           EXPERIENCE EXCELLENCE
@@ -200,7 +196,7 @@ export default function CustomSplashScreen() {
           left: scale(16),
           right: scale(16),
           bottom: insets.bottom + verticalScale(16),
-          height: verticalScale(2),
+          height: verticalScale(2)
         }}
       >
         <Animated.View
@@ -209,7 +205,7 @@ export default function CustomSplashScreen() {
             width: bottomLine.interpolate({
               inputRange: [0, 1],
               outputRange: ["0%", "100%"],
-            }),
+            })
           }}
         />
       </View>

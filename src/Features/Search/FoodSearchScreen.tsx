@@ -61,7 +61,7 @@ export default function FoodSearchScreen() {
         [
             handleFoodPress,
             handleFavouritePress,
-            handleAddPress,
+            handleAddPress
         ]
     )
 
@@ -98,7 +98,7 @@ export default function FoodSearchScreen() {
                                     paddingHorizontal: scale(16),
                                     paddingVertical: verticalScale(7),
                                     borderWidth: isSelected ? 0 : 1,
-                                    borderColor: "#E8DDD3",
+                                    borderColor: "#E8DDD3"
                                 }}
                             >
                                 <Text

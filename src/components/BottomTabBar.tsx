@@ -15,6 +15,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 export default function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const insets = useSafeAreaInsets()
+    const visibleRoutes = state.routes.filter(
+        (route) => route.name !== "order"
+    )
 
     const getIcon = (routeName: string, focused: boolean) => {
         const color = focused ? "#1F1F1F" : "#929292"
@@ -79,9 +82,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                 key={route.key}
                 onPress={onPress}
                 className="flex-1 items-center justify-center"
-                style={{
-                    gap: moderateScale(4),
-                }}
+                style={{ gap: moderateScale(4) }}
             >
                 {getIcon(route.name, focused)}
 
@@ -91,9 +92,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                             ? "text-[#1F1F1F]"
                             : "text-[#929292]"
                     }`}
-                    style={{
-                        fontSize: moderateScale(11),
-                    }}
+                    style={{ fontSize: moderateScale(11) }}
                 >
                     {label}
                 </Text>
@@ -106,7 +105,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
             className="absolute left-4 right-4"
             style={{
                 bottom: insets.bottom + 8,
-                height: verticalScale(56),
+                height: verticalScale(56)
             }}
         >
             <View
@@ -116,27 +115,19 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                     paddingHorizontal: moderateScale(8)
                 }}
             >
-                {state.routes[0] &&
-                    renderTab(state.routes[0], 0)
-                }
-
-                {state.routes[1] &&
-                    renderTab(state.routes[1], 1)
-                }
+                {visibleRoutes.slice(0, 2).map((route, index) =>
+                    renderTab(route, state.routes.indexOf(route))
+                )}
 
                 <View style={{ width: moderateScale(55) }} />
 
-                {state.routes[2] &&
-                    renderTab(state.routes[2], 2)
-                }
-
-                {state.routes[3] &&
-                    renderTab(state.routes[3], 3)
-                }
+                {visibleRoutes.slice(2, 4).map((route, index) =>
+                    renderTab(route, state.routes.indexOf(route))
+                )}
             </View>
 
             <Pressable
-                onPress={() => router.push("/")}
+                onPress={() => navigation.navigate("order")}
                 className="absolute items-center justify-center rounded-full"
                 style={{
                     width: moderateScale(68),
@@ -153,7 +144,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                     shadowOpacity: 0.25,
                     shadowRadius: 12,
                     elevation: 8,
-                    zIndex: 100,
+                    zIndex: 100
                 }}
             >
                 <ShoppingBagIcon width={moderateScale(36)} height={moderateScale(36)} color="#FFFFFF" />

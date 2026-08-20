@@ -24,7 +24,7 @@ const ImageGrid = ({
             keyExtractor={(_, index) => index.toString()}
             contentContainerStyle={{
                 marginTop: moderateScale(16),
-                alignItems: "center",
+                alignItems: "center"
             }}
             columnWrapperStyle={{
                 gap,
@@ -36,7 +36,7 @@ const ImageGrid = ({
                         width: size,
                         height: size,
                         borderRadius,
-                        overflow: "hidden",
+                        overflow: "hidden"
                     }}
                 >
                     <Image
@@ -45,7 +45,7 @@ const ImageGrid = ({
                         cachePolicy="memory-disk"
                         style={{
                             width: "100%",
-                            height: "100%",
+                            height: "100%"
                         }}
                     />
                 </View>

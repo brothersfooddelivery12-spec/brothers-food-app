@@ -100,7 +100,7 @@ export default function CompleteProfileScreen() {
                         paddingRight: scale(10),
                         paddingLeft: scale(9),
                         height: verticalScale(46),
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 >
                     <View
@@ -108,7 +108,7 @@ export default function CompleteProfileScreen() {
                         style={{
                             width: moderateScale(36),
                             height: moderateScale(36),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <UserIcon width={scale(20)} height={scale(20)} color={"#655145"} /> 
@@ -121,7 +121,7 @@ export default function CompleteProfileScreen() {
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
                                 textAlignVertical: "center",
-                                includeFontPadding: false,
+                                includeFontPadding: false
                             }}
                             value={fullName}
                             onChangeText={(text) => {
@@ -161,7 +161,7 @@ export default function CompleteProfileScreen() {
                         paddingRight: scale(10),
                         paddingLeft: scale(9),
                         height: verticalScale(46),
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 >
                     <View
@@ -169,7 +169,7 @@ export default function CompleteProfileScreen() {
                         style={{
                             width: moderateScale(36),
                             height: moderateScale(36),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <MailIcon width={scale(20)} height={scale(20)} color={"#655145"} /> 
@@ -182,7 +182,7 @@ export default function CompleteProfileScreen() {
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
                                 textAlignVertical: "center",
-                                includeFontPadding: false,
+                                includeFontPadding: false
                             }}
                             value={emailAddress}
                             onChangeText={(text) => {
@@ -235,7 +235,7 @@ export default function CompleteProfileScreen() {
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
                                 textAlignVertical: "center",
-                                includeFontPadding: false,
+                                includeFontPadding: false
                             }}
                             value={mobileNumber.replace(/(\d{5})(\d{0,5})/, "$1 $2").trim()}
                             onChangeText={(text) => {
@@ -291,7 +291,7 @@ export default function CompleteProfileScreen() {
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
-                                borderRadius: moderateScale(10),
+                                borderRadius: moderateScale(10)
                             }}
                         >
                             <CityIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.5} />
@@ -299,15 +299,11 @@ export default function CompleteProfileScreen() {
 
                         <View
                             className="flex-1"
-                            style={{
-                                marginLeft: moderateScale(9),
-                            }}
+                            style={{ marginLeft: moderateScale(9) }}
                         >
                             <Text
                                 className="font-medium text-[#777777]"
-                                style={{
-                                    fontSize: moderateScale(11),
-                                }}
+                                style={{ fontSize: moderateScale(11) }}
                             >
                                 City
                             </Text>
@@ -321,7 +317,7 @@ export default function CompleteProfileScreen() {
                                 className="m-0 p-0 font-medium text-[#151515]"
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(14)
                                 }}
                                 selectionColor="#79685e"
                             />
@@ -349,15 +345,11 @@ export default function CompleteProfileScreen() {
 
                         <View
                             className="flex-1"
-                            style={{
-                                marginLeft: moderateScale(9),
-                            }}
+                            style={{ marginLeft: moderateScale(9) }}
                         >
                             <Text
                                 className="font-medium text-[#777777]"
-                                style={{
-                                    fontSize: moderateScale(11),
-                                }}
+                                style={{ fontSize: moderateScale(11) }}
                             >
                                 PIN Code
                             </Text>
@@ -372,7 +364,7 @@ export default function CompleteProfileScreen() {
                                 className="m-0 p-0 font-medium text-[#151515]"
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(14)
                                 }}
                                 selectionColor="#79685e"
                             />

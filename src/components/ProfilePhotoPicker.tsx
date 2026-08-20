@@ -14,7 +14,7 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
       <View
         style={{
           width: moderateScale(142),
-          height: moderateScale(142),
+          height: moderateScale(142)
         }}
         className="items-center justify-center"
       >
@@ -59,7 +59,7 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
       <Text
         style={{
           marginTop: moderateScale(8),
-          fontSize: moderateScale(13),
+          fontSize: moderateScale(13)
         }}
         className="font-bold text-[#1F1F1F]"
       >

@@ -228,7 +228,9 @@ export default function RestaurantSearchScreen() {
                                     }}
                                 >
                                     <Image
-                                        source={{uri: item.imageUri}}
+                                        source={{
+                                            uri: item.imageUri
+                                        }}
                                         contentFit="cover"
                                         cachePolicy="memory-disk"
                                         transition={200}

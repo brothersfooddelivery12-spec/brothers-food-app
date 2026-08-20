@@ -35,16 +35,18 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                     style={{
                         borderRadius: moderateScale(18),
                         width: moderateScale(88),
-                        height: moderateScale(88),
+                        height: moderateScale(88)
                     }}
                 >
                     <Image
-                        source={{ uri: item.image }}
+                        source={{
+                            uri: item.image
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         style={{
                             width: "100%",
-                            height: "100%",
+                            height: "100%"
                         }}
                     />
                 </View>
@@ -57,7 +59,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                                 paddingHorizontal: moderateScale(7),
                                 paddingVertical: moderateScale(4),
                                 borderRadius: moderateScale(10),
-                                marginBottom: moderateScale(6),
+                                marginBottom: moderateScale(6)
                             }}
                         >
                             <Text
@@ -82,7 +84,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                         className="font-medium text-[#1F1F1F]/75"
                         style={{ 
                             fontSize: moderateScale(11.5),
-                            marginTop: moderateScale(2),
+                            marginTop: moderateScale(2)
                         }}
                     >
                         {item.description}
@@ -95,7 +97,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                 style={{
                     marginLeft: moderateScale(4),
                     marginTop: moderateScale(6),
-                    marginRight: moderateScale(4),
+                    marginRight: moderateScale(4)
                 }}
             >
                 <View
@@ -104,7 +106,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                         marginTop: moderateScale(6),
                         paddingHorizontal: moderateScale(8),
                         paddingVertical: moderateScale(4),
-                        borderRadius: moderateScale(12),
+                        borderRadius: moderateScale(12)
                     }}
                 >
                     <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#5C4639" />
@@ -113,7 +115,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                         className="font-bold text-[#5C4639]"
                         style={{
                             fontSize: moderateScale(12),
-                            marginRight: moderateScale(2),
+                            marginRight: moderateScale(2)
                         }}
                     >
                         {item.rating}
@@ -126,7 +128,7 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                         marginTop: moderateScale(6),
                         paddingHorizontal: moderateScale(10),
                         paddingVertical: moderateScale(4),
-                        borderRadius: moderateScale(12),
+                        borderRadius: moderateScale(12)
                     }}
                 >
                     <Text
@@ -140,15 +142,15 @@ const PopularItemCard = ({ item, onPress, onAdd }: PopularItemCardProps) => {
                 <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={(event) => {
-                        event.stopPropagation();
-                        onAdd?.(item);
+                        event.stopPropagation()
+                        onAdd?.(item)
                     }}
                     className="items-center justify-center ml-auto bg-[#3F2516]"
                     style={{
                         marginBottom: moderateScale(2),
                         width: moderateScale(32),
                         height: moderateScale(32),
-                        borderRadius: moderateScale(12),
+                        borderRadius: moderateScale(12)
                     }}
                 >
                     <PlusIcon width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />

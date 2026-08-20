@@ -163,7 +163,7 @@ export default function VerifyOtpScreen() {
                         "rgba(255,255,255,0.25)",
                         "rgba(255,255,255,0.55)",
                         "rgba(255,255,255,0.85)",
-                        "#FFFFFF",
+                        "#FFFFFF"
                     ]}
                     locations={[0, 0.25, 0.48, 0.68, 0.86, 1]}
                     style={{
@@ -171,7 +171,7 @@ export default function VerifyOtpScreen() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        height: "100%",
+                        height: "100%"
                     }}
                 />
                 </ImageBackground>
@@ -201,7 +201,7 @@ export default function VerifyOtpScreen() {
                                 shadowColor: "#FFFFFF",
                                 shadowOffset: {
                                     width: 0,
-                                    height: verticalScale(14),
+                                    height: verticalScale(14)
                                 },
                                 shadowOpacity: 0.35,
                                 shadowRadius: moderateScale(32),
@@ -214,7 +214,7 @@ export default function VerifyOtpScreen() {
                                 style={{
                                     flex: 1,
                                     alignItems: "center",
-                                    justifyContent: "center",
+                                    justifyContent: "center"
                                 }}
                             >
                                 <View className="flex-row items-center justify-center">
@@ -222,7 +222,7 @@ export default function VerifyOtpScreen() {
                                         className="font-bold text-[#CEAB3D] text-[80%]"
                                         style={{
                                             fontSize: logoTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                     >
                                         BR
@@ -236,7 +236,7 @@ export default function VerifyOtpScreen() {
                                         className="font-bold text-[#CEAB3D]"
                                         style={{
                                             fontSize: logoTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                     >
                                         THERS
@@ -245,15 +245,13 @@ export default function VerifyOtpScreen() {
 
                                 <View 
                                     className="flex-row items-center justify-center"
-                                    style={{
-                                        marginTop: -verticalScale(0.6),
-                                    }}
+                                    style={{ marginTop: -verticalScale(0.6) }}
                                 >
                                     <View className="bg-[#E8B93F]/85 rounded-full"
                                         style={{
                                             width: scale(5.4),
                                             height: verticalScale(1),
-                                            marginRight: scale(2.5),
+                                            marginRight: scale(2.5)
                                         }}
                                     />
 
@@ -261,7 +259,7 @@ export default function VerifyOtpScreen() {
                                         className="font-medium text-center text-[#E8B93F]/85"
                                         style={{
                                             fontSize: taglineTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                         numberOfLines={1}
                                         adjustsFontSizeToFit
@@ -274,7 +272,7 @@ export default function VerifyOtpScreen() {
                                         style={{
                                             width: scale(5.4),
                                             height: verticalScale(1),
-                                            marginLeft: scale(1.25),
+                                            marginLeft: scale(1.25)
                                         }}
                                     />
                                 </View>
@@ -343,7 +341,7 @@ export default function VerifyOtpScreen() {
                                             style={{
                                                 height: scale(50),
                                                 width: scale(50),
-                                                borderRadius: moderateScale(18),
+                                                borderRadius: moderateScale(18)
                                             }}
                                         >
                                             <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(18) }}>
@@ -370,7 +368,7 @@ export default function VerifyOtpScreen() {
                                 padding: scale(12),
                                 marginTop: verticalScale(24),
                                 gap: scale(10),
-                                borderRadius: moderateScale(18),
+                                borderRadius: moderateScale(18)
                             }}
                         >
                             <View
@@ -389,7 +387,7 @@ export default function VerifyOtpScreen() {
                                     className="font-semibold text-[#1F1F1F]/60"
                                     style={{
                                         marginTop: verticalScale(4),
-                                        fontSize: moderateScale(11),
+                                        fontSize: moderateScale(11)
                                     }}
                                 >
                                     {canResend ? (
@@ -421,7 +419,7 @@ export default function VerifyOtpScreen() {
                                     }`}
                                     style={{
                                         fontSize: moderateScale(13),
-                                        marginRight: scale(3),
+                                        marginRight: scale(3)
                                     }}
                                 >
                                     {"Resend"}

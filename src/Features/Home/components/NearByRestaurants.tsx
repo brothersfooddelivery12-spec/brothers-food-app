@@ -29,17 +29,19 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
             className="w-full flex-row overflow-hidden bg-white border border-[#1F1F1F]/10 p-2"
             style={{
                 borderRadius: moderateScale(22),
-                gap: moderateScale(8),
+                gap: moderateScale(8)
             }}
         >
             <Image
-                source={restaurant.imageUri}
+                source={{
+                    uri: restaurant.imageUri
+                }}
                 contentFit="cover"
                 cachePolicy="memory-disk"
                 style={{
                     width: moderateScale(78),
                     height: moderateScale(78),
-                    borderRadius: moderateScale(18),
+                    borderRadius: moderateScale(18)
                 }}
             />
 
@@ -57,7 +59,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
                         fontSize: moderateScale(11),
-                        marginTop: moderateScale(1),
+                        marginTop: moderateScale(1)
                     }}
                 >
                     {restaurant.cuisines}
@@ -70,7 +72,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                             marginTop: moderateScale(8),
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
@@ -79,7 +81,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                             className="font-bold text-[#5c4639]"
                             style={{
                                 fontSize: moderateScale(10),
-                                marginRight: moderateScale(2),
+                                marginRight: moderateScale(2)
                             }}
                         >
                             {restaurant.rating.toFixed(1)}
@@ -92,7 +94,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                             marginTop: moderateScale(8),
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <LocationIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
@@ -101,7 +103,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                             className="font-bold text-[#5c4639]"
                             style={{
                                 fontSize: moderateScale(10),
-                                marginRight: moderateScale(2),
+                                marginRight: moderateScale(2)
                             }}
                         >
                             {restaurant.distance}
@@ -118,7 +120,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                         marginRight: moderateScale(3),
                         paddingHorizontal: moderateScale(8),
                         paddingVertical: moderateScale(4.5),
-                        borderRadius: moderateScale(12),
+                        borderRadius: moderateScale(12)
                     }}
                 >
                     <Text
@@ -136,7 +138,7 @@ const NearByRestaurantsList = ({ restaurant, onPress }: RestaurantListCardProps)
                         marginRight: moderateScale(3),
                         paddingHorizontal: moderateScale(8),
                         paddingVertical: moderateScale(4.5),
-                        borderRadius: moderateScale(10),
+                        borderRadius: moderateScale(10)
                     }}
                 >
                     <Text

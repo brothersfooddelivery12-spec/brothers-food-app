@@ -20,15 +20,17 @@ import { useCallback } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const handleRestaurantPress = useCallback((restaurantId: string) => {
-        router.push({
-            pathname: '/restaurant-details',
-            params: {
-                id: restaurantId
-            }
+        preventDoublePress(() => {
+            router.push({
+                pathname: '/restaurant-details',
+                params: { id: restaurantId }
+            })
         })
     }, [])
 
@@ -39,11 +41,11 @@ export default function HomeScreen() {
     const handleFoodPress = (foodId: string) => {
         console.log("Selected food:", foodId)
 
-        router.push({
-            pathname: "/food-details",
-            params: {
-                id: foodId,
-            },
+        preventDoublePress(() => {
+            router.push({
+                pathname: "/food-details",
+                params: { id: foodId }
+            })
         })
     }
 
@@ -56,15 +58,13 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(65),
+                    paddingBottom: insets.bottom + verticalScale(65)
                 }}
                 ListHeaderComponent={
                     <View>
                         <View
                             className="flex-row items-center w-full gap-2"
-                            style={{
-                                marginTop: verticalScale(10),
-                            }}
+                            style={{ marginTop: verticalScale(10) }}
                         >
                             <View className="flex-1">
                                 <Text
@@ -78,7 +78,7 @@ export default function HomeScreen() {
                                     className="flex-row items-center"
                                     style={{
                                         marginTop: verticalScale(2),
-                                        marginLeft: -verticalScale(4),
+                                        marginLeft: -verticalScale(4)
                                     }}
                                 >
                                     <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" style={{ marginBottom: moderateScale(1) }} />
@@ -98,7 +98,7 @@ export default function HomeScreen() {
                                 className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                 style={{
                                     width: moderateScale(44),
-                                    height: moderateScale(44),
+                                    height: moderateScale(44)
                                 }}
                             >
                                 <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
@@ -106,11 +106,15 @@ export default function HomeScreen() {
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                onPress={() => router.push('/cart')}
+                                onPress={() => {
+                                    preventDoublePress(() => {
+                                        router.push('/cart')
+                                    })
+                                }}
                                 className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                 style={{
                                     width: moderateScale(44),
-                                    height: moderateScale(44),
+                                    height: moderateScale(44)
                                 }}
                             >
                                 <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
@@ -127,7 +131,7 @@ export default function HomeScreen() {
                                 style={{
                                     borderRadius: moderateScale(22),
                                     paddingHorizontal: scale(13),
-                                    height: verticalScale(46),
+                                    height: verticalScale(46)
                                 }}
                             >
                                 <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
@@ -145,7 +149,7 @@ export default function HomeScreen() {
                                 style={{
                                     width: moderateScale(50),
                                     height: moderateScale(50),
-                                    borderRadius: moderateScale(18),
+                                    borderRadius: moderateScale(18)
                                 }}
                             >
                                 <MicIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
@@ -162,7 +166,7 @@ export default function HomeScreen() {
                             className="mt-5 -mx-4"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
-                                gap: moderateScale(10),
+                                gap: moderateScale(10)
                             }}
                             renderItem={({ item: category }) => (
                                 <View className="items-center">
@@ -174,16 +178,18 @@ export default function HomeScreen() {
                                             borderColor: "#FFFFFF",
                                             borderWidth: moderateScale(2),
                                             width: moderateScale(65),
-                                            height: moderateScale(65),
+                                            height: moderateScale(65)
                                         }}
                                     >
                                         <Image
-                                            source={category.imageUri}
+                                            source={{
+                                                uri: category.imageUri
+                                            }}
                                             contentFit="cover"
-                                            transition={200}
+                                            transition={100}
                                             style={{
                                                 width: "70%",
-                                                height: "70%",
+                                                height: "70%"
                                             }}
                                         />
                                     </TouchableOpacity>
@@ -228,7 +234,7 @@ export default function HomeScreen() {
                         <View
                             style={{
                                 marginTop: moderateScale(12),
-                                gap: moderateScale(15),
+                                gap: moderateScale(15)
                             }}
                         >
                             {restaurants.map((restaurant) => (
@@ -249,7 +255,7 @@ export default function HomeScreen() {
                             className="text-[#1F1F1F] font-bold"
                             style={{
                                 fontSize: moderateScale(16),
-                                marginTop: verticalScale(18),
+                                marginTop: verticalScale(18)
                             }}
                         >
                             Today's Special Offers
@@ -266,7 +272,7 @@ export default function HomeScreen() {
                             contentContainerStyle={{
                                 paddingHorizontal: moderateScale(15),
                                 gap: moderateScale(12),
-                                marginTop: moderateScale(12),
+                                marginTop: moderateScale(12)
                             }}
                             renderItem={({ item }) => (
                                 <OfferCard
@@ -282,7 +288,7 @@ export default function HomeScreen() {
                             className="text-[#1F1F1F] font-bold"
                             style={{
                                 fontSize: moderateScale(16),
-                                marginTop: verticalScale(18),
+                                marginTop: verticalScale(18)
                             }}
                         >
                             Continue Ordering
@@ -293,7 +299,7 @@ export default function HomeScreen() {
                             style={{
                                 borderRadius: moderateScale(18),
                                 paddingHorizontal: moderateScale(9),
-                                paddingVertical: moderateScale(9),
+                                paddingVertical: moderateScale(9)
                             }}
                         >
                             <View
@@ -301,13 +307,15 @@ export default function HomeScreen() {
                                 style={{
                                     width: moderateScale(62),
                                     height: moderateScale(62),
-                                    borderRadius: moderateScale(15),
+                                    borderRadius: moderateScale(15)
                                 }}
                             >
                                 <Image
-                                    source="https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
+                                    source={{
+                                        uri: "https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
+                                    }}
                                     contentFit="cover"
-                                    transition={200}
+                                    transition={100}
                                     style={{
                                         width: "100%",
                                         height: "100%",
@@ -342,7 +350,7 @@ export default function HomeScreen() {
                                     gap: moderateScale(5),
                                     borderRadius: moderateScale(10),
                                     paddingHorizontal: moderateScale(9),
-                                    paddingVertical: moderateScale(7),
+                                    paddingVertical: moderateScale(7)
                                 }}
                             >
                                 <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
@@ -360,7 +368,7 @@ export default function HomeScreen() {
                             className="text-[#1F1F1F] font-bold"
                             style={{
                                 fontSize: moderateScale(16),
-                                marginTop: verticalScale(18),
+                                marginTop: verticalScale(18)
                             }}
                         >
                             Trending Foods
@@ -376,7 +384,7 @@ export default function HomeScreen() {
                             className="-mx-5 mt-3"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
-                                gap: moderateScale(12),
+                                gap: moderateScale(12)
                             }}
                             renderItem={({ item }) => (
                                 <FoodCard
@@ -394,7 +402,7 @@ export default function HomeScreen() {
                             style={{
                                 fontSize: moderateScale(16),
                                 marginTop: verticalScale(18),
-                                marginBottom: verticalScale(8),
+                                marginBottom: verticalScale(8)
                             }}
                         >
                             Nearby Restaurants
@@ -409,10 +417,7 @@ export default function HomeScreen() {
                         <NearByRestaurantsList
                             restaurant={item}
                             onPress={() => {
-                                console.log(
-                                    "Restaurant:",
-                                    item.id
-                                )
+                                console.log("Restaurant:", item.id)
                             }}
                         />
                     </View>

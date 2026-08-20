@@ -206,9 +206,7 @@ export default function RestaurantDetailsScreen() {
                     <View>
                         <View
                             className="absolute left-0 right-0 top-0"
-                            style={{
-                                height: verticalScale(200),
-                            }}
+                            style={{ height: verticalScale(200) }}
                         >
                             <Image
                                 source={{
@@ -217,7 +215,7 @@ export default function RestaurantDetailsScreen() {
                                 contentFit="cover"
                                 style={{
                                     width: "100%",
-                                    height: "100%",
+                                    height: "100%"
                                 }}
                             />
 
@@ -227,7 +225,7 @@ export default function RestaurantDetailsScreen() {
                                 className="absolute left-0 right-0 top-0 flex-row items-center justify-between"
                                 style={{
                                     marginTop: moderateScale(16),
-                                    marginHorizontal: scale(12),
+                                    marginHorizontal: scale(12)
                                 }}
                             >
                                 <TouchableOpacity
@@ -290,7 +288,7 @@ export default function RestaurantDetailsScreen() {
                                 className="p-4 pb-5 bg-[#E5E4E2]/35"
                                 style={{
                                     borderRadius: moderateScale(22),
-                                    marginTop: moderateScale(15),
+                                    marginTop: moderateScale(15)
                                 }}
                             >
                                 <View className="w-full flex-row gap-3 items-center">
@@ -310,7 +308,7 @@ export default function RestaurantDetailsScreen() {
                                             contentFit="cover"
                                             style={{
                                                 width: "100%",
-                                                height: "100%",
+                                                height: "100%"
                                             }}
                                         />
                                     </View>
@@ -343,7 +341,7 @@ export default function RestaurantDetailsScreen() {
                                         style={{
                                             paddingHorizontal: moderateScale(7),
                                             paddingVertical: moderateScale(3.5),
-                                            borderRadius: moderateScale(14),
+                                            borderRadius: moderateScale(14)
                                         }}
                                     >
                                         <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
@@ -365,7 +363,7 @@ export default function RestaurantDetailsScreen() {
                                         style={{
                                             paddingHorizontal: moderateScale(9),
                                             paddingVertical: moderateScale(5),
-                                            borderRadius: moderateScale(12),
+                                            borderRadius: moderateScale(12)
                                         }}
                                     >
                                         <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
@@ -391,7 +389,7 @@ export default function RestaurantDetailsScreen() {
                                     style={{
                                         height: verticalScale(0.7),
                                         marginVertical: verticalScale(12),
-                                        marginHorizontal: verticalScale(2),
+                                        marginHorizontal: verticalScale(2)
                                     }}
                                 />
 
@@ -402,7 +400,7 @@ export default function RestaurantDetailsScreen() {
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                                 style={{
                                                     width: moderateScale(36),
-                                                    height: moderateScale(36),
+                                                    height: moderateScale(36)
                                                 }}
                                             >
                                                 <ClockIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
@@ -430,7 +428,7 @@ export default function RestaurantDetailsScreen() {
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                                 style={{
                                                     width: moderateScale(36),
-                                                    height: moderateScale(36),
+                                                    height: moderateScale(36)
                                                 }}
                                             >
                                                 <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
@@ -460,7 +458,7 @@ export default function RestaurantDetailsScreen() {
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                                 style={{
                                                     width: moderateScale(36),
-                                                    height: moderateScale(36),
+                                                    height: moderateScale(36)
                                                 }}
                                             >
                                                 <WalletIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
@@ -488,7 +486,7 @@ export default function RestaurantDetailsScreen() {
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                                 style={{
                                                     width: moderateScale(36),
-                                                    height: moderateScale(36),
+                                                    height: moderateScale(36)
                                                 }}
                                             >
                                                 <StoreIcon width={moderateScale(20)} height={moderateScale(20)} color="#5C4639" />
@@ -548,7 +546,7 @@ export default function RestaurantDetailsScreen() {
                                                 className="items-center justify-center"
                                                 style={{
                                                     paddingHorizontal: scale(10),
-                                                    height: verticalScale(38),
+                                                    height: verticalScale(38)
                                                 }}
                                             >
                                                 <View className="items-center">
@@ -560,7 +558,7 @@ export default function RestaurantDetailsScreen() {
                                                         }
                                                         style={{
                                                             fontSize: moderateScale(14),
-                                                            marginBottom: verticalScale(6),
+                                                            marginBottom: verticalScale(6)
                                                         }}
                                                     >
                                                         {tab}
@@ -573,7 +571,7 @@ export default function RestaurantDetailsScreen() {
                                                                 left: -scale(3),
                                                                 right: -scale(3),
                                                                 height: verticalScale(2.5),
-                                                                borderRadius: scale(24),
+                                                                borderRadius: scale(24)
                                                             }}
                                                         />
                                                     )}
@@ -639,7 +637,7 @@ export default function RestaurantDetailsScreen() {
                             className="p-4 pb-2 bg-[#E5E4E2]/35"
                             style={{
                                 borderRadius: moderateScale(22),
-                                marginTop: moderateScale(15),
+                                marginTop: moderateScale(15)
                             }}
                         >
                             <Text
@@ -689,7 +687,7 @@ export default function RestaurantDetailsScreen() {
                                 style={{
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(14),
-                                    marginHorizontal: verticalScale(2),
+                                    marginHorizontal: verticalScale(2)
                                 }}
                             />
 
@@ -728,7 +726,7 @@ export default function RestaurantDetailsScreen() {
                             contentContainerStyle={{
                                 paddingLeft: scale(16),
                                 paddingRight: scale(20),
-                                gap: scale(12),
+                                gap: scale(12)
                             }}
                             renderItem={renderSimilarRestaurants}
                         />

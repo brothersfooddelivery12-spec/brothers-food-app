@@ -26,7 +26,7 @@ const CartItemRow = memo(
         item,
         onIncrease,
         onDecrease,
-        onRemove,
+        onRemove
     }: CartItemRowProps) => {
         return (
             <View className="flex-row items-center gap-3">
@@ -35,7 +35,7 @@ const CartItemRow = memo(
                     style={{
                         width: moderateScale(68),
                         height: moderateScale(68),
-                        borderRadius: moderateScale(14),
+                        borderRadius: moderateScale(14)
                     }}
                 >
                     <Image
@@ -65,9 +65,7 @@ const CartItemRow = memo(
                         <Text
                             numberOfLines={1}
                             className="font-medium text-[#1F1F1F]/75"
-                            style={{
-                                fontSize: moderateScale(10),
-                            }}
+                            style={{ fontSize: moderateScale(10) }}
                         >
                             {item.description}
                         </Text>
@@ -79,7 +77,7 @@ const CartItemRow = memo(
                             gap: moderateScale(8),
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <TouchableOpacity
@@ -88,7 +86,7 @@ const CartItemRow = memo(
                             className="items-center justify-center rounded-full"
                             style={{
                                 width: moderateScale(16),
-                                height: moderateScale(16),
+                                height: moderateScale(16)
                             }}
                         >
                             <MinusIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" strokeWidth={2.2} />
@@ -107,7 +105,7 @@ const CartItemRow = memo(
                             className="items-center justify-center rounded-full"
                             style={{
                                 width: moderateScale(16),
-                                height: moderateScale(16),
+                                height: moderateScale(16)
                             }}
                         >
                             <PlusIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" strokeWidth={2.2} />
@@ -121,7 +119,7 @@ const CartItemRow = memo(
                         style={{
                             paddingHorizontal: moderateScale(10),
                             paddingVertical: moderateScale(5),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
@@ -139,7 +137,7 @@ const CartItemRow = memo(
                         style={{
                             paddingHorizontal: scale(7),
                             paddingVertical: verticalScale(4),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <Text

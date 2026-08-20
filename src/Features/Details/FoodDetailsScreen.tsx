@@ -69,9 +69,7 @@ export default function FoodDetailsScreen() {
             >
                 <View
                     className="absolute left-0 right-0 top-0"
-                    style={{
-                        height: verticalScale(220),
-                    }}
+                    style={{ height: verticalScale(220) }}
                 >
                     <Image
                         source={{
@@ -80,7 +78,7 @@ export default function FoodDetailsScreen() {
                         contentFit="cover"
                         style={{
                             width: "100%",
-                            height: "100%",
+                            height: "100%"
                         }}
                     />
 
@@ -90,7 +88,7 @@ export default function FoodDetailsScreen() {
                         className="absolute left-0 right-0 top-0 flex-row items-center justify-between"
                         style={{
                             marginTop: moderateScale(16),
-                            marginHorizontal: scale(12),
+                            marginHorizontal: scale(12)
                         }}
                     >
                         <TouchableOpacity
@@ -139,14 +137,12 @@ export default function FoodDetailsScreen() {
                             marginTop: moderateScale(14),
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
                             className="font-semibold text-[#3F2516] uppercase"
-                            style={{
-                                fontSize: moderateScale(10),
-                            }}
+                            style={{ fontSize: moderateScale(10) }}
                         >
                             BestSeller
                         </Text>
@@ -196,7 +192,7 @@ export default function FoodDetailsScreen() {
                             style={{
                                 paddingHorizontal: moderateScale(8),
                                 paddingVertical: moderateScale(4),
-                                borderRadius: moderateScale(12),
+                                borderRadius: moderateScale(12)
                             }}
                         >
                             <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
@@ -214,7 +210,7 @@ export default function FoodDetailsScreen() {
                             style={{
                                 paddingHorizontal: moderateScale(6),
                                 paddingVertical: moderateScale(4),
-                                borderRadius: moderateScale(12),
+                                borderRadius: moderateScale(12)
                             }}
                         >
                             <UsersIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
@@ -233,7 +229,7 @@ export default function FoodDetailsScreen() {
                         style={{
                             height: verticalScale(0.7),
                             marginVertical: verticalScale(14),
-                            marginHorizontal: verticalScale(2),
+                            marginHorizontal: verticalScale(2)
                         }}
                     />
 
@@ -243,7 +239,7 @@ export default function FoodDetailsScreen() {
                                 className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(48),
-                                    height: moderateScale(48),
+                                    height: moderateScale(48)
                                 }}
                             >
                                 <StopWatchIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
@@ -265,7 +261,7 @@ export default function FoodDetailsScreen() {
                             style={{
                                 width: scale(1),
                                 height: verticalScale(26),
-                                marginHorizontal: verticalScale(2),
+                                marginHorizontal: verticalScale(2)
                             }}
                         />
 
@@ -274,7 +270,7 @@ export default function FoodDetailsScreen() {
                                 className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(48),
-                                    height: moderateScale(48),
+                                    height: moderateScale(48)
                                 }}
                             >
                                 <FireIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
@@ -296,7 +292,7 @@ export default function FoodDetailsScreen() {
                             style={{
                                 width: scale(1),
                                 height: verticalScale(26),
-                                marginHorizontal: verticalScale(2),
+                                marginHorizontal: verticalScale(2)
                             }}
                         />
 
@@ -305,7 +301,7 @@ export default function FoodDetailsScreen() {
                                 className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(48),
-                                    height: moderateScale(48),
+                                    height: moderateScale(48)
                                 }}
                             >
                                 <UtensilIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
@@ -327,7 +323,7 @@ export default function FoodDetailsScreen() {
                         className="p-4 bg-[#E5E4E2]/35"
                         style={{
                             borderRadius: moderateScale(22),
-                            marginTop: moderateScale(25),
+                            marginTop: moderateScale(25)
                         }}
                     >
                         <Text
@@ -367,7 +363,7 @@ export default function FoodDetailsScreen() {
                                     style={{
                                         paddingHorizontal: scale(14),
                                         paddingVertical: verticalScale(15),
-                                        borderRadius: moderateScale(18),
+                                        borderRadius: moderateScale(18)
                                     }}
                                 >
                                     <View
@@ -380,7 +376,7 @@ export default function FoodDetailsScreen() {
                                             marginStart: moderateScale(4),
                                             borderRadius: moderateScale(8),
                                             width: moderateScale(24),
-                                            height: moderateScale(24),
+                                            height: moderateScale(24)
                                         }}
                                     >
                                         {isSelected && (
@@ -419,7 +415,7 @@ export default function FoodDetailsScreen() {
                         className="p-4 bg-[#E5E4E2]/35"
                         style={{
                             borderRadius: moderateScale(22),
-                            marginTop: moderateScale(25),
+                            marginTop: moderateScale(25)
                         }}
                     >
                         <Text
@@ -475,7 +471,7 @@ export default function FoodDetailsScreen() {
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(6),
                                             borderWidth: isSelected ? 0 : 1,
-                                            borderColor: "#E8DDD3",
+                                            borderColor: "#E8DDD3"
                                         }}
                                     >
                                         <Text
@@ -517,7 +513,7 @@ export default function FoodDetailsScreen() {
                                 paddingHorizontal: moderateScale(16),
                                 paddingVertical: moderateScale(16),
                                 fontSize: moderateScale(14),
-                                lineHeight: moderateScale(26),
+                                lineHeight: moderateScale(26)
                             }}
                             selectionColor="#79685e"
                         />
@@ -559,7 +555,7 @@ export default function FoodDetailsScreen() {
                         className="items-center justify-center bg-[#FFFFFF] border border-[#3F2516]/85"
                         style={{
                             width: moderateScale(35),
-                            height: moderateScale(34),
+                            height: moderateScale(34)
                         }}
                     >
                         <Text
@@ -610,7 +606,7 @@ export default function FoodDetailsScreen() {
                         style={{
                             width: scale(1),
                             height: verticalScale(12),
-                            marginHorizontal: verticalScale(2),
+                            marginHorizontal: verticalScale(2)
                         }}
                     />
 

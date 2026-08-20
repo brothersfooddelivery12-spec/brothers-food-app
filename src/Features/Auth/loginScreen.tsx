@@ -142,9 +142,7 @@ export default function LoginScreen() {
 
             <View
                 className="absolute left-0 right-0 top-0"
-                style={{
-                    height: heroHeight,
-                }}
+                style={{ height: heroHeight }}
             >
                 <ImageBackground
                     source={require("@/assets/images/backgroundImage.png")}
@@ -161,7 +159,7 @@ export default function LoginScreen() {
                         "rgba(255,255,255,0.25)",
                         "rgba(255,255,255,0.55)",
                         "rgba(255,255,255,0.85)",
-                        "#FFFFFF",
+                        "#FFFFFF"
                     ]}
                     locations={[0, 0.25, 0.48, 0.68, 0.86, 1]}
                     style={{
@@ -169,7 +167,7 @@ export default function LoginScreen() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        height: "100%",
+                        height: "100%"
                     }}
                 />
                 </ImageBackground>
@@ -199,7 +197,7 @@ export default function LoginScreen() {
                                 shadowColor: "#FFFFFF",
                                 shadowOffset: {
                                     width: 0,
-                                    height: verticalScale(14),
+                                    height: verticalScale(14)
                                 },
                                 shadowOpacity: 0.35,
                                 shadowRadius: moderateScale(32),
@@ -212,7 +210,7 @@ export default function LoginScreen() {
                                 style={{
                                     flex: 1,
                                     alignItems: "center",
-                                    justifyContent: "center",
+                                    justifyContent: "center"
                                 }}
                             >
                                 <View className="flex-row items-center justify-center">
@@ -220,7 +218,7 @@ export default function LoginScreen() {
                                         className="font-bold text-[#CEAB3D] text-[80%]"
                                         style={{
                                             fontSize: logoTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                     >
                                         BR
@@ -234,7 +232,7 @@ export default function LoginScreen() {
                                         className="font-bold text-[#CEAB3D]"
                                         style={{
                                             fontSize: logoTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                     >
                                         THERS
@@ -243,15 +241,13 @@ export default function LoginScreen() {
 
                                 <View 
                                     className="flex-row items-center justify-center"
-                                    style={{
-                                        marginTop: -verticalScale(0.6),
-                                    }}
+                                    style={{ marginTop: -verticalScale(0.6) }}
                                 >
                                     <View className="bg-[#E8B93F]/85 rounded-full"
                                         style={{
                                             width: scale(5.4),
                                             height: verticalScale(1),
-                                            marginRight: scale(2.5),
+                                            marginRight: scale(2.5)
                                         }}
                                     />
 
@@ -259,7 +255,7 @@ export default function LoginScreen() {
                                         className="font-medium text-center text-[#E8B93F]/85"
                                         style={{
                                             fontSize: taglineTextSize,
-                                            letterSpacing: scale(0.25),
+                                            letterSpacing: scale(0.25)
                                         }}
                                         numberOfLines={1}
                                         adjustsFontSizeToFit
@@ -272,7 +268,7 @@ export default function LoginScreen() {
                                         style={{
                                             width: scale(5.4),
                                             height: verticalScale(1),
-                                            marginLeft: scale(1.25),
+                                            marginLeft: scale(1.25)
                                         }}
                                     />
                                 </View>
@@ -321,7 +317,7 @@ export default function LoginScreen() {
                                         height: verticalScale(40),
                                         fontSize: moderateScale(14),
                                         textAlignVertical: "center",
-                                        includeFontPadding: false,
+                                        includeFontPadding: false
                                     }}
                                     value={mobileNumber.replace(/(\d{5})(\d{0,5})/, "$1 $2").trim()}
                                     onChangeText={(text) => {

@@ -45,7 +45,7 @@ export default function SearchBar({ value, onChangeText, placeholder, RightIcon,
                     style={{
                         width: moderateScale(52),
                         height: moderateScale(52),
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 >
                     <RightIcon width={moderateScale(24)} height={moderateScale(24)} color={rightIconColor} strokeWidth={1.5} />

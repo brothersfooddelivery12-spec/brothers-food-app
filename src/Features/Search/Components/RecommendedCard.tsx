@@ -37,13 +37,15 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                 style={{ height: verticalScale(100) }}
             >
                 <Image
-                    source={item.imageUri}
+                    source={{
+                        uri: item.imageUri
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 />
 
@@ -52,7 +54,7 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                     style={{
                         paddingHorizontal: moderateScale(7),
                         paddingVertical: moderateScale(4),
-                        borderRadius: moderateScale(10),
+                        borderRadius: moderateScale(10)
                     }}
                 >
                     <RatingIcon width={moderateScale(13)} height={moderateScale(13)} color="#3F2516" />
@@ -61,7 +63,7 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                         className="font-bold text-[#3F2516]"
                         style={{
                             fontSize: moderateScale(10),
-                            marginLeft: moderateScale(3),
+                            marginLeft: moderateScale(3)
                         }}
                     >
                         {item.rating.toFixed(1)}
@@ -73,7 +75,7 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                 className="px-3 pb-3"
                 style={{
                     height: verticalScale(82),
-                    paddingTop: moderateScale(2),
+                    paddingTop: moderateScale(2)
                 }}
             >
                 <Text
@@ -89,7 +91,7 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
                         fontSize: moderateScale(11),
-                        marginTop: moderateScale(3),
+                        marginTop: moderateScale(3)
                     }}
                 >
                     {item.restaurantName} • {item.deliveryTime}
@@ -101,14 +103,12 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                         style={{
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
                             className="font-bold tracking-wide text-[#5c4639]"
-                            style={{
-                                fontSize: moderateScale(13),
-                            }}
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             ₹{item.price}
                         </Text>
@@ -124,7 +124,7 @@ const RecommendedCard = ({ item, onPress, onAddPress }: RecommendedCardProps) =>
                         style={{
                             width: moderateScale(28),
                             height: moderateScale(28),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <PlusIcon width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />

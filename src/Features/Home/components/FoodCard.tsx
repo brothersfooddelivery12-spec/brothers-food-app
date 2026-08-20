@@ -28,7 +28,7 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
             className="overflow-hidden bg-white border border-[#1F1F1F]/10"
             style={{
                 width: moderateScale(140),
-                borderRadius: moderateScale(22),
+                borderRadius: moderateScale(22)
             }}
         >
             <View
@@ -36,13 +36,15 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                 style={{ height: verticalScale(100) }}
             >
                 <Image
-                    source={item.imageUri}
+                    source={{
+                        uri: item.imageUri
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: moderateScale(18),
+                        borderRadius: moderateScale(18)
                     }}
                 />
 
@@ -54,16 +56,14 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                             top: moderateScale(13),
                             paddingHorizontal: moderateScale(5),
                             paddingVertical: moderateScale(2),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <TradeUpIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
 
                         <Text
                             className="mr-px font-bold uppercase text-[#3F2516]"
-                            style={{
-                                fontSize: moderateScale(10),
-                            }}
+                            style={{ fontSize: moderateScale(10) }}
                         >
                             Hot
                         </Text>
@@ -75,7 +75,7 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                 className="px-3 pb-3"
                 style={{
                     height: verticalScale(75),
-                    paddingTop: moderateScale(2),
+                    paddingTop: moderateScale(2)
                 }}
             >
                 <Text
@@ -91,7 +91,7 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                     className="font-medium text-[#1F1F1F]/75"
                     style={{
                         fontSize: moderateScale(10.5),
-                        marginTop: moderateScale(3),
+                        marginTop: moderateScale(3)
                     }}
                 >
                     {item.category}
@@ -103,14 +103,12 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                         style={{
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
                             className="font-bold tracking-wide text-[#5c4639]"
-                            style={{
-                                fontSize: moderateScale(13),
-                            }}
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             ₹{item.price}
                         </Text>
@@ -126,7 +124,7 @@ const FoodCard = ({ item, onPress, onAddPress }: FoodCardProps) => {
                         style={{
                             width: moderateScale(28),
                             height: moderateScale(28),
-                            borderRadius: moderateScale(12),
+                            borderRadius: moderateScale(12)
                         }}
                     >
                         <PlusIcon width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />

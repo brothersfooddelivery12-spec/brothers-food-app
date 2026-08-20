@@ -26,7 +26,7 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                     shadowOffset: { width: 0, height: verticalScale(8) },
                     shadowOpacity: 0.35,
                     shadowRadius: moderateScale(10),
-                    elevation: 6,
+                    elevation: 6
                 }}
             >
                 <LinearGradient
@@ -38,7 +38,7 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                         width: "100%",
                         borderRadius: moderateScale(32),
                         justifyContent: "center",
-                        alignItems: "center",
+                        alignItems: "center"
                     }}
                 >
                     {loading ? (
@@ -48,7 +48,7 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                             loop
                             style={{
                                 width: moderateScale(62),
-                                height: moderateScale(62),
+                                height: moderateScale(62)
                             }}
                         />
                     ) : (

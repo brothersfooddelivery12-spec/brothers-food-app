@@ -29,7 +29,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                     className="items-center overflow-hidden justify-center self-start rounded-full border border-[#FFFFFF]"
                     style={{
                         width: moderateScale(46),
-                        height: moderateScale(46),
+                        height: moderateScale(46)
                     }}
                 >
                     <Image
@@ -42,7 +42,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                         transition={200}
                         style={{
                             width: "100%",
-                            height: "100%",
+                            height: "100%"
                         }}
                     />
                 </View>
@@ -53,7 +53,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                         className="text-[#1F1F1F] font-bold"
                         style={{
                             fontSize: moderateScale(14),
-                            marginBottom: moderateScale(6),
+                            marginBottom: moderateScale(6)
                         }}
                     >
                         {review.name}
@@ -64,14 +64,12 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                         style={{
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10),
+                            borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
                             className="font-semibold text-[#3F2516] uppercase"
-                            style={{
-                                fontSize: moderateScale(8),
-                            }}
+                            style={{ fontSize: moderateScale(8) }}
                         >
                             {review.badge}
                         </Text>
@@ -91,7 +89,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 style={{
                     fontSize: moderateScale(12),
                     marginTop: verticalScale(8),
-                    lineHeight: moderateScale(14),
+                    lineHeight: moderateScale(14)
                 }}
             >
                 {review.comment}
@@ -103,7 +101,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                     style={{
                         height: verticalScale(0.7),
                         width: moderateScale(95),
-                        marginVertical: verticalScale(8),
+                        marginVertical: verticalScale(8)
                     }}
                 />
 
@@ -111,7 +109,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                     className="rounded-full bg-[#E8B93F]/20 items-center justify-center"
                     style={{
                         width: moderateScale(20),
-                        height: moderateScale(20),
+                        height: moderateScale(20)
                     }}
                 >
                     <QuoteIcon width={moderateScale(14)} height={moderateScale(14)} color="#3F2516" />
@@ -122,7 +120,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                     style={{
                         height: verticalScale(0.7),
                         width: moderateScale(95),
-                        marginVertical: verticalScale(8),
+                        marginVertical: verticalScale(8)
                     }}
                 />
             </View>
