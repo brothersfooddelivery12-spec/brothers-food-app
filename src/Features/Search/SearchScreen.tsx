@@ -1,6 +1,6 @@
 import SearchBar from "@/components/SearchBar"
 import { useCallback, useEffect, useState } from "react"
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import MicIcon from '@/assets/icon/MicIcon.svg'
@@ -156,6 +156,12 @@ export default function SearchScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <Animated.View
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[

@@ -1,5 +1,5 @@
 import { router } from "expo-router"
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
@@ -106,6 +106,12 @@ export default function CartScreen() {
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <View
                 className="flex-row items-center w-full -mx-1"
                 style={{
@@ -266,9 +272,7 @@ export default function CartScreen() {
                             <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color={"#1F1F1F"} strokeWidth={1.8} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            activeOpacity={0.95}
-                            onPress={() => {}}
+                        <View
                             className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
                             style={{
                                 borderRadius: moderateScale(18),
@@ -301,7 +305,9 @@ export default function CartScreen() {
                                 </Text>
                             </View>
 
-                            <View
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={() => {}}
                                 className="items-center justify-center bg-[#3F2516]"
                                 style={{
                                     paddingHorizontal: moderateScale(10),
@@ -315,8 +321,8 @@ export default function CartScreen() {
                                 >
                                     Change
                                 </Text>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View>
 
                         <View
                             className="p-5 bg-white border border-[#1F1F1F]/10"

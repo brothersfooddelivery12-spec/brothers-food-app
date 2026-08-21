@@ -2,7 +2,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
 import { useEffect, useState } from "react"
-import { ScrollView, Text, View } from "react-native"
+import { ScrollView, StatusBar, Text, View } from "react-native"
 import SearchBar from "@/components/SearchBar"
 import OrdersTabs from "./Components/OrdersTab"
 
@@ -61,6 +61,12 @@ export default function OrdersScreen() {
 
     return(
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+            
             <Animated.View
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[
@@ -186,7 +192,7 @@ export default function OrdersScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#3F2516] font-bold"
+                                    className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(17) }}
                                 >
                                     48
@@ -209,7 +215,7 @@ export default function OrdersScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#3F2516] font-bold"
+                                    className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(17) }}
                                 >
                                     ₹4580

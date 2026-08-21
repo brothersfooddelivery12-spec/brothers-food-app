@@ -17,7 +17,7 @@ import OfferCard from "@/Features/Home/components/OffersCard"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback } from "react"
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
@@ -51,6 +51,12 @@ export default function HomeScreen() {
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <FlatList
                 data={nearByRestaurants}
                 keyExtractor={(item) => item.id}

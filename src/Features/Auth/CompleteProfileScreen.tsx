@@ -1,6 +1,6 @@
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
 import { useEffect, useState } from "react"
-import { ScrollView, Text, TextInput, View } from "react-native"
+import { ScrollView, StatusBar, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import UserIcon from '@/assets/icon/UserIcon.svg'
@@ -60,6 +60,12 @@ export default function CompleteProfileScreen() {
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{

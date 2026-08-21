@@ -1,6 +1,6 @@
 import SearchBar from "@/components/SearchBar"
 import { useCallback, useEffect, useState } from "react"
-import { Text, useWindowDimensions, View } from "react-native"
+import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FilterIcon from '@/assets/icon/FIlterIcon.svg'
@@ -143,6 +143,12 @@ export default function FavouritesScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <Animated.View
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[
@@ -228,25 +234,25 @@ export default function FavouritesScreen() {
                                 style={{
                                     width: cardWidth,
                                     height: moderateScale(95),
-                                    borderRadius: moderateScale(20)
+                                    borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-normal"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="text-[#1F1F1F] font-medium"
+                                    style={{ fontSize: moderateScale(14) }}
                                 >
                                     Saved
                                 </Text>
 
                                 <Text
-                                    className="text-[#3F2516] font-bold"
+                                    className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(18) }}
                                 >
                                     18
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-medium"
+                                    className="text-[#1F1F1F]/85 font-semibold"
                                     style={{ fontSize: moderateScale(13) }}
                                 >
                                     {activeTab == "food" ? "Foods" : "Restaurants"}
@@ -258,12 +264,12 @@ export default function FavouritesScreen() {
                                 style={{
                                     width: cardWidth,
                                     height: moderateScale(95),
-                                    borderRadius: moderateScale(20),
+                                    borderRadius: moderateScale(22),
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF]/95 font-normal"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="text-[#FFFFFF]/95 font-medium"
+                                    style={{ fontSize: moderateScale(14) }}
                                 >
                                     Ordered
                                 </Text>
@@ -276,7 +282,7 @@ export default function FavouritesScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF]/75 font-medium"
+                                    className="text-[#FFFFFF]/75 font-semibold"
                                     style={{ fontSize: moderateScale(13) }}
                                 >
                                     Times Again
