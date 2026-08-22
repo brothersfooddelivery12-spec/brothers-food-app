@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen"
 import { useEffect, useState } from "react"
 import { ToastProvider } from "@/Features/hook/ToastContext"
 import CustomSplashScreen from "@/components/splash"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 SplashScreen.preventAutoHideAsync()
 
@@ -27,12 +28,17 @@ export default function RootLayout() {
     return <CustomSplashScreen />
   }
 
-  return(
-    <SafeAreaProvider>
-      <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-        </Stack>
-      </ToastProvider>
-    </SafeAreaProvider>
-  )
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+            <ToastProvider>
+                <Stack
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
+            </ToastProvider>
+        </SafeAreaProvider>
+    </GestureHandlerRootView>
+)
 }

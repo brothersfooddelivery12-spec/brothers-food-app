@@ -46,7 +46,7 @@ const RestaurantSearchCard = ({
             style={{ borderRadius: moderateScale(22) }}
         >
             <View
-                className="relative w-full"
+                className="relative w-full p-2"
                 style={{ height: verticalScale(120) }}
             >
                 <Image
@@ -57,15 +57,16 @@ const RestaurantSearchCard = ({
                     cachePolicy="memory-disk"
                     style={{
                         width: "100%",
-                        height: "100%"
+                        height: "100%",
+                        borderRadius: moderateScale(18)
                     }}
                 />
 
                 <View
                     className="absolute flex-row items-center gap-2"
                     style={{
-                        left: moderateScale(10),
-                        top: moderateScale(10)
+                        left: moderateScale(14),
+                        top: moderateScale(14)
                     }}
                 >
                     <View
@@ -115,8 +116,8 @@ const RestaurantSearchCard = ({
                     hitSlop={8}
                     className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
                     style={{
-                        right: moderateScale(10),
-                        top: moderateScale(10),
+                        right: moderateScale(14),
+                        top: moderateScale(14),
                         width: moderateScale(32),
                         height: moderateScale(32)
                     }}
@@ -129,7 +130,7 @@ const RestaurantSearchCard = ({
                 </TouchableOpacity>
             </View>
 
-            <View className="px-3 py-3">
+            <View className="px-3 py-3 -mt-2">
                 <Text
                     numberOfLines={1}
                     className="font-bold text-[#1F1F1F]"

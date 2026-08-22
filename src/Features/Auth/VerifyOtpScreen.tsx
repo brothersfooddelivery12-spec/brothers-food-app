@@ -8,12 +8,22 @@ import GradientButton from "@/components/GradientButton"
 import RefreshIcon from '@/assets/icon/RefreshIcon.svg'
 import ArrowLeft from '@/assets/icon/ArrowLeft.svg'
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { verifyOtp } from "../Services/api-service"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import { useToast } from "../hook/ToastContext"
+import { tokenStorage } from "../Stores/token-storage"
+import { useAuthStore } from "../Stores/auth-store"
 
 export default function VerifyOtpScreen() {
+    const preventDoublePress = usePreventDoublePress()
+    const {showToast} = useToast()
     const logoScale = useRef(new Animated.Value(0.8)).current
     const otpInputRef = useRef<TextInput>(null)
     const insets = useSafeAreaInsets()
-    const { mobileNumber } = useLocalSearchParams()
+    const { mobileNumber } = useLocalSearchParams<{mobileNumber: string}>()
+    const phone = Array.isArray(mobileNumber)
+    ? mobileNumber[0]
+    : mobileNumber
 
     const [otp, setOtp] = useState("")
     const [otpError, setOtpError] = useState("")
@@ -100,12 +110,52 @@ export default function VerifyOtpScreen() {
             return
         }
 
-        setOtpError("")
+        if (loading) return
 
-        router.push({
-            pathname: '/completeProfile',
-            params: { UserMobileNumber: mobileNumber }
-        })
+        setOtpError("")
+        setLoading(true)
+
+        try {
+            const res = await verifyOtp({
+                phone: phone,
+                otp: otp,
+                role: "USER"
+            })
+
+            console.log("Verify OTP response:", res.data)
+
+            if (res.data.success) {
+                const authData = res.data.data
+
+                await tokenStorage.setAccessToken(authData.access_token)
+
+                await tokenStorage.setRefreshToken(authData.refresh_token)
+
+                useAuthStore.getState().setUserId(authData.user_id)
+
+                useAuthStore.getState().setAuthenticated(true)
+
+                showToast(res.data.message, "success")
+
+                router.replace({
+                    pathname: "/verification-success",
+                    params: {
+                        isExist: authData.is_exist,
+                        UserMobileNumber: mobileNumber,
+                    }
+                })
+
+                return
+            }
+
+            showToast(res.data.message || "Invalid OTP. Please try again.", "warning")
+        } catch (error: any) {
+            console.error("Verify OTP error:", error?.message || error)
+
+            showToast(error?.message || "Unable to verify OTP. Please try again.", "warning")
+        } finally {
+            setLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -189,7 +239,7 @@ export default function VerifyOtpScreen() {
                 >
                     <View 
                         className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
-                        style={{ paddingHorizontal: scale(16) }}
+                        style={{ paddingHorizontal: scale(14) }}
                     >
                         <Animated.View
                             className="overflow-hidden rounded-[32px] border-[2px] border-white"
@@ -320,7 +370,9 @@ export default function VerifyOtpScreen() {
                                 maxLength={6}
                                 autoFocus
                                 caretHidden
+                                pointerEvents={loading ? "none" : "auto"}
                                 className="absolute inset-0 z-10 opacity-0"
+                                editable={!loading}
                             />
 
                             <View className="flex-row justify-center" style={{ gap: scale(4) }}>

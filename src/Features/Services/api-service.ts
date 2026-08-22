@@ -2,7 +2,7 @@ import api from "./api-client"
 
 type SendOtpRequest = {
     phone: string
-};
+}
 
 type VerifyOtpRequest = {
     phone: string;
@@ -16,11 +16,11 @@ type GoogleSignInRequest = {
 }
 
 export const sendOtp = (req: SendOtpRequest) => {
-    return api.post("/auth/send-otp", req);
+    return api.post("/auth/send-otp", req)
 }
 
 export const verifyOtp = (req: VerifyOtpRequest) => {
-    return api.post("/auth/verify-otp", req);
+    return api.post("/auth/verify-otp", req)
 }
 
 export const googleSignIn = (req: GoogleSignInRequest) => {

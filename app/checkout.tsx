@@ -1,3 +1,3 @@
-import CheckoutScreen from "@/Checkout/CheckoutScreen"
+import CheckoutScreen from "@/Features/Checkout/CheckoutScreen"
 
 export default CheckoutScreen

@@ -12,11 +12,14 @@ import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-si
 import "../../config/googleSignIn"
 import { useToast } from "../hook/ToastContext"
 import { sendOtp } from "../Services/api-service"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
+    const preventDoublePress = usePreventDoublePress()
 
     const [mobileNumber, setMobileNumber] = useState("")
+    const [loading, setLoading] = useState(false)
     const [mobileNumberError, setMobileNumberError] = useState(false)
     const {showToast} = useToast()
 
@@ -41,41 +44,44 @@ export default function LoginScreen() {
     const handleLogin = async () => {
         if (mobileNumber.length !== 10) {
             setMobileNumberError(true)
-            return;
+            return
         }
 
+        if (loading) return
+
         setMobileNumberError(false)
+        setLoading(true)
 
-        router.push({
-            pathname: "/verifyOtp",
-            params: {
-                mobileNumber,
-            },
-        })
+        try {
+            console.log("Sending OTP to:", mobileNumber)
 
-        // try {
-        //     console.log("Sending OTP to:", mobileNumber)
+            const res = await sendOtp({
+                phone: mobileNumber
+            })
 
-        //     const res = await sendOtp({
-        //         phone: mobileNumber,
-        //     })
+            console.log("Send OTP response:", res.data)
 
-        //     console.log("Send OTP response:", res.data)
+            if (res.data.success) {
+                showToast(res.data.message, "success")
 
-        //     router.push({
-        //         pathname: "/verifyOtp",
-        //         params: {
-        //             mobileNumber,
-        //         },
-        //     })
-        // } catch (error: any) {
-        //     console.error("Send OTP error:", error?.response?.data || error)
+                router.push({
+                    pathname: "/verifyOtp",
+                    params: {
+                        mobileNumber
+                    }
+                })
 
-        //     showToast(
-        //         "Unable to send OTP",
-        //         "warning"
-        //     )
-        // }
+                return
+            }
+
+            showToast(res.data.message || "Unable to send OTP", "warning")
+        } catch (error: any) {
+            console.error("Send OTP error:", error?.response?.data || error)
+
+            showToast(error?.response?.data?.message || "Unable to send OTP","warning")
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleGoogleSignIn = async () => {
@@ -185,7 +191,7 @@ export default function LoginScreen() {
                 >
                     <View 
                         className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
-                        style={{ paddingHorizontal: scale(16) }}
+                        style={{ paddingHorizontal: scale(14) }}
                     >
                         <Animated.View
                             className="overflow-hidden rounded-[32px] border-[2px] border-white"
@@ -312,7 +318,9 @@ export default function LoginScreen() {
 
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                                 <TextInput
-                                    className="p-0 tracking-wide font-medium text-[#151515]"
+                                    className={`p-0 tracking-wide font-medium ${
+                                        loading ? "text-[#9CA3AF]" : "text-[#151515]"
+                                    }`}
                                     style={{
                                         height: verticalScale(40),
                                         fontSize: moderateScale(14),
@@ -329,6 +337,7 @@ export default function LoginScreen() {
                                     keyboardType="phone-pad"
                                     returnKeyType="done"
                                     selectionColor="#79685e"
+                                    editable={!loading}
                                 />
                             </View>
                         </View>
@@ -342,7 +351,7 @@ export default function LoginScreen() {
                             </Text>
                         )}
 
-                        <GradientButton title="Login" onPress={handleLogin} />
+                        <GradientButton title="Login" onPress={handleLogin} loading={loading} />
 
                         <View
                             className="w-full flex-row items-center justify-center"
@@ -361,6 +370,7 @@ export default function LoginScreen() {
                         </View>
 
                         <TouchableOpacity
+                            disabled={loading}
                             activeOpacity={0.95}
                             onPress={handleGoogleSignIn}
                             className="w-full flex-row items-center justify-center rounded-[32px] bg-white border border-[#1F1F1F]/10"

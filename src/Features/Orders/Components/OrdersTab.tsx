@@ -13,7 +13,7 @@ const OrdersTabs = memo(
     ({ activeTab, onChange }: OrdersTabsProps) => {
         return (
             <View
-                className="flex-row bg-[#E5E4E2]/65"
+                className="flex-row bg-[#E5E4E2]/65 mx-2"
                 style={{
                     padding: moderateScale(4),
                     borderRadius: moderateScale(28),

@@ -35,7 +35,7 @@ const RestaurantCard = ({
             style={{ borderRadius: moderateScale(22) }}
         >
             <View
-                className="relative w-full"
+                className="relative w-full p-2"
                 style={{ height: verticalScale(120) }}
             >
                 <Image
@@ -47,6 +47,7 @@ const RestaurantCard = ({
                     style={{
                         width: "100%",
                         height: "100%",
+                        borderRadius: moderateScale(18)
                     }}
                 />
 
@@ -59,8 +60,8 @@ const RestaurantCard = ({
                     hitSlop={8}
                     className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
                     style={{
-                        right: moderateScale(12),
-                        top: moderateScale(12),
+                        right: moderateScale(14),
+                        top: moderateScale(14),
                         width: moderateScale(32),
                         height: moderateScale(32)
                     }}
@@ -73,7 +74,7 @@ const RestaurantCard = ({
                 </TouchableOpacity>
             </View>
 
-            <View className="px-3 py-3">
+            <View className="px-3 py-3 -mt-2">
                 <View className="flex-row items-center gap-3">
                     <Text
                         numberOfLines={1}
@@ -86,7 +87,7 @@ const RestaurantCard = ({
                     <View
                         className="flex-row items-center justify-center gap-1 bg-[#E8B93F]/15"
                         style={{
-                            paddingHorizontal: moderateScale(6),
+                            paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12)
                         }}

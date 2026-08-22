@@ -1,10 +1,12 @@
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { ScrollView, StatusBar, Text, View } from "react-native"
 import SearchBar from "@/components/SearchBar"
 import OrdersTabs from "./Components/OrdersTab"
+import { activeorders } from "@/constant/ActiveOrdersData"
+import ActiveOrdersCard from "./Components/ActiveOrdersCard"
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46) 
@@ -59,6 +61,31 @@ export default function OrdersScreen() {
         ),
     }))
 
+    const handleTrackOrder = useCallback((orderId: string) => {
+        console.log("Track order:", orderId)
+    }, [])
+
+    const handleContactRider = useCallback((orderId: string) => {
+        console.log("Contact rider:", orderId)
+    }, [])
+
+    const renderActiveOrders = useCallback(
+        ({ item }: { item: any }) => (
+            <ActiveOrdersCard
+                restaurantName={item.restaurantName}
+                restaurantImage={item.restaurantImage}
+                orderId={item.orderId}
+                status={item.status}
+                eta={item.eta}
+                activeStep={item.activeStep}
+                items={item.items}
+                onTrackOrder={() => handleTrackOrder(item.id)}
+                onContactRider={() => handleContactRider(item.id)}
+            />
+        ),
+        [handleTrackOrder, handleContactRider]
+    )
+
     return(
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
             <StatusBar
@@ -102,7 +129,7 @@ export default function OrdersScreen() {
                         <Text
                             className="text-[#1F1F1F]/65 font-medium"
                             style={{
-                                fontSize: moderateScale(11)
+                                fontSize: moderateScale(12)
                             }}
                         >
                             {`Track your active orders and revisit your\nprevious meals.`}
@@ -127,8 +154,9 @@ export default function OrdersScreen() {
 
             <Animated.FlatList
                 ref={animatedRef}
-                data={[{}]}
-                renderItem={null}
+                 data={activeorders}
+                renderItem={renderActiveOrders}
+                keyExtractor={(item) => item.id}
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}
                 nestedScrollEnabled
@@ -224,8 +252,6 @@ export default function OrdersScreen() {
                         </ScrollView>
 
                         <OrdersTabs activeTab={activeTab} onChange={setActiveTab} />
-
-
                     </View>
                 }
             />

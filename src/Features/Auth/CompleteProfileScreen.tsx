@@ -70,7 +70,7 @@ export default function CompleteProfileScreen() {
                 className="flex-1"
                 contentContainerStyle={{
                     flexGrow: 1,
-                    paddingHorizontal: scale(16),
+                    paddingHorizontal: scale(14),
                     paddingBottom: verticalScale(30)
                 }}
                 showsVerticalScrollIndicator={false}

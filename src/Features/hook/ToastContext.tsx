@@ -36,13 +36,13 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         Animated.timing(translateY, {
           toValue: 0,
           duration: 350,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.timing(opacity, {
           toValue: 1,
           duration: 350,
-          useNativeDriver: true,
-        }),
+          useNativeDriver: true
+        })
       ]),
 
       Animated.delay(2500),
@@ -51,13 +51,13 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         Animated.timing(translateY, {
           toValue: -80,
           duration: 350,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 350,
-          useNativeDriver: true,
-        }),
+          useNativeDriver: true
+        })
       ]),
     ]).start(() => setVisible(false))
   }
@@ -77,22 +77,23 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
             opacity,
             transform: [
               {
-                translateY,
-              },
-            ],
+                translateY
+              }
+            ]
           }}
         >
           <View
-            className={`rounded-xl py-1.5 px-2 flex-row items-center gap-2 ${
+            className={`py-1.5 px-2 flex-row items-center gap-2 ${
               mode === "success"
-                ? "bg-[#5b493e]"
+                ? "bg-[#5c4639]"
                 : "bg-red-400"
             }`}
+            style={{ borderRadius: moderateScale(12) }}
           >
             {mode === "success" ? (
-              <SuccessIcon width={moderateScale(22)} height={moderateScale(22)} color={"#d8bc64"} />
+              <SuccessIcon width={moderateScale(22)} height={moderateScale(22)} color={"#F8D56A"} />
             ) : (
-              <ErrorIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FF0000"} />
+              <ErrorIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFE4E6"} />
             )}
 
             <Text className="text-[#FFFFFF] text-base font-medium mr-1">

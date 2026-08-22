@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const api = axios.create({
-  baseURL: "http://10.31.253.166:8000/",
+  baseURL: "https://brothers-food-app-backend.onrender.com/api/v1",
   timeout: 100000,
   headers: {
     "Content-Type": "application/json",

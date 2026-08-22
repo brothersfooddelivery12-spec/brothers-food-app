@@ -16,20 +16,13 @@ export interface User {
 
 interface AuthState {
     user: User | null
-
-    accessToken: string | null
-    refreshToken: string | null
-
     isAuthenticated: boolean
 
     setUser: (user: User) => void
+    setUserId: (id: string) => void
     updateUser: (data: Partial<User>) => void
 
-    setAccessToken: (token: string | null) => void
-    setRefreshToken: (token: string | null) => void
-
     setAuthenticated: (value: boolean) => void
-
     clearAuth: () => void
 }
 
@@ -37,60 +30,62 @@ export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
             user: null,
-            accessToken: null,
-            refreshToken: null,
             isAuthenticated: false,
 
             setUser: (user) => {
                 set({
                     user,
-                    isAuthenticated: true,
+                    isAuthenticated: true
                 })
             },
 
+            setUserId: (id) => {
+                set((state) => ({
+                    user: state.user
+                        ? {
+                            ...state.user,
+                            id
+                        }
+                        : {
+                            id,
+                            name: "",
+                            email: "",
+                            phone: ""
+                        }
+                }))
+            },
+            
             updateUser: (data) => {
                 set((state) => ({
                     user: state.user
                         ? {
                             ...state.user,
-                            ...data,
+                            ...data
                         }
-                        : null,
+                        : null
                 }))
-            },
-
-            setAccessToken: (token) => {
-                set({
-                    accessToken: token,
-                    isAuthenticated: !!token,
-                })
-            },
-
-            setRefreshToken: (token) => {
-                set({
-                    refreshToken: token,
-                })
             },
 
             setAuthenticated: (value) => {
                 set({
-                    isAuthenticated: value,
+                    isAuthenticated: value
                 })
             },
 
             clearAuth: () => {
                 set({
                     user: null,
-                    accessToken: null,
-                    isAuthenticated: false,
+                    isAuthenticated: false
                 })
-            },
+            }
         }),
 
         {
             name: "auth-store",
             storage: createJSONStorage(() => AsyncStorage),
-            partialize: (state) => ({ user: state.user }),
-        },
-    ),
+            partialize: (state) => ({
+                user: state.user
+            })
+        }
+    )
 )

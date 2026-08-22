@@ -13,7 +13,7 @@ api.interceptors.request.use(
 
     // SHow loader
 
-    const token = getStoredToken()
+    const token = await getStoredToken()
 
     if (token) {
       if (!(config.headers instanceof AxiosHeaders)) {
@@ -52,7 +52,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // hideLoader
-    return response.data
+    return response
   },
   async (error) => {
     // hideLoader
