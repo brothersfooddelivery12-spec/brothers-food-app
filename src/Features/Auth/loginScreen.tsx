@@ -11,8 +11,11 @@ import { scale, verticalScale, moderateScale } from "react-native-size-matters"
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
 import "../../config/googleSignIn"
 import { useToast } from "../hook/ToastContext"
-import { sendOtp } from "../Services/api-service"
+import { googleSignIn, sendOtp } from "../Services/api-service"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import { tokenStorage } from "../Stores/token-storage"
+import { useAuthStore } from "../Stores/auth-store"
+import { hideLoader, showLoader } from "../Services/loader-service"
 
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
@@ -62,6 +65,13 @@ export default function LoginScreen() {
             console.log("Send OTP response:", res.data)
 
             if (res.data.success) {
+                const authData = res.data.data
+
+                await tokenStorage.setAccessToken(authData.access_token)
+                await tokenStorage.setRefreshToken(authData.refresh_token)
+
+                useAuthStore.getState().setAuthenticated(true)
+
                 showToast(res.data.message, "success")
 
                 router.push({
@@ -86,42 +96,69 @@ export default function LoginScreen() {
 
     const handleGoogleSignIn = async () => {
         try {
-            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
-
-            await GoogleSignin.signOut()
+            await GoogleSignin.hasPlayServices({
+                showPlayServicesUpdateDialog: true,
+            })
 
             const response = await GoogleSignin.signIn()
 
-            console.log("Google SignIn Response: ", response)
+            console.log("Google SignIn Response:", response)
 
             const idToken = response.data?.idToken
 
-            if(!idToken) {
-                console.log("Google ID token not received")
+            if (!idToken) {
+                showToast("Google account not found.", "warning")
+
                 return
             }
 
-            // const result = await fetch("", {
-            //     method: "POST",
-            //     headers: { "Content-Type" : "application/json" },
-            //     body: JSON.stringify(idToken)
-            // })
+            showLoader()
 
-            // const data = await result.json()
+            try {
+                const res = await googleSignIn({
+                    id_token: idToken,
+                    role: "USER",
+                })
 
-            // if(!result.success) {
-            //     throw new Error(data.message || "Google Sign In Failed")
-            // }
+                console.log("Google Login Response:", res.data)
 
-            // console.log("Backend Response: ", data)
-        } catch(error: any) {
-            console.error("Google Sign In Error: ", error)
+                if (!res.data.success) {
+                    showToast(res.data.message || "Unable to sign in with Google.", "warning")
+
+                    return
+                }
+
+                const authData = res.data.data
+
+                await tokenStorage.setAccessToken(authData.access_token)
+                await tokenStorage.setRefreshToken(authData.refresh_token)
+
+                useAuthStore.getState().setUser({
+                    id: authData.user.id,
+                    name: authData.user.name,
+                    email: authData.user.email,
+                    phone: authData.user.phone,
+                    role: authData.user.role,
+                    isActive: authData.user.is_active,
+                    profileImage: authData.user.picture_url,
+                })
+
+                showToast(res.data.message || "Google login successful", "success")
+
+                router.replace("/(tabs)/home")
+            } finally {
+                hideLoader()
+            }
+        } catch (error: any) {
+            console.error("Google Sign In Error:", error)
 
             if (error?.code === "SIGN_IN_CANCELLED") {
                 return
             }
 
-            showToast("Unable to sign in with Google. Please try again.", "warning")
+            showToast("Unable to sign in with Google.", "warning")
+        } finally {
+            hideLoader()
         }
     }
 

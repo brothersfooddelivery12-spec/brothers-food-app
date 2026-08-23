@@ -6,6 +6,8 @@ import { useEffect, useState } from "react"
 import { ToastProvider } from "@/Features/hook/ToastContext"
 import CustomSplashScreen from "@/components/splash"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { LoaderProvider } from "@/Features/hook/LoaderProvider"
+import AppLoader from "@/components/AppLoader"
 
 SplashScreen.preventAutoHideAsync()
 
@@ -31,13 +33,13 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
+          <LoaderProvider>
             <ToastProvider>
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                />
+              <AppLoader />
+
+              <Stack screenOptions={{headerShown: false}} />
             </ToastProvider>
+          </LoaderProvider>
         </SafeAreaProvider>
     </GestureHandlerRootView>
 )

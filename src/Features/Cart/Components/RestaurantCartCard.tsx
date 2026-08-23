@@ -217,8 +217,8 @@ const RestaurantCartCard = memo(
                                     style={{ fontSize: moderateScale(10) }}
                                 >
                                     {deliveryFee === 0
-                                ? "FREE"
-                                : `₹${deliveryFee}`}
+                                        ? "FREE"
+                                        : `₹${deliveryFee}`}
                                 </Text>
                             </View>
 
@@ -283,7 +283,7 @@ const RestaurantCartCard = memo(
                             {
                                 width: moderateScale(26),
                                 height: moderateScale(26)
-                            },
+                            }
                         ]}
                         className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                     >

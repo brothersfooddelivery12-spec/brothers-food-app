@@ -12,7 +12,7 @@ import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import WalletIcon from '@/assets/icon/WalletIcon.svg'
-import LocationIcon from '@/assets/icon/LocationIcon3.svg'
+import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import StoreIcon from '@/assets/icon/StoreIcon.svg'
 import OfferIcon from '@/assets/icon/OfferIcon.svg'
 import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
@@ -393,7 +393,7 @@ export default function RestaurantDetailsScreen() {
                                     }}
                                 />
 
-                                <View className="flex-row items-center mx-2">
+                                <View className="flex-row items-center mx-3">
                                     <View className="gap-4 flex-1">
                                         <View className="flex-row items-center gap-2">
                                             <View
@@ -489,7 +489,7 @@ export default function RestaurantDetailsScreen() {
                                                     height: moderateScale(36)
                                                 }}
                                             >
-                                                <StoreIcon width={moderateScale(20)} height={moderateScale(20)} color="#5C4639" />
+                                                <StoreIcon width={moderateScale(20)} height={moderateScale(20)} color="#5C4639" strokeWidth={1.8} />
                                             </View>
 
                                             <View className="justify-center">

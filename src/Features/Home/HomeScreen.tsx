@@ -87,7 +87,7 @@ export default function HomeScreen() {
                                         marginLeft: -verticalScale(4)
                                     }}
                                 >
-                                    <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" style={{ marginBottom: moderateScale(1) }} />
+                                    <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" style={{ marginBottom: moderateScale(4) }} />
 
                                     <Text
                                         className="text-[#1F1F1F] font-extrabold"

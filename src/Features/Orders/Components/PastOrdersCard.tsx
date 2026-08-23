@@ -1,50 +1,39 @@
 import { Image } from "expo-image"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import OrderStatus from "./OrderStatus"
 import React from "react"
-import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
-import LocationIcon from '@/assets/icon/LocationIcon3.svg'
+import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import CustomerServiceIcon from "@/assets/icon/CustomerServiceIcon.svg"
-import ChefHatIcon from '@/assets/icon/ChefHatIcon.svg'
-import BoxIcon from '@/assets/icon/BoxIcon.svg'
+import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
+import { PastOrderItem } from "@/constant/PastOrdersData"
+import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
+import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
 
-type OrderItem = {
-    name: string
-    quantity: number
-}
-
-type ActiveOrderCardProps = {
+type PastOrderCardProps = {
     restaurantName: string
     restaurantImage: string
     orderId: string
-    status?: "Picked Up" | "Preparing" | "Out of Delivery"
-    eta?: string
-    activeStep?: number
-    items: OrderItem[]
-    onTrackOrder?: () => void
-    onContactRider?: () => void
+    status?: "Delivered" | "Cancelled"
+    orderDate: string
+    orderTime: string
+    deliveryTime: string
+    items: PastOrderItem[]
+    onReorder?: () => void
+    onInvoice?: () => void
 }
 
-const ActiveOrderCard = ({
+const PastOrdersCard = ({
     restaurantName,
     restaurantImage,
     orderId,
-    status = "Picked Up",
-    eta = "18 mins",
-    activeStep = 2,
+    status = "Delivered",
+    orderDate,
+    orderTime,
+    deliveryTime,
     items,
-    onTrackOrder,
-    onContactRider,
-}: ActiveOrderCardProps) => {
-    const StatusIcon = {
-        "Preparing": ChefHatIcon,
-        "Picked Up": BoxIcon,
-        "Out of Delivery": DeliveryIcon,
-    }[status]
-
+    onReorder,
+    onInvoice,
+}: PastOrderCardProps) => {
     return (
         <View
             className="bg-white border border-[#1F1F1F]/10 p-3"
@@ -94,48 +83,69 @@ const ActiveOrderCard = ({
 
                 <View className="items-end justify-between my-1">
                     <View
-                        className="flex-row items-center justify-center bg-[#F8D56A]"
+                        className="flex-row items-center justify-center bg-[#E3F2E8]"
                         style={{
                             gap: moderateScale(5),
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12)
+                            borderRadius: moderateScale(12),
+                            backgroundColor: status === "Delivered" ? "#E3F2E8" : "#FEE2E2"
                         }}
-                    >   
-                        {StatusIcon && (
-                            <StatusIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
+                    >
+                        {status === "Delivered" ? (
+                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#4d9151" />
+                        ) : (
+                            <CancelCircleIcon width={moderateScale(16)} height={moderateScale(16)} color="#DC2626" strokeWidth={1.8} />
                         )}
 
                         <Text
-                            className="font-semibold text-[#3F2516]"
-                            style={{ fontSize: moderateScale(11) }}
-                        >
-                            {status}
-                        </Text>
-                    </View>
-
-                    <View className="flex-row items-center gap-1 mr-1">
-                        <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                            className="font-semibold"
                             style={{
-                                width: moderateScale(22),
-                                height: moderateScale(22)
+                                fontSize: moderateScale(11),
+                                color: status === "Delivered" ? "#4d9151" : "#DC2626"
                             }}
                         >
-                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color="#5c4639" />
-                        </View>
-
-                        <Text
-                            className="font-medium text-[#1F1F1F]/75"
-                            style={{ fontSize: moderateScale(11) }}
-                        >
-                            ETA: {eta}
+                            {status}
                         </Text>
                     </View>
                 </View>
             </View>
 
-            <OrderStatus activeStep={activeStep} />
+            <View
+                className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
+                style={{
+                    borderRadius: moderateScale(14),
+                    marginTop: verticalScale(12),
+                    marginHorizontal: scale(4)
+                }}
+            >
+                <Text
+                    numberOfLines={2}
+                    className="text-[#1F1F1F]/75 font-medium"
+                    style={{ fontSize: moderateScale(11) }}
+                >
+                    {status === "Delivered" ? (
+                        <>
+                            Delivered in{" "}
+
+                            <Text
+                                className="text-[#1F1F1F] font-semibold"
+                                style={{ fontSize: moderateScale(11) }}
+                            >
+                                {deliveryTime}
+                            </Text>
+
+                            {" • "}
+                            {orderDate} at {orderTime}
+                        </>
+                    ) : (
+                        <>
+                            Cancelled{" • "}
+                            {orderDate} at {orderTime}
+                        </>
+                    )}
+                </Text>
+            </View>
 
             <View
                 className="items-start bg-[#E5E4E2]/40 py-4 px-5"
@@ -168,53 +178,53 @@ const ActiveOrderCard = ({
                 ))}
             </View>
 
-            <View className="flex-row items-center justify-center gap-6 mt-5">
+            <View className="flex-row items-center justify-center gap-8 mt-5">
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={onTrackOrder}
+                    onPress={onReorder}
                     className="flex-row gap-2 items-center justify-center bg-[#3F2516]"
                     style={{
-                        paddingHorizontal: scale(9),
+                        paddingHorizontal: scale(14),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+                    <ReorderIcon width={moderateScale(20)} height={moderateScale(20)} color="#FFFFFF" strokeWidth={1.8} />
 
                     <Text
                         className="text-[#FFFFFF] font-semibold"
-                        style={{ fontSize: moderateScale(12) }}
+                        style={{ fontSize: moderateScale(13) }}
                     >
-                        Track Order
+                        Reorder
                     </Text>
 
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={1.8} />
+                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={onContactRider}
+                    onPress={onInvoice}
                     className="flex-row gap-2 items-center justify-center bg-[#FFFFFF] border border-[#3F2516]/20"
                     style={{
-                        paddingHorizontal: scale(8),
+                        paddingHorizontal: scale(14),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    <CustomerServiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                    <InvoiceIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
 
                     <Text
                         className="text-[#3F2516] font-semibold"
-                        style={{ fontSize: moderateScale(12) }}
+                        style={{ fontSize: moderateScale(13) }}
                     >
-                        Contact Rider
+                        Invoice
                     </Text>
 
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={1.8} />
+                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
 
-export default React.memo(ActiveOrderCard)
+export default React.memo(PastOrdersCard)

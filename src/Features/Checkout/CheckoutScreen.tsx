@@ -221,7 +221,9 @@ export default function CheckoutScreen() {
                             <TouchableOpacity
                                 activeOpacity={0.95}
                                 onPress={() => {
-
+                                    preventDoublePress(() => {
+                                        router.back()
+                                    })
                                 }}
                                 className="ml-1 flex-row items-center justify-center gap-1 bg-[#3F2516]"
                                 style={{
@@ -682,8 +684,8 @@ export default function CheckoutScreen() {
                     paddingHorizontal: scale(16),
                     paddingTop: verticalScale(16),
                     paddingBottom: verticalScale(12) + insets.bottom,
-                    borderTopRightRadius: moderateScale(24),
-                    borderTopLeftRadius: moderateScale(24),
+                    borderTopRightRadius: moderateScale(22),
+                    borderTopLeftRadius: moderateScale(22),
                     zIndex: 100
                 }}
             >
@@ -707,7 +709,7 @@ export default function CheckoutScreen() {
                     activeOpacity={0.95}
                     onPress={() => {
                         preventDoublePress(() => {
-                            
+                            router.push('/order-success')
                         })
                     }}
                     className="flex-row ml-auto items-center justify-center bg-[#FFFFFF] border border-[#1F1F1F]/15"

@@ -2,11 +2,13 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
 import { useCallback, useEffect, useState } from "react"
-import { ScrollView, StatusBar, Text, View } from "react-native"
+import { ScrollView, StatusBar, Text, useWindowDimensions, View } from "react-native"
 import SearchBar from "@/components/SearchBar"
 import OrdersTabs from "./Components/OrdersTab"
 import { activeorders } from "@/constant/ActiveOrdersData"
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
+import PastOrdersCard from "./Components/PastOrdersCard"
+import { pastOrders } from "@/constant/PastOrdersData"
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46) 
@@ -18,6 +20,11 @@ export default function OrdersScreen() {
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
+    const { width: SCREEN_WIDTH } = useWindowDimensions()
+    
+    const horizontalPadding = scale(42)
+    const gap = scale(12)
+    const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 3
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -69,6 +76,14 @@ export default function OrdersScreen() {
         console.log("Contact rider:", orderId)
     }, [])
 
+    const handleReorder = useCallback((orderId: string) => {
+        console.log("Reorder:", orderId)
+    }, [])
+
+    const handleInvoice = useCallback((orderId: string) => {
+        console.log("Invoice:", orderId)
+    }, [])
+
     const renderActiveOrders = useCallback(
         ({ item }: { item: any }) => (
             <ActiveOrdersCard
@@ -84,6 +99,24 @@ export default function OrdersScreen() {
             />
         ),
         [handleTrackOrder, handleContactRider]
+    )
+
+    const renderPastOrders = useCallback(
+        ({ item }: { item: any }) => (
+            <PastOrdersCard
+                restaurantName={item.restaurantName}
+                restaurantImage={item.restaurantImage}
+                orderId={item.orderId}
+                status={item.status}
+                orderDate={item.orderDate}
+                orderTime={item.orderTime}
+                deliveryTime={item.deliveryTime}
+                items={item.items}
+                onReorder={() => handleReorder(item.id)}
+                onInvoice={() => handleInvoice(item.id)}
+            />
+        ),
+        [handleReorder, handleInvoice]
     )
 
     return(
@@ -154,8 +187,8 @@ export default function OrdersScreen() {
 
             <Animated.FlatList
                 ref={animatedRef}
-                 data={activeorders}
-                renderItem={renderActiveOrders}
+                data={activeTab === "active orders" ? activeorders : pastOrders}
+                renderItem={activeTab === "active orders" ? renderActiveOrders : renderPastOrders}
                 keyExtractor={(item) => item.id}
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}
@@ -170,34 +203,24 @@ export default function OrdersScreen() {
                 }}
                 ListHeaderComponent={
                     <View style={{ marginTop: verticalScale(78) }}>
-                        <ScrollView
-                            horizontal
-                            nestedScrollEnabled
-                            directionalLockEnabled
-                            showsHorizontalScrollIndicator={false}
-                            className="-mx-5 mb-6"
-                            contentContainerStyle={{
-                                paddingHorizontal: scale(14),
-                                gap: scale(10),
-                            }}
-                        >
+                        <View className="flex-row items-center justify-center gap-3 mb-5">
                             <View
-                                className="bg-[#3F2516] py-4 px-5 gap-2 justify-center"
+                                className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                 style={{
-                                    width: moderateScale(115),
+                                    width: cardWidth,
                                     height: moderateScale(75),
-                                    borderRadius: moderateScale(24)
+                                    borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF]/85 font-medium"
+                                    className="text-[#1F1F1F]/85 font-medium"
                                     style={{ fontSize: moderateScale(12) }}
                                 >
                                     Active
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF] font-bold"
+                                    className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(17) }}
                                 >
                                     02
@@ -207,9 +230,9 @@ export default function OrdersScreen() {
                             <View
                                 className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                 style={{
-                                    width: moderateScale(115),
+                                    width: cardWidth,
                                     height: moderateScale(75),
-                                    borderRadius: moderateScale(24)
+                                    borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text
@@ -230,9 +253,9 @@ export default function OrdersScreen() {
                             <View
                                 className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                 style={{
-                                    width: moderateScale(115),
+                                    width: cardWidth,
                                     height: moderateScale(75),
-                                    borderRadius: moderateScale(24)
+                                    borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text
@@ -249,7 +272,7 @@ export default function OrdersScreen() {
                                     ₹4580
                                 </Text>
                             </View>
-                        </ScrollView>
+                        </View>
 
                         <OrdersTabs activeTab={activeTab} onChange={setActiveTab} />
                     </View>

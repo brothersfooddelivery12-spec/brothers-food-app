@@ -411,8 +411,8 @@ export default function CartScreen() {
                     paddingHorizontal: scale(16),
                     paddingTop: verticalScale(16),
                     paddingBottom: verticalScale(12) + insets.bottom,
-                    borderTopRightRadius: moderateScale(24),
-                    borderTopLeftRadius: moderateScale(24),
+                    borderTopRightRadius: moderateScale(22),
+                    borderTopLeftRadius: moderateScale(22),
                     zIndex: 100
                 }}
             >

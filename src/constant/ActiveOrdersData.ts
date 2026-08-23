@@ -8,7 +8,7 @@ export type Order = {
     restaurantName: string
     restaurantImage: string
     orderId: string
-    status: string
+    status: "Picked Up" | "Preparing" | "Out of Delivery"
     eta: string
     activeStep: number
     items: OrderItem[]
@@ -23,7 +23,7 @@ export const activeorders: Order[] = [
         orderId: "BFD202601245",
         status: "Picked Up",
         eta: "18 mins",
-        activeStep: 2,
+        activeStep: 1,
         items: [
             {
                 name: "Chicken Burger",
@@ -44,7 +44,7 @@ export const activeorders: Order[] = [
         orderId: "BFD202601246",
         status: "Preparing",
         eta: "32 mins",
-        activeStep: 1,
+        activeStep: 0,
         items: [
             {
                 name: "Paneer Tikka",
@@ -67,9 +67,9 @@ export const activeorders: Order[] = [
         restaurantImage:
             "https://i.pinimg.com/736x/44/6b/d0/446bd03fd3235b68282c79eb04bc5c37.jpg",
         orderId: "BFD202601247",
-        status: "Out for Delivery",
+        status: "Out of Delivery",
         eta: "8 mins",
-        activeStep: 3,
+        activeStep: 2,
         items: [
             {
                 name: "Farmhouse Pizza",

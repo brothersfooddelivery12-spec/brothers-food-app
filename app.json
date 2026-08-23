@@ -12,7 +12,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE"
+        "backgroundColor": "#F5F5F5"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brotherfood.userapp"

@@ -141,7 +141,7 @@ export default function VerifyOtpScreen() {
                     pathname: "/verification-success",
                     params: {
                         isExist: authData.is_exist,
-                        UserMobileNumber: mobileNumber,
+                        UserMobileNumber: mobileNumber
                     }
                 })
 

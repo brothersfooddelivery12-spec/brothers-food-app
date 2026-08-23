@@ -6,7 +6,9 @@ export interface User {
     id: string
     name: string
     email: string
-    phone: string
+    phone: string | null
+    role: "USER"
+    isActive: boolean
     profileImage?: string
     address?: string
     city?: string
@@ -44,14 +46,16 @@ export const useAuthStore = create<AuthState>()(
                     user: state.user
                         ? {
                             ...state.user,
-                            id
+                            id,
                         }
                         : {
                             id,
                             name: "",
                             email: "",
-                            phone: ""
-                        }
+                            phone: null,
+                            role: "USER",
+                            isActive: false,
+                        },
                 }))
             },
             

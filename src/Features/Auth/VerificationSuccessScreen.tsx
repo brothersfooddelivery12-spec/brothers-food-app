@@ -115,11 +115,9 @@ export default function VerificationSuccessScreen() {
 
                 <Text
                     className="text-[#1F1F1F] font-extrabold text-center -mt-4"
-                    style={{
-                        fontSize: moderateScale(20)
-                    }}
+                    style={{ fontSize: moderateScale(20) }}
                 >
-                    Welcome to Brothers!
+                    {userExists ? "Welcome back!" : "Welcome to Brothers!"}
                 </Text>
 
                 <Text
@@ -129,9 +127,8 @@ export default function VerificationSuccessScreen() {
                         marginTop: verticalScale(10)
                     }}
                 >
-                    Your mobile number has been verified
-                    successfully. You're just one tap away from
-                    discovering delicious food delivered fast.
+                    {userExists ? "Your mobile number has been verified successfully. You're all set to continue ordering your favorite food, discover new dishes, and enjoy fast delivery."
+                     : "Your mobile number has been verified successfully. You're just one tap away from discovering delicious food delivered fast."}
                 </Text>
 
                 <View
