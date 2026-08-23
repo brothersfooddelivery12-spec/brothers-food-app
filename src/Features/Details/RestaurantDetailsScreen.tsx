@@ -1,7 +1,7 @@
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback, useState } from "react"
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
@@ -26,6 +26,8 @@ import { getRatingStars } from "@/utils/rating"
 import SimilarRestaurantCard from "./components/SimilarRestaurantCard"
 import RatingDistribution from "./components/RatingDistribution"
 import ReviewCard from "./components/ReviewCard"
+import Animated, { FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 
 const TABS = ["Popular", "Recommended", "Main Course"]
 
@@ -108,6 +110,7 @@ const SimialrRestaurants = [
 
 export default function RestaurantDetailsScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const [favourite, setFavourite] = useState(false)
     const [activeTab, setActiveTab] = useState("Popular")
 
@@ -565,13 +568,15 @@ export default function RestaurantDetailsScreen() {
                                                     </Text>
 
                                                     {isActive && (
-                                                        <View
+                                                        <Animated.View
+                                                            entering={ZoomIn.duration(340)}
+                                                            exiting={ZoomOut.duration(360)}
                                                             className="absolute bottom-0 bg-[#3F2516]"
                                                             style={{
                                                                 left: -scale(3),
                                                                 right: -scale(3),
                                                                 height: verticalScale(2.5),
-                                                                borderRadius: scale(24)
+                                                                borderRadius: scale(28)
                                                             }}
                                                         />
                                                     )}
@@ -680,7 +685,7 @@ export default function RestaurantDetailsScreen() {
                                 5,200 + Reviews
                             </Text>
 
-                            <RatingDistribution ratings={USER_RATINGS} />
+                            <RatingDistribution ratings={USER_RATINGS} ratingLevels={[5, 4, 3]} />
 
                             <View
                                 className="rounded-full bg-[#E8DDD3]/75"
@@ -704,6 +709,24 @@ export default function RestaurantDetailsScreen() {
                                 ))}
                             </View>
                         </View>
+
+                        <Pressable
+                            onPress={() =>
+                                preventDoublePress(() => {
+                                    router.push("/restaurant-review")
+                                })
+                            }
+                            className="items-center justify-center mt-3"
+                        >
+                            <Text
+                                className="text-[#5C4639] font-semibold text-center"
+                                style={{
+                                    fontSize: moderateScale(14)
+                                }}
+                            >
+                                See All Reviews
+                            </Text>
+                        </Pressable>
 
                         <Text
                             className="text-[#1F1F1F] font-semibold"

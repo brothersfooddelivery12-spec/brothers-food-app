@@ -16,7 +16,7 @@ import NearByRestaurantsList from "@/Features/Home/components/NearByRestaurants"
 import OfferCard from "@/Features/Home/components/OffersCard"
 import { Image } from "expo-image"
 import { router } from "expo-router"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -25,6 +25,8 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
+    const [activeCategory, setActiveCategory] = useState("1")
+
     const handleRestaurantPress = useCallback((restaurantId: string) => {
         preventDoublePress(() => {
             router.push({
@@ -174,40 +176,53 @@ export default function HomeScreen() {
                                 paddingHorizontal: scale(14),
                                 gap: moderateScale(10)
                             }}
-                            renderItem={({ item: category }) => (
-                                <View className="items-center">
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        onPress={() => {}}
-                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
-                                        style={{
-                                            borderColor: "#FFFFFF",
-                                            borderWidth: moderateScale(2),
-                                            width: moderateScale(65),
-                                            height: moderateScale(65)
-                                        }}
-                                    >
-                                        <Image
-                                            source={{
-                                                uri: category.imageUri
-                                            }}
-                                            contentFit="cover"
-                                            transition={100}
-                                            style={{
-                                                width: "70%",
-                                                height: "70%"
-                                            }}
-                                        />
-                                    </TouchableOpacity>
+                            renderItem={({ item: category }) => {
+                                const isActive = activeCategory === category.id
 
-                                    <Text
-                                        className="text-[#1F1F1F] font-semibold mt-1"
-                                        style={{ fontSize: moderateScale(12) }}
-                                    >
-                                        {category.title}
-                                    </Text>
-                                </View>
-                            )}
+                                return(
+                                    <View className="items-center">
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setActiveCategory(category.id)}
+                                            className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
+                                            style={{
+                                                borderColor: isActive ? "rgba(92, 70, 57, 0.7)" : "#FFFFFF",
+                                                borderWidth: moderateScale( isActive ? 2 : 1.5),
+                                                width: moderateScale(65),
+                                                height: moderateScale(65),
+
+                                                shadowColor: "#5C4639",
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 0
+                                                },
+                                                shadowOpacity: isActive ? 0.75 : 0,
+                                                shadowRadius: isActive ? 10 : 0,
+                                                elevation: isActive ? 8 : 0
+                                            }}
+                                        >
+                                            <Image
+                                                source={{
+                                                    uri: category.imageUri
+                                                }}
+                                                contentFit="cover"
+                                                cachePolicy={'memory-disk'}
+                                                style={{
+                                                    width: "70%",
+                                                    height: "70%"
+                                                }}
+                                            />
+                                        </TouchableOpacity>
+                                        
+                                        <Text
+                                            className="text-[#1F1F1F] font-semibold mt-1 mb-2"
+                                            style={{ fontSize: moderateScale(12) }}
+                                        >
+                                            {category.title}
+                                        </Text>
+                                    </View>
+                                )
+                            }}
                         />
 
                         <BannerCarousel />

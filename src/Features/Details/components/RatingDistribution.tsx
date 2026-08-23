@@ -3,10 +3,11 @@ import { moderateScale, verticalScale } from "react-native-size-matters"
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 
 interface RatingDistributionProps {
-    ratings: Number[]
+    ratings: Number[],
+    ratingLevels?: number[]
 }
 
-const RatingDistribution = ({ratings}: RatingDistributionProps) => {
+const RatingDistribution = ({ ratings, ratingLevels = [5, 4, 3, 2, 1] }: RatingDistributionProps) => {
     const totalRatings = ratings.length
 
     const getRatingCount = (rating: number) => {
@@ -24,7 +25,7 @@ const RatingDistribution = ({ratings}: RatingDistributionProps) => {
             className="w-full mt-4"
             style={{ gap: verticalScale(14) }}
         >
-            {[5, 4, 3].map((rating) => {
+            {ratingLevels.map((rating) => {
                 const percentage = getPercentage(rating)
 
                 return (
@@ -42,7 +43,7 @@ const RatingDistribution = ({ratings}: RatingDistributionProps) => {
                         <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
 
                         <View
-                            className="overflow-hidden bg-[#F3EDE5]"
+                            className="overflow-hidden bg-[#e8e3dc]"
                             style={{
                                 flex: 1,
                                 height: verticalScale(8),

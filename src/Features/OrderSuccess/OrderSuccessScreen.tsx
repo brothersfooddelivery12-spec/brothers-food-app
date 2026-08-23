@@ -38,7 +38,7 @@ export default function OrderSuccessScreen() {
     const gap = scale(18)
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 3
 
-    const currentStatus = "preparing"
+    const currentStatus = "confirmed"
     const currentIndex = ORDER_STATUSES.findIndex(
         (status) => status.id === currentStatus
     )
