@@ -4,7 +4,7 @@ export const customerReviews: RestaurantReview[] = [
     {
         id: "1",
         name: "Aarav Sharma",
-        image: "https://i.pravatar.cc/150?img=12",
+        image: "https://i.pinimg.com/736x/ce/ad/94/cead941fca1ea8075e01f564f1eedf98.jpg",
         rating: 4.5,
         review: "The food was absolutely delicious and arrived fresh. Loved the presentation too!",
         photos: [
@@ -17,7 +17,7 @@ export const customerReviews: RestaurantReview[] = [
     {
         id: "2",
         name: "Priya Mehta",
-        image: "https://i.pravatar.cc/150?img=47",
+        image: "https://i.pinimg.com/736x/20/0d/6d/200d6dc9d01d0930ead7c4cd996131ba.jpg",
         rating: 5,
         review: "Really tasty food and the packaging was excellent. Everything arrived perfectly packed.",
         photos: [

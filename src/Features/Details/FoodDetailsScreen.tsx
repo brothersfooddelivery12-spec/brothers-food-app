@@ -1,23 +1,23 @@
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
+import CartIcon from '@/assets/icon/CartIcon.svg'
+import CheckIcon from '@/assets/icon/CheckIcon.svg'
 import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
-import { useCallback, useState } from "react"
-import { router, useLocalSearchParams } from "expo-router"
-import { Image } from "expo-image"
-import UsersIcon from '@/assets/icon/UsersIcon.svg'
+import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
+import FireIcon from '@/assets/icon/FireIcon.svg'
+import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
+import PlusIcon from '@/assets/icon/PlusIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import StopWatchIcon from '@/assets/icon/StopWatchIcon.svg'
-import VeganIcon from '@/assets/icon/VeganIcon.svg'
+import UsersIcon from '@/assets/icon/UsersIcon.svg'
 import UtensilIcon from '@/assets/icon/UtensilIcon.svg'
-import FireIcon from '@/assets/icon/FireIcon.svg'
 import { addons } from "@/constant/addons"
-import CheckIcon from '@/assets/icon/CheckIcon.svg'
-import PlusIcon from '@/assets/icon/PlusIcon.svg'
-import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
-import CartIcon from '@/assets/icon/CartIcon.svg'
+import { Image } from "expo-image"
+import { router, useLocalSearchParams } from "expo-router"
+import { useCallback, useState } from "react"
+import { Text, TextInput, TouchableOpacity, View } from "react-native"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 const DONENENSSOPTIONS = [
     "Medium Rare",
@@ -60,12 +60,15 @@ export default function FoodDetailsScreen() {
 
     return(
         <SafeAreaView className="flex-1">
-            <ScrollView
+            <KeyboardAwareScrollView
                 className="flex-1 bg-white"
                 contentContainerStyle={{
                     paddingBottom: insets.bottom + verticalScale(80)
                 }}
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={30}
+                extraKeyboardSpace={20}
             >
                 <View
                     className="absolute left-0 right-0 top-0"
@@ -468,9 +471,9 @@ export default function FoodDetailsScreen() {
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
-                                            paddingHorizontal: scale(16),
+                                            paddingHorizontal: scale(14),
                                             paddingVertical: verticalScale(6),
-                                            borderWidth: isSelected ? 0 : 1,
+                                            borderWidth: isSelected ? 1 : 1,
                                             borderColor: "#E8DDD3"
                                         }}
                                     >
@@ -519,7 +522,7 @@ export default function FoodDetailsScreen() {
                         />
                     </View>
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
 
             <View
                 className="flex-row items-center absolute left-0 right-0 bottom-0 bg-[#3F2516]"

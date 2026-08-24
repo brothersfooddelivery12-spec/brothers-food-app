@@ -1,13 +1,14 @@
+import { LoaderProvider } from "@/Features/hook/LoaderProvider"
+import { ToastProvider } from "@/Features/hook/ToastContext"
+import AppLoader from "@/components/AppLoader"
+import CustomSplashScreen from "@/components/splash"
 import { Stack } from "expo-router"
-import "../global.css"
-import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect, useState } from "react"
-import { ToastProvider } from "@/Features/hook/ToastContext"
-import CustomSplashScreen from "@/components/splash"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { LoaderProvider } from "@/Features/hook/LoaderProvider"
-import AppLoader from "@/components/AppLoader"
+import { KeyboardProvider } from "react-native-keyboard-controller"
+import { SafeAreaProvider } from "react-native-safe-area-context"
+import "../global.css"
 
 SplashScreen.preventAutoHideAsync()
 
@@ -33,13 +34,17 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <LoaderProvider>
-            <ToastProvider>
-              <AppLoader />
+            <KeyboardProvider>
+                <LoaderProvider>
+                    <ToastProvider>
+                        <AppLoader />
 
-              <Stack screenOptions={{headerShown: false}} />
-            </ToastProvider>
-          </LoaderProvider>
+                        <Stack
+                            screenOptions={{ headerShown: false }}
+                        />
+                    </ToastProvider>
+                </LoaderProvider>
+            </KeyboardProvider>
         </SafeAreaProvider>
     </GestureHandlerRootView>
 )

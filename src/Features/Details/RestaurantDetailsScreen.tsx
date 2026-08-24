@@ -1,33 +1,33 @@
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import ClockIcon from '@/assets/icon/ClockIcon3.svg'
+import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
+import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
+import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import OfferIcon from '@/assets/icon/OfferIcon.svg'
+import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
+import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
+import ShareIcon from '@/assets/icon/ShareIcon.svg'
+import StoreIcon from '@/assets/icon/StoreIcon.svg'
+import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
+import WalletIcon from '@/assets/icon/WalletIcon.svg'
+import { popularitems } from "@/constant/PopularItemData"
+import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
+import { getRatingStars } from "@/utils/rating"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback, useState } from "react"
 import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
-import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
-import ShareIcon from '@/assets/icon/ShareIcon.svg'
-import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
-import RatingIcon from '@/assets/icon/RatingIcon.svg'
-import ClockIcon from '@/assets/icon/ClockIcon3.svg'
-import WalletIcon from '@/assets/icon/WalletIcon.svg'
-import LocationIcon from '@/assets/icon/LocationIcon2.svg'
-import StoreIcon from '@/assets/icon/StoreIcon.svg'
-import OfferIcon from '@/assets/icon/OfferIcon.svg'
-import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
-import RestaurantOfferCard from "./components/RestaurantOfferCard"
-import { popularitems } from "@/constant/PopularItemData"
-import PopularItemCard from "./components/PopularItemCard"
-import ImageGrid from "./components/ImageGrid"
-import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
-import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
-import { getRatingStars } from "@/utils/rating"
-import SimilarRestaurantCard from "./components/SimilarRestaurantCard"
-import RatingDistribution from "./components/RatingDistribution"
-import ReviewCard from "./components/ReviewCard"
-import Animated, { FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import ImageGrid from "./components/ImageGrid"
+import PopularItemCard from "./components/PopularItemCard"
+import RatingDistribution from "./components/RatingDistribution"
+import RestaurantOfferCard from "./components/RestaurantOfferCard"
+import ReviewCard from "./components/ReviewCard"
+import SimilarRestaurantCard from "./components/SimilarRestaurantCard"
 
 const TABS = ["Popular", "Recommended", "Main Course"]
 
@@ -716,10 +716,10 @@ export default function RestaurantDetailsScreen() {
                                     router.push("/restaurant-review")
                                 })
                             }
-                            className="items-center justify-center mt-3"
+                            className="items-center justify-center mt-5"
                         >
                             <Text
-                                className="text-[#5C4639] font-semibold text-center"
+                                className="text-[#3F2516] font-semibold text-center"
                                 style={{
                                     fontSize: moderateScale(14)
                                 }}

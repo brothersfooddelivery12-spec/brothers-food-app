@@ -1,21 +1,23 @@
-import { router } from "expo-router"
-import { Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import { FlatList } from "react-native-gesture-handler"
+import BoxIcon from '@/assets/icon/BoxIcon.svg'
+import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
+import EditIcon from '@/assets/icon/EditIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
 import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
-import { getRatingStars } from "@/utils/rating"
-import RatingDistribution from "../Details/components/RatingDistribution"
-import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
-import BoxIcon from '@/assets/icon/BoxIcon.svg'
 import { customerReviews } from "@/constant/CustomerReviewData"
+import { getRatingStars } from "@/utils/rating"
 import { Image } from "expo-image"
+import { router } from "expo-router"
 import { useCallback, useState } from "react"
-import EditIcon from '@/assets/icon/EditIcon.svg'
+import { Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { FlatList } from "react-native-gesture-handler"
+import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import RatingDistribution from "../Details/components/RatingDistribution"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import RestaurantReviewCard from "./components/RestaurantReviewCard"
 
 const USER_RATINGS = [
@@ -32,9 +34,14 @@ const REVIEWS_CATEGORIES = [
     "5 Stars"
 ]
 
+const TITLE_HEIGHT = verticalScale(48)
+
 export default function RestaurantReviewScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const [selectedReview, setSelectedReview] = useState("All Reviews")
+    const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
+    const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
     const rating = 4.8
     const stars = getRatingStars(rating)
@@ -67,6 +74,60 @@ export default function RestaurantReviewScreen() {
         },[]
     )
 
+    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
+    const scrollY = useSharedValue(0)
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            scrollY.value = event.contentOffset.y
+        },
+        onMomentumEnd: (event) => {
+            const y = event.contentOffset.y
+
+            if (y > 0 && y < titleHeight) {
+                const shouldOpen = y < titleHeight / 2
+
+                scrollTo(
+                    animatedRef,
+                    0,
+                    shouldOpen ? 0 : titleHeight,
+                    true
+                )
+            }
+        },
+    })
+
+    const headerContainerStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+            scrollY.value,
+            [0, titleHeight],
+            [0, -titleHeight],
+            Extrapolation.CLAMP
+        )
+
+        return {
+            transform: [{ translateY }],
+        }
+    })
+
+    const headerTitleStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [0, titleHeight * 0.6],
+            [1, 0],
+            Extrapolation.CLAMP
+        ),
+    }))
+
+    const headerButtonStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [0, titleHeight * 0.6],
+            [1, 0],
+            Extrapolation.CLAMP
+        ),
+    }))
+
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
             <StatusBar
@@ -75,53 +136,89 @@ export default function RestaurantReviewScreen() {
                 barStyle="dark-content"
             />
 
-            <View
-                className="flex-row items-center w-full -mx-1"
-                style={{
-                    paddingHorizontal: scale(14),
-                    marginTop: verticalScale(12),
-                    marginBottom: verticalScale(10),
-                    gap: scale(10)
+            <Animated.View
+                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                onLayout={(event) => {
+                    const height = event.nativeEvent.layout.height
+
+                    if (height !== titleHeight) {
+                        setTitleHeight(height)
+                    }
                 }}
+                style={[
+                    {
+                        top: insets.top,
+                        zIndex: 10
+                    },
+                    headerContainerStyle,
+                ]}
             >
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                <View
+                    className="flex-row items-center w-full -mx-1"
                     style={{
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        paddingHorizontal: scale(14),
+                        marginTop: verticalScale(12),
+                        marginBottom: verticalScale(10),
+                        gap: scale(10),
                     }}
                 >
-                    <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
-                </TouchableOpacity>
+                    <AnimatedTouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={() => router.back()}
+                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                        style={[
+                            {
+                                width: moderateScale(44),
+                                height: moderateScale(44),
+                            },
+                            headerTitleStyle,
+                        ]}
+       
+                    >
+                        <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    </AnimatedTouchableOpacity>
 
-                <View className="items-start gap-1 flex-1">
-                    <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
-                    >
-                        Customer Reviews
-                    </Text>
-                    
-                    <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
-                    >
-                        See what customers are saying
-                    </Text>
+                    <View className="items-start gap-1 flex-1">
+                        <Animated.Text
+                            className="text-[#1F1F1F] font-extrabold"
+                            style={[
+                                {
+                                    fontSize: moderateScale(16),
+                                },
+                                headerTitleStyle,
+                            ]}
+                        >
+                            Customer Reviews
+                        </Animated.Text>
+
+                        <Animated.Text
+                            className="text-[#1F1F1F]/65 font-medium"
+                            style={[
+                                {
+                                    fontSize: moderateScale(11),
+                                },
+                                headerTitleStyle,
+                            ]}
+                        >
+                            See what customers are saying
+                        </Animated.Text>
+                    </View>
                 </View>
-            </View>
+            </Animated.View>
 
-            <FlatList
+            <Animated.FlatList
+                ref={animatedRef}
                 data={customerReviews}
                 renderItem={renderReviews}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(45)
+                    paddingTop: TITLE_HEIGHT,
+                    paddingBottom: insets.bottom + verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -351,7 +448,7 @@ export default function RestaurantReviewScreen() {
                             nestedScrollEnabled
                             directionalLockEnabled
                             showsHorizontalScrollIndicator={false}
-                            className="mt-4 -mx-4"
+                            className="mt-4 -mx-5"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
                                 gap: moderateScale(14)
@@ -432,7 +529,11 @@ export default function RestaurantReviewScreen() {
 
                         <TouchableOpacity
                             activeOpacity={0.95}
-                            onPress={() => {}}
+                            onPress={() => 
+                                preventDoublePress(() => {
+                                    router.push('/write-review')
+                                })
+                            }
                             className="flex-row gap-1 items-center justify-center bg-[#3F2516] mx-5"
                             style={{
                                 marginTop: verticalScale(16),
