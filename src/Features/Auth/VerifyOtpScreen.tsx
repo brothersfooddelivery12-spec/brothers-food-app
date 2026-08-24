@@ -1,18 +1,18 @@
-import { LinearGradient } from "expo-linear-gradient"
-import { useEffect, useRef, useState } from "react"
-import { Animated, ImageBackground, Pressable, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import LocationIcon from '@/assets/icon/locationIcon.svg'
-import { router, useLocalSearchParams } from "expo-router"
-import GradientButton from "@/components/GradientButton"
 import RefreshIcon from '@/assets/icon/RefreshIcon.svg'
-import ArrowLeft from '@/assets/icon/ArrowLeft.svg'
+import GradientButton from "@/components/GradientButton"
+import { LinearGradient } from "expo-linear-gradient"
+import { router, useLocalSearchParams } from "expo-router"
+import { useEffect, useRef, useState } from "react"
+import { Animated, ImageBackground, Keyboard, Pressable, StatusBar, Text, TextInput, View } from "react-native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { verifyOtp } from "../Services/api-service"
-import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import { useToast } from "../hook/ToastContext"
-import { tokenStorage } from "../Stores/token-storage"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import { verifyOtp } from "../Services/api-service"
 import { useAuthStore } from "../Stores/auth-store"
+import { tokenStorage } from "../Stores/token-storage"
 
 export default function VerifyOtpScreen() {
     const preventDoublePress = usePreventDoublePress()
@@ -228,14 +228,17 @@ export default function VerifyOtpScreen() {
             </View>
 
             <SafeAreaView edges={["top","bottom"]} className="flex-1 z-20">
-                <ScrollView
+                <KeyboardAwareScrollView
                     className="flex-1"
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingTop: heroHeight * 0.58,
-                        paddingBottom: verticalScale(30)
+                        paddingBottom: verticalScale(30),
                     }}
-                    showsVerticalScrollIndicator={false}
+                    bottomOffset={30}
+                    extraKeyboardSpace={20}
                 >
                     <View 
                         className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
@@ -373,6 +376,8 @@ export default function VerifyOtpScreen() {
                                 pointerEvents={loading ? "none" : "auto"}
                                 className="absolute inset-0 z-10 opacity-0"
                                 editable={!loading}
+                                returnKeyType="done"
+                                onSubmitEditing={() => Keyboard.dismiss()}
                             />
 
                             <View className="flex-row justify-center" style={{ gap: scale(4) }}>
@@ -481,7 +486,7 @@ export default function VerifyOtpScreen() {
 
                         <GradientButton title="Verify & Continue" onPress={handleVerify} loading={loading} />
                     </View>
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </SafeAreaView>
         </View>
     )                

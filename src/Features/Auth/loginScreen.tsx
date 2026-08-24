@@ -1,21 +1,22 @@
-import { Animated, ImageBackground, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import LocationIcon from '@/assets/icon/locationIcon.svg'
-import { LinearGradient } from "expo-linear-gradient"
-import { useEffect, useRef, useState } from "react"
-import IndiaFlag from '@/assets/icon/India.svg'
-import GradientButton from "@/components/GradientButton"
 import GoogleIcon from '@/assets/icon/Google.svg'
+import IndiaFlag from '@/assets/icon/India.svg'
+import LocationIcon from '@/assets/icon/locationIcon.svg'
+import GradientButton from "@/components/GradientButton"
+import { GoogleSignin } from "@react-native-google-signin/google-signin"
+import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
-import { scale, verticalScale, moderateScale } from "react-native-size-matters"
-import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
+import { useEffect, useRef, useState } from "react"
+import { Animated, ImageBackground, Keyboard, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import "../../config/googleSignIn"
 import { useToast } from "../hook/ToastContext"
-import { googleSignIn, sendOtp } from "../Services/api-service"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { tokenStorage } from "../Stores/token-storage"
-import { useAuthStore } from "../Stores/auth-store"
+import { googleSignIn, sendOtp } from "../Services/api-service"
 import { hideLoader, showLoader } from "../Services/loader-service"
+import { useAuthStore } from "../Stores/auth-store"
+import { tokenStorage } from "../Stores/token-storage"
 
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
@@ -65,13 +66,6 @@ export default function LoginScreen() {
             console.log("Send OTP response:", res.data)
 
             if (res.data.success) {
-                const authData = res.data.data
-
-                await tokenStorage.setAccessToken(authData.access_token)
-                await tokenStorage.setRefreshToken(authData.refresh_token)
-
-                useAuthStore.getState().setAuthenticated(true)
-
                 showToast(res.data.message, "success")
 
                 router.push({
@@ -217,14 +211,17 @@ export default function LoginScreen() {
             </View>
 
             <SafeAreaView edges={["top","bottom"]} className="flex-1">
-                <ScrollView
+                <KeyboardAwareScrollView
                     className="flex-1"
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingTop: heroHeight * 0.58,
                         paddingBottom: verticalScale(30)
                     }}
-                    showsVerticalScrollIndicator={false}
+                    bottomOffset={30}
+                    extraKeyboardSpace={20}
                 >
                     <View 
                         className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
@@ -372,6 +369,7 @@ export default function LoginScreen() {
                                     placeholder="Mobile Number"
                                     placeholderTextColor="#7A7D81"
                                     keyboardType="phone-pad"
+                                    onSubmitEditing={() => Keyboard.dismiss()}
                                     returnKeyType="done"
                                     selectionColor="#79685e"
                                     editable={!loading}
@@ -441,7 +439,7 @@ export default function LoginScreen() {
                             </TouchableOpacity>
                         </View> */}
                     </View> 
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </SafeAreaView>
         </View>
     )
