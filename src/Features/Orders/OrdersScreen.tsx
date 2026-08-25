@@ -1,27 +1,30 @@
+import SearchBar from "@/components/SearchBar"
+import { activeorders } from "@/constant/ActiveOrdersData"
+import { pastOrders } from "@/constant/PastOrdersData"
+import { router } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
+import { StatusBar, Text, useWindowDimensions, View } from "react-native"
+import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
-import { useCallback, useEffect, useState } from "react"
-import { ScrollView, StatusBar, Text, useWindowDimensions, View } from "react-native"
-import SearchBar from "@/components/SearchBar"
-import OrdersTabs from "./Components/OrdersTab"
-import { activeorders } from "@/constant/ActiveOrdersData"
+import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
+import OrdersTabs from "./Components/OrdersTab"
 import PastOrdersCard from "./Components/PastOrdersCard"
-import { pastOrders } from "@/constant/PastOrdersData"
 
 const TITLE_HEIGHT = verticalScale(48)
-const SEARCH_BAR_HEIGHT = verticalScale(46) 
+const SEARCH_BAR_HEIGHT = verticalScale(46)
 
 export default function OrdersScreen() {
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
     const { width: SCREEN_WIDTH } = useWindowDimensions()
-    
+
     const horizontalPadding = scale(42)
     const gap = scale(12)
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 3
@@ -30,12 +33,12 @@ export default function OrdersScreen() {
         const timer = setTimeout(() => {
             setDebouncedSearch(search)
         }, 400)
-        
+
         return () => clearTimeout(timer)
     }, [search])
 
     const scrollY = useSharedValue(0)
-    
+
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
             scrollY.value = event.contentOffset.y
@@ -48,7 +51,7 @@ export default function OrdersScreen() {
             }
         },
     })
-    
+
     const headerContainerStyle = useAnimatedStyle(() => {
         const translateY = interpolate(
             scrollY.value,
@@ -58,7 +61,7 @@ export default function OrdersScreen() {
         )
         return { transform: [{ translateY }] }
     })
-    
+
     const headerTitleStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
             scrollY.value,
@@ -74,6 +77,10 @@ export default function OrdersScreen() {
 
     const handleContactRider = useCallback((orderId: string) => {
         console.log("Contact rider:", orderId)
+
+        preventDoublePress(() => {
+            router.push('/rider-profile')
+        })
     }, [])
 
     const handleReorder = useCallback((orderId: string) => {
@@ -82,6 +89,10 @@ export default function OrdersScreen() {
 
     const handleInvoice = useCallback((orderId: string) => {
         console.log("Invoice:", orderId)
+
+        preventDoublePress(() => {
+            router.push('/order-invoice')
+        })
     }, [])
 
     const renderActiveOrders = useCallback(
@@ -126,7 +137,7 @@ export default function OrdersScreen() {
                 backgroundColor="#F5F5F5"
                 barStyle="dark-content"
             />
-            
+
             <Animated.View
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[

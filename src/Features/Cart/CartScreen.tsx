@@ -1,19 +1,19 @@
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import ArrowRight from '@/assets/icon/ArrowRight.svg'
+import CartIcon from '@/assets/icon/CartIcon.svg'
+import GiftIcon from '@/assets/icon/GiftIcon.svg'
+import HomeIcon from '@/assets/icon/HomeIcon.svg'
+import InfoIcon from '@/assets/icon/InfoIcon.svg'
+import { CART_DATA } from "@/constant/RestaurantCartData"
 import { router } from "expo-router"
+import { useCallback, useState } from "react"
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import CartIcon from '@/assets/icon/CartIcon.svg'
-import InfoIcon from '@/assets/icon/InfoIcon.svg'
-import RestaurantCartCard from "./Components/RestaurantCartCard"
-import { CART_DATA } from "@/constant/RestaurantCartData"
-import { useCallback, useState } from "react"
 import FoodCard from "../Home/components/FoodCard"
-import GiftIcon from '@/assets/icon/GiftIcon.svg'
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import HomeIcon from '@/assets/icon/HomeIcon.svg'
-import OrderPriceRow from "./Components/OrderPriceRow"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import OrderPriceRow from "./Components/OrderPriceRow"
+import RestaurantCartCard from "./Components/RestaurantCartCard"
 
 export const FREQUENTLY_ADDED_TOGETHER = [
     {
@@ -118,7 +118,7 @@ export default function CartScreen() {
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
                     marginBottom: verticalScale(10),
-                    gap: scale(10)
+                    gap: scale(8)
                 }}
             >
                 <TouchableOpacity
@@ -126,17 +126,17 @@ export default function CartScreen() {
                     onPress={() => router.back()}
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
                         className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(18) }}
+                        style={{ fontSize: moderateScale(16) }}
                     >
                         My Cart
                     </Text>
@@ -152,11 +152,11 @@ export default function CartScreen() {
                 <View
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
+                    <CartIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5} />
                 </View>
             </View>
 

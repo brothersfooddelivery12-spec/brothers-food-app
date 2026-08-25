@@ -1,12 +1,12 @@
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import InvoiceIcon from '@/assets/icon/InvoiceIcon.svg'
+import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import { router } from "expo-router"
 import LottieView from "lottie-react-native"
 import { ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import LocationIcon from '@/assets/icon/LocationIcon2.svg'
-import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
-import InvoiceIcon from '@/assets/icon/InvoiceIcon.svg'
 
 const ORDER_STATUSES = [
     {
@@ -66,11 +66,11 @@ export default function OrderSuccessScreen() {
                     style={{
                         top: moderateScale(14),
                         left: moderateScale(14),
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-center justify-center">

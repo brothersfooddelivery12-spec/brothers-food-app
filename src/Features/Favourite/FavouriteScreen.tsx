@@ -1,15 +1,15 @@
+import FilterIcon from '@/assets/icon/FIlterIcon.svg'
 import SearchBar from "@/components/SearchBar"
+import { recommendedItems } from "@/constant/RecommendedData"
+import { restaurants } from "@/constant/RestaurantData"
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
+import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import FilterIcon from '@/assets/icon/FIlterIcon.svg'
+import FavFoodCard from "./Components/FavFoodCard"
 import FavouriteTabs from "./Components/FavouriteTabs"
 import FavRestaurantCard from "./Components/FavRestaurantCard"
-import { restaurants } from "@/constant/RestaurantData"
-import { recommendedItems } from "@/constant/RecommendedData"
-import FavFoodCard from "./Components/FavFoodCard"
-import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
 
 const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46) 
@@ -173,7 +173,7 @@ export default function FavouritesScreen() {
                         <Text
                             className="text-[#1F1F1F] font-extrabold self-start"
                             style={{
-                                fontSize: moderateScale(20),
+                                fontSize: moderateScale(18),
                                 marginTop: verticalScale(10)
                             }}
                         >

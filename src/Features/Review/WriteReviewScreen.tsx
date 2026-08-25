@@ -116,7 +116,7 @@ export default function WriteReviewScreen() {
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
                     marginBottom: verticalScale(10),
-                    gap: scale(10)
+                    gap: scale(8)
                 }}
             >
                 <TouchableOpacity
@@ -124,11 +124,11 @@ export default function WriteReviewScreen() {
                     onPress={() => router.back()}
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 <View className="items-start gap-1 flex-1">
@@ -182,18 +182,14 @@ export default function WriteReviewScreen() {
                         <View className='-mt-2 gap-2 flex-1'>
                             <Text
                                 className='text-[#1F1F1F] font-bold'
-                                style={{
-                                    fontSize: moderateScale(15)
-                                }}
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 The Burger King
                             </Text>
 
                             <Text
                                 className='text-[#1F1F1F]/75 font-medium'
-                                style={{
-                                    fontSize: moderateScale(11)
-                                }}
+                                style={{ fontSize: moderateScale(11) }}
                             >
                                 Truffle Burger, Peri Peri Fries
                             </Text>

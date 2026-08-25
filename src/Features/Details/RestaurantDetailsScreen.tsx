@@ -240,7 +240,7 @@ export default function RestaurantDetailsScreen() {
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <BackArrowIcon width={scale(22)} height={scale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: scale(3) }} />
+                                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: scale(3) }} />
                                 </TouchableOpacity>
 
                                 <View
@@ -257,9 +257,9 @@ export default function RestaurantDetailsScreen() {
                                         }}
                                     >
                                         {favourite ? (
-                                            <FavouriteFilledIcon width={scale(22)} height={scale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
+                                            <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
                                         ): (
-                                            <FavouriteOutlineIcon width={scale(22)} height={scale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
                                         )}
                                     </TouchableOpacity>
 
@@ -272,7 +272,7 @@ export default function RestaurantDetailsScreen() {
                                             height: moderateScale(38)
                                         }}
                                     >
-                                        <ShareIcon width={scale(20)} height={scale(20)} color={"#3F2516"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
+                                        <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -396,8 +396,8 @@ export default function RestaurantDetailsScreen() {
                                     }}
                                 />
 
-                                <View className="flex-row items-center mx-3">
-                                    <View className="gap-4 flex-1">
+                                <View className="flex-row items-center">
+                                    <View className="gap-4 flex-1 ml-2">
                                         <View className="flex-row items-center gap-2">
                                             <View
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"
@@ -455,7 +455,7 @@ export default function RestaurantDetailsScreen() {
                                         </View>
                                     </View>
 
-                                    <View className="gap-4">
+                                    <View className="gap-4 mr-4">
                                         <View className="flex-row items-center gap-2">
                                             <View
                                                 className="items-center justify-center rounded-full bg-[#E8B93F]/15"

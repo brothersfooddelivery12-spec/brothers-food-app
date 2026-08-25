@@ -1,26 +1,26 @@
+import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import ArrowRight from '@/assets/icon/ArrowRight.svg'
+import CardAddIcon from '@/assets/icon/CardAddIcon.svg'
+import CartIcon from '@/assets/icon/CartIcon.svg'
+import ClockIcon from '@/assets/icon/ClockIcon3.svg'
+import CouponIcon from '@/assets/icon/CouponIcon.svg'
+import DebitCardIcon from '@/assets/icon/DebitCardIcon.svg'
+import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
+import FlashIcon from '@/assets/icon/FlashIcon.svg'
+import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
+import HomeIcon from '@/assets/icon/HomeIcon.svg'
+import MoneyBagIcon from '@/assets/icon/MoneyBagIcon.svg'
+import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
+import PhonePeIcon from '@/assets/icon/PhonePe.svg'
+import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
+import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
+import { Image } from "expo-image"
 import { router } from "expo-router"
+import { useState } from "react"
 import { FlatList, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import { Image } from "expo-image"
-import CartIcon from '@/assets/icon/CartIcon.svg'
-import HomeIcon from '@/assets/icon/HomeIcon.svg'
-import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
-import { useState } from "react"
-import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
-import FlashIcon from '@/assets/icon/FlashIcon.svg'
-import ClockIcon from '@/assets/icon/ClockIcon3.svg'
-import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
-import CouponIcon from '@/assets/icon/CouponIcon.svg'
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
-import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
-import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
-import PhonePeIcon from '@/assets/icon/PhonePe.svg'
-import MoneyBagIcon from '@/assets/icon/MoneyBagIcon.svg'
-import DebitCardIcon from '@/assets/icon/DebitCardIcon.svg'
-import CardAddIcon from '@/assets/icon/CardAddIcon.svg'
 import AddressCard from "./Components/AddressCard"
 
 type PaymentMethod = {
@@ -96,7 +96,7 @@ export default function CheckoutScreen() {
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
                     marginBottom: verticalScale(10),
-                    gap: scale(10)
+                    gap: scale(8)
                 }}
             >
                 <TouchableOpacity
@@ -104,17 +104,17 @@ export default function CheckoutScreen() {
                     onPress={() => router.back()}
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(44),
-                        height: moderateScale(44)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
                         className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(18) }}
+                        style={{ fontSize: moderateScale(16) }}
                     >
                         Checkout
                     </Text>
@@ -625,7 +625,7 @@ export default function CheckoutScreen() {
                             <OrderPriceRow label="GST and Taxes" value={38} />
 
                             <View
-                                className="items-center flex-row justify-center bg-[#E3F2E8] mt-3"
+                                className="items-center flex-row justify-center bg-[#E3F2E8] mt-3 -mx-1"
                                 style={{
                                     paddingHorizontal: scale(12),
                                     paddingVertical: verticalScale(8),

@@ -103,7 +103,7 @@ export default function FoodDetailsScreen() {
                                 height: moderateScale(38)
                             }}
                         >
-                            <BackArrowIcon width={scale(22)} height={scale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: scale(3) }} />
+                            <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -116,9 +116,9 @@ export default function FoodDetailsScreen() {
                             }}
                         >
                             {favourite ? (
-                                <FavouriteFilledIcon width={scale(22)} height={scale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
+                                <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
                             ): (
-                                <FavouriteOutlineIcon width={scale(22)} height={scale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                                <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
                             )}
                         </TouchableOpacity>
                     </View>

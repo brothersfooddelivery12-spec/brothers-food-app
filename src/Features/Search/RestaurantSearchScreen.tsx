@@ -1,17 +1,17 @@
+import BackArrowIcon from "@/assets/icon/ArrowLeft.svg"
+import LocationIcon from "@/assets/icon/LocationIcon3.svg"
+import MicIcon from '@/assets/icon/MicIcon.svg'
+import RestaurantCard from "@/components/RestaurantCard"
 import SearchBar from "@/components/SearchBar"
+import { restaurants } from "@/constant/RestaurantData"
+import { RestaurantSearchData } from "@/constant/RestaurantSearchData"
+import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from "@/assets/icon/ArrowLeft.svg"
-import MicIcon from '@/assets/icon/MicIcon.svg'
-import { RestaurantSearchData } from "@/constant/RestaurantSearchData"
 import RestaurantSearchCard from "./Components/RestaurantSearchCard"
-import { restaurants } from "@/constant/RestaurantData"
-import RestaurantCard from "@/components/RestaurantCard"
-import { Image } from "expo-image"
-import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 
 const RECENTLY_VIEWED = [
     {
@@ -321,7 +321,7 @@ export default function RestaurantSearchScreen() {
                         flexShrink: 0
                     }}
                 >
-                    <BackArrowIcon width={scale(24)} height={scale(24)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                 </TouchableOpacity>
 
                 <View

@@ -1,17 +1,17 @@
-import SearchBar from "@/components/SearchBar"
-import { useCallback, useEffect, useState } from "react"
-import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon2.svg'
-import { recommendedItems } from "@/constant/RecommendedData"
-import RecommendedCard from "./Components/RecommendedCard"
+import MicIcon from '@/assets/icon/MicIcon.svg'
 import RestaurantCard from "@/components/RestaurantCard"
+import SearchBar from "@/components/SearchBar"
+import { recommendedItems } from "@/constant/RecommendedData"
 import { restaurants } from "@/constant/RestaurantData"
 import { router } from "expo-router"
-import Animated, { interpolate, Extrapolation, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, scrollTo } from "react-native-reanimated"
+import { useCallback, useEffect, useState } from "react"
+import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import RecommendedCard from "./Components/RecommendedCard"
 
 const SEARCH_CATEGORIES = [
     "All",
@@ -185,7 +185,7 @@ export default function SearchScreen() {
                     <Text
                         className="text-[#1F1F1F] font-extrabold"
                         style={{
-                            fontSize: moderateScale(20),
+                            fontSize: moderateScale(18),
                             marginTop: verticalScale(10)
                         }}
                     >

@@ -1,12 +1,12 @@
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import MicIcon from '@/assets/icon/MicIcon.svg'
+import SearchBar from "@/components/SearchBar"
+import { cheesePizzaResults } from "@/constant/cheesePizzaResults"
+import { router } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import { router } from "expo-router"
-import MicIcon from '@/assets/icon/MicIcon.svg'
-import { useCallback, useEffect, useState } from "react"
-import SearchBar from "@/components/SearchBar"
-import { cheesePizzaResults } from "@/constant/cheesePizzaResults"
 import FoodSearchCard from "./Components/FoodSearchCard"
 
 const SEARCH_CATEGORIES = [
@@ -213,7 +213,7 @@ export default function FoodSearchScreen() {
                         height: moderateScale(46)
                     }}
                 >
-                    <BackArrowIcon width={scale(24)} height={scale(24)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                 </TouchableOpacity>
 
                 <View className="flex-1">

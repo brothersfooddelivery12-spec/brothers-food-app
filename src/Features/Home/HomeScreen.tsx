@@ -17,7 +17,7 @@ import OfferCard from "@/Features/Home/components/OffersCard"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback, useState } from "react"
-import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
@@ -26,6 +26,7 @@ export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const [activeCategory, setActiveCategory] = useState("1")
+    const [selectedReview, setSelectedReview] = useState("All")
 
     const handleRestaurantPress = useCallback((restaurantId: string) => {
         preventDoublePress(() => {
@@ -164,7 +165,7 @@ export default function HomeScreen() {
                             </View>
                         </TouchableOpacity>
 
-                        <FlatList
+                        {/* <FlatList
                             data={categories}
                             horizontal
                             nestedScrollEnabled
@@ -213,7 +214,7 @@ export default function HomeScreen() {
                                                 }}
                                             />
                                         </TouchableOpacity>
-                                        
+
                                         <Text
                                             className="text-[#1F1F1F] font-semibold mt-1 mb-2"
                                             style={{ fontSize: moderateScale(12) }}
@@ -223,7 +224,52 @@ export default function HomeScreen() {
                                     </View>
                                 )
                             }}
-                        />
+                        /> */}
+
+                        <ScrollView
+                            horizontal
+                            nestedScrollEnabled
+                            directionalLockEnabled
+                            showsHorizontalScrollIndicator={false}
+                            className="-mx-5 mt-5 mb-0"
+                            contentContainerStyle={{
+                                paddingHorizontal: scale(14),
+                                gap: scale(8)
+                            }}
+                        >
+                            {categories.map((category) => {
+                                const isSelected = selectedReview === category.title
+
+                                return (
+                                    <TouchableOpacity
+                                        key={category.id}
+                                        activeOpacity={0.85}
+                                        onPress={() => {
+                                            setSelectedReview(category.title)
+                                        }}
+                                        className={`items-center justify-center ${
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                        }`}
+                                        style={{
+                                            borderRadius: moderateScale(18),
+                                            paddingHorizontal: scale(17),
+                                            paddingVertical: verticalScale(7),
+                                            borderWidth: isSelected ? 0 : 1,
+                                            borderColor: "rgba(31, 31, 31, 0.10)"
+                                        }}
+                                    >
+                                        <Text
+                                            className={`font-medium ${
+                                                isSelected ? "text-white" : "text-[#1F1F1F]"
+                                            }`}
+                                            style={{ fontSize: moderateScale(13.5) }}
+                                        >
+                                            {category.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </ScrollView>
 
                         <BannerCarousel />
 

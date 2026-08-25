@@ -159,7 +159,7 @@ export default function RestaurantReviewScreen() {
                         paddingHorizontal: scale(14),
                         marginTop: verticalScale(12),
                         marginBottom: verticalScale(10),
-                        gap: scale(10),
+                        gap: scale(8)
                     }}
                 >
                     <AnimatedTouchableOpacity
@@ -168,14 +168,14 @@ export default function RestaurantReviewScreen() {
                         className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                         style={[
                             {
-                                width: moderateScale(44),
-                                height: moderateScale(44),
+                                width: moderateScale(40),
+                                height: moderateScale(40)
                             },
-                            headerTitleStyle,
+                            headerTitleStyle
                         ]}
        
                     >
-                        <BackArrowIcon width={scale(22)} height={scale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: scale(3) }} />
+                        <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                     </AnimatedTouchableOpacity>
 
                     <View className="items-start gap-1 flex-1">
@@ -183,9 +183,9 @@ export default function RestaurantReviewScreen() {
                             className="text-[#1F1F1F] font-extrabold"
                             style={[
                                 {
-                                    fontSize: moderateScale(16),
+                                    fontSize: moderateScale(16)
                                 },
-                                headerTitleStyle,
+                                headerTitleStyle
                             ]}
                         >
                             Customer Reviews
@@ -195,9 +195,9 @@ export default function RestaurantReviewScreen() {
                             className="text-[#1F1F1F]/65 font-medium"
                             style={[
                                 {
-                                    fontSize: moderateScale(11),
+                                    fontSize: moderateScale(11)
                                 },
-                                headerTitleStyle,
+                                headerTitleStyle
                             ]}
                         >
                             See what customers are saying
