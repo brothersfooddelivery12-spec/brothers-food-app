@@ -257,9 +257,9 @@ export default function RestaurantDetailsScreen() {
                                         }}
                                     >
                                         {favourite ? (
-                                            <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
+                                            <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
                                         ): (
-                                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
                                         )}
                                     </TouchableOpacity>
 
@@ -272,7 +272,7 @@ export default function RestaurantDetailsScreen() {
                                             height: moderateScale(38)
                                         }}
                                     >
-                                        <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
+                                        <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -639,7 +639,7 @@ export default function RestaurantDetailsScreen() {
                         />
 
                         <View
-                            className="p-4 pb-2 bg-[#E5E4E2]/35"
+                            className="p-4 pb-2 bg-[#F5F5F5]"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(15)

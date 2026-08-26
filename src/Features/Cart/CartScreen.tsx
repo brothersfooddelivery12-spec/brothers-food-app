@@ -156,7 +156,7 @@ export default function CartScreen() {
                         height: moderateScale(40)
                     }}
                 >
-                    <CartIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5} />
+                    <CartIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={1.5} />
                 </View>
             </View>
 
@@ -200,7 +200,7 @@ export default function CartScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(75)
+                    paddingBottom: insets.bottom + verticalScale(85)
                 }}
                 ListFooterComponent={
                     <View className="mt-5">

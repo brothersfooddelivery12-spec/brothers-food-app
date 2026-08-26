@@ -73,6 +73,10 @@ export default function OrdersScreen() {
 
     const handleTrackOrder = useCallback((orderId: string) => {
         console.log("Track order:", orderId)
+
+        preventDoublePress(() => {
+            router.push('/order-tracking')
+        })
     }, [])
 
     const handleContactRider = useCallback((orderId: string) => {

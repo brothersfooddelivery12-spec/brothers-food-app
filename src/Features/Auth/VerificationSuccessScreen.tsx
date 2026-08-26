@@ -1,19 +1,20 @@
-import LottieView from "lottie-react-native"
-import { ScrollView, StatusBar, Text, TextInput, useWindowDimensions, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
-import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
-import SecurityIcon from '@/assets/icon/SecurityIcon.svg'
-import { useCallback, useEffect, useState } from "react"
-import UserIcon from '@/assets/icon/UserIcon.svg'
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
+import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
+import SecurityIcon from '@/assets/icon/SecurityIcon.svg'
+import UserIcon from '@/assets/icon/UserIcon.svg'
+import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
+import { useLocalSearchParams, useRouter } from "expo-router"
+import LottieView from "lottie-react-native"
+import { useCallback, useState } from "react"
+import { ScrollView, StatusBar, Text, TextInput, useWindowDimensions, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
-import { useLocalSearchParams, useRouter } from "expo-router"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { scheduleOnRN } from "react-native-worklets"
 
 export default function VerificationSuccessScreen() {
+    const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const [fullName, setFullName] = useState("")
     const [nameError, setNameError] = useState(false)
@@ -96,7 +97,7 @@ export default function VerificationSuccessScreen() {
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{
-                    paddingBottom: verticalScale(30),
+                    paddingBottom: insets.bottom + verticalScale(35),
                     paddingHorizontal: scale(14)
                 }}
                 showsVerticalScrollIndicator={false}

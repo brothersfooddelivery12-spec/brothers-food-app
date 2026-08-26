@@ -1,13 +1,13 @@
+import ArrowRight from '@/assets/icon/ArrowRight.svg'
+import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
+import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
+import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
+import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
+import { PastOrderItem } from "@/constant/PastOrdersData"
 import { Image } from "expo-image"
+import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import React from "react"
-import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
-import { PastOrderItem } from "@/constant/PastOrdersData"
-import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
-import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
 
 type PastOrderCardProps = {
     restaurantName: string
@@ -148,7 +148,7 @@ const PastOrdersCard = ({
             </View>
 
             <View
-                className="items-start bg-[#E5E4E2]/40 py-4 px-5"
+                className="items-start bg-[#F5F5F5] py-4 px-5"
                 style={{
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
@@ -204,14 +204,14 @@ const PastOrdersCard = ({
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={onInvoice}
-                    className="flex-row gap-2 items-center justify-center bg-[#FFFFFF] border border-[#3F2516]/20"
+                    className="flex-row gap-2 items-center justify-center bg-[#E5E4E2]/75"
                     style={{
                         paddingHorizontal: scale(14),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    <InvoiceIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
+                    <InvoiceIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.8} />
 
                     <Text
                         className="text-[#3F2516] font-semibold"

@@ -69,8 +69,8 @@ export default function RiderProfileScreen() {
                     onPress={() => router.back()}
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(38),
-                        height: moderateScale(38)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
                     <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />

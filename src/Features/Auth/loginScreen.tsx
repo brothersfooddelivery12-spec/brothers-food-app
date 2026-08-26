@@ -8,7 +8,7 @@ import { router } from "expo-router"
 import { useEffect, useRef, useState } from "react"
 import { Animated, ImageBackground, Keyboard, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import "../../config/googleSignIn"
 import { useToast } from "../hook/ToastContext"
@@ -21,6 +21,7 @@ import { tokenStorage } from "../Stores/token-storage"
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
     const preventDoublePress = usePreventDoublePress()
+    const insets = useSafeAreaInsets()
 
     const [mobileNumber, setMobileNumber] = useState("")
     const [loading, setLoading] = useState(false)
@@ -218,7 +219,7 @@ export default function LoginScreen() {
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingTop: heroHeight * 0.58,
-                        paddingBottom: verticalScale(30)
+                        paddingBottom: insets.bottom + verticalScale(35)
                     }}
                     bottomOffset={30}
                     extraKeyboardSpace={20}

@@ -5,7 +5,7 @@ import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import { router } from "expo-router"
 import LottieView from "lottie-react-native"
 import { ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 const ORDER_STATUSES = [
@@ -33,6 +33,7 @@ const ORDER_STATUSES = [
 
 export default function OrderSuccessScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const insets = useSafeAreaInsets()
 
     const horizontalPadding = scale(45)
     const gap = scale(18)
@@ -54,7 +55,7 @@ export default function OrderSuccessScreen() {
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{
-                    paddingBottom: verticalScale(30),
+                    paddingBottom: insets.bottom + verticalScale(35),
                     paddingHorizontal: scale(16)
                 }}
                 showsVerticalScrollIndicator={false}

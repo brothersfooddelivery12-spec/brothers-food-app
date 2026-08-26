@@ -18,7 +18,7 @@ import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useState } from "react"
-import { FlatList, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
+import { FlatList, StatusBar, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import AddressCard from "./Components/AddressCard"
@@ -90,6 +90,12 @@ export default function CheckoutScreen() {
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+            <StatusBar
+                translucent
+                backgroundColor="#F5F5F5"
+                barStyle="dark-content"
+            />
+
             <View
                 className="flex-row items-center w-full -mx-1"
                 style={{
@@ -136,7 +142,7 @@ export default function CheckoutScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(75)
+                    paddingBottom: insets.bottom + verticalScale(85)
                 }}
                 ListHeaderComponent={
                     <View className="mt-3">

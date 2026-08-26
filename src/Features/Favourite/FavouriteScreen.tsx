@@ -200,7 +200,7 @@ export default function FavouritesScreen() {
                         onChangeText={setsearch}
                         placeholder="Search favourites"
                         RightIcon={FilterIcon}
-                        rightIconColor="#3F2516"
+                        rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
                     />
                 </View>

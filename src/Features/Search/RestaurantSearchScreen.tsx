@@ -333,7 +333,7 @@ export default function RestaurantSearchScreen() {
                         onChangeText={setsearch}
                         placeholder="Search restaurant"
                         RightIcon={MicIcon}
-                        rightIconColor="#3F2516"
+                        rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
                     />
                 </View>

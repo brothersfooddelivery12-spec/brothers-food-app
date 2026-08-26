@@ -110,7 +110,7 @@ export default function HomeScreen() {
                                     height: moderateScale(44)
                                 }}
                             >
-                                <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
+                                <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -126,7 +126,7 @@ export default function HomeScreen() {
                                     height: moderateScale(44)
                                 }}
                             >
-                                <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
+                                <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
                             </TouchableOpacity>
                         </View>
 
@@ -161,7 +161,7 @@ export default function HomeScreen() {
                                     borderRadius: moderateScale(18)
                                 }}
                             >
-                                <MicIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                                <MicIcon height={moderateScale(24)} width={moderateScale(24)} color="#1F1F1F" strokeWidth={1.5} />
                             </View>
                         </TouchableOpacity>
 

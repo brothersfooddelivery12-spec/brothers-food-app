@@ -1,15 +1,15 @@
+import ArrowRight from '@/assets/icon/ArrowRight.svg'
+import BoxIcon from '@/assets/icon/BoxIcon.svg'
+import BoxTimeIcon from '@/assets/icon/BoxTimeIcon.svg'
+import ClockIcon from "@/assets/icon/ClockIcon.svg"
+import CustomerServiceIcon from "@/assets/icon/CustomerServiceIcon.svg"
+import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
+import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import { Image } from "expo-image"
+import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import OrderStatus from "./OrderStatus"
-import React from "react"
-import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
-import LocationIcon from '@/assets/icon/LocationIcon3.svg'
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import CustomerServiceIcon from "@/assets/icon/CustomerServiceIcon.svg"
-import ChefHatIcon from '@/assets/icon/ChefHatIcon.svg'
-import BoxIcon from '@/assets/icon/BoxIcon.svg'
 
 type OrderItem = {
     name: string
@@ -40,7 +40,7 @@ const ActiveOrderCard = ({
     onContactRider,
 }: ActiveOrderCardProps) => {
     const StatusIcon = {
-        "Preparing": ChefHatIcon,
+        "Preparing": BoxTimeIcon,
         "Picked Up": BoxIcon,
         "Out of Delivery": DeliveryIcon,
     }[status]
@@ -138,7 +138,7 @@ const ActiveOrderCard = ({
             <OrderStatus activeStep={activeStep} />
 
             <View
-                className="items-start bg-[#E5E4E2]/40 py-4 px-5"
+                className="items-start bg-[#F5F5F5] py-4 px-5"
                 style={{
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
@@ -194,7 +194,7 @@ const ActiveOrderCard = ({
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={onContactRider}
-                    className="flex-row gap-2 items-center justify-center bg-[#FFFFFF] border border-[#3F2516]/20"
+                    className="flex-row gap-2 items-center justify-center bg-[#E5E4E2]/75"
                     style={{
                         paddingHorizontal: scale(8),
                         paddingVertical: verticalScale(8),

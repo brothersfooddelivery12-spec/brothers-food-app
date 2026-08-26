@@ -235,7 +235,7 @@ export default function VerifyOtpScreen() {
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingTop: heroHeight * 0.58,
-                        paddingBottom: verticalScale(30),
+                        paddingBottom: insets.bottom + verticalScale(35)
                     }}
                     bottomOffset={30}
                     extraKeyboardSpace={20}

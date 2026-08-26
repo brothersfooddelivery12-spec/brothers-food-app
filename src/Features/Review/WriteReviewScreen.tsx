@@ -152,7 +152,7 @@ export default function WriteReviewScreen() {
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(45)
+                    paddingBottom: insets.bottom + verticalScale(25)
                 }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"

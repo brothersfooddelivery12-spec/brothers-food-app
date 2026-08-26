@@ -47,8 +47,8 @@ export default function OrderInvoiceScreen() {
                     onPress={() => router.back()}
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        width: moderateScale(38),
-                        height: moderateScale(38)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
                     <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
@@ -83,7 +83,7 @@ export default function OrderInvoiceScreen() {
                             height: moderateScale(38)
                         }}
                     >
-                        <DownloadIcon width={moderateScale(19)} height={moderateScale(19)} color={"#3F2516"} strokeWidth={1.5} />
+                        <DownloadIcon width={moderateScale(19)} height={moderateScale(19)} color={"#1F1F1F"} strokeWidth={1.5} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -95,7 +95,7 @@ export default function OrderInvoiceScreen() {
                             height: moderateScale(38)
                         }}
                     >
-                        <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={1.5} style={{ marginRight: moderateScale(2.5)} } />
+                        <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginRight: moderateScale(2.5)} } />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -110,7 +110,7 @@ export default function OrderInvoiceScreen() {
                 contentContainerStyle={{
                     marginTop: verticalScale(8),
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(45)
+                    paddingBottom: insets.bottom + verticalScale(35)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -724,11 +724,11 @@ export default function OrderInvoiceScreen() {
                                         borderRadius: moderateScale(18)
                                     }}
                                 >
-                                    <PrinterIcon width={moderateScale(14)} height={moderateScale(14)} color={"#FFFFFF"} />
+                                    <PrinterIcon width={moderateScale(14)} height={moderateScale(14)} color={"#FFFFFF"} strokeWidth={1.8} />
 
                                     <Text
                                         className='text-[#FFFFFF] font-semibold'
-                                        style={{ fontSize: moderateScale(10) }}
+                                        style={{ fontSize: moderateScale(11) }}
                                     >
                                         Print Invoice
                                     </Text>
@@ -744,11 +744,11 @@ export default function OrderInvoiceScreen() {
                                         borderRadius: moderateScale(18)
                                     }}
                                 >
-                                    <DownloadIcon width={moderateScale(14)} height={moderateScale(14)} color={"#3F2516"} />
+                                    <DownloadIcon width={moderateScale(14)} height={moderateScale(14)} color={"#3F2516"} strokeWidth={1.8}/>
 
                                     <Text
                                         className='text-[#3F2516] font-semibold'
-                                        style={{ fontSize: moderateScale(10) }}
+                                        style={{ fontSize: moderateScale(11) }}
                                     >
                                         PDF Copy
                                     </Text>
@@ -764,11 +764,11 @@ export default function OrderInvoiceScreen() {
                                         borderRadius: moderateScale(18)
                                     }}
                                 >
-                                    <ShareIcon width={moderateScale(14)} height={moderateScale(14)} color={"#1F1F1F"} />
+                                    <ShareIcon width={moderateScale(14)} height={moderateScale(14)} color={"#1F1F1F"} strokeWidth={1.8}/>
 
                                     <Text
                                         className='text-[#1F1F1F] font-semibold'
-                                        style={{ fontSize: moderateScale(10) }}
+                                        style={{ fontSize: moderateScale(11) }}
                                     >
                                         Share
                                     </Text>

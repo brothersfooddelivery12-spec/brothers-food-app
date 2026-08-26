@@ -13,7 +13,6 @@ import { router } from "expo-router"
 import { useCallback, useState } from "react"
 import { Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
-import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import RatingDistribution from "../Details/components/RatingDistribution"
@@ -34,14 +33,10 @@ const REVIEWS_CATEGORIES = [
     "5 Stars"
 ]
 
-const TITLE_HEIGHT = verticalScale(48)
-
 export default function RestaurantReviewScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const [selectedReview, setSelectedReview] = useState("All Reviews")
-    const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
-    const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
     const rating = 4.8
     const stars = getRatingStars(rating)
@@ -74,60 +69,6 @@ export default function RestaurantReviewScreen() {
         },[]
     )
 
-    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
-    const scrollY = useSharedValue(0)
-
-    const scrollHandler = useAnimatedScrollHandler({
-        onScroll: (event) => {
-            scrollY.value = event.contentOffset.y
-        },
-        onMomentumEnd: (event) => {
-            const y = event.contentOffset.y
-
-            if (y > 0 && y < titleHeight) {
-                const shouldOpen = y < titleHeight / 2
-
-                scrollTo(
-                    animatedRef,
-                    0,
-                    shouldOpen ? 0 : titleHeight,
-                    true
-                )
-            }
-        },
-    })
-
-    const headerContainerStyle = useAnimatedStyle(() => {
-        const translateY = interpolate(
-            scrollY.value,
-            [0, titleHeight],
-            [0, -titleHeight],
-            Extrapolation.CLAMP
-        )
-
-        return {
-            transform: [{ translateY }],
-        }
-    })
-
-    const headerTitleStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            scrollY.value,
-            [0, titleHeight * 0.6],
-            [1, 0],
-            Extrapolation.CLAMP
-        ),
-    }))
-
-    const headerButtonStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            scrollY.value,
-            [0, titleHeight * 0.6],
-            [1, 0],
-            Extrapolation.CLAMP
-        ),
-    }))
-
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
             <StatusBar
@@ -136,88 +77,54 @@ export default function RestaurantReviewScreen() {
                 barStyle="dark-content"
             />
 
-            <Animated.View
-                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
-                onLayout={(event) => {
-                    const height = event.nativeEvent.layout.height
-
-                    if (height !== titleHeight) {
-                        setTitleHeight(height)
-                    }
+            <View
+                className="flex-row items-center w-full -mx-1"
+                style={{
+                    paddingHorizontal: scale(14),
+                    marginTop: verticalScale(12),
+                    marginBottom: verticalScale(10),
+                    gap: scale(8)
                 }}
-                style={[
-                    {
-                        top: insets.top,
-                        zIndex: 10
-                    },
-                    headerContainerStyle,
-                ]}
             >
-                <View
-                    className="flex-row items-center w-full -mx-1"
+                <TouchableOpacity
+                    activeOpacity={0.95}
+                    onPress={() => router.back()}
+                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
-                        paddingHorizontal: scale(14),
-                        marginTop: verticalScale(12),
-                        marginBottom: verticalScale(10),
-                        gap: scale(8)
+                        width: moderateScale(40),
+                        height: moderateScale(40)
                     }}
                 >
-                    <AnimatedTouchableOpacity
-                        activeOpacity={0.95}
-                        onPress={() => router.back()}
-                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
-                        style={[
-                            {
-                                width: moderateScale(40),
-                                height: moderateScale(40)
-                            },
-                            headerTitleStyle
-                        ]}
-       
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                </TouchableOpacity>
+            
+                <View className="items-start gap-1 flex-1">
+                    <Text
+                        className="text-[#1F1F1F] font-extrabold"
+                        style={{ fontSize: moderateScale(16) }}
                     >
-                        <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
-                    </AnimatedTouchableOpacity>
-
-                    <View className="items-start gap-1 flex-1">
-                        <Animated.Text
-                            className="text-[#1F1F1F] font-extrabold"
-                            style={[
-                                {
-                                    fontSize: moderateScale(16)
-                                },
-                                headerTitleStyle
-                            ]}
-                        >
-                            Customer Reviews
-                        </Animated.Text>
-
-                        <Animated.Text
-                            className="text-[#1F1F1F]/65 font-medium"
-                            style={[
-                                {
-                                    fontSize: moderateScale(11)
-                                },
-                                headerTitleStyle
-                            ]}
-                        >
-                            See what customers are saying
-                        </Animated.Text>
-                    </View>
+                        Customer Reviews
+                    </Text>
+                                
+                    <Text
+                        className="text-[#1F1F1F]/65 font-medium"
+                        style={{ fontSize: moderateScale(11) }}
+                    >
+                        See what customers are saying
+                    </Text>
                 </View>
-            </Animated.View>
+            </View>
 
-            <Animated.FlatList
-                ref={animatedRef}
+            <FlatList
                 data={customerReviews}
                 renderItem={renderReviews}
-                onScroll={scrollHandler}
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingTop: TITLE_HEIGHT,
+                    paddingTop: verticalScale(4),
                     paddingBottom: insets.bottom + verticalScale(25)
                 }}
                 ListHeaderComponent={

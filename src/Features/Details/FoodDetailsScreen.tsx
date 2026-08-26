@@ -63,7 +63,7 @@ export default function FoodDetailsScreen() {
             <KeyboardAwareScrollView
                 className="flex-1 bg-white"
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(80)
+                    paddingBottom: insets.bottom + verticalScale(85)
                 }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
@@ -116,9 +116,9 @@ export default function FoodDetailsScreen() {
                             }}
                         >
                             {favourite ? (
-                                <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
+                                <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
                             ): (
-                                <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                                <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
                             )}
                         </TouchableOpacity>
                     </View>
@@ -323,16 +323,16 @@ export default function FoodDetailsScreen() {
                     </View>
 
                     <View
-                        className="p-4 bg-[#E5E4E2]/35"
+                        className="p-4 bg-[#F5F5F5]"
                         style={{
-                            borderRadius: moderateScale(22),
+                            borderRadius: moderateScale(20),
                             marginTop: moderateScale(25)
                         }}
                     >
                         <Text
                             className="mt-1 font-extrabold text-[#1F1F1F]"
                             style={{
-                                fontSize: moderateScale(16),
+                                fontSize: moderateScale(15),
                                 marginLeft: moderateScale(5)
                             }}
                         >
@@ -415,9 +415,9 @@ export default function FoodDetailsScreen() {
                     </View>
 
                     <View
-                        className="p-4 bg-[#E5E4E2]/35"
+                        className="p-4 bg-[#F5F5F5]"
                         style={{
-                            borderRadius: moderateScale(22),
+                            borderRadius: moderateScale(20),
                             marginTop: moderateScale(25)
                         }}
                     >
