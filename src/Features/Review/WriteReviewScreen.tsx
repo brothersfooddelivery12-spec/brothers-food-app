@@ -400,9 +400,7 @@ export default function WriteReviewScreen() {
                         style={{
                             height: verticalScale(120),
                             borderRadius: moderateScale(18),
-                            borderColor: isReviewFocused
-                                ? "#3F2516"
-                                : "#D9C5B9"
+                            borderColor: "#D9C5B9"
                         }}
                     >
                         <TextInput

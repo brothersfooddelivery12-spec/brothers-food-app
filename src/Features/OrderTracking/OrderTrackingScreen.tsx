@@ -185,9 +185,7 @@ export default function OrderTrackingScreen() {
                     >
                         <View className="relative self-start">
                             <Image
-                                source={{
-                                    uri: "https://i.pinimg.com/1200x/c9/29/96/c929967d53fc1281553274f65846668b.jpg",
-                                }}
+                                source={require("@/assets/images/profile-placeholder.jpg")}
                                 contentFit="cover"
                                 cachePolicy="memory-disk"
                                 style={{

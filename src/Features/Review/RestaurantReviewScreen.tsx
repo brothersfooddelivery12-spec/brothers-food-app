@@ -441,7 +441,7 @@ export default function RestaurantReviewScreen() {
                                     router.push('/write-review')
                                 })
                             }
-                            className="flex-row gap-1 items-center justify-center bg-[#3F2516] mx-5"
+                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
                             style={{
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),

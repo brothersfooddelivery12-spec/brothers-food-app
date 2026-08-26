@@ -619,7 +619,11 @@ export default function RestaurantDetailsScreen() {
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                onPress={() => {}}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/restaurant-gallery')
+                                    })
+                                }
                                 className="items-center"
                             >
                                 <Text

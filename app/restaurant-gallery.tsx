@@ -1,0 +1,3 @@
+import RestaurantGalleryScreen from "@/Features/RestaurantGallery/RestaurantGalleryScreen"
+
+export default RestaurantGalleryScreen
