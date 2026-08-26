@@ -264,7 +264,7 @@ export default function FavouritesScreen() {
                                 style={{
                                     width: cardWidth,
                                     height: moderateScale(95),
-                                    borderRadius: moderateScale(22),
+                                    borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text

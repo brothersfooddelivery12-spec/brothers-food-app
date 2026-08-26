@@ -1,12 +1,14 @@
+import ClockIcon from "@/assets/icon/ClockIcon.svg"
+import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
+import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
+import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
+import { Image } from "expo-image"
+import { router } from "expo-router"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
-import { Image } from "expo-image"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
-import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
-import RatingIcon from "@/assets/icon/RatingIcon.svg"
-import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 
 interface FavRestaurantCard {
     name: string
@@ -26,6 +28,8 @@ interface FavRestaurantCardProps {
 }
 
 const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCardProps) => {
+    const preventDoublePress = usePreventDoublePress()
+
     return (
         <TouchableOpacity
             activeOpacity={0.95}
@@ -205,8 +209,12 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                         activeOpacity={0.95}
                         onPress={(event) => {
                             event.stopPropagation()
+
+                            preventDoublePress(() => {
+                                router.push('/restaurant-menu')
+                            })
                         }}
-                        className="bg-[#E5E4E2]/85 items-center justify-center"
+                        className="bg-[#E5E4E2]/75 items-center justify-center"
                         style={{
                             paddingHorizontal: scale(18),
                             paddingVertical: verticalScale(8),
