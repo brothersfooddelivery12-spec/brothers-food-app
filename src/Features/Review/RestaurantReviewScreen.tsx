@@ -452,7 +452,7 @@ export default function RestaurantReviewScreen() {
                             <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
 
                             <Text
-                                className="text-[#FFFFFF] font-bold"
+                                className="text-[#FFFFFF] font-semibold"
                                 style={{ fontSize: moderateScale(14) }}
                             >
                                 Write Review

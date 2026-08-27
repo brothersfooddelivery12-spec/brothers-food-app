@@ -1,6 +1,6 @@
-import { View, Text, TextInput } from "react-native"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import LocationIcon from '@/assets/icon/LocationIcon2.svg';
+import { Text, TextInput, View } from "react-native";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
 interface AddressInputProps {
   addressLine1: string;
@@ -26,14 +26,14 @@ export default function AddressInput({
         }}
     >
         <View
-            className="items-center justify-center bg-[#3f25161d]"
+            className="items-center justify-center bg-[#F5F5F5]"
             style={{
                 width: moderateScale(36),
                 height: moderateScale(36),
                 borderRadius: moderateScale(10)
             }}
         >
-            <LocationIcon width={scale(20)} height={scale(20)} color={"#655145"} /> 
+            <LocationIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.5} /> 
         </View>
 
         <View

@@ -3,6 +3,7 @@ import BubbleChatQuestionIcon from '@/assets/icon/BubbleChatQuestionIcon.svg'
 import CameraIcon from '@/assets/icon/CameraIcon.svg'
 import ChatIcon from '@/assets/icon/ChatIcon.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
+import DeleteIcon from '@/assets/icon/DeleteIcon.svg'
 import EditIcon from '@/assets/icon/EditIcon.svg'
 import HeartIcon from '@/assets/icon/FavouriteIconOutline.svg'
 import FoodIcon from '@/assets/icon/FoodIcon.svg'
@@ -10,6 +11,7 @@ import HelpCircleIcon from '@/assets/icon/HelpCircleIcon.svg'
 import InformationCircleIcon from '@/assets/icon/InformationCircleIcon.svg'
 import LanguagesIcon from '@/assets/icon/LanguagesIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import LogoutIcon from '@/assets/icon/LogoutIcon.svg'
 import MedalIcon from '@/assets/icon/MedalIcon.svg'
 import MoneyIcon from '@/assets/icon/MoneyIcon2.svg'
 import NotepadTextIcon from '@/assets/icon/NotepadTextIcon.svg'
@@ -24,11 +26,13 @@ import VegIcon from '@/assets/icon/VeganIcon.svg'
 import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { Image } from "expo-image"
+import { router } from 'expo-router'
 import { useState } from "react"
 import { Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import ProfileMenuItem from './Components/ProfileMenuItem'
 
 const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
@@ -49,6 +53,7 @@ type OpenMenu = "appearance" | "language" | null
 export default function ProfileScreen() {
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const preventDoublePress = usePreventDoublePress()
     const [vegMode, setVegMode] = useState(false)
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null)
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
@@ -170,8 +175,12 @@ export default function ProfileScreen() {
                             }}
                         >
                             <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={() => {}}
+                                activeOpacity={0.95}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/edit-profile')
+                                    })
+                                }
                                 className="absolute flex-row items-center justify-center gap-1 bg-[#F8D56A]"
                                 style={{
                                     top: verticalScale(12),
@@ -217,10 +226,10 @@ export default function ProfileScreen() {
                                         onPress={() => {}}
                                         className="absolute bg-white items-center justify-center rounded-full"
                                         style={{
-                                            right: moderateScale(3),
+                                            right: moderateScale(5),
                                             bottom: moderateScale(3),
-                                            width: moderateScale(25),
-                                            height: moderateScale(25)
+                                            width: moderateScale(23),
+                                            height: moderateScale(23)
                                         }}
                                     >
                                         <CameraIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
@@ -324,7 +333,11 @@ export default function ProfileScreen() {
 
                             <TouchableOpacity
                                 activeOpacity={0.9}
-                                onPress={() => {}}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/brothers-plus')
+                                    })
+                                }
                                 className="flex-row items-center justify-center gap-1 bg-[#F8D56A]"
                                 style={{
                                     paddingStart: scale(9),
@@ -425,9 +438,7 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <View className='flex-row items-center gap-2'>
                                 <View
@@ -499,8 +510,7 @@ export default function ProfileScreen() {
                                             width: moderateScale(145),
                                             borderRadius: moderateScale(14),
                                             paddingVertical: verticalScale(6),
-                                            zIndex: 100,
-                                            elevation: 8
+                                            zIndex: 100
                                         }}
                                     >
                                         {APPEARANCE_OPTIONS.map((option) => {
@@ -516,7 +526,7 @@ export default function ProfileScreen() {
                                                     }}
                                                     style={{
                                                         paddingHorizontal: scale(12),
-                                                        paddingVertical: verticalScale(8)
+                                                        paddingVertical: verticalScale(6)
                                                     }}
                                                 >
                                                     <Text
@@ -588,8 +598,7 @@ export default function ProfileScreen() {
                                             width: moderateScale(145),
                                             borderRadius: moderateScale(14),
                                             paddingVertical: verticalScale(6),
-                                            zIndex: 100,
-                                            elevation: 8
+                                            zIndex: 100
                                         }}
                                     >
                                         {LANGUAGE_OPTIONS.map((option) => (
@@ -602,7 +611,7 @@ export default function ProfileScreen() {
                                                 }}
                                                 style={{
                                                     paddingHorizontal: scale(12),
-                                                    paddingVertical: verticalScale(8)
+                                                    paddingVertical: verticalScale(6)
                                                 }}
                                             >
                                                 <Text
@@ -631,13 +640,17 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <ProfileMenuItem label="My orders" icon={OrderIcon} showDivider={true} onPress={()=> {}} />
 
-                            <ProfileMenuItem label="Saved Addresses" icon={LocationIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Saved Addresses" icon={LocationIcon} showDivider={true}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/saved-address')
+                                    })
+                                }
+                            />
 
                             <ProfileMenuItem label="Favorite Restaurants" icon={HeartIcon} showDivider={true} onPress={()=> {}} />
 
@@ -653,9 +666,7 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true} onPress={()=> {}} />
 
@@ -671,9 +682,7 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <View className='flex-row items-center gap-2'>
                                 <View
@@ -723,9 +732,7 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <ProfileMenuItem label="Help Center" icon={HelpCircleIcon} showDivider={true} onPress={()=> {}} />
 
@@ -743,9 +750,7 @@ export default function ProfileScreen() {
 
                         <View
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <ProfileMenuItem label="Privacy" icon={PrivacyIcon} showDivider={true} onPress={()=> {}} />
 
@@ -776,6 +781,48 @@ export default function ProfileScreen() {
                                 <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
                             </View>
                         </View>
+
+                        <TouchableOpacity
+                            activeOpacity={0.95}
+                            onPress={() => {}}
+                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            style={{
+                                marginTop: verticalScale(16),
+                                borderRadius: moderateScale(28),
+                                paddingHorizontal: scale(12),
+                                paddingVertical: verticalScale(14)
+                            }}
+                        >
+                            <LogoutIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
+
+                            <Text
+                                className="text-[#FFFFFF] font-semibold"
+                                style={{ fontSize: moderateScale(14) }}
+                            >
+                                LogOut
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            activeOpacity={0.95}
+                            onPress={() => {}}
+                            className="flex-row gap-2 items-center justify-center bg-[#FEE2E2]/80 mx-2"
+                            style={{
+                                marginTop: verticalScale(16),
+                                borderRadius: moderateScale(28),
+                                paddingHorizontal: scale(12),
+                                paddingVertical: verticalScale(14)
+                            }}
+                        >
+                            <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={"#DC2626"} strokeWidth={1.8} />
+
+                            <Text
+                                className="text-[#DC2626] font-semibold"
+                                style={{ fontSize: moderateScale(14) }}
+                            >
+                                Delete Account
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 }
             />
