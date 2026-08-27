@@ -449,7 +449,7 @@ export default function RestaurantReviewScreen() {
                                 paddingVertical: verticalScale(12)
                             }}
                         >
-                            <EditIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFFFFF"} />
+                            <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
 
                             <Text
                                 className="text-[#FFFFFF] font-bold"

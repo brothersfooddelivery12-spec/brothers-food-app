@@ -1,17 +1,16 @@
-import { View, Pressable, Text } from "react-native"
-import { router } from "expo-router"
-import HomeOutlineIcon from '@/assets/icon/HomeOutline.svg'
-import HomeFilledIcon from '@/assets/icon/HomeFilled.svg'
-import SearchOulineIcon from '@/assets/icon/SearchOutline.svg'
-import SearchFilledIcon from '@/assets/icon/SearchFilledIcon.svg'
-import ProfileOutlineIcon from '@/assets/icon/ProfileOutlineIcon.svg'
-import ProfileFilledIcon from '@/assets/icon/ProfileFilledIcon.svg'
-import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
 import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
+import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
+import HomeFilledIcon from '@/assets/icon/HomeFilled.svg'
+import HomeOutlineIcon from '@/assets/icon/HomeOutline.svg'
+import ProfileFilledIcon from '@/assets/icon/ProfileFilledIcon.svg'
+import ProfileOutlineIcon from '@/assets/icon/ProfileOutlineIcon.svg'
+import SearchFilledIcon from '@/assets/icon/SearchFilledIcon.svg'
+import SearchOulineIcon from '@/assets/icon/SearchOutline.svg'
 import ShoppingBagIcon from '@/assets/icon/ShoppingBagIcon.svg'
 import { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs"
-import { moderateScale, verticalScale } from "react-native-size-matters"
+import { Pressable, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { moderateScale, verticalScale } from "react-native-size-matters"
 
 export default function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const insets = useSafeAreaInsets()
@@ -42,7 +41,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                 return focused ? (
                     <FavouriteFilledIcon width={size} height={size} color={color} />
                 ) : (
-                    <FavouriteOutlineIcon width={size} height={size} color={color} />
+                    <FavouriteOutlineIcon width={size} height={size} color={color} strokeWidth={1.5} />
                 )
 
             case "profile":

@@ -1,12 +1,12 @@
-import { Image } from "expo-image"
-import { Text, TouchableOpacity, View } from "react-native"
-import { moderateScale, verticalScale } from "react-native-size-matters"
-import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
+import ClockIcon from '@/assets/icon/ClockIcon.svg'
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import PlusIcon from '@/assets/icon/PlusIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
-import ClockIcon from '@/assets/icon/ClockIcon.svg'
+import { Image } from "expo-image"
 import React from "react"
+import { Text, TouchableOpacity, View } from "react-native"
+import { moderateScale, verticalScale } from "react-native-size-matters"
 
 export interface FoodSearchCardProps {
     id: string
@@ -99,7 +99,7 @@ const FoodSearchCard = ({
                     {isFavourite ? (
                         <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
                     ) : (
-                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.5} style={{ marginTop: moderateScale(1.5) }} />
                     )}
                 </TouchableOpacity>
             </View>

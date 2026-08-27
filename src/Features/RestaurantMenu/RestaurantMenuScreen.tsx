@@ -206,7 +206,7 @@ export default function RestaurantMenuScreen(){
                         {favourite ? (
                             <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
                         ): (
-                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"}  strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
                         )}
                     </TouchableOpacity>
 

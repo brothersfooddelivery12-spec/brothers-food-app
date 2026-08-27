@@ -259,7 +259,7 @@ export default function RestaurantDetailsScreen() {
                                         {favourite ? (
                                             <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
                                         ): (
-                                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginTop: moderateScale(2) }} />
+                                            <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
                                         )}
                                     </TouchableOpacity>
 
@@ -434,7 +434,7 @@ export default function RestaurantDetailsScreen() {
                                                     height: moderateScale(36)
                                                 }}
                                             >
-                                                <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
+                                                <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" strokeWidth={1.8} />
                                             </View>
 
                                             <View className="justify-center">

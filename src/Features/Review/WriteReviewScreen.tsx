@@ -541,7 +541,7 @@ export default function WriteReviewScreen() {
                             {recommended ? (
                                 <HeartFilledIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
                             ) : (
-                                <HearOutlineIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} style={{ marginTop: moderateScale(2) }} />
+                                <HearOutlineIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
                             )}
                         </View>
 

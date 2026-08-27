@@ -1,13 +1,13 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
-import { Image } from "expo-image"
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
-import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
-import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
-import RestaurantFoodCard, { SignatureItem } from "./RestaurantFoodCard"
+import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { Image } from "expo-image"
 import React from "react"
+import { FlatList, Text, TouchableOpacity, View } from "react-native"
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
+import RestaurantFoodCard, { SignatureItem } from "./RestaurantFoodCard"
 
 interface RestaurantCardProps {
     name: string
@@ -125,7 +125,7 @@ const RestaurantSearchCard = ({
                     {isFavourite ? (
                         <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
                     ) : (
-                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.5} style={{ marginTop: moderateScale(1.5) }} />
                     )}
                 </TouchableOpacity>
             </View>

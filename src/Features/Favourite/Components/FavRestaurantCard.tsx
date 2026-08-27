@@ -72,7 +72,7 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                     {item.isFavourite ? (
                         <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
                     ) : (
-                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.5} style={{ marginTop: moderateScale(1.5) }} />
                     )}
                 </TouchableOpacity>
             </View>

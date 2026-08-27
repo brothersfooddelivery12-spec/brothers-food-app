@@ -1,12 +1,12 @@
+import ClockIcon from "@/assets/icon/ClockIcon.svg"
+import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
+import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
+import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { Image } from "expo-image"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
-import { Image } from "expo-image"
 import { moderateScale, verticalScale } from "react-native-size-matters"
-import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
-import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
-import RatingIcon from "@/assets/icon/RatingIcon.svg"
-import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 
 interface RestaurantCardProps {
     name: string
@@ -69,7 +69,7 @@ const RestaurantCard = ({
                     {isFavourite ? (
                         <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
                     ) : (
-                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.5} style={{ marginTop: moderateScale(1.5) }} />
                     )}
                 </TouchableOpacity>
             </View>

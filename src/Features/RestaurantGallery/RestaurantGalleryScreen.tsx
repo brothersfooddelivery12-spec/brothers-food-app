@@ -335,7 +335,7 @@ export default function RestaurantGalleryScreen(){
                                             borderRadius: moderateScale(14),
                                             paddingVertical: verticalScale(6),
                                             zIndex: 100,
-                                            elevation: 8
+                                            elevation: 4
                                         }}
                                     >
                                         {SORT_OPTIONS.map((option) => {
