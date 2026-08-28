@@ -132,7 +132,9 @@ export default function HomeScreen() {
 
                         <TouchableOpacity
                             activeOpacity={0.95}
-                            onPress={() => {}}
+                            onPress={() => 
+                                router.push('/brothers-ai')
+                            }
                             className="flex-row w-full items-center gap-2 mt-5"
                         >
                             <View

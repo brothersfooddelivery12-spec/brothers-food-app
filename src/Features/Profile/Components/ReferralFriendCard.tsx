@@ -88,7 +88,7 @@ const ReferralStep = ({
                             ? "#3F2516"
                             : active
                               ? "#EDE4DA"
-                              : "#F0F0F0",
+                              : "#e9e9e9",
                     }}
                 >
                     {renderIcon()}
@@ -113,7 +113,7 @@ const ReferralStep = ({
                                     borderRadius: moderateScale(2),
                                     backgroundColor: completed
                                         ? "#CDBBAE"
-                                        : "#E6E6E6"
+                                        : "#dddddd"
                                 }}
                             />
                         ))}
@@ -391,8 +391,8 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                         }}
                     >
                         <Text
-                            className={`${statusStyle.text} font-semibold`}
-                            style={{ fontSize: moderateScale(8.5) }}
+                            className={`${statusStyle.text} font-medium`}
+                            style={{ fontSize: moderateScale(9) }}
                         >
                             {getStatusLabel()}
                         </Text>

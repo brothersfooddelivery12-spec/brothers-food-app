@@ -6,7 +6,7 @@ import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import VerificationIcon from '@/assets/icon/SecurityIcon.svg'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -338,34 +338,45 @@ export default function RestaurantGalleryScreen(){
                                             elevation: 4
                                         }}
                                     >
-                                        {SORT_OPTIONS.map((option) => {
+                                        {SORT_OPTIONS.map((option, index) => {
                                             const isSelected = selectedSort === option
 
                                             return (
-                                                <TouchableOpacity
-                                                    key={option}
-                                                    activeOpacity={0.9}
-                                                    onPress={() => {
-                                                        setSelectedSort(option)
-                                                        setShowSortMenu(false)
-                                                    }}
-                                                    className="flex-row items-center"
-                                                    style={{
-                                                        paddingHorizontal: scale(12),
-                                                        paddingVertical: verticalScale(7)
-                                                    }}
-                                                >
-                                                    <Text
-                                                        className={`flex-1 ${
-                                                            isSelected
-                                                                ? "text-[#3F2516] font-bold"
-                                                                : "text-[#1F1F1F]/75 font-medium"
-                                                        }`}
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                <React.Fragment key={option}>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.9}
+                                                        onPress={() => {
+                                                            setSelectedSort(option)
+                                                            setShowSortMenu(false)
+                                                        }}
+                                                        style={{
+                                                            paddingHorizontal: scale(12),
+                                                            paddingVertical: verticalScale(5)
+                                                        }}
                                                     >
-                                                        {option}
-                                                    </Text>
-                                                </TouchableOpacity>
+                                                        <Text
+                                                            className={
+                                                                isSelected
+                                                                    ? "text-[#3F2516] font-semibold"
+                                                                    : "text-[#1F1F1F]/75 font-medium"
+                                                            }
+                                                            style={{ fontSize: moderateScale(13) }}
+                                                        >
+                                                            {option}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                            
+                                                    {index !== SORT_OPTIONS.length - 1 && (
+                                                        <View
+                                                            className="bg-[#1F1F1F]/10"
+                                                            style={{
+                                                                height: 1,
+                                                                marginVertical: verticalScale(2),
+                                                                marginHorizontal: scale(10)
+                                                            }}
+                                                        />
+                                                    )}
+                                                </React.Fragment>
                                             )
                                         })}
                                     </View>
