@@ -251,7 +251,7 @@ export default function SavedAddressScreen(){
                             className="relative bg-[#3F2516] p-4"
                             style={{
                                 borderRadius: moderateScale(22),
-                                marginTop: verticalScale(8),
+                                marginTop: verticalScale(8)
                             }}
                         >
                             <View

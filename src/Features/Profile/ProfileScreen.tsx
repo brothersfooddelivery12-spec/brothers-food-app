@@ -27,7 +27,7 @@ import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { Image } from "expo-image"
 import { router } from 'expo-router'
-import { useState } from "react"
+import React, { useState } from "react"
 import { Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -359,7 +359,7 @@ export default function ProfileScreen() {
 
                         <View className="flex-row items-center gap-3 mt-5">
                             <View
-                                className="flex-row items-center  bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
+                                className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
                                 style={{
                                     width: cardWidth,
                                     height: moderateScale(60),
@@ -413,7 +413,7 @@ export default function ProfileScreen() {
 
                                 <View className='items-center gap-1'>
                                     <Text
-                                        className="text-[#1F1F1F] font-medium"
+                                        className="text-[#1F1F1F]/75 font-medium"
                                         style={{ fontSize: moderateScale(12) }}
                                     >
                                         Active Coupons
@@ -509,37 +509,49 @@ export default function ProfileScreen() {
                                             marginTop: verticalScale(8),
                                             width: moderateScale(145),
                                             borderRadius: moderateScale(14),
-                                            paddingVertical: verticalScale(6),
+                                            paddingVertical: verticalScale(7),
                                             zIndex: 100
                                         }}
                                     >
-                                        {APPEARANCE_OPTIONS.map((option) => {
+                                        {APPEARANCE_OPTIONS.map((option, index) => {
                                             const isSelected = selectedAppearance === option
 
                                             return (
-                                                <TouchableOpacity
-                                                    key={option}
-                                                    activeOpacity={0.9}
-                                                    onPress={() => {
-                                                        setSelectedAppearance(option)
-                                                        setOpenMenu(null)
-                                                    }}
-                                                    style={{
-                                                        paddingHorizontal: scale(12),
-                                                        paddingVertical: verticalScale(6)
-                                                    }}
-                                                >
-                                                    <Text
-                                                        className={
-                                                            isSelected
-                                                                ? "text-[#3F2516] font-bold"
-                                                                : "text-[#1F1F1F]/75 font-medium"
-                                                        }
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                <React.Fragment key={option}>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.9}
+                                                        onPress={() => {
+                                                            setSelectedAppearance(option)
+                                                            setOpenMenu(null)
+                                                        }}
+                                                        style={{
+                                                            paddingHorizontal: scale(12),
+                                                            paddingVertical: verticalScale(5)
+                                                        }}
                                                     >
-                                                        {option}
-                                                    </Text>
-                                                </TouchableOpacity>
+                                                        <Text
+                                                            className={
+                                                                isSelected
+                                                                    ? "text-[#3F2516] font-semibold"
+                                                                    : "text-[#1F1F1F]/75 font-medium"
+                                                            }
+                                                            style={{ fontSize: moderateScale(13) }}
+                                                        >
+                                                            {option}
+                                                        </Text>
+                                                    </TouchableOpacity>
+
+                                                    {index !== APPEARANCE_OPTIONS.length - 1 && (
+                                                        <View
+                                                            className="bg-[#1F1F1F]/10"
+                                                            style={{
+                                                                height: 1,
+                                                                marginVertical: verticalScale(2),
+                                                                marginHorizontal: scale(10)
+                                                            }}
+                                                        />
+                                                    )}
+                                                </React.Fragment>
                                             )
                                         })}
                                     </View>
@@ -597,34 +609,46 @@ export default function ProfileScreen() {
                                             marginTop: verticalScale(6),
                                             width: moderateScale(145),
                                             borderRadius: moderateScale(14),
-                                            paddingVertical: verticalScale(6),
+                                            paddingVertical: verticalScale(7),
                                             zIndex: 100
                                         }}
                                     >
-                                        {LANGUAGE_OPTIONS.map((option) => (
-                                            <TouchableOpacity
-                                                key={option}
-                                                activeOpacity={0.9}
-                                                onPress={() => {
-                                                    setSelectedLanguage(option)
-                                                    setOpenMenu(null)
-                                                }}
-                                                style={{
-                                                    paddingHorizontal: scale(12),
-                                                    paddingVertical: verticalScale(6)
-                                                }}
-                                            >
-                                                <Text
-                                                    className={
-                                                        selectedLanguage === option
-                                                            ? "text-[#3F2516] font-bold"
-                                                            : "text-[#1F1F1F]/75 font-medium"
-                                                    }
-                                                    style={{ fontSize: moderateScale(12) }}
+                                        {LANGUAGE_OPTIONS.map((option, index) => (
+                                            <React.Fragment key={option}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.9}
+                                                    onPress={() => {
+                                                        setSelectedLanguage(option)
+                                                        setOpenMenu(null)
+                                                    }}
+                                                    style={{
+                                                        paddingHorizontal: scale(12),
+                                                        paddingVertical: verticalScale(6),
+                                                    }}
                                                 >
-                                                    {option}
-                                                </Text>
-                                            </TouchableOpacity>
+                                                    <Text
+                                                        className={
+                                                            selectedLanguage === option
+                                                                ? "text-[#3F2516] font-semibold"
+                                                                : "text-[#1F1F1F]/75 font-medium"
+                                                        }
+                                                        style={{ fontSize: moderateScale(13) }}
+                                                    >
+                                                        {option}
+                                                    </Text>
+                                                </TouchableOpacity>
+
+                                                {index !== LANGUAGE_OPTIONS.length - 1 && (
+                                                    <View
+                                                        className="bg-[#1F1F1F]/10"
+                                                        style={{
+                                                            height: 1,
+                                                            marginVertical: verticalScale(2),
+                                                            marginHorizontal: scale(10)
+                                                        }}
+                                                    />
+                                                )}
+                                            </React.Fragment>
                                         ))}
                                     </View>
                                 )}
@@ -642,7 +666,13 @@ export default function ProfileScreen() {
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
                             style={{ borderRadius: moderateScale(18) }}
                         >
-                            <ProfileMenuItem label="My orders" icon={OrderIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="My orders" icon={OrderIcon} showDivider={true}
+                                onPress={()=> 
+                                    preventDoublePress(() => {
+                                        router.push('/(tabs)/order')
+                                    })
+                                }
+                            />
 
                             <ProfileMenuItem label="Saved Addresses" icon={LocationIcon} showDivider={true}
                                 onPress={()=>
@@ -652,9 +682,21 @@ export default function ProfileScreen() {
                                 }
                             />
 
-                            <ProfileMenuItem label="Favorite Restaurants" icon={HeartIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Favorite Restaurants" icon={HeartIcon} showDivider={true}
+                                onPress={()=> 
+                                    preventDoublePress(() => {
+                                        router.push('/(tabs)/favourite')
+                                    })
+                                }
+                            />
 
-                            <ProfileMenuItem label="Favorite Foods" icon={FoodIcon} showDivider={false} onPress={()=> {}} />
+                            <ProfileMenuItem label="Favorite Foods" icon={FoodIcon} showDivider={false}
+                                onPress={()=> 
+                                    preventDoublePress(() => {
+                                        router.push('/(tabs)/favourite')
+                                    })
+                                }
+                            />
                         </View>
 
                         <Text
@@ -701,7 +743,7 @@ export default function ProfileScreen() {
 
                                 <Text
                                     className='text-[#5c4639] font-semibold -mr-1'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     2,450 pts
                                 </Text>
@@ -720,7 +762,13 @@ export default function ProfileScreen() {
 
                             <ProfileMenuItem label="Membership Status" icon={StarBadgeIcon} showDivider={true} onPress={()=> {}} />
 
-                            <ProfileMenuItem label="Referral Program" icon={ShareIcon} showDivider={false} onPress={()=> {}} />
+                            <ProfileMenuItem label="Referral Program" icon={ShareIcon} showDivider={false}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/refferral')
+                                    })
+                                }
+                            />
                         </View>
 
                         <Text
@@ -773,7 +821,7 @@ export default function ProfileScreen() {
 
                                 <Text
                                     className='text-[#5c4639] font-semibold -mr-1'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     v4.2.1
                                 </Text>

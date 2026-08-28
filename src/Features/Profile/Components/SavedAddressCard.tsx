@@ -67,7 +67,7 @@ function SavedAddressCard({
                         top: verticalScale(38),
                         width: moderateScale(145),
                         borderRadius: moderateScale(14),
-                        paddingVertical: verticalScale(6),
+                        paddingVertical: verticalScale(7),
                         zIndex: 100
                     }}
                 >
@@ -79,37 +79,57 @@ function SavedAddressCard({
                         }}
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(7),
+                            paddingVertical: verticalScale(5)
                         }}
                     >
                         <Text
                             className="text-[#1F1F1F]/75 font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             Edit Address
                         </Text>
                     </TouchableOpacity>
 
                     {!item.isDefault && (
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={(event) => {
-                                event.stopPropagation()
-                                onSetDefault?.(item)
-                            }}
-                            style={{
-                                paddingHorizontal: scale(12),
-                                paddingVertical: verticalScale(7),
-                            }}
-                        >
-                            <Text
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{ fontSize: moderateScale(12) }}
+                        <>
+                            <View
+                                className="bg-[#1F1F1F]/10"
+                                style={{
+                                    height: 1,
+                                    marginVertical: verticalScale(2),
+                                    marginHorizontal: moderateScale(10)
+                                }}
+                            />
+
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={(event) => {
+                                    event.stopPropagation()
+                                    onSetDefault?.(item)
+                                }}
+                                style={{
+                                    paddingHorizontal: scale(12),
+                                    paddingVertical: verticalScale(5)
+                                }}
                             >
-                                Set as Default
-                            </Text>
-                        </TouchableOpacity>
+                                <Text
+                                    className="text-[#1F1F1F]/75 font-medium"
+                                    style={{ fontSize: moderateScale(13) }}
+                                >
+                                    Set as Default
+                                </Text>
+                            </TouchableOpacity>
+                        </>
                     )}
+
+                    <View
+                        className="bg-[#1F1F1F]/10"
+                        style={{
+                            height: 1,
+                            marginVertical: verticalScale(2),
+                            marginHorizontal: moderateScale(10)
+                        }}
+                    />
 
                     <TouchableOpacity
                         activeOpacity={0.9}
@@ -119,12 +139,12 @@ function SavedAddressCard({
                         }}
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(7),
+                            paddingVertical: verticalScale(5)
                         }}
                     >
                         <Text
                             className="text-[#EF4444] font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             Delete Address
                         </Text>
