@@ -123,10 +123,10 @@ export default function OrderInvoiceScreen() {
                                 borderRadius: moderateScale(12)
                             }}
                         >
-                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#4d9151" />
+                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#4d9151" strokeWidth={1.5} />
 
                             <Text
-                                className="font-semibold text-[#4d9151]"
+                                className="font-medium text-[#4d9151]"
                                 style={{ fontSize: moderateScale(11) }}
                             >
                                 Paid Successfully

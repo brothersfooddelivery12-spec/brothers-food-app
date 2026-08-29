@@ -13,7 +13,7 @@ import LanguagesIcon from '@/assets/icon/LanguagesIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import LogoutIcon from '@/assets/icon/LogoutIcon.svg'
 import MedalIcon from '@/assets/icon/MedalIcon.svg'
-import MoneyIcon from '@/assets/icon/MoneyIcon2.svg'
+import MoneyIcon from '@/assets/icon/MoneyIcon.svg'
 import NotepadTextIcon from '@/assets/icon/NotepadTextIcon.svg'
 import OrderIcon from '@/assets/icon/OrderIcon.svg'
 import PaintBoardIcon from '@/assets/icon/PaintBoardIcon.svg'
@@ -782,7 +782,13 @@ export default function ProfileScreen() {
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
                             style={{ borderRadius: moderateScale(18) }}
                         >
-                            <ProfileMenuItem label="Help Center" icon={HelpCircleIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Help Center" icon={HelpCircleIcon} showDivider={true}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/help-center')
+                                    })
+                                }
+                            />
 
                             <ProfileMenuItem label="Chat Support" icon={ChatIcon} showDivider={true} onPress={()=> {}} />
 

@@ -1,21 +1,45 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import BankIcon from '@/assets/icon/BankIcon.svg'
+import BagIcon from '@/assets/icon/CartIcon.svg'
 import CircleStarIcon from '@/assets/icon/CircleStarIcon.svg'
 import CopyIcon from '@/assets/icon/CopyIcon.svg'
 import CrownIcon from '@/assets/icon/CrownIcon.svg'
+import GiftIcon from '@/assets/icon/GiftIcon.svg'
 import OfferIcon from '@/assets/icon/OfferIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
+import ShareIcon from '@/assets/icon/ShareIcon.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { referralFriends } from '@/constant/referralFriends'
 import * as Clipboard from "expo-clipboard"
 import { router } from "expo-router"
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { FlatList, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import ReferralFriendCard from './Components/ReferralFriendCard'
+
+const HOW_IT_WORKS = [
+    {
+        id: "1",
+        step: "1. Share",
+        description: "Share your code with friends and family.",
+        icon: ShareIcon,
+    },
+    {
+        id: "2",
+        step: "2. Order",
+        description: "They place their first order on Brothers.",
+        icon: BagIcon,
+    },
+    {
+        id: "3",
+        step: "3. Earn",
+        description: "You both get rewards instantly!",
+        icon: GiftIcon,
+    },
+]
 
 export default function ReferralScreen(){
     const insets = useSafeAreaInsets()
@@ -419,13 +443,103 @@ export default function ReferralScreen(){
                             </View>
                         </View>
 
+                        <View
+                            className="bg-white border border-[#1F1F1F]/10 mx-2"
+                            style={{
+                                borderRadius: moderateScale(22),
+                                paddingHorizontal: scale(14),
+                                paddingVertical: verticalScale(16),
+                                marginTop: verticalScale(18)
+                            }}
+                        >
+                            <Text
+                                className="text-[#1F1F1F] font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    letterSpacing: 0.8
+                                }}
+                            >
+                                How It Works
+                            </Text>
+
+                            <View
+                                className="flex-row items-start"
+                                style={{ marginTop: verticalScale(15) }}
+                            >
+                                {HOW_IT_WORKS.map((item, index) => {
+                                    const Icon = item.icon
+
+                                    return (
+                                        <React.Fragment key={item.id}>
+                                            <View className="flex-1 items-center">
+                                                <View
+                                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                                    style={{
+                                                        width: moderateScale(42),
+                                                        height: moderateScale(42),
+                                                        borderRadius: moderateScale(28)
+                                                    }}
+                                                >
+                                                    <Icon width={moderateScale(19)} height={moderateScale(19)} color="#5C4639" strokeWidth={1.8} />
+                                                </View>
+
+                                                <Text
+                                                    className="text-[#1F1F1F] font-bold text-center"
+                                                    style={{
+                                                        fontSize: moderateScale(12),
+                                                        marginTop: verticalScale(8)
+                                                    }}
+                                                >
+                                                    {item.step}
+                                                </Text>
+
+                                                <Text
+                                                    className="text-[#1F1F1F]/65 font-medium text-center"
+                                                    style={{
+                                                        fontSize: moderateScale(10),
+                                                        lineHeight: moderateScale(13),
+                                                        marginTop: verticalScale(4)
+                                                    }}
+                                                >
+                                                    {item.description}
+                                                </Text>
+                                            </View>
+
+                                            {index !== HOW_IT_WORKS.length - 1 && (
+                                                <View
+                                                    className="flex-row items-center overflow-hidden"
+                                                    style={{
+                                                        width: scale(40),
+                                                        marginTop: moderateScale(21),
+                                                        gap: scale(2)
+                                                    }}
+                                                >
+                                                    {Array.from({
+                                                        length: Math.floor(scale(40) / (scale(3) + scale(2))),
+                                                    }).map((_, dashIndex) => (
+                                                        <View
+                                                            key={dashIndex}
+                                                            style={{
+                                                                width: scale(3),
+                                                                height: 1,
+                                                                backgroundColor: "rgba(31,31,31,0.18)"
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </View>
+                                            )}
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </View>
+                        </View>
 
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
                             className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
                             style={{
-                                marginTop: verticalScale(16),
+                                marginTop: verticalScale(20),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)

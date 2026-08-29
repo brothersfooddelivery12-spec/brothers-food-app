@@ -188,7 +188,7 @@ export default function OrdersScreen() {
                 <View
                     style={{
                         marginTop: verticalScale(8),
-                        marginBottom: verticalScale(10),
+                        marginBottom: verticalScale(10)
                     }}
                 >
                     <SearchBar

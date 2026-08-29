@@ -14,13 +14,9 @@ import { router } from "expo-router"
 import { useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
-import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-} from "react-native-reanimated"
+import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-
 import { scheduleOnRN } from "react-native-worklets"
 
 const MOOD_CATEGORIES = [

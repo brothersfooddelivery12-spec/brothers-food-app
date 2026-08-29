@@ -13,7 +13,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import BenefitCard, { BenefitItem } from './Components/BenefitCard'
 
-export const MEMBERSHIP_BENEFITS: BenefitItem[] = [
+const MEMBERSHIP_BENEFITS: BenefitItem[] = [
     {
         id: "1",
         title: "Free Delivery",

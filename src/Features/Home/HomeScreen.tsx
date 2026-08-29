@@ -133,7 +133,9 @@ export default function HomeScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => 
-                                router.push('/brothers-ai')
+                                preventDoublePress(() => {
+                                    router.push('/(tabs)/search')
+                                })
                             }
                             className="flex-row w-full items-center gap-2 mt-5"
                         >
