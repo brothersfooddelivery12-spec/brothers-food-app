@@ -790,9 +790,21 @@ export default function ProfileScreen() {
                                 }
                             />
 
-                            <ProfileMenuItem label="Chat Support" icon={ChatIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Chat Support" icon={ChatIcon} showDivider={true}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/chat-support')
+                                    })
+                                }
+                            />
 
-                            <ProfileMenuItem label="FAQs" icon={BubbleChatQuestionIcon} showDivider={false} onPress={()=> {}} />
+                            <ProfileMenuItem label="FAQs" icon={BubbleChatQuestionIcon} showDivider={false}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/faq-screen')
+                                    })
+                                }
+                            />
                         </View>
 
                         <Text

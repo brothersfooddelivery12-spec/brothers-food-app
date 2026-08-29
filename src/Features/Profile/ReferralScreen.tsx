@@ -5,13 +5,14 @@ import CircleStarIcon from '@/assets/icon/CircleStarIcon.svg'
 import CopyIcon from '@/assets/icon/CopyIcon.svg'
 import CrownIcon from '@/assets/icon/CrownIcon.svg'
 import GiftIcon from '@/assets/icon/GiftIcon.svg'
-import OfferIcon from '@/assets/icon/OfferIcon.svg'
+import OfferIcon from '@/assets/icon/OfferFilledIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
 import ShareIcon from '@/assets/icon/ShareIcon.svg'
-import UserIcon from '@/assets/icon/UserIcon.svg'
+import UserIcon from '@/assets/icon/UserFilledIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { referralFriends } from '@/constant/referralFriends'
 import * as Clipboard from "expo-clipboard"
+import { Image } from 'expo-image'
 import { router } from "expo-router"
 import React, { useCallback } from 'react'
 import { FlatList, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
@@ -125,53 +126,65 @@ export default function ReferralScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-6 py-8 justify-center items-center mx-1"
+                            className="bg-[#3F2516] px-4 py-6 items-center flex-row"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
-                            <View
-                                className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
-                                style={{
-                                    borderRadius: moderateScale(18),
-                                    paddingRight: scale(8),
-                                    paddingLeft: scale(6),
-                                    paddingVertical: verticalScale(3)
-                                }}
-                            >
-                                <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={"#3F2516"} />
+                            <View className='justify-center flex-1 items-start'>
+                                <View
+                                    className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
+                                    style={{
+                                        borderRadius: moderateScale(18),
+                                        paddingRight: scale(8),
+                                        paddingLeft: scale(6),
+                                        paddingVertical: verticalScale(3)
+                                    }}
+                                >
+                                    <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={"#3F2516"} />
+
+                                    <Text
+                                        className='text-[#3F2516] font-semibold uppercase'
+                                        style={{ fontSize: moderateScale(9) }}
+                                    >
+                                        EXCLUSIVE OFFER
+                                    </Text>
+                                </View>
 
                                 <Text
-                                    className='text-[#3F2516] font-semibold'
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className='text-[#FFFFFF] font-extrabold ml-2'
+                                    style={{
+                                        fontSize: moderateScale(20),
+                                        marginTop: verticalScale(10)
+                                    }}
                                 >
-                                    EXCLUSIVE OFFER
+                                    Refer Friends, Earn Rewards
+                                </Text>
+
+                                <Text
+                                    className='text-[#FFFFFF]/75 font-normal leading-5 ml-2'
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        marginTop: verticalScale(4)
+                                    }}
+                                >
+                                    Share the joy of fine dining with
+                                    your inner circle. Bring a friend
+                                    and both of you enjoy our
+                                    premium rewards.
                                 </Text>
                             </View>
 
-                            <Text
-                                className='text-[#FFFFFF] font-extrabold ml-2'
+                            <Image
+                                source={require("@/assets/images/ReferIllustration.png")}
+                                contentFit="contain"
+                                cachePolicy="memory-disk"
                                 style={{
-                                    fontSize: moderateScale(20),
-                                    marginTop: verticalScale(14)
+                                    width: moderateScale(145),
+                                    height: moderateScale(145)
                                 }}
-                            >
-                                Refer Friends, Earn Rewards
-                            </Text>
-
-                            <Text
-                                className='text-[#FFFFFF]/75 font-normal text-center leading-5 ml-2'
-                                style={{
-                                    fontSize: moderateScale(12),
-                                    marginTop: verticalScale(8)
-                                }}
-                            >
-                                Share the joy of fine dining with
-                                your inner circle. Bring a friend
-                                and both of you enjoy our
-                                premium rewards.
-                            </Text>
+                            />
                         </View>
 
                         <View className="flex-row items-center gap-3 mt-5">

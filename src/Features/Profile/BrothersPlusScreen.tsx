@@ -1,12 +1,20 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
+import ChatIcon from '@/assets/icon/ChatIcon.svg'
 import CircleStarIcon from '@/assets/icon/CircleStarIcon.svg'
 import CrownIcon from '@/assets/icon/CrownIcon.svg'
+import HeadphoneIcon from '@/assets/icon/CustomerServiceIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SupportIcon from '@/assets/icon/HeadsetFilledIcon.svg'
+import SpeedIcon from '@/assets/icon/LimitationIcon.svg'
+import LockFilledIcon from '@/assets/icon/LockFilledIcon.svg'
+import LockIcon from '@/assets/icon/LockIcon.svg'
 import TagIcon from '@/assets/icon/OfferFilledIcon.svg'
+import StarOutlineIcon from '@/assets/icon/RatingIcon3.svg'
 import VerifyIcon from '@/assets/icon/SecurityIcon.svg'
 import StarBadgeIcon from '@/assets/icon/StarBadgeIcon.svg'
 import CheckCircleIcon from '@/assets/icon/SuccessIcon2.svg'
+import ProfileIcon from '@/assets/icon/UserIcon.svg'
+import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -46,6 +54,44 @@ const MEMBERSHIP_BENEFITS: BenefitItem[] = [
         icon: TagIcon,
         size: 32
     },
+]
+
+export const LOCKED_MEMBERSHIP_FEATURES = [
+    {
+        id: "1",
+        title: "Rider Profile & Performance History",
+        description:
+            "View your profile details and past performance insights.",
+        icon: ProfileIcon
+    },
+    {
+        id: "2",
+        title: "Real-time Safety Ratings",
+        description:
+            "Check live safety ratings from customers and platform.",
+        icon: StarOutlineIcon
+    },
+    {
+        id: "3",
+        title: "Live Traffic & Precision ETA Information",
+        description:
+            "Access live traffic updates and precise ETA for better planning.",
+        icon: SpeedIcon
+    },
+    {
+        id: "4",
+        title: "Direct Rider Chat & Media Sharing",
+        description:
+            "Chat directly with riders and share photos or documents securely.",
+        icon: ChatIcon
+    },
+    {
+        id: "5",
+        title: "24/7 Premium Dispute Support",
+        description:
+            "Get priority support and faster resolution for your disputes.",
+        icon: HeadphoneIcon
+    }
 ]
 
 export default function BrothersPlusScreen(){
@@ -111,59 +157,213 @@ export default function BrothersPlusScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-4 py-8 justify-center items-center mx-1"
+                            className="bg-[#3F2516] px-4 py-6 items-center flex-row gap-2"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
-                            <View
-                                className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
-                                style={{
-                                    borderRadius: moderateScale(18),
-                                    paddingRight: scale(8),
-                                    paddingLeft: scale(6),
-                                    paddingVertical: verticalScale(3)
-                                }}
-                            >
-                                <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={"#3F2516"} />
+                            <View className='justify-center flex-1 items-start'>
+                                <View
+                                    className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
+                                    style={{
+                                        borderRadius: moderateScale(18),
+                                        paddingRight: scale(8),
+                                        paddingLeft: scale(6),
+                                        paddingVertical: verticalScale(3)
+                                    }}
+                                >
+                                    <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={"#3F2516"} />
+
+                                    <Text
+                                        className='text-[#3F2516] font-semibold'
+                                        style={{ fontSize: moderateScale(9) }}
+                                    >
+                                        VIP MEMBERSHIP
+                                    </Text>
+                                </View>
 
                                 <Text
-                                    className='text-[#3F2516] font-semibold'
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className='text-[#FFFFFF] font-extrabold ml-2'
+                                    style={{
+                                        fontSize: moderateScale(20),
+                                        marginTop: verticalScale(10)
+                                    }}
                                 >
-                                    VIP MEMBERSHIP
+                                    Bhai Chara
+                                </Text>
+
+                                <Text
+                                    className='text-[#FFFFFF]/75 font-normal leading-5 ml-2'
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        marginTop: verticalScale(4)
+                                    }}
+                                >
+                                    Unlimited savings, faster deliveries
+                                    and exclusive member benefits
+                                    designed for the epicurean elite.
                                 </Text>
                             </View>
 
-                            <Text
-                                className='text-[#FFFFFF] font-extrabold ml-2'
+                            <Image
+                                source={require("@/assets/images/BrothersPlusIllustration.png")}
+                                contentFit="contain"
+                                cachePolicy="memory-disk"
                                 style={{
-                                    fontSize: moderateScale(20),
-                                    marginTop: verticalScale(14)
+                                    width: moderateScale(125),
+                                    height: moderateScale(125)
                                 }}
-                            >
-                                Bhai Chara
-                            </Text>
+                            />
+                        </View>
 
-                            <Text
-                                className='text-[#FFFFFF]/75 font-normal text-center leading-5 ml-2'
+                        <View
+                            className="mt-5 p-4 bg-white border border-[#1F1F1F]/10"
+                            style={{
+                                borderRadius: moderateScale(18),
+                                position: "relative"
+                            }}
+                        >
+                            <View
+                                className="absolute flex-row items-center justify-center gap-1 bg-[#F8D56A]"
                                 style={{
-                                    fontSize: moderateScale(12),
-                                    marginTop: verticalScale(8)
+                                    top: verticalScale(12),
+                                    right: scale(12),
+                                    paddingHorizontal: scale(8),
+                                    paddingVertical: verticalScale(3),
+                                    borderRadius: moderateScale(12),
+                                    zIndex: 10
                                 }}
                             >
-                                Unlimited savings, faster deliveries
-                                and exclusive member benefits
-                                designed for the epicurean elite.
-                            </Text>
+                                <LockIcon width={moderateScale(14)} height={moderateScale(14)} color="#3F2516" strokeWidth={1.8} />
+
+                                <Text
+                                    className="text-[#3F2516] font-semibold uppercase"
+                                    style={{
+                                        fontSize: moderateScale(7),
+                                        letterSpacing: 0.3
+                                    }}
+                                >
+                                    Locked Content
+                                </Text>
+                            </View>
+
+                            <View className="flex-row items-start gap-3">
+                                <View
+                                    className="items-center justify-center rounded-full bg-[#E8B93F]/20"
+                                    style={{
+                                        width: moderateScale(42),
+                                        height: moderateScale(42)
+                                    }}
+                                >
+                                    <LockFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                                </View>
+
+                                <View
+                                    className="flex-1"
+                                    style={{ paddingRight: scale(38) }}
+                                >
+                                    <Text
+                                        className="text-[#1F1F1F] font-bold"
+                                        style={{ fontSize: moderateScale(14), paddingRight: scale(58) }}
+                                    >
+                                        Standard Access Restricted
+                                    </Text>
+
+                                    <Text
+                                        className="text-[#1F1F1F]/65 font-medium"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            lineHeight: moderateScale(15),
+                                            marginTop: verticalScale(4)
+                                        }}
+                                    >
+                                        Upgrade your access to unlock advanced rider features and
+                                        insights.
+                                    </Text>
+                                </View>
+                            </View>
+                                
+                            <View
+                                style={{
+                                    marginTop: verticalScale(14),
+                                    gap: verticalScale(10)
+                                }}
+                            >
+                                {LOCKED_MEMBERSHIP_FEATURES.map((item) => {
+                                    const Icon = item.icon
+
+                                    return (
+                                        <View
+                                            key={item.id}
+                                            className="flex-row items-center bg-white border border-[#1F1F1F]/10"
+                                            style={{
+                                                borderRadius: moderateScale(16),
+                                                paddingHorizontal: scale(10),
+                                                paddingVertical: verticalScale(10)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center bg-[#E8B93F]/15"
+                                                style={{
+                                                    width: moderateScale(44),
+                                                    height: moderateScale(44),
+                                                    borderRadius: moderateScale(14)
+                                                }}
+                                            >
+                                                <Icon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.8} />
+                                            </View>
+
+                                            <View
+                                                className="flex-1"
+                                                style={{
+                                                    marginLeft: scale(10),
+                                                    paddingRight: scale(8)
+                                                }}
+                                            >
+                                                <Text
+                                                    className="text-[#1F1F1F] font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(11),
+                                                        lineHeight: moderateScale(17)
+                                                    }}
+                                                >
+                                                    {item.title}
+                                                </Text>
+
+                                                <Text
+                                                    className="text-[#1F1F1F]/75 font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(9.5),
+                                                        lineHeight: moderateScale(14),
+                                                        marginTop: verticalScale(2)
+                                                    }}
+                                                >
+                                                    {item.description}
+                                                </Text>
+                                            </View>
+
+                                            <View
+                                                className="items-center justify-center border border-[#EF4444]/30 bg-[#EF4444]/5"
+                                                style={{
+                                                    width: moderateScale(38),
+                                                    height: moderateScale(38),
+                                                    borderRadius: moderateScale(11),
+                                                }}
+                                            >
+                                                <LockIcon width={moderateScale(18)} height={moderateScale(18)} color="#EF4444" strokeWidth={1.8} />
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+                            </View>
                         </View>
 
                         <Text
                             className='text-[#1F1F1F] font-bold text-center'
                             style={{
                                 fontSize: moderateScale(18),
-                                marginTop: verticalScale(18)
+                                marginTop: verticalScale(24)
                             }}
                         >
                             Choose Your Plan
@@ -562,7 +762,7 @@ export default function BrothersPlusScreen(){
                             ))}
                         </View>
 
-                        <View
+                        {/* <View
                             className="p-4 bg-white border border-[#1F1F1F]/10"
                             style={{
                                 borderRadius: moderateScale(18),
@@ -626,11 +826,11 @@ export default function BrothersPlusScreen(){
                                     </Text>
                                 </View>
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View className='w-full justify-center items-center'>
+                        <View className='mt-10 w-full justify-center items-center'>
                             <View
-                                className="items-center justify-center rounded-full bg-[#E8B93F]/15 mt-6"
+                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
                                 style={{
                                     width: moderateScale(56),
                                     height: moderateScale(56)

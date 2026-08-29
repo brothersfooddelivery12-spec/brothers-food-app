@@ -595,7 +595,7 @@ export default function FoodDetailsScreen() {
                         paddingVertical: verticalScale(8)
                     }}  
                 >
-                    <CartIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} strokeWidth={2.5} style={{ marginLeft: -moderateScale(2)}} />
+                    <CartIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} strokeWidth={1.5} style={{ marginLeft: -moderateScale(2)}} />
 
                     <Text
                         className="text-[#3F2516] font-semibold"

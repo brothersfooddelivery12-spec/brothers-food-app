@@ -53,7 +53,7 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
             className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
             style={{
                 borderRadius: moderateScale(18),
-                marginBottom: verticalScale(12)
+                marginBottom: verticalScale(10)
             }}
         >
             <TouchableOpacity
@@ -67,7 +67,7 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                 }}
             >
                 <Text
-                    className="flex-1 text-[#3F2516] font-bold"
+                    className="flex-1 text-[#1F1F1F] font-bold"
                     style={{
                         fontSize: moderateScale(14),
                         lineHeight: moderateScale(20)
@@ -84,9 +84,9 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                             height: moderateScale(28)
                         }
                     ]}
-                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                    className="items-center justify-center rounded-full bg-[#F5F5F5]"
                 >
-                    <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color="#5C4639" />
+                    <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F" />
                 </Animated.View>
             </TouchableOpacity>
 
