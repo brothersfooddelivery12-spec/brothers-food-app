@@ -1,0 +1,3 @@
+import RewardsAndCouponsScreen from "@/Features/RewardsAndCoupons/RewardsAndCouponsScreen"
+
+export default RewardsAndCouponsScreen

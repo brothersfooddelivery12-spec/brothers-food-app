@@ -393,7 +393,13 @@ export default function ProfileScreen() {
                                 </View>
                             </View>
 
-                            <View
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/rewards-coupons')
+                                    })
+                                }
                                 className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
                                 style={{
                                     width: cardWidth,
@@ -426,7 +432,7 @@ export default function ProfileScreen() {
                                         8 Available
                                     </Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         <Text

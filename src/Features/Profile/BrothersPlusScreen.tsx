@@ -324,7 +324,7 @@ export default function BrothersPlusScreen(){
                                                 <Text
                                                     className="text-[#1F1F1F] font-bold"
                                                     style={{
-                                                        fontSize: moderateScale(11),
+                                                        fontSize: moderateScale(12),
                                                         lineHeight: moderateScale(17)
                                                     }}
                                                 >
