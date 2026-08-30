@@ -1,6 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { tokenStorage } from "./token-storage"
 
 export interface User {
     id: string
@@ -25,6 +26,7 @@ interface AuthState {
     updateUser: (data: Partial<User>) => void
 
     setAuthenticated: (value: boolean) => void
+    logout: () => Promise<void>
     clearAuth: () => void
 }
 
@@ -73,6 +75,15 @@ export const useAuthStore = create<AuthState>()(
             setAuthenticated: (value) => {
                 set({
                     isAuthenticated: value
+                })
+            },
+
+            logout: async () => {
+                await tokenStorage.clearTokens()
+
+                set({
+                    user: null,
+                    isAuthenticated: false
                 })
             },
 

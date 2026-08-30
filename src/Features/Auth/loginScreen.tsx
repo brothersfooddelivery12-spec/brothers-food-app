@@ -61,7 +61,8 @@ export default function LoginScreen() {
             console.log("Sending OTP to:", mobileNumber)
 
             const res = await sendOtp({
-                phone: mobileNumber
+                phone: mobileNumber,
+                purpose: "LOGIN"
             })
 
             console.log("Send OTP response:", res.data)
@@ -72,7 +73,8 @@ export default function LoginScreen() {
                 router.push({
                     pathname: "/verifyOtp",
                     params: {
-                        mobileNumber
+                        mobileNumber,
+                        purpose: "LOGIN"
                     }
                 })
 

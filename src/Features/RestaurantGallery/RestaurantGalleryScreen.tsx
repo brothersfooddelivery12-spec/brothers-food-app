@@ -303,7 +303,7 @@ export default function RestaurantGalleryScreen(){
                         >
                             <Text
                                 className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 Visual journey
                             </Text>
@@ -387,8 +387,8 @@ export default function RestaurantGalleryScreen(){
                         <RestaurantGalleryView images={galleryImages} />
 
                         <Text
-                            className="text-[#1F1F1F] font-bold mt-4"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="text-[#1F1F1F] font-bold mt-6"
+                            style={{ fontSize: moderateScale(15) }}
                         >
                             Chef Specials & Vibe
                         </Text>

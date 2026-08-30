@@ -462,9 +462,9 @@ export default function RestaurantMenuScreen(){
                             </ScrollView>
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
+                                className="text-[#1F1F1F] font-bold"
                                 style={{
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(15),
                                     marginTop: verticalScale(6)
                                 }}
                             >
@@ -481,7 +481,7 @@ export default function RestaurantMenuScreen(){
                         >
                             <Text
                                 className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 Combos
                             </Text>
@@ -511,7 +511,7 @@ export default function RestaurantMenuScreen(){
 
                         <Text
                             className="text-[#1F1F1F] font-bold mt-5"
-                            style={{ fontSize: moderateScale(14) }}
+                            style={{ fontSize: moderateScale(15) }}
                         >
                             Frequently Ordered Together
                         </Text>

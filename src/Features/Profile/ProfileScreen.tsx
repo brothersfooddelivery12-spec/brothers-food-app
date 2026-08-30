@@ -33,6 +33,7 @@ import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnim
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import { useAuthStore } from '../Stores/auth-store'
 import ProfileMenuItem from './Components/ProfileMenuItem'
 
 const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
@@ -98,6 +99,18 @@ export default function ProfileScreen() {
             Extrapolation.CLAMP
         )
     }))
+
+    const logout = useAuthStore((state) => state.logout)
+
+    const handleLogout = async () => {
+        try {
+            await logout()
+
+            router.replace("/login")
+        } catch (error) {
+            console.error("Logout failed:", error)
+        }
+    }
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -856,7 +869,7 @@ export default function ProfileScreen() {
 
                         <TouchableOpacity
                             activeOpacity={0.95}
-                            onPress={() => {}}
+                            onPress={handleLogout}
                             className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
                             style={{
                                 marginTop: verticalScale(16),

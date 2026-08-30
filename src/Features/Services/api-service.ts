@@ -1,13 +1,17 @@
 import api from "./api-client"
 
-type SendOtpRequest = {
+export type OTPPurpose = "LOGIN" | "VERIFY"
+
+export type SendOtpRequest = {
     phone: string
+    purpose: OTPPurpose
 }
 
-type VerifyOtpRequest = {
-    phone: string;
-    otp: string;
-    role: "USER";
+export type VerifyOtpRequest = {
+    phone: string
+    otp: string
+    role: "USER"
+    purpose: OTPPurpose
 }
 
 type GoogleSignInRequest = {

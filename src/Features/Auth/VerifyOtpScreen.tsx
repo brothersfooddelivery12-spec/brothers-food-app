@@ -20,7 +20,7 @@ export default function VerifyOtpScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current
     const otpInputRef = useRef<TextInput>(null)
     const insets = useSafeAreaInsets()
-    const { mobileNumber } = useLocalSearchParams<{mobileNumber: string}>()
+    const { mobileNumber, purpose } = useLocalSearchParams<{mobileNumber: string, purpose: "LOGIN" | "VERIFY"}>()
     const phone = Array.isArray(mobileNumber)
     ? mobileNumber[0]
     : mobileNumber
@@ -117,11 +117,12 @@ export default function VerifyOtpScreen() {
 
         try {
             const res = await verifyOtp({
-                phone: phone,
-                otp: otp,
-                role: "USER"
+                phone: mobileNumber,
+                otp,
+                role: "USER",
+                purpose
             })
-
+            
             console.log("Verify OTP response:", res.data)
 
             if (res.data.success) {

@@ -431,7 +431,7 @@ export default function RiderProfileScreen() {
                         >
                             <Text
                                 className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 Achievements
                             </Text>
@@ -625,7 +625,7 @@ export default function RiderProfileScreen() {
                         >
                             <Text
                                 className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 Customer Feed
                             </Text>

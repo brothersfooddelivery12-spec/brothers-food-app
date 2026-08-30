@@ -149,7 +149,7 @@ export default function ChatSupportScreen(){
                             <View
                                 className='bg-[#FFFFFF] border border-[#1F1F1F]/10 flex-row gap-3 p-3'
                                 style={{
-                                    marginTop: verticalScale(10),
+                                    marginTop: verticalScale(5),
                                     borderRadius: moderateScale(18)
                                 }}
                             >
