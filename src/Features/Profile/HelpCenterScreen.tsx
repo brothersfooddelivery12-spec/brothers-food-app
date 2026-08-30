@@ -289,7 +289,7 @@ export default function HelpCenterScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-7 ml-2"
+                            className="text-[#1F1F1F] font-bold mt-7 ml-2"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             Reach Out Directly
@@ -402,7 +402,7 @@ export default function HelpCenterScreen(){
                             style={{ marginBottom: verticalScale(12) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-semibold flex-1"
+                                className="text-[#1F1F1F] font-bold flex-1"
                                 style={{ fontSize: moderateScale(15) }}
                             >
                                 Common Questions
@@ -432,7 +432,7 @@ export default function HelpCenterScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-3 mb-3"
+                            className="text-[#1F1F1F] font-bold mt-3 mb-3"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             Recent Tickets

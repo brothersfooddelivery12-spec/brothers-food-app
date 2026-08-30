@@ -253,8 +253,8 @@ export default function FAQsScreen(){
                             style={{ marginBottom: verticalScale(12) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-semibold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="text-[#1F1F1F] font-bold flex-1"
+                                style={{ fontSize: moderateScale(15) }}
                             >
                                 Frequently Asked Questions
                             </Text>

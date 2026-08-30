@@ -31,8 +31,8 @@ const RewardActionCard = ({
             className="flex-row items-center"
             style={{
                 minHeight: verticalScale(64),
-                paddingHorizontal: scale(14),
-                paddingVertical: verticalScale(11),
+                paddingHorizontal: scale(12),
+                paddingVertical: verticalScale(8),
                 borderRadius: moderateScale(18),
                 borderWidth: 1,
                 borderColor: isBrothersPlus
@@ -83,7 +83,7 @@ const RewardActionCard = ({
                         className="self-start bg-[#E8B93F]/15"
                         style={{
                             marginTop: verticalScale(5),
-                            paddingHorizontal: scale(5),
+                            paddingHorizontal: scale(7),
                             paddingVertical: verticalScale(2),
                             borderRadius: moderateScale(12)
                         }}

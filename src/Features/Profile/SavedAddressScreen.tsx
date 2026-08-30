@@ -189,7 +189,7 @@ export default function SavedAddressScreen(){
                 ListHeaderComponent={
                     <View>
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-2"
+                            className="text-[#1F1F1F] font-bold mt-2"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             Quick Select
@@ -241,7 +241,7 @@ export default function SavedAddressScreen(){
                         </ScrollView>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-5"
+                            className="text-[#1F1F1F] font-bold mt-5"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             Default Destination
@@ -394,7 +394,7 @@ export default function SavedAddressScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-5"
+                            className="text-[#1F1F1F] font-bold mt-5"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             Other Locations

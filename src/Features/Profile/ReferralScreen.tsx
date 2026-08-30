@@ -348,9 +348,9 @@ export default function ReferralScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold"
+                            className="text-[#1F1F1F] font-bold"
                             style={{
-                                fontSize: moderateScale(16),
+                                fontSize: moderateScale(15),
                                 marginTop: verticalScale(18),
                                 marginBottom: verticalScale(8)
                             }}
