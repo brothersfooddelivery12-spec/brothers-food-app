@@ -9,12 +9,12 @@ export const restaurantsOffers: RestaurantOffer[] = [
 
         colors: {
             backgroundColor: "#3F2516",
-            iconBackgroundColor: "#E8B93F",
+            iconBackgroundColor: "#F8D56A",
             iconColor: "#3F2516",
             dicountColor: "#FFFFFF",
             descriptionColor: "rgba(255, 255, 255, 0.55)",
             codeTextColor: "#FFFFFF",
-            copyCodeBackgroundColor: "#E8B93F",
+            copyCodeBackgroundColor: "#F8D56A",
             copyCodeTextColor: "#3F2516"
         }
     },

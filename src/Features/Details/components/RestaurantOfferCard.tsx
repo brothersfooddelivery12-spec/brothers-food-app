@@ -36,7 +36,7 @@ const RestaurantOfferCard = ({ restaurantOffer, icon: Icon , onPress }: Restaura
             style={{
                 width: moderateScale(270),
                 height: moderateScale(150),
-                paddingVertical: moderateScale(16),
+                paddingVertical: moderateScale(12),
                 paddingHorizontal: moderateScale(20),
                 borderRadius: moderateScale(26),
                 backgroundColor: colors.backgroundColor
@@ -74,7 +74,7 @@ const RestaurantOfferCard = ({ restaurantOffer, icon: Icon , onPress }: Restaura
                 className="font-medium"
                 style={{
                     fontSize: moderateScale(12),
-                    marginTop: verticalScale(4),
+                    marginTop: verticalScale(6),
                     color: colors.descriptionColor
                 }}
             >

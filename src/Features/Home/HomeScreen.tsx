@@ -103,7 +103,11 @@ export default function HomeScreen() {
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                onPress={() => {}}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/notification')
+                                    })
+                                }
                                 className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                 style={{
                                     width: moderateScale(44),

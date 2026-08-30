@@ -224,7 +224,7 @@ export default function SavedAddressScreen(){
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
                                             borderWidth: isSelected ? 1 : 1,
-                                            borderColor: isSelected ? "3F2516" : "#E8DDD3"
+                                            borderColor: isSelected ? "#3F2516" : "#E8DDD3"
                                         }}
                                     >
                                         <Text

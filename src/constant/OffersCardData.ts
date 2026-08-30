@@ -10,11 +10,11 @@ export const offers: Offer[] = [
 
         colors: {
             background: "#3F2516",
-            badgeBackground: "#E8B93F",
+            badgeBackground: "#F8D56A",
             badgeText: "#3F2516",
             title: "#FFFFFF",
             description: "#FFFFFFA6",
-            buttonBackground: "#E8B93F",
+            buttonBackground: "#F8D56A",
             buttonText: "#3F2516",
             icon: "#3F2516",
         },
