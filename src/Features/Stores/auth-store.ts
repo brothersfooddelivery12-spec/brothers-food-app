@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { tokenStorage } from "./token-storage"
@@ -79,12 +80,20 @@ export const useAuthStore = create<AuthState>()(
             },
 
             logout: async () => {
-                await tokenStorage.clearTokens()
+                try {
+                    if (GoogleSignin.hasPreviousSignIn()) {
+                        await GoogleSignin.signOut()
+                    }
+                } catch (error) {
+                    console.log("Google sign out failed:", error)
+                } finally {
+                    await tokenStorage.clearTokens()
 
-                set({
-                    user: null,
-                    isAuthenticated: false
-                })
+                    set({
+                        user: null,
+                        isAuthenticated: false
+                    })
+                }
             },
 
             clearAuth: () => {

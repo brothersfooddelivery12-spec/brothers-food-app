@@ -10,7 +10,8 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from "../hook/ToastContext"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { verifyOtp } from "../Services/api-service"
+import { sendOtp, verifyOtp } from "../Services/api-service"
+import { hideLoader, showLoader } from '../Services/loader-service'
 import { useAuthStore } from "../Stores/auth-store"
 import { tokenStorage } from "../Stores/token-storage"
 
@@ -80,23 +81,37 @@ export default function VerifyOtpScreen() {
         }
 
         setResending(true)
+        showLoader()
 
-        // try {
-        //     // Call your resend OTP API here
-        //     await resendOtp(mobileNumber);
+        try {
+            const res = await sendOtp({
+                phone: mobileNumber,
+                purpose: purpose
+            })
 
-        //     // Restart the cooldown
-        //     setResendTimer(45);
-        //     setCanResend(false);
+            console.log("Resend OTP Response:", res.data)
 
-        //     // Optional: clear the existing OTP
-        //     setOtp("");
-        //     setOtpError("");
-        // } catch (error) {
-        //     console.error("Resend OTP failed:", error);
-        // } finally {
-        //     setResending(false);
-        // }
+            if (!res.data.success) {
+                showToast(res.data.message || "Failed to resend OTP.", "warning")
+
+                return
+            }
+
+            setOtp("")
+            setOtpError("")
+
+            setResendTimer(60)
+            setCanResend(false)
+
+            showToast(res.data.message || "OTP sent successfully.", "success")
+        } catch (error) {
+            console.error("Resend OTP failed:", error)
+
+            showToast("Unable to resend OTP. Please try again.", "warning")
+        } finally {
+            setResending(false)
+            hideLoader()
+        }
     }
 
     const handleVerify = async () => {

@@ -52,9 +52,11 @@ const LANGUAGE_OPTIONS = [
 type OpenMenu = "appearance" | "language" | null
 
 export default function ProfileScreen() {
+    const user = useAuthStore((state) => state.user)
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const preventDoublePress = usePreventDoublePress()
+    
     const [vegMode, setVegMode] = useState(false)
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null)
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
@@ -110,6 +112,22 @@ export default function ProfileScreen() {
         } catch (error) {
             console.error("Logout failed:", error)
         }
+    }
+
+    const formatPhoneNumber = (
+    phone: string | null | undefined
+    ) => {
+        if (!phone) {
+            return "Phone not available"
+        }
+
+        const cleaned = phone.replace(/\D/g, "")
+
+        if (cleaned.length === 10) {
+            return `+91 ${cleaned.slice(0, 5)} ${cleaned.slice(5)}`
+        }
+
+        return phone
     }
 
     return(
@@ -223,7 +241,11 @@ export default function ProfileScreen() {
                                     }}
                                 >
                                     <Image
-                                        source={require("@/assets/images/profile-placeholder.jpg")}
+                                        source={
+                                            user?.profileImage
+                                                ? { uri: user.profileImage }
+                                                : require("@/assets/images/profile-placeholder.jpg")
+                                        }
                                         contentFit="cover"
                                         transition={200}
                                         style={{
@@ -261,7 +283,7 @@ export default function ProfileScreen() {
                                             paddingRight: scale(70)
                                         }}
                                     >
-                                        Harsh Suthar
+                                        {user?.name || "User"}
                                     </Text>
 
                                     <Text
@@ -272,7 +294,7 @@ export default function ProfileScreen() {
                                             marginTop: verticalScale(7)
                                         }}
                                     >
-                                        +91 98765 43210
+                                        {formatPhoneNumber(user?.phone)}
                                     </Text>
 
                                     <Text
@@ -283,7 +305,7 @@ export default function ProfileScreen() {
                                             marginTop: verticalScale(2)
                                         }}
                                     >
-                                        harsh@email.com
+                                        {user?.email || "No email available"}
                                     </Text>
                                 </View>
                             </View>
