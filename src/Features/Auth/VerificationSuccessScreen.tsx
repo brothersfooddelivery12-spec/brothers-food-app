@@ -13,6 +13,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-na
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { scheduleOnRN } from "react-native-worklets"
+import { useAuthStore } from '../Stores/auth-store'
 
 export default function VerificationSuccessScreen() {
     const insets = useSafeAreaInsets()
@@ -32,19 +33,25 @@ export default function VerificationSuccessScreen() {
     }, [])
 
     const handleStartOrdering = useCallback(() => {
-        if(!userExists) {
-            if (!fullName) {
+        if (!userExists) {
+            const trimmedName = fullName.trim()
+
+            if (!trimmedName) {
                 setNameError(true)
                 resetSwipe()
                 return
             }
-    
+
             setNameError(false)
+
+            useAuthStore.getState().updateUser({
+                name: trimmedName
+            })
         }
 
         router.dismissAll()
         router.replace("/(tabs)/home")
-    }, [fullName, resetSwipe, router])
+    }, [userExists,fullName,resetSwipe,router])
 
     const THUMB_SIZE = moderateScale(36)
     const HORIZONTAL_PADDING = scale(8)

@@ -23,7 +23,12 @@ interface AuthState {
     isAuthenticated: boolean
 
     setUser: (user: User) => void
-    setUserId: (id: string) => void
+
+    setAuthUser: (
+        id: string,
+        phone: string
+    ) => void
+
     updateUser: (data: Partial<User>) => void
 
     setAuthenticated: (value: boolean) => void
@@ -44,24 +49,27 @@ export const useAuthStore = create<AuthState>()(
                 })
             },
 
-            setUserId: (id) => {
+            setAuthUser: (id, phone) => {
                 set((state) => ({
                     user: state.user
                         ? {
                             ...state.user,
                             id,
+                            phone
                         }
                         : {
                             id,
                             name: "",
                             email: "",
-                            phone: null,
+                            phone,
                             role: "USER",
-                            isActive: false,
+                            isActive: false
                         },
+
+                    isAuthenticated: true
                 }))
             },
-            
+
             updateUser: (data) => {
                 set((state) => ({
                     user: state.user
@@ -85,7 +93,10 @@ export const useAuthStore = create<AuthState>()(
                         await GoogleSignin.signOut()
                     }
                 } catch (error) {
-                    console.log("Google sign out failed:", error)
+                    console.log(
+                        "Google sign out failed:",
+                        error
+                    )
                 } finally {
                     await tokenStorage.clearTokens()
 
@@ -103,12 +114,13 @@ export const useAuthStore = create<AuthState>()(
                 })
             }
         }),
-
         {
             name: "auth-store",
             storage: createJSONStorage(() => AsyncStorage),
+
             partialize: (state) => ({
-                user: state.user
+                user: state.user,
+                isAuthenticated: state.isAuthenticated
             })
         }
     )

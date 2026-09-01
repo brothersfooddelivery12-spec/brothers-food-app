@@ -147,9 +147,10 @@ export default function VerifyOtpScreen() {
 
                 await tokenStorage.setRefreshToken(authData.refresh_token)
 
-                useAuthStore.getState().setUserId(authData.user_id)
-
-                useAuthStore.getState().setAuthenticated(true)
+                useAuthStore.getState().setAuthUser(
+                    authData.user_id,
+                    mobileNumber
+                )
 
                 showToast(res.data.message, "success")
 

@@ -9,14 +9,19 @@ import GradientButton from '@/components/GradientButton'
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useAuthStore } from '../Stores/auth-store'
+import { useToast } from '../hook/ToastContext'
 
 export default function EditProfileScreen(){
     const insets = useSafeAreaInsets()
+    const user = useAuthStore((state) => state.user)
+    const updateUser = useAuthStore((state) => state.updateUser)
+    const {showToast} = useToast()
 
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
     const [fullName, setFullName] = useState("")
@@ -30,12 +35,26 @@ export default function EditProfileScreen(){
     const [nameError, setNameError] = useState(false)
     const [emailError, setEmailError] = useState(false)
     const [numberError, setNumberError] = useState(false)
+
+    useEffect(() => {
+        if (!user) {
+            return
+        }
+
+        setProfileImage(user.profileImage)
+        setFullName(user.name ?? "")
+        setEmailAddress(user.email ?? "")
+        setMobileNumber(user.phone ?? "")
+        setAddressLine1(user.address ?? "")
+        setCity(user.city ?? "")
+        setPinCode(user.pincode ?? "")
+    }, [user])
     
     const formatMobileNumber = (text: string) => {
         let numbersOnly = text.replace(/\D/g, "")
     
         if (numbersOnly.startsWith("91") && numbersOnly.length > 10) {
-            numbersOnly = numbersOnly.slice(2);
+            numbersOnly = numbersOnly.slice(2)
         }
     
         numbersOnly = numbersOnly.slice(0, 10)
@@ -52,6 +71,49 @@ export default function EditProfileScreen(){
         if (!result.canceled) {
             setProfileImage(result.assets[0].uri)
         }
+    }
+
+    const handleUpdateProfile = async () => {
+        const trimmedName = fullName.trim()
+        const trimmedEmail = emailAddress.trim()
+
+        let hasError = false
+
+        if (!trimmedName) {
+            setNameError(true)
+            hasError = true
+        }
+
+        if (
+            trimmedEmail &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+        ) {
+            setEmailError(true)
+            hasError = true
+        }
+
+        if (mobileNumber.length !== 10) {
+            setNumberError(true)
+            hasError = true
+        }
+
+        if (hasError) {
+            return
+        }
+
+        updateUser({
+            name: trimmedName,
+            email: trimmedEmail,
+            phone: mobileNumber,
+            profileImage,
+            address: addressLine1.trim(),
+            city: city.trim(),
+            pincode: pinCode.trim()
+        })
+
+        showToast("Profile updated successfully.", "success")
+
+        router.back()
     }
 
     return(
@@ -401,7 +463,7 @@ export default function EditProfileScreen(){
                     </View>
                 </View>
 
-                <GradientButton title='Update Profile' onPress={() => {}} />
+                <GradientButton title='Update Profile' onPress={handleUpdateProfile} />
             </KeyboardAwareScrollView>
         </SafeAreaView>
     )
