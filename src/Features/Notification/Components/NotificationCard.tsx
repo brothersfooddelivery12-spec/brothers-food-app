@@ -21,12 +21,8 @@ export type NotificationItem = {
 
     title: string
     description: string
-
     createdAt: string
-
     unread?: boolean
-
-    // optional fields
     badge?: string
     offerId?: string
     restaurantId?: string
@@ -91,7 +87,7 @@ function NotificationCard({
                             className="flex-1 text-[#1F1F1F] font-black"
                             style={{
                                 fontSize: moderateScale(15),
-                                lineHeight: moderateScale(16),
+                                lineHeight: moderateScale(18),
                                 paddingRight: scale(12),
                             }}
                         >
@@ -125,7 +121,7 @@ function NotificationCard({
                         style={{
                             fontSize: moderateScale(11),
                             lineHeight: moderateScale(16),
-                            marginTop: verticalScale(6)
+                            marginTop: verticalScale(5)
                         }}
                     >
                         {item.description}
@@ -220,7 +216,7 @@ function NotificationCard({
                             className="text-white font-black"
                             style={{
                                 fontSize: moderateScale(16),
-                                lineHeight: moderateScale(22),
+                                lineHeight: moderateScale(18),
                                 marginTop: verticalScale(5)
                             }}
                         >
@@ -232,7 +228,7 @@ function NotificationCard({
                             style={{
                                 fontSize: moderateScale(11),
                                 lineHeight: moderateScale(13),
-                                marginTop: verticalScale(3)
+                                marginTop: verticalScale(6)
                             }}
                         >
                             {item.description}
@@ -299,12 +295,12 @@ function NotificationCard({
                     </View>
 
                     <View className="flex-1">
-                        <View className="flex-row items-start mt-1">
+                        <View className="flex-row items-start">
                             <Text
                                 className="flex-1 text-[#1F1F1F] font-black"
                                 style={{
                                     fontSize: moderateScale(15),
-                                    lineHeight: moderateScale(24),
+                                    lineHeight: moderateScale(18),
                                     paddingRight: scale(8)
                                 }}
                             >
@@ -341,7 +337,7 @@ function NotificationCard({
                             style={{
                                 fontSize: moderateScale(11),
                                 lineHeight: moderateScale(16),
-                                marginTop: verticalScale(6)
+                                marginTop: verticalScale(5)
                             }}
                         >
                             {item.description}
@@ -452,7 +448,7 @@ function NotificationCard({
                                 className="flex-1 text-[#1F1F1F] font-black"
                                 style={{
                                     fontSize: moderateScale(15),
-                                    lineHeight: moderateScale(21),
+                                    lineHeight: moderateScale(18),
                                     paddingRight: scale(8)
                                 }}
                             >

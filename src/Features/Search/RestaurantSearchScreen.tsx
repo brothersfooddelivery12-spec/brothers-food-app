@@ -356,7 +356,7 @@ export default function RestaurantSearchScreen() {
                 removeClippedSubviews={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(20)
+                    paddingBottom: verticalScale(30)
                 }}
             />
         </SafeAreaView>

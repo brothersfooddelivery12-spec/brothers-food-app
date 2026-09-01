@@ -63,7 +63,7 @@ export default function FoodDetailsScreen() {
             <KeyboardAwareScrollView
                 className="flex-1 bg-white"
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(85)
+                    paddingBottom: verticalScale(85)
                 }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"

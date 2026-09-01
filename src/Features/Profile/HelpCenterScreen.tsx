@@ -219,7 +219,7 @@ export default function HelpCenterScreen(){
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(25)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <>

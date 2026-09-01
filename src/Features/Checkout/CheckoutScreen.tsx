@@ -142,7 +142,7 @@ export default function CheckoutScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(85)
+                    paddingBottom: verticalScale(85)
                 }}
                 ListHeaderComponent={
                     <View className="mt-3">

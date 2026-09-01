@@ -276,8 +276,7 @@ export default function ChatSupportScreen(){
                     className="bg-[#F5F5F5]"
                     style={{
                         paddingHorizontal: scale(14),
-                        paddingBottom:
-                            insets.bottom || verticalScale(10),
+                        paddingBottom: verticalScale(8),
                     }}
                 >
                     <ScrollView

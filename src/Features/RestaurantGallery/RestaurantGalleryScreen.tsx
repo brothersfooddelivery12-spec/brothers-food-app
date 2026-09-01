@@ -171,7 +171,7 @@ export default function RestaurantGalleryScreen(){
                 contentContainerStyle={{
                     marginTop: verticalScale(8),
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(35)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -478,7 +478,7 @@ export default function RestaurantGalleryScreen(){
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
-                                paddingVertical: verticalScale(12)
+                                paddingVertical: verticalScale(14)
                             }}
                         >
                             <MenuIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFFFFF"} />

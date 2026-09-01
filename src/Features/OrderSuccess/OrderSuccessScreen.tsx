@@ -55,7 +55,7 @@ export default function OrderSuccessScreen() {
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(35),
+                    paddingBottom: verticalScale(25),
                     paddingHorizontal: scale(16)
                 }}
                 showsVerticalScrollIndicator={false}

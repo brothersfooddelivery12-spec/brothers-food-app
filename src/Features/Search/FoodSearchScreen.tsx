@@ -240,7 +240,7 @@ export default function FoodSearchScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(20)
+                    paddingBottom: verticalScale(30)
                 }}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"

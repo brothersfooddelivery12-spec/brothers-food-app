@@ -134,7 +134,7 @@ export default function OrderTrackingScreen() {
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(25)
+                    paddingBottom: verticalScale(25)
                 }}
                 showsVerticalScrollIndicator={false}
             >

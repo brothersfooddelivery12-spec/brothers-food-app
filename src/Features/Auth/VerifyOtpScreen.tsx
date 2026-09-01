@@ -249,9 +249,8 @@ export default function VerifyOtpScreen() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        flexGrow: 1,
                         paddingTop: heroHeight * 0.58,
-                        paddingBottom: insets.bottom + verticalScale(35)
+                        paddingBottom: verticalScale(25)
                     }}
                     bottomOffset={30}
                     extraKeyboardSpace={20}

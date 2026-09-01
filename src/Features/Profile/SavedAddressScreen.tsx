@@ -184,7 +184,7 @@ export default function SavedAddressScreen(){
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
                     gap: verticalScale(10),
-                    paddingBottom: insets.bottom + verticalScale(25)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <View>

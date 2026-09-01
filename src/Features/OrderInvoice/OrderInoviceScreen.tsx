@@ -110,7 +110,7 @@ export default function OrderInvoiceScreen() {
                 contentContainerStyle={{
                     marginTop: verticalScale(8),
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(35)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <View>

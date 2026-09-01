@@ -222,7 +222,7 @@ export default function FavouritesScreen() {
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
                     paddingTop: SEARCH_BAR_HEIGHT,
-                    paddingBottom: insets.bottom + verticalScale(75)
+                    paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
                    <View style={{ marginTop: verticalScale(68) }}>

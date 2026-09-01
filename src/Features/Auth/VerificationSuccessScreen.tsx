@@ -6,8 +6,9 @@ import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
 import { useLocalSearchParams, useRouter } from "expo-router"
 import LottieView from "lottie-react-native"
 import { useCallback, useState } from "react"
-import { ScrollView, StatusBar, Text, TextInput, useWindowDimensions, View } from "react-native"
+import { StatusBar, Text, TextInput, useWindowDimensions, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -45,22 +46,30 @@ export default function VerificationSuccessScreen() {
         router.replace("/(tabs)/home")
     }, [fullName, resetSwipe, router])
 
-    const BUTTON_WIDTH = SCREEN_WIDTH - scale(28)
-    const THUMB_SIZE = moderateScale(34)
-    const PADDING = scale(12)
+    const THUMB_SIZE = moderateScale(36)
+    const HORIZONTAL_PADDING = scale(8)
 
-    const maxTranslateX = BUTTON_WIDTH - THUMB_SIZE - PADDING * 2
-
+    const buttonWidth = useSharedValue(0)
     const translateX = useSharedValue(0)
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
+            const maxTranslateX =
+                buttonWidth.value -
+                THUMB_SIZE -
+                HORIZONTAL_PADDING * 2
+
             translateX.value = Math.max(
                 0,
                 Math.min(event.translationX, maxTranslateX)
             )
         })
         .onEnd(() => {
+            const maxTranslateX =
+                buttonWidth.value -
+                THUMB_SIZE -
+                HORIZONTAL_PADDING * 2
+
             const threshold = maxTranslateX * 0.8
 
             if (translateX.value >= threshold) {
@@ -94,13 +103,16 @@ export default function VerificationSuccessScreen() {
                 barStyle="dark-content"
             />
 
-            <ScrollView
+            <KeyboardAwareScrollView
                 className="flex-1"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(35),
+                    paddingBottom: verticalScale(25),
                     paddingHorizontal: scale(14)
                 }}
-                showsVerticalScrollIndicator={false}
+                bottomOffset={30}
+                extraKeyboardSpace={20}
             >
                 <View className="items-center justify-center">
                     <LottieView
@@ -258,7 +270,7 @@ export default function VerificationSuccessScreen() {
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#3f25161d]"
+                                className="items-center justify-center bg-[#F5F5F5]"
                                 style={{
                                     width: moderateScale(36),
                                     height: moderateScale(36),
@@ -304,25 +316,32 @@ export default function VerificationSuccessScreen() {
 
                 <GestureDetector gesture={panGesture}>
                     <View
-                        className="flex-row items-center p-3 rounded-full w-full bg-[#3F2516]"
-                        style={{ marginTop: userExists ? verticalScale(35) : verticalScale(20) }}
+                        className="flex-row items-center p-2 rounded-full w-full bg-[#3F2516]"
+                        onLayout={(event) => {
+                            buttonWidth.value = event.nativeEvent.layout.width
+                        }}
+                        style={{
+                            marginTop: userExists
+                                ? verticalScale(35)
+                                : verticalScale(20)
+                        }}
                     >
                         <Animated.View
                             className="rounded-full bg-[#F8D56A] items-center justify-center"
                             style={[
                                 {
-                                    width: moderateScale(34),
-                                    height: moderateScale(34)
+                                    width: THUMB_SIZE,
+                                    height: THUMB_SIZE
                                 },
                                 animatedThumbStyle
                             ]}
                         >
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.8} />
+                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
                         </Animated.View>
 
                         <View
-                            className="absolute items-center"
-                            style={{ left: scale(52) }}    
+                            pointerEvents="none"
+                            className="absolute left-0 right-0 items-center"
                         >
                             <Text
                                 className="text-[#FFFFFF] font-semibold uppercase"
@@ -343,7 +362,7 @@ export default function VerificationSuccessScreen() {
                 >
                     You can always update your delivery location later.
                 </Text>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     )
 }

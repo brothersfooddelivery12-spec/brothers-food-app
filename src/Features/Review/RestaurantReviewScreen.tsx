@@ -125,7 +125,7 @@ export default function RestaurantReviewScreen() {
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
                     paddingTop: verticalScale(4),
-                    paddingBottom: insets.bottom + verticalScale(25)
+                    paddingBottom: insets.bottom + verticalScale(5)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -446,7 +446,7 @@ export default function RestaurantReviewScreen() {
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
-                                paddingVertical: verticalScale(12)
+                                paddingVertical: verticalScale(14)
                             }}
                         >
                             <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />

@@ -108,7 +108,7 @@ export default function RiderProfileScreen() {
                 contentContainerStyle={{
                     marginTop: verticalScale(8),
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(35),
+                    paddingBottom: verticalScale(25),
                     gap: verticalScale(10)
                 }}
                 ListHeaderComponent={

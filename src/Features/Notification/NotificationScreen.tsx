@@ -9,6 +9,7 @@ import { useMemo, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import NotificationCard, { NotificationItem } from './Components/NotificationCard'
 
 const NOTIFICATION_CATEGORIES = [
@@ -36,13 +37,14 @@ const NOTIFICATION_CATEGORIES = [
 ]
 
 const NOTIFICATIONS: NotificationItem[] = [
+    // TODAY
     {
         id: "1",
         type: "order",
         title: "Delivery Rider is Nearby",
         description:
             "Your order will arrive in 5 minutes.",
-        createdAt: "2026-08-30T20:45:00",
+        createdAt: "2026-09-01T20:45:00",
         unread: true,
     },
     {
@@ -51,28 +53,8 @@ const NOTIFICATIONS: NotificationItem[] = [
         title: "Payment Successful",
         description:
             "Payment of ₹710 completed successfully.",
-        createdAt: "2026-08-30T14:20:00",
-    },
-    {
-        id: "3",
-        type: "restaurant",
-        title: "The Pizza Hub has opened near you",
-        description:
-            "Discover authentic Neapolitan pizzas.",
-        createdAt: "2026-08-29T19:30:00",
-        restaurantId: "pizza-hub",
-        image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
-    },
-    {
-        id: "4",
-        type: "flash_sale",
-        badge: "FLASH SALE: BURGER FEST",
-        title: "Flat 40% OFF on all burgers.",
-        description:
-            "Valid for the next 2 hours only.",
-        createdAt: "2026-08-27T12:30:00",
-        offerId: "burger-fest",
-        unread: true,
+        createdAt: "2026-09-01T14:20:00",
+        unread: false,
     },
     {
         id: "5",
@@ -80,8 +62,22 @@ const NOTIFICATIONS: NotificationItem[] = [
         title: "Welcome to Brothers!",
         description:
             "Thanks for joining us. Discover delicious food, exclusive offers, and exciting rewards.",
-        createdAt: "2026-08-30T10:15:00",
+        createdAt: "2026-09-01T10:15:00",
         unread: true,
+    },
+
+    // YESTERDAY
+    {
+        id: "3",
+        type: "restaurant",
+        title: "The Pizza Hub has opened near you",
+        description:
+            "Discover authentic Neapolitan pizzas.",
+        createdAt: "2026-08-31T19:30:00",
+        restaurantId: "pizza-hub",
+        image:
+            "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+        unread: false,
     },
     {
         id: "6",
@@ -89,14 +85,28 @@ const NOTIFICATIONS: NotificationItem[] = [
         title: "Your Reward Points Are Waiting",
         description:
             "You have 2,450 reward points available. Redeem them on your next order.",
-        createdAt: "2026-08-29T12:45:00",
+        createdAt: "2026-08-31T12:45:00",
         unread: false,
+    },
+
+    // EARLIER
+    {
+        id: "4",
+        type: "flash_sale",
+        badge: "FLASH SALE: BURGER FEST",
+        title: "Flat 40% OFF on all burgers.",
+        description:
+            "Valid for the next 2 hours only.",
+        createdAt: "2026-08-28T12:30:00",
+        offerId: "burger-fest",
+        unread: true,
     },
 ]
 
 export default function NotificationScreen(){
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const preventDoublePress = usePreventDoublePress()
     const [selectedCategory, setSelectedCategory] = useState("all")
 
     const horizontalPadding = scale(42)
@@ -166,7 +176,11 @@ export default function NotificationScreen(){
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={() => {}}
+                    onPress={() => 
+                        preventDoublePress(() => {
+                            router.push('/notification-preferences')
+                        })
+                    }
                     className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                     style={{
                         width: moderateScale(40),
@@ -187,7 +201,7 @@ export default function NotificationScreen(){
                 contentContainerStyle={{
                     marginTop: verticalScale(4),
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(25)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <>

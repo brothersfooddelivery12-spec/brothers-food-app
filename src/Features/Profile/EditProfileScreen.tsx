@@ -106,7 +106,7 @@ export default function EditProfileScreen(){
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     marginTop: verticalScale(8),
-                    paddingBottom: insets.bottom + verticalScale(35),
+                    paddingBottom: verticalScale(25),
                     paddingHorizontal: scale(14)
                 }}
                 bottomOffset={30}

@@ -203,7 +203,7 @@ export default function RestaurantDetailsScreen() {
                 keyboardDismissMode="none"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + verticalScale(20)
+                    paddingBottom: verticalScale(25)
                 }}
                 ListHeaderComponent={
                     <View>

@@ -1,0 +1,3 @@
+import NotificationPreferencesScreen from "@/Features/Notification/NotificationPreferencesScreen"
+
+export default NotificationPreferencesScreen

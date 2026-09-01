@@ -43,7 +43,7 @@ function ProfileMenuItem({
 
             {showDivider && (
                 <View
-                    className="bg-[#1F1F1F]/15"
+                    className="bg-[#1F1F1F]/10"
                     style={{
                         height: 1,
                         marginVertical: verticalScale(12),

@@ -200,7 +200,7 @@ export default function CartScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(85)
+                    paddingBottom: verticalScale(85)
                 }}
                 ListFooterComponent={
                     <View className="mt-5">

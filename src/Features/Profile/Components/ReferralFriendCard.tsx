@@ -140,7 +140,7 @@ const ReferralStep = ({
                 <Text
                     className="text-[#1F1F1F]/65 font-medium"
                     style={{
-                        fontSize: moderateScale(10.5),
+                        fontSize: moderateScale(11),
                         lineHeight: moderateScale(15),
                         marginTop: verticalScale(3)
                     }}
@@ -152,7 +152,7 @@ const ReferralStep = ({
                     <Text
                         className="text-[#1F1F1F]/50 font-medium"
                         style={{
-                            fontSize: moderateScale(9),
+                            fontSize: moderateScale(9.5),
                             marginTop: verticalScale(4)
                         }}
                     >
@@ -374,7 +374,7 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                             numberOfLines={1}
                             className="text-[#1F1F1F]/55 font-medium"
                             style={{
-                                fontSize: moderateScale(10),
+                                fontSize: moderateScale(11),
                                 marginTop: verticalScale(3)
                             }}
                         >

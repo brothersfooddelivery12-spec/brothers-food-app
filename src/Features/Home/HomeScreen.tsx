@@ -67,7 +67,7 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: insets.bottom + verticalScale(65)
+                    paddingBottom: verticalScale(78)
                 }}
                 ListHeaderComponent={
                     <View>

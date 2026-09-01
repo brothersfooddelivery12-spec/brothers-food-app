@@ -194,7 +194,7 @@ export default function ProfileScreen() {
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
                     paddingTop: TITLE_HEIGHT_FALLBACK,
-                    paddingBottom: insets.bottom + verticalScale(75)
+                    paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -500,7 +500,7 @@ export default function ProfileScreen() {
                             </View>
 
                             <View
-                                className="bg-[#1F1F1F]/15"
+                                className="bg-[#1F1F1F]/10"
                                 style={{
                                     height: 1,
                                     marginVertical: verticalScale(12),
@@ -600,7 +600,7 @@ export default function ProfileScreen() {
                             </View>
 
                             <View
-                                className="bg-[#1F1F1F]/15"
+                                className="bg-[#1F1F1F]/10"
                                 style={{
                                     height: 1,
                                     marginVertical: verticalScale(12),
@@ -793,7 +793,7 @@ export default function ProfileScreen() {
                             </View>
 
                             <View
-                                className="bg-[#1F1F1F]/15"
+                                className="bg-[#1F1F1F]/10"
                                 style={{
                                     height: 1,
                                     marginVertical: verticalScale(12),
