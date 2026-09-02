@@ -1,0 +1,3 @@
+import TransactionHistoryScreen from "@/Features/BrothersWallet/TransactionHistoryScreen"
+
+export default TransactionHistoryScreen

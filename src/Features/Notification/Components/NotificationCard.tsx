@@ -84,7 +84,7 @@ function NotificationCard({
                 >
                     <View className="flex-row items-start">
                         <Text
-                            className="flex-1 text-[#1F1F1F] font-black"
+                            className="flex-1 text-[#1F1F1F] font-bold"
                             style={{
                                 fontSize: moderateScale(15),
                                 lineHeight: moderateScale(18),
@@ -213,7 +213,7 @@ function NotificationCard({
                         </View>
 
                         <Text
-                            className="text-white font-black"
+                            className="text-white font-bold"
                             style={{
                                 fontSize: moderateScale(16),
                                 lineHeight: moderateScale(18),
@@ -297,7 +297,7 @@ function NotificationCard({
                     <View className="flex-1">
                         <View className="flex-row items-start">
                             <Text
-                                className="flex-1 text-[#1F1F1F] font-black"
+                                className="flex-1 text-[#1F1F1F] font-bold"
                                 style={{
                                     fontSize: moderateScale(15),
                                     lineHeight: moderateScale(18),
@@ -445,7 +445,7 @@ function NotificationCard({
                     <View className="flex-1">
                         <View className="flex-row items-start mt-1">
                             <Text
-                                className="flex-1 text-[#1F1F1F] font-black"
+                                className="flex-1 text-[#1F1F1F] font-bold"
                                 style={{
                                     fontSize: moderateScale(15),
                                     lineHeight: moderateScale(18),

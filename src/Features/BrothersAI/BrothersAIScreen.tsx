@@ -314,7 +314,7 @@ export default function BrothersAIScreen(){
                                         elevation: 4
                                     }}
                                 >
-                                    <SparkleIcon width={moderateScale(16)} height={moderateScale(16)} color="#7052D8" />
+                                    <SparkleIcon width={moderateScale(16)} height={moderateScale(16)} color="#7052D8" strokeWidth={1.8} />
                                 </View>
                             </View>
                         </View>

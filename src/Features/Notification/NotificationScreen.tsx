@@ -3,10 +3,9 @@ import BagIcon from '@/assets/icon/CartIcon.svg'
 import CardIcon from '@/assets/icon/MoneyIcon.svg'
 import TagIcon from '@/assets/icon/OfferIcon.svg'
 import SettingIcon from '@/assets/icon/SettingIcon.svg'
-import { getNotificationGroup } from '@/utils/notificationUtils'
 import { router } from "expo-router"
-import { useMemo, useState } from 'react'
-import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { useCallback, useMemo, useState } from 'react'
+import { ScrollView, SectionList, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
@@ -113,21 +112,82 @@ export default function NotificationScreen(){
     const gap = scale(12)
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 3
 
-    const groupedNotifications = useMemo(() => {
-        const groups = {
-            Today: [] as NotificationItem[],
-            Yesterday: [] as NotificationItem[],
-            Earlier: [] as NotificationItem[],
+    const getNotificationSection = (createdAt: string) => {
+        const notificationDate = new Date(createdAt)
+
+        const today = new Date()
+        const yesterday = new Date()
+
+        yesterday.setDate(today.getDate() - 1)
+
+        const isSameDay = (a: Date, b: Date) =>
+            a.getFullYear() === b.getFullYear() &&
+            a.getMonth() === b.getMonth() &&
+            a.getDate() === b.getDate()
+
+        if (isSameDay(notificationDate, today)) {
+            return "Today"
         }
 
-        NOTIFICATIONS.forEach((item) => {
-            const group = getNotificationGroup(item.createdAt)
+        if (isSameDay(notificationDate, yesterday)) {
+            return "Yesterday"
+        }
 
-            groups[group].push(item)
+        return notificationDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        })
+    }
+    
+    const notificationSections = useMemo(() => {
+        const grouped: Record<string, NotificationItem[]> = {}
+
+        NOTIFICATIONS.forEach((notification) => {
+            const section = getNotificationSection(
+                notification.createdAt
+            )
+
+            if (!grouped[section]) {
+                grouped[section] = []
+            }
+
+            grouped[section].push(notification)
         })
 
-        return groups
+        return Object.entries(grouped).map(([title, data]) => ({
+            title,
+            data
+        }))
     }, [])
+
+    const renderNotification = useCallback(
+        ({ item }: { item: NotificationItem }) => (
+            <NotificationCard
+                item={item}
+            />
+        ),[]
+    )
+
+    const renderNotificationSectionHeader = useCallback(
+        ({ section }: {
+            section: {
+                title: string
+                data: NotificationItem[]
+            }
+        }) => (
+            <Text
+                className="text-[#1F1F1F] font-semibold"
+                style={{
+                    fontSize: moderateScale(15),
+                    marginBottom: verticalScale(2),
+                    marginLeft: scale(4)
+                }}
+            >
+                {section.title}
+            </Text>
+        ),[]
+    )
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -191,17 +251,17 @@ export default function NotificationScreen(){
                 </TouchableOpacity>
             </View>
 
-            <FlatList
-                data={[{}]}
-                renderItem={null}
-                nestedScrollEnabled
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="none"
+            <SectionList
+                sections={notificationSections}
+                renderItem={renderNotification}
+                renderSectionHeader={renderNotificationSectionHeader}
+                keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
+                stickySectionHeadersEnabled={false}
                 contentContainerStyle={{
-                    marginTop: verticalScale(4),
                     paddingHorizontal: scale(14),
-                    paddingBottom: verticalScale(25)
+                    paddingBottom: verticalScale(25),
+                    gap: verticalScale(8)
                 }}
                 ListHeaderComponent={
                     <>
@@ -284,7 +344,7 @@ export default function NotificationScreen(){
                             })}
                         </ScrollView>
 
-                        <View className="flex-row items-center justify-center gap-3 mt-4">
+                        <View className="flex-row items-center justify-center gap-3 mt-4 mb-2">
                             <View
                                 className="bg-white justify-center items-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                 style={{
@@ -353,39 +413,6 @@ export default function NotificationScreen(){
                                     Offers
                                 </Text>
                             </View>
-                        </View>
-
-                        <View>
-                            {Object.entries(groupedNotifications).map(
-                                ([section, items]) => {
-                                    if (items.length === 0) return null
-
-                                    return (
-                                        <View
-                                            key={section}
-                                            style={{ marginBottom: verticalScale(6) }}
-                                        >
-                                            <Text
-                                                className='text-[#1F1F1F] font-bold mt-4 mb-4'
-                                                style={{ fontSize: moderateScale(16) }}
-                                            >
-                                                {section}
-                                            </Text>
-
-                                            <View
-                                                style={{ gap: verticalScale(10) }}
-                                            >
-                                                {items.map((item) => (
-                                                    <NotificationCard
-                                                        key={item.id}
-                                                        item={item}
-                                                    />
-                                                ))}
-                                            </View>
-                                        </View>
-                                    )
-                                }
-                            )}
                         </View>
                     </>
                 }

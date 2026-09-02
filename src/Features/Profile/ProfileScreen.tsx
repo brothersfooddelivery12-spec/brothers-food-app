@@ -393,7 +393,13 @@ export default function ProfileScreen() {
                         </View>
 
                         <View className="flex-row items-center gap-3 mt-5">
-                            <View
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/brothers-wallet')
+                                    })
+                                }
                                 className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
                                 style={{
                                     width: cardWidth,
@@ -426,7 +432,7 @@ export default function ProfileScreen() {
                                         ₹520
                                     </Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
@@ -859,9 +865,21 @@ export default function ProfileScreen() {
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
                             style={{ borderRadius: moderateScale(18) }}
                         >
-                            <ProfileMenuItem label="Privacy" icon={PrivacyIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Privacy" icon={PrivacyIcon} showDivider={true} 
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/privacy')
+                                    })
+                                }
+                            />
 
-                            <ProfileMenuItem label="Security" icon={SecurityIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Security" icon={SecurityIcon} showDivider={true}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/security')
+                                    })
+                                }
+                            />
 
                             <View className='flex-row items-center gap-2'>
                                 <View

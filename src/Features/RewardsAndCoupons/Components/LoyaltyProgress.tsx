@@ -136,7 +136,7 @@ export default function LoyaltyProgress({
                 </View>
 
                 <View className="flex-row items-center">
-                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="#8A8D91" />
+                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="#B889E8" />
 
                     <Text
                         className="text-[#1F1F1F] font-medium"

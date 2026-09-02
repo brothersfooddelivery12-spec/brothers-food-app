@@ -872,7 +872,7 @@ export default function BrothersPlusScreen(){
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <StarBadgeIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} strokeWidth={1.8} />
+                            <StarBadgeIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} strokeWidth={1.5} />
                         
                             <Text
                                 className="text-[#FFFFFF] font-semibold"
