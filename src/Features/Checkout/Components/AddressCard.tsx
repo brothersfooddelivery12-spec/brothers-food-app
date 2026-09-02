@@ -1,9 +1,9 @@
+import EditIcon from "@/assets/icon/EditIcon.svg"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from "react-native-svg"
-import EditIcon from "@/assets/icon/EditIcon.svg"
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
@@ -51,16 +51,16 @@ const AddressCard = ({ item, isSelected, onPress, onEdit }: AddressCardProps) =>
             className="p-4 flex-row gap-3"
             style={{
                 backgroundColor: isSelected
-                    ? "rgba(232,185,63,0.07)"
+                    ? "rgba(232,185,63,0.06)"
                     : "#FFFFFF",
+                    
+                borderWidth: moderateScale(1),
+                borderColor: isSelected
+                    ? "rgba(63, 37, 22, 0.45)"
+                    : "rgba(31,31,31,0.10)",
 
                 marginTop: verticalScale(8),
-                borderRadius: moderateScale(18),
-                borderWidth: moderateScale(1),
-
-                borderColor: isSelected
-                    ? "#95867f"
-                    : "rgba(31,31,31,0.10)"
+                borderRadius: moderateScale(18)
             }}
         >
             <View

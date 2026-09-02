@@ -1,3 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0,0,256,256">
-<g fill-opacity="0" fill="#dddddd" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,256v-256h256v256z" id="bgRectangle"></path></g><g fill="#3f2516" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.33333,5.33333)"><path d="M46,17v-1.5c0,-3.584 -2.916,-6.5 -6.5,-6.5h-31c-3.584,0 -6.5,2.916 -6.5,6.5v1.5zM2,21v11.5c0,3.584 2.916,6.5 6.5,6.5h31c3.584,0 6.5,-2.916 6.5,-6.5v-11.5zM37.5,32h-6c-0.829,0 -1.5,-0.671 -1.5,-1.5c0,-0.829 0.671,-1.5 1.5,-1.5h6c0.829,0 1.5,0.671 1.5,1.5c0,0.829 -0.671,1.5 -1.5,1.5z"></path></g></g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path
+    d="M22 7.55039C22 8.21039 21.46 8.75039 20.8 8.75039H3.2C2.54 8.75039 2 8.21039 2 7.55039V7.54039C2 5.25039 3.85 3.40039 6.14 3.40039H17.85C20.14 3.40039 22 5.26039 22 7.55039Z"
+    fill="currentColor"
+  />
+
+  <path
+    d="M2 11.45V16.46C2 18.75 3.85 20.6 6.14 20.6H17.85C20.14 20.6 22 18.74 22 16.45V11.45C22 10.79 21.46 10.25 20.8 10.25H3.2C2.54 10.25 2 10.79 2 11.45ZM8 17.25H6C5.59 17.25 5.25 16.91 5.25 16.5C5.25 16.09 5.59 15.75 6 15.75H8C8.41 15.75 8.75 16.09 8.75 16.5C8.75 16.91 8.41 17.25 8 17.25ZM14.5 17.25H10.5C10.09 17.25 9.75 16.91 9.75 16.5C9.75 16.09 10.09 15.75 10.5 15.75H14.5C14.91 15.75 15.25 16.09 15.25 16.5C15.25 16.91 14.91 17.25 14.5 17.25Z"
+    fill="currentColor"
+  />
 </svg>

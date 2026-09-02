@@ -1,53 +1,91 @@
 import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import CardAddIcon from '@/assets/icon/CardAddIcon.svg'
+import { default as ArrowRight, default as ArrowRightIcon } from '@/assets/icon/ArrowRight.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import CouponIcon from '@/assets/icon/CouponIcon.svg'
-import DebitCardIcon from '@/assets/icon/DebitCardIcon.svg'
+import CreditCardIcon from '@/assets/icon/DebitCardIcon.svg'
 import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
 import FlashIcon from '@/assets/icon/FlashIcon.svg'
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import MoneyBagIcon from '@/assets/icon/MoneyBagIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
+import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
+import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
+import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { Image } from "expo-image"
 import { router } from "expo-router"
-import { useState } from "react"
+import React, { useState } from "react"
 import { FlatList, StatusBar, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { SvgProps } from 'react-native-svg'
 import AddressCard from "./Components/AddressCard"
 
 type PaymentMethod = {
     id: string
     title: string
-    icon: React.ComponentType<{
-        width?: number
-        height?: number
-    }>
+    description: string
+    paymentType: string
+    icon: React.FC<SvgProps>
+    size: number
 }
 
 const PAYMENT_METHODS: PaymentMethod[] = [
     {
         id: "gpay",
         title: "Google Pay",
+        description: "harshsuthar@oksbi",
+        paymentType: "upi",
         icon: GooglePayIcon,
+        size: 20
     },
     {
         id: "phonepe",
         title: "PhonePe",
-        icon: PhonePeIcon
+        description: "harshsuthar@ybl",
+        paymentType: "upi",
+        icon: PhonePeIcon,
+        size: 20
     },
+    {
+        id: "paytm",
+        title: "Paytm",
+        description: "harshsuthar@paytm",
+        paymentType: "upi",
+        icon: PaytmIcon,
+        size: 28
+    },
+    {
+        id: "hdfc-card",
+        title: "HDFC Bank ****4567",
+        description: "Credit Card",
+        paymentType: "card",
+        icon: CreditCardIcon,
+        size: 22
+    }
+]
+
+const walletBalance = 1850
+
+const OTHER_PAYMENT_METHODS = [
     {
         id: "cod",
         title: "Cash on Delivery",
-        icon: MoneyBagIcon,
+        description: "Pay in cash when your order is delivered",
+        icon: MoneyBagIcon
     },
+    {
+        id: "wallet",
+        title: "Brothers Wallet",
+        description: "Pay using your wallet balance",
+        icon: WalletIcon,
+        badge: `Balance: ₹${walletBalance.toLocaleString("en-IN")}`
+    }
 ]
 
 const ADDRESSES = [
@@ -69,20 +107,12 @@ const ADDRESSES = [
     }
 ]
 
-const savedCard = {
-    id: "card_4587",
-    lastFour: "4587",
-    expiry: "12/28",
-    icon: DebitCardIcon
-}
-
 export default function CheckoutScreen() {
     const preventDoublePress = usePreventDoublePress()
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const [selectedAddress, setSelectedAddress] = useState("home")
     const [selectedPayment, setSelectedPayment] = useState("gpay")
-    const isCardSelected = selectedPayment === savedCard.id
 
     const horizontalPadding = scale(28)
     const gap = scale(12)
@@ -148,9 +178,7 @@ export default function CheckoutScreen() {
                     <View className="mt-3">
                         <View
                             className="p-3 items-center flex-row gap-2 bg-white border border-[#1F1F1F]/10"
-                            style={{
-                                borderRadius: moderateScale(18)
-                            }}
+                            style={{ borderRadius: moderateScale(18) }}
                         >
                             <View
                                 className="overflow-hidden rounded-full border-[#FFFFFF]"
@@ -250,9 +278,9 @@ export default function CheckoutScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
+                            className="text-[#1F1F1F] font-semibold"
                             style={{
-                                fontSize: moderateScale(16),
+                                fontSize: moderateScale(15),
                                 marginTop: verticalScale(18)
                             }}
                         >
@@ -383,9 +411,9 @@ export default function CheckoutScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
+                            className="text-[#1F1F1F] font-semibold"
                             style={{
-                                fontSize: moderateScale(16),
+                                fontSize: moderateScale(15),
                                 marginTop: verticalScale(18)
                             }}
                         >
@@ -395,161 +423,261 @@ export default function CheckoutScreen() {
                         <Text
                             className="text-[#1F1F1F]/75 font-medium"
                             style={{
-                                fontSize: moderateScale(13),
+                                fontSize: moderateScale(12),
                                 marginTop: verticalScale(4)
                             }}
                         >
                             Recommended
                         </Text>
 
-                        <View>
-                            {PAYMENT_METHODS.map((item) => {
+                        <View
+                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden mt-3"
+                            style={{ borderRadius: moderateScale(20) }}
+                        >
+                            {PAYMENT_METHODS.map((item, index) => {
                                 const isSelected = selectedPayment === item.id
+                                const isLast = index === PAYMENT_METHODS.length - 1
+                                const Icon = item.icon
 
                                 return (
-                                    <TouchableOpacity
-                                        key={item.id}
-                                        activeOpacity={0.95}
-                                        onPress={() => setSelectedPayment(item.id)}
-                                        className="bg-white border p-4 border-[#1F1F1F]/10 flex-row items-center"
-                                        style={{
-                                            borderRadius: moderateScale(18),
-                                            marginTop: verticalScale(8),
-                                        }}
-                                    >
-                                        <View
-                                            className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                    <React.Fragment key={item.id}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setSelectedPayment(item.id)}
+                                            className="flex-row items-center"
                                             style={{
-                                                width: moderateScale(40),
-                                                height: moderateScale(40),
+                                                paddingHorizontal: scale(14),
+                                                paddingVertical: verticalScale(10),
                                             }}
                                         >
-                                            <item.icon width={moderateScale(20)} height={moderateScale(20)} />
-                                        </View>
+                                            <View
+                                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                style={{
+                                                    width: moderateScale(42),
+                                                    height: moderateScale(42)
+                                                }}
+                                            >
+                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                            </View>
 
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold flex-1 ml-3"
-                                            style={{ fontSize: moderateScale(15) }}
-                                        >
-                                            {item.title}
-                                        </Text>
+                                            <View className="flex-1 ml-3">
+                                                <Text
+                                                    className="text-[#1F1F1F] font-semibold"
+                                                    style={{ fontSize: moderateScale(13) }}
+                                                >
+                                                    {item.title}
+                                                </Text>
 
-                                        <View
-                                            className="items-center justify-center"
-                                            style={{
-                                                width: moderateScale(22),
-                                                height: moderateScale(22),
-                                                borderRadius: "100%",
-                                                borderWidth: moderateScale(2),
-                                                borderColor: isSelected
-                                                    ? "#5c4639"
-                                                    : "#D6D0CA",
-                                            }}
-                                        >
-                                            {isSelected && (
-                                                <View
-                                                    style={{
-                                                        width: moderateScale(14),
-                                                        height: moderateScale(14),
-                                                        borderRadius: "100%",
-                                                        backgroundColor: "#5c4639",
-                                                    }}
-                                                />
-                                            )}
-                                        </View>
-                                    </TouchableOpacity>
+                                                {item.description && (
+                                                    <Text
+                                                        className="text-[#1F1F1F]/75 font-medium mt-1"
+                                                        style={{ fontSize: moderateScale(10.5) }}
+                                                    >
+                                                        {item.description}
+                                                    </Text>
+                                                )}
+                                            </View>
+
+                                            <View
+                                                className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                style={{
+                                                    borderRadius: moderateScale(8),
+                                                    paddingHorizontal: scale(8),
+                                                    paddingVertical: verticalScale(3)
+                                                }}
+                                            >
+                                                <Text 
+                                                    className='text-[#1F1F1F] font-medium uppercase'
+                                                    style={{ fontSize: moderateScale(10) }}
+                                                >
+                                                    {item.paymentType}
+                                                </Text>
+                                            </View>
+
+                                            <View
+                                                className="items-center justify-center ml-3"
+                                                style={{
+                                                    width: moderateScale(22),
+                                                    height: moderateScale(22),
+                                                    borderRadius: "100%",
+                                                    borderWidth: moderateScale(2),
+                                                    borderColor: isSelected
+                                                        ? "#5c4639"
+                                                        : "#D6D0CA"
+                                                }}
+                                            >
+                                                {isSelected && (
+                                                    <View
+                                                        style={{
+                                                            width: moderateScale(14),
+                                                            height: moderateScale(14),
+                                                            borderRadius: "100%",
+                                                            backgroundColor: "#5c4639"
+                                                        }}
+                                                    />
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        {!isLast && (
+                                            <View
+                                                className="bg-[#1F1F1F]/10"
+                                                style={{
+                                                    height: 1,
+                                                    marginHorizontal: scale(14)
+                                                }}
+                                            />
+                                        )}
+                                    </React.Fragment>
                                 )
                             })}
                         </View>
 
-                        <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{
-                                fontSize: moderateScale(16),
-                                marginTop: verticalScale(18)
-                            }}
-                        >
-                            Credit / Debit Cards
-                        </Text>
-
-                        <TouchableOpacity
-                            activeOpacity={0.95}
-                            onPress={() => setSelectedPayment(savedCard.id)}
-                            className="bg-white border p-4 border-[#1F1F1F]/10 flex-row items-center"
-                            style={{
-                                borderRadius: moderateScale(18),
-                                marginTop: verticalScale(8),
-                            }}
-                        >
-                            <View
-                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
-                                style={{
-                                    width: moderateScale(40),
-                                    height: moderateScale(40),
-                                }}
-                            >   
-                                <DebitCardIcon width={moderateScale(20)} height={moderateScale(20)} />
-                            </View>
-
-                            <View className="items-start gap-1 ml-3 flex-1">
-                                <Text
-                                    className="text-[#1F1F1F] font-semibold"
-                                    style={{ fontSize: moderateScale(12) }}
-                                >
-                                     ****{savedCard.lastFour}
-                                </Text>
-
-                                <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
-                                >
-                                    EXP: {savedCard.expiry}
-                                </Text>
-                            </View>
-
-                            <View
-                                className="items-center justify-center"
-                                style={{
-                                    width: moderateScale(22),
-                                    height: moderateScale(22),
-                                    borderRadius: "100%",
-                                    borderWidth: moderateScale(2),
-                                    borderColor: isCardSelected
-                                            ? "#5c4639"
-                                            : "#D6D0CA",
-                                }}
-                            >
-                                {isCardSelected && (
-                                    <View
-                                        style={{
-                                            width: moderateScale(14),
-                                            height: moderateScale(14),
-                                            borderRadius: moderateScale(7),
-                                            backgroundColor: "#5c4639",
-                                        }}
-                                    />
-                                )}
-                            </View>
-                        </TouchableOpacity>
-
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="flex-row gap-2 items-center justify-center p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                            className="items-center flex-row mt-3 bg-[#FFFFFF] border border-[#1F1F1F]/10"
                             style={{
-                                borderRadius: moderateScale(18),
-                                marginTop: verticalScale(8)
+                                gap: moderateScale(8),
+                                paddingHorizontal: moderateScale(12),
+                                paddingVertical: moderateScale(12),
+                                borderRadius: moderateScale(16)
                             }}
                         >
-                            <CardAddIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.8} />
+                            <PlusSignCircleIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="text-[#1F1F1F] font-semibold flex-1"
+                                style={{ fontSize: moderateScale(12) }}
                             >
-                                Add New Card
+                                Add New Payment Method
                             </Text>
+
+                            <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.5} />
                         </TouchableOpacity>
+
+                        <Text
+                            className="text-[#1F1F1F] font-medium"
+                            style={{
+                                fontSize: moderateScale(15),
+                                marginTop: verticalScale(18)
+                            }}
+                        >
+                            Other Payment Options
+                        </Text>
+
+                        <View
+                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden mt-3"
+                            style={{ borderRadius: moderateScale(20) }}
+                        >
+                            {OTHER_PAYMENT_METHODS.map((item, index) => {
+                                const Icon = item.icon
+                                const isSelected = selectedPayment === item.id
+                                const isLast = index === OTHER_PAYMENT_METHODS.length - 1
+
+                                return (
+                                    <React.Fragment key={item.id}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setSelectedPayment(item.id)}
+                                            className="flex-row items-center"
+                                            style={{
+                                                paddingHorizontal: scale(12),
+                                                paddingVertical: verticalScale(12)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                style={{
+                                                    width: moderateScale(42),
+                                                    height: moderateScale(42)
+                                                }}
+                                            >
+                                                <Icon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.8} />
+                                            </View>
+
+                                            <View
+                                                className="flex-1"
+                                                style={{ marginLeft: scale(11) }}
+                                            >
+                                                <View className="flex-row items-center gap-2">
+                                                    <Text
+                                                        className="text-[#1F1F1F] font-semibold"
+                                                        style={{ fontSize: moderateScale(13) }}
+                                                    >
+                                                        {item.title}
+                                                    </Text>
+
+                                                    {item.badge && (
+                                                        <View
+                                                            className="bg-[#F8D56A]/25"
+                                                            style={{
+                                                                borderRadius: moderateScale(12),
+                                                                paddingHorizontal: scale(8),
+                                                                paddingVertical: verticalScale(3)
+                                                            }}
+                                                        >
+                                                            <Text
+                                                                className="text-[#3F2516] font-medium"
+                                                                style={{
+                                                                    fontSize: moderateScale(9.5)
+                                                                }}
+                                                            >
+                                                                {item.badge}
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+
+                                                <Text
+                                                    className="text-[#1F1F1F]/75 font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(10.5),
+                                                        marginTop: verticalScale(2)
+                                                    }}
+                                                >
+                                                    {item.description}
+                                                </Text>
+                                            </View>
+
+                                            <View
+                                                className="items-center justify-center"
+                                                style={{
+                                                    width: moderateScale(22),
+                                                    height: moderateScale(22),
+                                                    borderRadius: "100%",
+                                                    borderWidth: moderateScale(2),
+                                                    borderColor: isSelected
+                                                        ? "#5c4639"
+                                                        : "#D6D0CA",
+                                                }}
+                                            >
+                                                {isSelected && (
+                                                    <View
+                                                        style={{
+                                                            width: moderateScale(14),
+                                                            height: moderateScale(14),
+                                                            borderRadius: "100%",
+                                                            backgroundColor: "#5c4639",
+                                                        }}
+                                                    />
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        {!isLast && (
+                                            <View
+                                                className="bg-[#1F1F1F]/10"
+                                                style={{
+                                                    height: 1,
+                                                    marginHorizontal: scale(14)
+                                                }}
+                                            />
+                                        )}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </View>
 
                         <View
                             className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
