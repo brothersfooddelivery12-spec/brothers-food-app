@@ -759,7 +759,13 @@ export default function ProfileScreen() {
                         >
                             <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true} onPress={()=> {}} />
 
-                            <ProfileMenuItem label="Delivery Instructions" icon={NotepadTextIcon} showDivider={false} onPress={()=> {}} />
+                            <ProfileMenuItem label="Delivery Instructions" icon={NotepadTextIcon} showDivider={false}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/delivery-instruction')
+                                    })
+                                }
+                            />
                         </View>
 
                         <Text

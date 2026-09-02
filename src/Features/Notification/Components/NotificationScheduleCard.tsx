@@ -33,16 +33,16 @@ const NotificationScheduleCard = ({
                 <View
                     className="items-center justify-center bg-[#F8D56A] rounded-full"
                     style={{
-                        width: moderateScale(40),
-                        height: moderateScale(40)
+                        width: moderateScale(36),
+                        height: moderateScale(36)
                     }}
                 >
-                    <MinusCircleIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={2} />
+                    <MinusCircleIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
                 </View>
 
                 <Text
                     className="text-[#F8D56A] font-extrabold"
-                    style={{ fontSize: moderateScale(18) }}
+                    style={{ fontSize: moderateScale(16) }}
                 >
                     Schedule
                 </Text>
@@ -123,7 +123,7 @@ const NotificationScheduleCard = ({
             <Text
                 className="text-white/75 font-medium"
                 style={{
-                    fontSize: moderateScale(13),
+                    fontSize: moderateScale(12),
                     lineHeight: moderateScale(16),
                     marginTop: verticalScale(12)
                 }}
