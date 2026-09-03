@@ -14,23 +14,17 @@ export type AddressItem = {
 type SavedAddressCardProps = {
     item: AddressItem
     icon: React.FC<SvgProps>
-    isMenuOpen?: boolean
     onPress?: (item: AddressItem) => void
     onMenuPress?: (item: AddressItem) => void
-    onEdit?: (item: AddressItem) => void
-    onDelete?: (item: AddressItem) => void
-    onSetDefault?: (item: AddressItem) => void
+    menuAnchorRef?: (ref: View | null) => void
 }
 
 function SavedAddressCard({
     item,
     icon: Icon,
-    isMenuOpen,
     onPress,
     onMenuPress,
-    onEdit,
-    onDelete,
-    onSetDefault
+    menuAnchorRef
 }: SavedAddressCardProps) {
     return (
         <TouchableOpacity
@@ -39,118 +33,37 @@ function SavedAddressCard({
             className="p-3 bg-white border border-[#1F1F1F]/10"
             style={{
                 borderRadius: moderateScale(22),
-                position: "relative",
-                overflow: "visible",
-                zIndex: isMenuOpen ? 1000 : 1
+                position: "relative"
             }}
         >
-            <TouchableOpacity
-                activeOpacity={0.95}
-                onPress={(event) => {
-                    event.stopPropagation()
-                    onMenuPress?.(item)
-                }}
-                className="absolute top-4 right-2 items-center justify-center"
+            <View
+                ref={menuAnchorRef}
+                collapsable={false}
+                className="absolute top-4 right-2"
                 style={{
-                    width: moderateScale(28),
-                    height: moderateScale(28),
                     zIndex: 10
                 }}
             >
-                <EllipsisVerticalIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.8} />
-            </TouchableOpacity>
-
-            {isMenuOpen && (
-                <View
-                    className="absolute right-2 bg-white border border-[#1F1F1F]/10"
+                <TouchableOpacity
+                    activeOpacity={0.95}
+                    onPress={(event) => {
+                        event.stopPropagation()
+                        onMenuPress?.(item)
+                    }}
+                    className="items-center justify-center"
                     style={{
-                        top: verticalScale(38),
-                        width: moderateScale(145),
-                        borderRadius: moderateScale(14),
-                        paddingVertical: verticalScale(7),
-                        zIndex: 100
+                        width: moderateScale(28),
+                        height: moderateScale(28)
                     }}
                 >
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={(event) => {
-                            event.stopPropagation()
-                            onEdit?.(item)
-                        }}
-                        style={{
-                            paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(5)
-                        }}
-                    >
-                        <Text
-                            className="text-[#1F1F1F]/75 font-medium"
-                            style={{ fontSize: moderateScale(13) }}
-                        >
-                            Edit Address
-                        </Text>
-                    </TouchableOpacity>
-
-                    {!item.isDefault && (
-                        <>
-                            <View
-                                className="bg-[#1F1F1F]/10"
-                                style={{
-                                    height: 1,
-                                    marginVertical: verticalScale(2),
-                                    marginHorizontal: moderateScale(10)
-                                }}
-                            />
-
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={(event) => {
-                                    event.stopPropagation()
-                                    onSetDefault?.(item)
-                                }}
-                                style={{
-                                    paddingHorizontal: scale(12),
-                                    paddingVertical: verticalScale(5)
-                                }}
-                            >
-                                <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
-                                >
-                                    Set as Default
-                                </Text>
-                            </TouchableOpacity>
-                        </>
-                    )}
-
-                    <View
-                        className="bg-[#1F1F1F]/10"
-                        style={{
-                            height: 1,
-                            marginVertical: verticalScale(2),
-                            marginHorizontal: moderateScale(10)
-                        }}
+                    <EllipsisVerticalIcon
+                        width={moderateScale(20)}
+                        height={moderateScale(20)}
+                        color="#3F2516"
+                        strokeWidth={1.8}
                     />
-
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={(event) => {
-                            event.stopPropagation()
-                            onDelete?.(item)
-                        }}
-                        style={{
-                            paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(5)
-                        }}
-                    >
-                        <Text
-                            className="text-[#EF4444] font-medium"
-                            style={{ fontSize: moderateScale(13) }}
-                        >
-                            Delete Address
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            )}
+                </TouchableOpacity>
+            </View>
 
             <View className="flex-row items-start gap-3">
                 <View

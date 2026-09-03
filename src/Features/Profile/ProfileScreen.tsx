@@ -27,8 +27,8 @@ import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { Image } from "expo-image"
 import { router } from 'expo-router'
-import React, { useState } from "react"
-import { Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
+import React, { useRef, useState } from "react"
+import { Dimensions, Modal, Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -62,6 +62,33 @@ export default function ProfileScreen() {
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
     const [selectedLanguage, setSelectedLanguage] = useState("English")
 
+    const menuRefs = useRef<{
+        appearance: View | null
+        language: View | null
+    }>({
+        appearance: null,
+        language: null
+    })
+
+    const [menuPosition, setMenuPosition] = useState({
+        top: 0,
+        left: 0
+    })
+
+    const MENU_WIDTH = moderateScale(145)
+
+    const activeOptions =
+        openMenu === "appearance"
+            ? APPEARANCE_OPTIONS
+            : openMenu === "language"
+                ? LANGUAGE_OPTIONS
+                : []
+
+    const selectedMenuValue =
+        openMenu === "appearance"
+            ? selectedAppearance
+            : selectedLanguage
+
     const horizontalPadding = scale(28)
     const gap = scale(12)
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 2
@@ -69,6 +96,40 @@ export default function ProfileScreen() {
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT_FALLBACK)
     const scrollY = useSharedValue(0)
+
+    const handleOpenMenu = (menu: Exclude<OpenMenu, null>) => {
+        const ref = menuRefs.current[menu]
+
+        if (!ref) return
+
+        ref.measureInWindow((x, y, width, height) => {
+            const screenHeight = Dimensions.get("window").height
+
+            const options =
+                menu === "appearance"
+                    ? APPEARANCE_OPTIONS
+                    : LANGUAGE_OPTIONS
+
+            const menuHeight = options.length * verticalScale(38) + verticalScale(14)
+
+            const spaceBelow = screenHeight - (y + height)
+
+            const openUp = spaceBelow < menuHeight + verticalScale(16)
+
+            setMenuPosition({
+                left: Math.max(
+                    scale(12),
+                    x + width - MENU_WIDTH
+                ),
+
+                top: openUp
+                    ? y - menuHeight - verticalScale(5)
+                    : y + height + verticalScale(5)
+            })
+
+            setOpenMenu(menu)
+        })
+    }
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -80,7 +141,7 @@ export default function ProfileScreen() {
                 const shouldOpen = y < titleHeight / 2
                 scrollTo(animatedRef, 0, shouldOpen ? 0 : titleHeight, true)
             }
-        },
+        }
     })
 
     const headerContainerStyle = useAnimatedStyle(() => {
@@ -114,9 +175,7 @@ export default function ProfileScreen() {
         }
     }
 
-    const formatPhoneNumber = (
-    phone: string | null | undefined
-    ) => {
+    const formatPhoneNumber = (phone: string | null | undefined) => {
         if (!phone) {
             return "Phone not available"
         }
@@ -514,14 +573,22 @@ export default function ProfileScreen() {
                                 }}
                             />
 
-                            <View className="relative">
+                            <View
+                                ref={(ref) => {
+                                    menuRefs.current.appearance = ref
+                                }}
+                                collapsable={false}
+                            >
                                 <TouchableOpacity
                                     activeOpacity={0.9}
-                                    onPress={() =>
-                                        setOpenMenu((prev) =>
-                                            prev === "appearance" ? null : "appearance"
-                                        )
-                                    }
+                                    onPress={() => {
+                                        if (openMenu === "appearance") {
+                                            setOpenMenu(null)
+                                            return
+                                        }
+
+                                        handleOpenMenu("appearance")
+                                    }}
                                     className="flex-row items-center gap-2"
                                 >
                                     <View
@@ -547,62 +614,6 @@ export default function ProfileScreen() {
 
                                     <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
                                 </TouchableOpacity>
-
-                                {openMenu === "appearance" && (
-                                    <View
-                                        className="absolute right-0 bg-white border border-[#1F1F1F]/10"
-                                        style={{
-                                            top: "100%",
-                                            marginTop: verticalScale(8),
-                                            width: moderateScale(145),
-                                            borderRadius: moderateScale(14),
-                                            paddingVertical: verticalScale(7),
-                                            zIndex: 100
-                                        }}
-                                    >
-                                        {APPEARANCE_OPTIONS.map((option, index) => {
-                                            const isSelected = selectedAppearance === option
-
-                                            return (
-                                                <React.Fragment key={option}>
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.9}
-                                                        onPress={() => {
-                                                            setSelectedAppearance(option)
-                                                            setOpenMenu(null)
-                                                        }}
-                                                        style={{
-                                                            paddingHorizontal: scale(12),
-                                                            paddingVertical: verticalScale(5)
-                                                        }}
-                                                    >
-                                                        <Text
-                                                            className={
-                                                                isSelected
-                                                                    ? "text-[#3F2516] font-semibold"
-                                                                    : "text-[#1F1F1F]/75 font-medium"
-                                                            }
-                                                            style={{ fontSize: moderateScale(13) }}
-                                                        >
-                                                            {option}
-                                                        </Text>
-                                                    </TouchableOpacity>
-
-                                                    {index !== APPEARANCE_OPTIONS.length - 1 && (
-                                                        <View
-                                                            className="bg-[#1F1F1F]/10"
-                                                            style={{
-                                                                height: 1,
-                                                                marginVertical: verticalScale(2),
-                                                                marginHorizontal: scale(10)
-                                                            }}
-                                                        />
-                                                    )}
-                                                </React.Fragment>
-                                            )
-                                        })}
-                                    </View>
-                                )}
                             </View>
 
                             <View
@@ -614,14 +625,22 @@ export default function ProfileScreen() {
                                 }}
                             />
 
-                            <View className="relative">
+                            <View
+                                ref={(ref) => {
+                                    menuRefs.current.language = ref
+                                }}
+                                collapsable={false}
+                            >
                                 <TouchableOpacity
                                     activeOpacity={0.9}
-                                    onPress={() =>
-                                        setOpenMenu((prev) =>
-                                            prev === "language" ? null : "language"
-                                        )
-                                    }
+                                    onPress={() => {
+                                        if (openMenu === "language") {
+                                            setOpenMenu(null)
+                                            return
+                                        }
+
+                                        handleOpenMenu("language")
+                                    }}
                                     className="flex-row items-center gap-2"
                                 >
                                     <View
@@ -647,58 +666,6 @@ export default function ProfileScreen() {
 
                                     <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
                                 </TouchableOpacity>
-
-                                {openMenu === "language" && (
-                                    <View
-                                        className="absolute right-0 bg-white border border-[#1F1F1F]/10"
-                                        style={{
-                                            top: "100%",
-                                            marginTop: verticalScale(6),
-                                            width: moderateScale(145),
-                                            borderRadius: moderateScale(14),
-                                            paddingVertical: verticalScale(7),
-                                            zIndex: 100
-                                        }}
-                                    >
-                                        {LANGUAGE_OPTIONS.map((option, index) => (
-                                            <React.Fragment key={option}>
-                                                <TouchableOpacity
-                                                    activeOpacity={0.9}
-                                                    onPress={() => {
-                                                        setSelectedLanguage(option)
-                                                        setOpenMenu(null)
-                                                    }}
-                                                    style={{
-                                                        paddingHorizontal: scale(12),
-                                                        paddingVertical: verticalScale(6),
-                                                    }}
-                                                >
-                                                    <Text
-                                                        className={
-                                                            selectedLanguage === option
-                                                                ? "text-[#3F2516] font-semibold"
-                                                                : "text-[#1F1F1F]/75 font-medium"
-                                                        }
-                                                        style={{ fontSize: moderateScale(13) }}
-                                                    >
-                                                        {option}
-                                                    </Text>
-                                                </TouchableOpacity>
-
-                                                {index !== LANGUAGE_OPTIONS.length - 1 && (
-                                                    <View
-                                                        className="bg-[#1F1F1F]/10"
-                                                        style={{
-                                                            height: 1,
-                                                            marginVertical: verticalScale(2),
-                                                            marginHorizontal: scale(10)
-                                                        }}
-                                                    />
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                    </View>
-                                )}
                             </View>
                         </View>
 
@@ -785,7 +752,15 @@ export default function ProfileScreen() {
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
                             style={{ borderRadius: moderateScale(18) }}
                         >
-                            <View className='flex-row items-center gap-2'>
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/rewards-coupons')
+                                    })
+                                }
+                                className='flex-row items-center gap-2'
+                            >
                                 <View
                                     className="items-center justify-center"
                                     style={{ width: moderateScale(24) }}
@@ -808,7 +783,7 @@ export default function ProfileScreen() {
                                 </Text>
 
                                 <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
-                            </View>
+                            </TouchableOpacity>
 
                             <View
                                 className="bg-[#1F1F1F]/10"
@@ -963,6 +938,94 @@ export default function ProfileScreen() {
                     </View>
                 }
             />
+
+            <Modal
+                transparent
+                visible={openMenu !== null}
+                animationType="fade"
+                statusBarTranslucent
+                onRequestClose={() => setOpenMenu(null)}
+            >
+                <View className="flex-1">
+                    <Pressable
+                        onPress={() => setOpenMenu(null)}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        }}
+                    />
+
+                    {openMenu && (
+                        <View
+                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            style={{
+                                top: menuPosition.top,
+                                left: menuPosition.left,
+                                width: MENU_WIDTH,
+                                borderRadius: moderateScale(14),
+                                paddingVertical: verticalScale(7)
+                            }}
+                        >
+                            {activeOptions.map((option, index) => {
+                                const isSelected = selectedMenuValue === option
+
+                                return (
+                                    <React.Fragment key={option}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.9}
+                                            onPress={() => {
+                                                if (
+                                                    openMenu === "appearance"
+                                                ) {
+                                                    setSelectedAppearance(option)
+                                                }
+
+                                                if (
+                                                    openMenu === "language"
+                                                ) {
+                                                    setSelectedLanguage(option)
+                                                }
+
+                                                setOpenMenu(null)
+                                            }}
+                                            style={{
+                                                paddingHorizontal: scale(12),
+                                                paddingVertical: verticalScale(6)
+                                            }}
+                                        >
+                                            <Text
+                                                className={
+                                                    isSelected
+                                                        ? "text-[#3F2516] font-semibold"
+                                                        : "text-[#1F1F1F]/75 font-medium"
+                                                }
+                                                style={{ fontSize: moderateScale(13) }}
+                                            >
+                                                {option}
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                        {index !==
+                                            activeOptions.length - 1 && (
+                                            <View
+                                                className="bg-[#1F1F1F]/10"
+                                                style={{
+                                                    height: 1,
+                                                    marginVertical: verticalScale(2),
+                                                    marginHorizontal: scale(10)
+                                                }}
+                                            />
+                                        )}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </View>
+                    )}
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }

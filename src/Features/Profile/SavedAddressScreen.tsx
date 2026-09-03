@@ -9,8 +9,8 @@ import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
 import { router } from "expo-router"
-import { useCallback, useEffect, useState } from 'react'
-import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Dimensions, FlatList, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import SavedAddressCard, { AddressItem } from './Components/SavedAddressCard'
@@ -54,6 +54,43 @@ export default function SavedAddressScreen(){
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [openMenu, setOpenMenu] = useState<string | null>(null)
 
+    const menuRefs = useRef<Record<string, View | null>>({})
+    
+    const selectedMenuItem = SAVED_ADDRESSES.find((item) => item.id === openMenu)
+    const [menuPosition, setMenuPosition] = useState({
+        top: 0,
+        left: 0
+    })
+    const MENU_WIDTH = moderateScale(155)
+    const MENU_HEIGHT = moderateScale(125)
+
+    const handleOpenMenu = (id: string) => {
+        const ref = menuRefs.current[id]
+
+        if (!ref) return
+
+        ref.measureInWindow((x, y, width, height) => {
+            const screenHeight = Dimensions.get("window").height
+
+            const spaceBelow = screenHeight - (y + height)
+
+            const openUp = spaceBelow < MENU_HEIGHT + verticalScale(20)
+
+            setMenuPosition({
+                left: Math.max(
+                    scale(12),
+                    x + width - MENU_WIDTH
+                ),
+
+                top: openUp
+                    ? y - MENU_HEIGHT - verticalScale(5)
+                    : y + height + verticalScale(5)
+            })
+
+            setOpenMenu(id)
+        })
+    }
+
     const getAddressIcon = (title: string) => {
         switch (title.toLowerCase()) {
             case "home":
@@ -75,32 +112,20 @@ export default function SavedAddressScreen(){
             <SavedAddressCard
                 item={item}
                 icon={getAddressIcon(item.title)}
-                isMenuOpen={openMenu === item.id}
+                menuAnchorRef={(ref) => {
+                    menuRefs.current[item.id] = ref
+                }}
                 onPress={(address) => {
                     console.log("Address:", address)
                 }}
                 onMenuPress={(address) => {
-                    setOpenMenu((prev) =>
-                        prev === address.id
-                            ? null
-                            : address.id
-                    )
-                }}
-                onEdit={(address) => {
-                    setOpenMenu(null)
-
-                    console.log("Edit:", address)
-                }}
-                onSetDefault={(address) => {
-                    setOpenMenu(null)
-
-                    console.log("Set default:", address)
-                }}
-                onDelete={(address) => {
+                    if (openMenu === address.id) {
                         setOpenMenu(null)
+                        return
+                    }
 
-                    console.log("Delete:", address)
-                }}  
+                    handleOpenMenu(address.id)
+                }}
             />
         ),[openMenu]
     )
@@ -426,6 +451,120 @@ export default function SavedAddressScreen(){
                     </>
                 }
             />
+
+            <Modal
+                transparent
+                visible={openMenu !== null}
+                animationType="fade"
+                statusBarTranslucent
+                onRequestClose={() => setOpenMenu(null)}
+            >
+                <View className="flex-1">
+                    <Pressable
+                        onPress={() => setOpenMenu(null)}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        }}
+                    />
+
+                    {selectedMenuItem && (
+                        <View
+                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            style={{
+                                top: menuPosition.top,
+                                left: menuPosition.left,
+                                width: MENU_WIDTH,
+                                borderRadius: moderateScale(14),
+                                paddingVertical: verticalScale(5)
+                            }}
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    setOpenMenu(null)
+
+                                    console.log("Edit:", selectedMenuItem)
+                                }}
+                                style={{
+                                    paddingHorizontal: scale(12),
+                                    paddingVertical: verticalScale(8)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#1F1F1F]/75 font-medium"
+                                    style={{ fontSize: moderateScale(12) }}
+                                >
+                                    Edit Address
+                                </Text>
+                            </TouchableOpacity>
+
+                            {!selectedMenuItem.isDefault && (
+                                <>
+                                    <View
+                                        className="bg-[#1F1F1F]/10"
+                                        style={{
+                                            height: 1,
+                                            marginHorizontal: scale(10)
+                                        }}
+                                    />
+
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        onPress={() => {
+                                            setOpenMenu(null)
+
+                                            console.log("Set default:", selectedMenuItem)
+                                        }}
+                                        style={{
+                                            paddingHorizontal: scale(12),
+                                            paddingVertical: verticalScale(8)
+                                        }}
+                                    >
+                                        <Text
+                                            className="text-[#1F1F1F]/75 font-medium"
+                                            style={{ fontSize: moderateScale(12) }}
+                                        >
+                                            Set as Default
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
+
+                            <View
+                                className="bg-[#1F1F1F]/10"
+                                style={{
+                                    height: 1,
+                                    marginHorizontal: scale(10)
+                                }}
+                            />
+
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    setOpenMenu(null)
+
+                                    console.log("Delete:", selectedMenuItem)
+                                }}
+                                style={{
+                                    paddingHorizontal: scale(12),
+                                    paddingVertical: verticalScale(8)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#EF4444] font-medium"
+                                    style={{ fontSize: moderateScale(12) }}
+                                >
+                                    Delete Address
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }
