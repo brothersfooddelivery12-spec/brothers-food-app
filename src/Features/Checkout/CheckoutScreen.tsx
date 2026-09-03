@@ -26,13 +26,14 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from 'react-native-svg'
 import AddressCard from "./Components/AddressCard"
 
-type PaymentMethod = {
+export type PaymentMethod = {
     id: string
     title: string
     description: string
     paymentType: string
     icon: React.FC<SvgProps>
     size: number
+    isDefault?: boolean
 }
 
 const PAYMENT_METHODS: PaymentMethod[] = [
@@ -447,7 +448,7 @@ export default function CheckoutScreen() {
                                             className="flex-row items-center"
                                             style={{
                                                 paddingHorizontal: scale(14),
-                                                paddingVertical: verticalScale(10),
+                                                paddingVertical: verticalScale(10)
                                             }}
                                         >
                                             <View

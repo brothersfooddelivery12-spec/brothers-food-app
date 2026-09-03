@@ -165,11 +165,11 @@ export default function VerifyOtpScreen() {
                 return
             }
 
-            showToast(res.data.message || "Invalid OTP. Please try again.", "warning")
+            setOtpError(res.data.message || "Invalid OTP. Please try again.")
         } catch (error: any) {
             console.error("Verify OTP error:", error?.message || error)
 
-            showToast(error?.message || "Unable to verify OTP. Please try again.", "warning")
+            setOtpError(error?.message || "Invalid OTP. Please try again.")
         } finally {
             setLoading(false)
         }

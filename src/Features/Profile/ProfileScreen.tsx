@@ -757,7 +757,13 @@ export default function ProfileScreen() {
                             className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
                             style={{ borderRadius: moderateScale(18) }}
                         >
-                            <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true}
+                                onPress={()=>
+                                    preventDoublePress(() => {
+                                        router.push('/payment-method')
+                                    })
+                                }
+                            />
 
                             <ProfileMenuItem label="Delivery Instructions" icon={NotepadTextIcon} showDivider={false}
                                 onPress={()=>

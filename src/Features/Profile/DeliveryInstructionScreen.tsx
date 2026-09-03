@@ -428,6 +428,24 @@ export default function DeliveryInstructionScreen(){
                             )
                         })}
                     </View>
+
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={() => {}}
+                        className="items-center justify-center bg-[#3F2516]"
+                        style={{
+                            borderRadius: moderateScale(18),
+                            paddingVertical: verticalScale(12),
+                            marginTop: verticalScale(14)
+                        }}
+                    >
+                        <Text
+                            className="text-white font-semibold"
+                            style={{ fontSize: moderateScale(13) }}
+                        >
+                            Save Instructions
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View
