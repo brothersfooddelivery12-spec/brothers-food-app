@@ -23,6 +23,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         price: 99,
         imageUri:
             "https://i.pinimg.com/736x/73/7e/d9/737ed93987aae98a76fc2e5f12fc0ecc.jpg",
+        isActive: true
     },
     {
         id: "2",
@@ -31,6 +32,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         price: 59,
         imageUri:
             "https://i.pinimg.com/1200x/60/70/9b/60709bf9dee58b89448c04a6a518b45b.jpg",
+        isActive: true
     },
     {
         id: "3",
@@ -39,6 +41,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         price: 129,
         imageUri:
             "https://i.pinimg.com/1200x/89/52/62/8952620f20999169e06c97f10a5eb24b.jpg",
+        isActive: true
     },
     {
         id: "4",
@@ -47,6 +50,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         price: 99,
         imageUri:
             "https://i.pinimg.com/736x/18/39/b5/1839b51798c581c9219f3d7ccd62cbda.jpg",
+        isActive: true
     },
 ]
 

@@ -2,6 +2,7 @@ import FilterIcon from '@/assets/icon/FIlterIcon.svg'
 import SearchBar from "@/components/SearchBar"
 import { recommendedItems } from "@/constant/RecommendedData"
 import { restaurants } from "@/constant/RestaurantData"
+import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
@@ -17,6 +18,7 @@ const SEARCH_BAR_HEIGHT = verticalScale(46)
 export default function FavouritesScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const insets = useSafeAreaInsets()
+    const params = useLocalSearchParams<{tab?: "restaurants" | "food"}>()
 
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -27,6 +29,14 @@ export default function FavouritesScreen() {
         }))
     )
     const [favRestaurants, setFavRestaurants] = useState(restaurants)
+
+    useEffect(() => {
+        if(
+            params.tab === "restaurants" || params.tab === "food"
+        ) {
+            setActiveTab(params.tab)
+        }
+    },[params.tab])
 
     const horizontalPadding = scale(28)
     const gap = scale(12)

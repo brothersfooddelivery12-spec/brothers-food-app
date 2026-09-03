@@ -17,7 +17,7 @@ import { default as FoodIcon, default as UtensilsIcon } from '@/assets/icon/Uten
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import SearchBar from '@/components/SearchBar'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -252,10 +252,20 @@ export const COUPONS: CouponItem[] = [
 
 export default function RewardsAndCouponsScreen(){
     const insets = useSafeAreaInsets()
+    const params = useLocalSearchParams<{tab?: "rewards" | "coupons"}>()
+
     const [activeTab, setActiveTab] = useState<"rewards" | "coupons">("rewards")
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("1")
+
+    useEffect(() => {
+        if(
+            params.tab === "rewards" || params.tab === "coupons"
+        ) {
+            setActiveTab(params.tab)
+        }
+    },[params.tab])
 
     useEffect(() => {
         const timer = setTimeout(() => {

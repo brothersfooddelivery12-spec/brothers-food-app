@@ -9,6 +9,7 @@ export const foodItems: FoodItem[] = [
         category: "Bakery • Dessert",
         price: 249,
         isHot: true,
+        isActive: true
     },
     {
         id: "2",
@@ -18,6 +19,7 @@ export const foodItems: FoodItem[] = [
         category: "North Indian • Starter",
         price: 229,
         isHot: false,
+        isActive: false
     },
     {
         id: "3",
@@ -27,6 +29,7 @@ export const foodItems: FoodItem[] = [
         category: "South Indian • Breakfast",
         price: 149,
         isHot: true,
+        isActive: false
     },
     {
         id: "4",
@@ -36,5 +39,6 @@ export const foodItems: FoodItem[] = [
         category: "Italian • Pizza",
         price: 299,
         isHot: false,
+        isActive: true
     },
 ]

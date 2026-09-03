@@ -10,6 +10,7 @@ export const recommendedItems: RecommendedCard[] = [
         deliveryTime: "20–30 min",
         price: 299,
         rating: 4.8,
+        isActive: true
     },
     {
         id: "2",
@@ -20,6 +21,7 @@ export const recommendedItems: RecommendedCard[] = [
         deliveryTime: "25–35 min",
         price: 249,
         rating: 4.7,
+        isActive: false
     },
     {
         id: "3",
@@ -30,6 +32,7 @@ export const recommendedItems: RecommendedCard[] = [
         deliveryTime: "20–30 min",
         price: 329,
         rating: 4.9,
+        isActive: true
     },
     {
         id: "4",
@@ -40,6 +43,7 @@ export const recommendedItems: RecommendedCard[] = [
         deliveryTime: "15–25 min",
         price: 149,
         rating: 4.6,
+        isActive: false
     },
     {
         id: "5",
@@ -50,5 +54,6 @@ export const recommendedItems: RecommendedCard[] = [
         deliveryTime: "20–30 min",
         price: 179,
         rating: 4.7,
+        isActive: true
     }
 ]

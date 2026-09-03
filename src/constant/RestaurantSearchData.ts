@@ -9,6 +9,7 @@ export const RestaurantSearchData = [
         distance: "2.4 km",
         deliveryFee: 0,
         isFavourite: true,
+        isActive: true,
 
         signatureSelection: [
             {
@@ -20,6 +21,7 @@ export const RestaurantSearchData = [
                 price: 699,
                 rating: 4.8,
                 isHot: true,
+                isActive: true
             },
             {
                 id: "2",
@@ -30,6 +32,7 @@ export const RestaurantSearchData = [
                 price: 599,
                 rating: 4.6,
                 isHot: false,
+                isActive: false
             },
             {
                 id: "3",
@@ -40,6 +43,7 @@ export const RestaurantSearchData = [
                 price: 749,
                 rating: 4.7,
                 isHot: true,
+                isActive: true
             },
         ],
     },
@@ -54,6 +58,7 @@ export const RestaurantSearchData = [
         distance: "3.1 km",
         deliveryFee: 40,
         isFavourite: false,
+        isActive: false,
 
         signatureSelection: [
             {
@@ -65,6 +70,7 @@ export const RestaurantSearchData = [
                 price: 199,
                 rating: 4.7,
                 isHot: true,
+                isActive: true
             },
             {
                 id: "2",
@@ -75,6 +81,7 @@ export const RestaurantSearchData = [
                 price: 179,
                 rating: 4.5,
                 isHot: false,
+                isActive: true
             },
             {
                 id: "3",
@@ -85,6 +92,7 @@ export const RestaurantSearchData = [
                 price: 299,
                 rating: 4.8,
                 isHot: true,
+                isActive: false
             },
         ],
     },

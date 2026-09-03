@@ -11,6 +11,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
         distance: "2.5 km away",
         discount: "20% OFF",
         priceForTwo: 350,
+        isActive: false
     },
     {
         id: "2",
@@ -22,6 +23,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
         distance: "1.8 km away",
         discount: "30% OFF",
         priceForTwo: 500,
+        isActive: true
     },
     {
         id: "3",
@@ -33,6 +35,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
         distance: "3.2 km away",
         discount: "15% OFF",
         priceForTwo: 700,
+        isActive: false
     },
     {
         id: "4",
@@ -44,5 +47,6 @@ export const nearByRestaurants: NearByRestaurants[] = [
         distance: "2.1 km away",
         discount: "25% OFF",
         priceForTwo: 400,
-    },
+        isActive: true
+    }
 ]

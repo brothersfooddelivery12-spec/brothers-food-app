@@ -497,7 +497,12 @@ export default function ProfileScreen() {
                                 activeOpacity={0.95}
                                 onPress={() => 
                                     preventDoublePress(() => {
-                                        router.push('/rewards-coupons')
+                                        router.push({
+                                            pathname: "/rewards-coupons",
+                                            params: {
+                                                tab: "coupons"
+                                            }
+                                        })
                                     })
                                 }
                                 className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
@@ -699,7 +704,12 @@ export default function ProfileScreen() {
                             <ProfileMenuItem label="Favorite Restaurants" icon={HeartIcon} showDivider={true}
                                 onPress={()=> 
                                     preventDoublePress(() => {
-                                        router.push('/(tabs)/favourite')
+                                        router.push({
+                                            pathname: "/(tabs)/favourite",
+                                            params: {
+                                                tab: "restaurants"
+                                            }
+                                        })
                                     })
                                 }
                             />
@@ -707,7 +717,12 @@ export default function ProfileScreen() {
                             <ProfileMenuItem label="Favorite Foods" icon={FoodIcon} showDivider={false}
                                 onPress={()=> 
                                     preventDoublePress(() => {
-                                        router.push('/(tabs)/favourite')
+                                        router.push({
+                                            pathname: "/(tabs)/favourite",
+                                            params: {
+                                                tab: "food"
+                                            }
+                                        })
                                     })
                                 }
                             />
@@ -756,7 +771,12 @@ export default function ProfileScreen() {
                                 activeOpacity={0.95}
                                 onPress={() => 
                                     preventDoublePress(() => {
-                                        router.push('/rewards-coupons')
+                                        router.push({
+                                            pathname: "/rewards-coupons",
+                                            params: {
+                                                tab: "rewards"
+                                            }
+                                        })
                                     })
                                 }
                                 className='flex-row items-center gap-2'

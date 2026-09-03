@@ -11,6 +11,7 @@ export const cheesePizzaResults: FoodSearchCardProps[] = [
         discount: "30% OFF",
         image: "https://i.pinimg.com/1200x/5b/b8/3b/5bb83ba7b2e8a806999b43ce8c95bd02.jpg",
         isFavourite: true,
+        isActive: true
     },
     {
         id: "2",
@@ -22,6 +23,7 @@ export const cheesePizzaResults: FoodSearchCardProps[] = [
         discount: "20% OFF",
         image: "https://i.pinimg.com/736x/26/54/df/2654df80a6505498f70ecd5739c2ec29.jpg",
         isFavourite: false,
+        isActive: false
     },
     {
         id: "3",
@@ -33,6 +35,7 @@ export const cheesePizzaResults: FoodSearchCardProps[] = [
         discount: "25% OFF",
         image: "https://i.pinimg.com/736x/0b/05/92/0b0592552e242329ac6f8c7554a6162a.jpg",
         isFavourite: false,
+        isActive: true
     },
     // {
     //     name: "Four Cheese Pizza",

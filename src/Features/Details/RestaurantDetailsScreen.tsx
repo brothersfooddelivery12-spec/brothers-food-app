@@ -91,6 +91,7 @@ const SimialrRestaurants = [
         image: "https://i.pinimg.com/1200x/54/92/2d/54922dd7b732dc69b31b001fd2bac63b.jpg",
         rating: 4.2,
         deliveryTime: "20-25 mins",
+        isActive: true,
     },
     {
         id: "2",
@@ -98,6 +99,7 @@ const SimialrRestaurants = [
         image: "https://i.pinimg.com/736x/d6/35/a1/d635a1a04a3bed4443b62b2a03406904.jpg",
         rating: 4.6,
         deliveryTime: "25-30 mins",
+        isActive: false
     },
     {
         id: "3",
@@ -105,6 +107,7 @@ const SimialrRestaurants = [
         image: "https://i.pinimg.com/1200x/b9/6f/3e/b96f3e7efa9d0f47147266fac5416bb3.jpg",
         rating: 4.8,
         deliveryTime: "15-20 mins",
+        isActive: true,
     },
 ]
 

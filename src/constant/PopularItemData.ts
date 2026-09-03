@@ -11,6 +11,7 @@ export const popularitems: PopularItem[] = [
         rating: 4.5,
         price: 380,
         tag: "BestSeller",
+        isActive: true,
     },
     {
         id: "2",
@@ -22,6 +23,7 @@ export const popularitems: PopularItem[] = [
         rating: 4.7,
         price: 320,
         tag: "Popular",
+        isActive: false
     },
     {
         id: "3",
@@ -32,5 +34,6 @@ export const popularitems: PopularItem[] = [
             "https://i.pinimg.com/1200x/ef/6e/1b/ef6e1b22f8de024fc8611bc407b6e761.jpg",
         rating: 4.6,
         price: 280,
+        isActive: true,
     },
 ]

@@ -8,6 +8,7 @@ export interface Restaurant {
   deliveryTime: string
   priceForTwo: number,
   isFavourite: boolean
+  isActive?: boolean
 }
 
 export const restaurants: Restaurant[] = [
@@ -21,7 +22,8 @@ export const restaurants: Restaurant[] = [
     deliveryFee: 40,
     deliveryTime: "30–35 min",
     priceForTwo: 700,
-    isFavourite: false
+    isFavourite: false,
+    isActive: true
   },
   {
     id: "2",
@@ -33,7 +35,8 @@ export const restaurants: Restaurant[] = [
     deliveryFee: 0,
     deliveryTime: "20–25 min",
     priceForTwo: 500,
-    isFavourite: true
+    isFavourite: true,
+    isActive: false
   },
 //   {
 //     id: "3",

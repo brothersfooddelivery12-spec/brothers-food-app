@@ -21,6 +21,7 @@ const RECENTLY_VIEWED = [
             "https://i.pinimg.com/736x/9d/2f/62/9d2f62b46c1a23bd26df0d455c3a388f.jpg",
         category: "Italian",
         distance: "2.1 km",
+        isActive: true,
     },
     {
         id: "2",
@@ -29,6 +30,7 @@ const RECENTLY_VIEWED = [
             "https://i.pinimg.com/736x/30/76/11/30761195f30846f6de07d52038d7d4cd.jpg",
         category: "Burgers",
         distance: "1.8 km",
+        isActive: false
     },
     {
         id: "3",
@@ -37,6 +39,7 @@ const RECENTLY_VIEWED = [
             "https://i.pinimg.com/736x/50/9c/d4/509cd4ca90c727994e5da18bc9f81472.jpg",
         category: "North Indian",
         distance: "3.4 km",
+        isActive: true,
     },
     {
         id: "4",
@@ -45,6 +48,7 @@ const RECENTLY_VIEWED = [
             "https://i.pinimg.com/1200x/61/23/74/612374b37b28b6790d6fbcb2ab5e8f82.jpg",
         category: "South Indian",
         distance: "2.7 km",
+        isActive: true,
     },
 ]
 
@@ -202,25 +206,33 @@ export default function RestaurantSearchScreen() {
                         gap: scale(10)
                     }}
                 >
-                    {RECENTLY_VIEWED.map(
-                        (item) => (
+                    {RECENTLY_VIEWED.map((item) => {
+                        const isInactive = !item.isActive
+
+                        return (
                             <TouchableOpacity
                                 key={item.id}
-                                activeOpacity={0.9}
-                                onPress={() =>
+                                activeOpacity={item.isActive ? 0.9 : 1}
+                                onPress={() => {
+                                    if (isInactive) return
+
                                     console.log("Recently viewed:", item.name)
-                                }
-                                className="flex-row mt-3 items-center bg-white border border-[#1F1F1F]/10"
+                                }}
+                                className="flex-row mt-3 items-center border"
                                 style={{
                                     gap: moderateScale(7),
                                     width: moderateScale(235),
                                     borderRadius: moderateScale(20),
                                     paddingHorizontal: moderateScale(7),
-                                    paddingVertical: moderateScale(7)
+                                    paddingVertical: moderateScale(7),
+                                    backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                                    borderColor: isInactive
+                                        ? "rgba(31,31,31,0.08)"
+                                        : "rgba(31,31,31,0.10)"
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center overflow-hidden"
+                                    className="items-center justify-center overflow-hidden relative"
                                     style={{
                                         width: moderateScale(62),
                                         height: moderateScale(62),
@@ -237,53 +249,102 @@ export default function RestaurantSearchScreen() {
                                         style={{
                                             width: "100%",
                                             height: "100%",
+                                            opacity: isInactive ? 0.45 : 1
                                         }}
                                     />
+
+                                    {isInactive && (
+                                        <View
+                                            pointerEvents="none"
+                                            className="absolute inset-0"
+                                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                                        />
+                                    )}
                                 </View>
 
                                 <View className="justify-center flex-1">
                                     <Text
                                         numberOfLines={1}
-                                        className="text-[#1F1F1F] font-bold mt-1"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-bold mt-1"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                                        }}
                                     >
                                         {item.name}
                                     </Text>
 
                                     <Text
                                         numberOfLines={1}
-                                        className="text-[#1F1F1F]/65 font-medium"
+                                        className="font-medium"
                                         style={{
                                             fontSize: moderateScale(10),
-                                            marginTop: moderateScale(3)
+                                            marginTop: moderateScale(3),
+                                            color: isInactive
+                                                ? "rgba(31,31,31,0.38)"
+                                                : "rgba(31,31,31,0.65)"
                                         }}
                                     >
-                                        {item.category}
+                                        {isInactive ? "Currently unavailable" : item.category}
                                     </Text>
 
                                     <View
-                                        className="flex-row items-center self-start bg-[#E8B93F]/15"
+                                        className="flex-row items-center self-start"
                                         style={{
                                             marginTop: moderateScale(6),
                                             gap: moderateScale(3),
                                             paddingHorizontal: moderateScale(6),
                                             paddingVertical: moderateScale(4),
-                                            borderRadius: moderateScale(12)
+                                            borderRadius: moderateScale(12),
+                                            backgroundColor: isInactive
+                                                ? "rgba(31,31,31,0.07)"
+                                                : "rgba(232,185,63,0.15)"
                                         }}
                                     >
-                                        <LocationIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" />
+                                        <LocationIcon
+                                            width={moderateScale(14)}
+                                            height={moderateScale(14)}
+                                            color={ isInactive ? "#858585" : "#5C4639" }
+                                        />
 
                                         <Text
-                                            className="font-semibold text-[#5C4639]"
-                                            style={{ fontSize: moderateScale(11) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(11),
+                                                color: isInactive ? "#858585" : "#5C4639"
+                                            }}
                                         >
                                             {item.distance}
                                         </Text>
                                     </View>
                                 </View>
+
+                                {/* {isInactive && (
+                                    <View
+                                        className="absolute"
+                                        style={{
+                                            right: scale(8),
+                                            top: verticalScale(8),
+                                            paddingHorizontal: scale(6),
+                                            paddingVertical: verticalScale(3),
+                                            borderRadius: moderateScale(8),
+                                            backgroundColor: "rgba(31,31,31,0.08)"
+                                        }}
+                                    >
+                                        <Text
+                                            className="font-semibold uppercase"
+                                            style={{
+                                                fontSize: moderateScale(7.5),
+                                                color: "rgba(31,31,31,0.50)"
+                                            }}
+                                        >
+                                            Unavailable
+                                        </Text>
+                                    </View>
+                                )} */}
                             </TouchableOpacity>
                         )
-                    )}
+                    })}
                 </ScrollView>
             </View>
         ),
