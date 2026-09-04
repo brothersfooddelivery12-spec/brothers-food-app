@@ -2,6 +2,7 @@ import ClockIcon from '@/assets/icon/ClockIcon2.svg'
 import MicIcon from '@/assets/icon/MicIcon.svg'
 import RestaurantCard from "@/components/RestaurantCard"
 import SearchBar from "@/components/SearchBar"
+import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { recommendedItems } from "@/constant/RecommendedData"
 import { restaurants } from "@/constant/RestaurantData"
 import { router } from "expo-router"
@@ -10,6 +11,8 @@ import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "r
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useCartStore } from '../Stores/useCartStore'
+import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import RecommendedCard from "./Components/RecommendedCard"
 
@@ -50,6 +53,15 @@ export default function SearchScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
+    const {showToast} = useToast()
+    const addToCart = useCartStore((state) => state.addToCart)
+
+    const getRestaurantById = (restaurantId: string) => {
+        return RESTAURANTS.find(
+            (restaurant) => restaurant.id === restaurantId
+        )
+    }
+
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -71,8 +83,48 @@ export default function SearchScreen() {
 
     const handleRecommendedAdd = useCallback(
         (item: any) => {
-            console.log("Add:", item.name)
-        }, []
+            if (!item.isActive) {
+                showToast("This item is currently unavailable", "warning")
+
+                return
+            }
+
+            const restaurant = getRestaurantById(item.restaurantId)
+
+            if (!restaurant) {
+                showToast("Restaurant not found", "warning")
+
+                return
+            }
+
+            if (!restaurant.isActive) {
+                showToast("Restaurant is currently closed", "warning")
+
+                return
+            }
+
+            addToCart({
+                restaurant: {
+                    id: restaurant.id,
+                    restaurantName: restaurant.name,
+                    restaurantImage: restaurant.imageUri,
+                    deliveryTime: restaurant.deliveryTime,
+                    deliveryFee: restaurant.deliveryFee,
+                    isActive: restaurant.isActive
+                },
+
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.imageUri,
+                    price: item.price,
+                    description: item.category,
+                    isActive: item.isActive
+                }
+            })
+
+            showToast("added to cart", "success")
+        },[addToCart]
     )
 
     const handleRestaurantPress = useCallback((id: string) => {
@@ -110,7 +162,7 @@ export default function SearchScreen() {
             <RecommendedCard
                 item={item}
                 onPress={() => handleRecommendedPress(item)}
-                onAddPress={() => handleRecommendedAdd(item)}
+                onAddPress={() => {}}
             />
         ),
         [

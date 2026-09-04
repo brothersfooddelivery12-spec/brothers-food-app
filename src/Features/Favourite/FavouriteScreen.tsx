@@ -2,12 +2,15 @@ import FilterIcon from '@/assets/icon/FIlterIcon.svg'
 import SearchBar from "@/components/SearchBar"
 import { recommendedItems } from "@/constant/RecommendedData"
 import { restaurants } from "@/constant/RestaurantData"
+import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from '../hook/ToastContext'
+import { useCartStore } from '../Stores/useCartStore'
 import FavFoodCard from "./Components/FavFoodCard"
 import FavouriteTabs from "./Components/FavouriteTabs"
 import FavRestaurantCard from "./Components/FavRestaurantCard"
@@ -19,16 +22,29 @@ export default function FavouritesScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const insets = useSafeAreaInsets()
     const params = useLocalSearchParams<{tab?: "restaurants" | "food"}>()
+    const {showToast} = useToast()
+
+    const addToCart = useCartStore((state) => state.addToCart)
+
+    const getRestaurantById = (restaurantId: string) => {
+        return RESTAURANTS.find(
+            (restaurant) => restaurant.id === restaurantId
+        )
+    }
 
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [activeTab, setActiveTab] = useState<"restaurants" | "food">("restaurants")
     const [favFoods, setFavFoods] = useState(
         recommendedItems.map((item) => ({
-            ...item, isFavourite: false
+            ...item, isFavourite: true
         }))
     )
-    const [favRestaurants, setFavRestaurants] = useState(restaurants)
+    const [favRestaurants, setFavRestaurants] = useState(
+        restaurants.map((item) => ({
+            ...item, isFavourite: true
+        }))
+    )
 
     useEffect(() => {
         if(
@@ -120,9 +136,51 @@ export default function FavouritesScreen() {
         )
     }, [])
 
-    const handleFoodAdd = useCallback((item: any) => {
-        console.log("Add:", item.name)
-    }, [])
+    const handleFoodAdd = useCallback(
+        (item: any) => {
+            if (!item.isActive) {
+                showToast("This item is currently unavailable", "warning")
+
+                return
+            }
+
+            const restaurant = getRestaurantById(item.restaurantId)
+
+            if (!restaurant) {
+                showToast("Restaurant not found", "warning")
+
+                return
+            }
+
+            if (!restaurant.isActive) {
+                showToast("Restaurant is currently closed", "warning")
+
+                return
+            }
+
+            addToCart({
+                restaurant: {
+                    id: restaurant.id,
+                    restaurantName: restaurant.name,
+                    restaurantImage: restaurant.imageUri,
+                    deliveryTime: restaurant.deliveryTime,
+                    deliveryFee: restaurant.deliveryFee,
+                    isActive: restaurant.isActive
+                },
+
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.imageUri,
+                    price: item.price,
+                    description: item.category,
+                    isActive: item.isActive
+                }
+            })
+
+            showToast("added to cart", "success")
+        },[addToCart]
+    )
 
     const renderRestaurant = useCallback(
         ({ item }: { item: any }) => (
@@ -143,7 +201,7 @@ export default function FavouritesScreen() {
                 <FavFoodCard
                     item={item}
                     onPress={() => handleFoodPress(item.id)}
-                    onAddPress={() => handleFoodAdd(item)}
+                    onAddPress={() => {}}
                     onFavouritePress={() => handleFavFoodPress(item.id)}
                 />
             </View>

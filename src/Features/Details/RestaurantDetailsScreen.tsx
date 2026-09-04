@@ -13,6 +13,7 @@ import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
 import WalletIcon from '@/assets/icon/WalletIcon.svg'
 import { popularitems } from "@/constant/PopularItemData"
 import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
+import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { getRatingStars } from "@/utils/rating"
 import { Image } from "expo-image"
 import { router } from "expo-router"
@@ -21,7 +22,9 @@ import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import { useCartStore } from '../Stores/useCartStore'
 import ImageGrid from "./components/ImageGrid"
 import PopularItemCard from "./components/PopularItemCard"
 import RatingDistribution from "./components/RatingDistribution"
@@ -114,8 +117,18 @@ const SimialrRestaurants = [
 export default function RestaurantDetailsScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
+    const {showToast} = useToast()
+
     const [favourite, setFavourite] = useState(false)
     const [activeTab, setActiveTab] = useState("Popular")
+
+    const addToCart = useCartStore((state) => state.addToCart)
+    
+    const getRestaurantById = (restaurantId: string) => {
+        return RESTAURANTS.find(
+            (restaurant) => restaurant.id === restaurantId
+        )
+    }
 
     const rating = 4.8
     const stars = getRatingStars(rating)
@@ -140,9 +153,51 @@ export default function RestaurantDetailsScreen() {
         console.log("Item pressed:", item.name)
     }, [])
 
-    const handleAddItem = useCallback((item: any) => {
-        console.log("Add item:", item.name)
-    }, [])
+    const handleAddItem = useCallback(
+        (item: any) => {
+            if (!item.isActive) {
+                showToast("This item is currently unavailable", "warning")
+
+                return
+            }
+
+            const restaurant = getRestaurantById(item.restaurantId)
+
+            if (!restaurant) {
+                showToast("Restaurant not found", "warning")
+
+                return
+            }
+
+            if (!restaurant.isActive) {
+                showToast("Restaurant is currently closed", "warning")
+
+                return
+            }
+
+            addToCart({
+                restaurant: {
+                    id: restaurant.id,
+                    restaurantName: restaurant.name,
+                    restaurantImage: restaurant.imageUri,
+                    deliveryTime: restaurant.deliveryTime,
+                    deliveryFee: restaurant.deliveryFee,
+                    isActive: restaurant.isActive
+                },
+
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.imageUri,
+                    price: item.price,
+                    description: item.description,
+                    isActive: item.isActive
+                }
+            })
+
+            showToast("added to cart", "success")
+        },[addToCart]
+    )
 
     const handleOfferPress = useCallback((id: string) => {
         console.log("Selected offer:", id)

@@ -1,152 +1,268 @@
-import { memo } from "react"
-import { Text, TouchableOpacity, View } from "react-native"
-import { Image } from "expo-image"
 import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
 import PlusIcon from '@/assets/icon/PlusIcon.svg'
+import { Image } from "expo-image"
+import { memo } from "react"
+import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
-type CartItem = {
+export type CartItem = {
     id: string
     name: string
     image: string
     quantity: number
     price: number
     description?: string
+    isActive: boolean
 }
 
 type CartItemRowProps = {
     item: CartItem
-    onIncrease?: (item: CartItem) => void
-    onDecrease?: (item: CartItem) => void
-    onRemove?: (item: CartItem) => void
+
+    isRestaurantActive: boolean
+
+    editable?: boolean
+
+    onIncrease?: () => void
+    onDecrease?: () => void
+    onRemove?: () => void
 }
 
 const CartItemRow = memo(
     ({
         item,
+        isRestaurantActive,
+        editable = true,
         onIncrease,
         onDecrease,
         onRemove
     }: CartItemRowProps) => {
+        const isUnavailable = !isRestaurantActive || !item.isActive
+        const canDecrease = item.quantity > 1
+
         return (
-            <View className="flex-row items-center gap-3">
-                <View
-                    className="overflow-hidden items-start"
-                    style={{
-                        width: moderateScale(68),
-                        height: moderateScale(68),
-                        borderRadius: moderateScale(14)
-                    }}
-                >
-                    <Image
-                        source={{
-                            uri: item.image,
-                        }}
-                        contentFit="cover"
-                        cachePolicy="memory-disk"
-                        transition={0}
+            <View>
+                <View className="flex-row items-center gap-3">
+                    <View
+                        className="relative overflow-hidden items-start"
                         style={{
-                            width: "100%",
-                            height: "100%",
+                            width: moderateScale(68),
+                            height: moderateScale(68),
+                            borderRadius: moderateScale(14)
                         }}
-                    />
-                </View>
-
-                <View className="items-start gap-1 flex-1">
-                    <Text
-                        numberOfLines={1}
-                        className="text-[#1F1F1F] font-bold"
-                        style={{ fontSize: moderateScale(14) }}
                     >
-                        {item.name}
-                    </Text>
+                        <Image
+                            source={{
+                                uri: item.image
+                            }}
+                            contentFit="cover"
+                            cachePolicy="memory-disk"
+                            transition={0}
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                opacity: isUnavailable ? 0.45 : 1
+                            }}
+                        />
 
-                    {!!item.description && (
+                        {isUnavailable && (
+                            <View
+                                pointerEvents="none"
+                                className="absolute inset-0"
+                                style={{ backgroundColor: "rgba(31,31,31,0.30)" }}
+                            />
+                        )}
+
+                        {isUnavailable && (
+                            <View
+                                className="absolute items-center justify-center"
+                                style={{
+                                    left: moderateScale(4),
+                                    right: moderateScale(4),
+                                    bottom: moderateScale(4),
+                                    paddingVertical: verticalScale(3.5),
+                                    borderRadius: moderateScale(12),
+                                    backgroundColor: "rgba(31,31,31,0.82)"
+                                }}
+                            >
+                                <Text
+                                    className="text-white font-bold uppercase"
+                                    style={{ fontSize: moderateScale(6.5) }}
+                                >
+                                    Unavailable
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+
+                    <View className="items-start gap-1 flex-1">
                         <Text
                             numberOfLines={1}
-                            className="font-medium text-[#1F1F1F]/75"
-                            style={{ fontSize: moderateScale(10) }}
-                        >
-                            {item.description}
-                        </Text>
-                    )}
-
-                    <View
-                        className="flex-row mt-2 items-center justify-center bg-[#E8B93F]/15"
-                        style={{
-                            gap: moderateScale(8),
-                            paddingHorizontal: moderateScale(8),
-                            paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12)
-                        }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={0.95}
-                            onPress={() => onDecrease?.(item)}
-                            className="items-center justify-center rounded-full"
+                            className="font-bold"
                             style={{
-                                width: moderateScale(16),
-                                height: moderateScale(16)
+                                fontSize: moderateScale(14),
+                                color: isUnavailable ? "rgba(31,31,31,0.50)" : "#1F1F1F"
                             }}
                         >
-                            <MinusIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" strokeWidth={2.2} />
-                        </TouchableOpacity>
-
-                        <Text
-                            className="text-[#5c4639] font-extrabold"
-                            style={{ fontSize: moderateScale(11) }}
-                        >
-                            {item.quantity}
+                            {item.name}
                         </Text>
 
-                        <TouchableOpacity
-                            activeOpacity={0.95}
-                            onPress={() => onIncrease?.(item)}
-                            className="items-center justify-center rounded-full"
+                        {!!item.description && (
+                            <Text
+                                numberOfLines={1}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: isUnavailable
+                                        ? "rgba(31,31,31,0.35)"
+                                        : "rgba(31,31,31,0.75)"
+                                }}
+                            >
+                                {item.description}
+                            </Text>
+                        )}
+
+                        {/* {isUnavailable && (
+                            <Text
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(8),
+                                    marginTop: verticalScale(1),
+                                    color: "#EF4444"
+                                }}
+                            >
+                                {!isRestaurantActive
+                                    ? "Restaurant currently closed"
+                                    : "Item currently unavailable"}
+                            </Text>
+                        )} */}
+
+                        {editable ? (
+                            <View
+                                className="flex-row mt-1 items-center justify-center"
+                                style={{ gap: moderateScale(8) }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.95}
+                                    disabled={!canDecrease}
+                                    onPress={onDecrease}
+                                    className="items-center justify-center"
+                                    style={{
+                                        borderRadius: moderateScale(10),
+                                        width: moderateScale(24),
+                                        height: moderateScale(24),
+                                        backgroundColor:
+                                            isUnavailable
+                                                ? "rgba(31,31,31,0.07)"
+                                                : "rgba(232,185,63,0.15)"
+                                    }}
+                                >
+                                    <MinusIcon
+                                        width={moderateScale(12)}
+                                        height={moderateScale(12)}
+                                        color={isUnavailable ? "#777777" : "#5C4639"}
+                                        strokeWidth={2.5}
+                                    />
+                                </TouchableOpacity>
+
+                                <Text
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: isUnavailable ? "#777777" : "#1F1F1F"
+                                    }}
+                                >
+                                    {item.quantity}
+                                </Text>
+
+                                <TouchableOpacity
+                                    activeOpacity={0.95}
+                                    disabled={isUnavailable}
+                                    onPress={onIncrease}
+                                    className="items-center justify-center"
+                                    style={{
+                                        borderRadius: moderateScale(10),
+                                        width: moderateScale(24),
+                                        height: moderateScale(24),
+                                        opacity: isUnavailable ? 0.35 : 1,
+                                        backgroundColor:
+                                            isUnavailable
+                                                ? "rgba(31,31,31,0.07)"
+                                                : "rgba(232,185,63,0.15)"
+                                    }}
+                                >
+                                    <PlusIcon
+                                        width={moderateScale(12)}
+                                        height={moderateScale(12)}
+                                        color={isUnavailable ? "#777777" : "#5C4639"}
+                                        strokeWidth={2.5}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <View
+                                className="mt-1 bg-[#E8B93F]/15"
+                                style={{
+                                    paddingHorizontal:
+                                        scale(8),
+
+                                    paddingVertical:
+                                        verticalScale(4),
+
+                                    borderRadius:
+                                        moderateScale(10)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#5C4639] font-semibold"
+                                    style={{
+                                        fontSize:
+                                            moderateScale(10)
+                                    }}
+                                >
+                                    Qty: {item.quantity}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+
+                    <View className="self-stretch items-end justify-between ml-2">
+                        <View
+                            className="items-center justify-center"
                             style={{
-                                width: moderateScale(16),
-                                height: moderateScale(16)
+                                paddingHorizontal: moderateScale(10),
+                                paddingVertical: moderateScale(5),
+                                borderRadius: moderateScale(10),
+                                backgroundColor: isUnavailable ? "#B8B8B8" : "#3F2516"
                             }}
                         >
-                            <PlusIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" strokeWidth={2.2} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                            <Text
+                                className="font-medium text-white"
+                                style={{ fontSize: moderateScale(11) }}
+                            >
+                                ₹{item.price}
+                            </Text>
+                        </View>
 
-                <View className="self-stretch items-end justify-between ml-2">
-                    <View
-                        className="items-center justify-center bg-[#3F2516]"
-                        style={{
-                            paddingHorizontal: moderateScale(10),
-                            paddingVertical: moderateScale(5),
-                            borderRadius: moderateScale(10)
-                        }}
-                    >
-                        <Text
-                            className="font-medium text-white"
-                            style={{ fontSize: moderateScale(11) }}
-                        >
-                            ₹{item.price}
-                        </Text>
+                        {editable && (
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={onRemove}
+                                className="items-center justify-center bg-[#FEE2E2]"
+                                style={{
+                                    paddingHorizontal: scale(7),
+                                    paddingVertical: verticalScale(4),
+                                    borderRadius: moderateScale(12)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#DC2626] font-semibold uppercase"
+                                    style={{ fontSize: moderateScale(9) }}
+                                >
+                                    Remove
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
-
-                    <TouchableOpacity
-                        activeOpacity={0.95}
-                        onPress={() => onRemove?.(item)}
-                        className="items-center justify-center bg-[#FEE2E2]"
-                        style={{
-                            paddingHorizontal: scale(7),
-                            paddingVertical: verticalScale(4),
-                            borderRadius: moderateScale(12)
-                        }}
-                    >
-                        <Text
-                            className="text-[#DC2626] font-semibold uppercase"
-                            style={{ fontSize: moderateScale(9) }}
-                        >
-                            Remove
-                        </Text>
-                    </TouchableOpacity>
                 </View>
             </View>
         )

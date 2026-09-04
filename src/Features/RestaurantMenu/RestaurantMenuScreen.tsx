@@ -46,7 +46,7 @@ export const FREQUENTLY_ORDERED_TOGETHER = [
         price: 89,
         imageUri:
             "https://i.pinimg.com/236x/23/b2/bc/23b2bcc80be05c9169a1333470d920e5.jpg",
-        isActive: true
+        isActive: false
     },
     {
         id: "3",

@@ -7,12 +7,16 @@ import { moderateScale, verticalScale } from "react-native-size-matters"
 
 export interface PopularItem {
     id: string;
-    name: string;
-    description: string;
-    image: string;
-    rating: number;
-    price: number;
-    tag?: string;
+    restaurantId: string
+    
+    name: string
+    description: string
+    imageUri: string
+
+    rating: number
+    price: number
+
+    tag?: string
     isActive: boolean
 }
 
@@ -56,7 +60,7 @@ const PopularItemCard = ({
                 >
                     <Image
                         source={{
-                            uri: item.image
+                            uri: item.imageUri
                         }}
                         contentFit="cover"
                         cachePolicy="memory-disk"

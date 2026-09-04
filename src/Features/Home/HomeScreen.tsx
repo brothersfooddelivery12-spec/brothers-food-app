@@ -10,6 +10,7 @@ import { foodItems } from "@/constant/FoodItems"
 import { nearByRestaurants } from "@/constant/NearByRestaurantsData"
 import { offers } from "@/constant/OffersCardData"
 import { restaurants } from "@/constant/RestaurantData"
+import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import BannerCarousel from "@/Features/Home/components/BannerCarousel"
 import FoodCard from "@/Features/Home/components/FoodCard"
 import NearByRestaurantsList from "@/Features/Home/components/NearByRestaurants"
@@ -20,13 +21,24 @@ import { useCallback, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import { useCartStore } from '../Stores/useCartStore'
 
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
+    const {showToast} = useToast()
     const [activeCategory, setActiveCategory] = useState("1")
     const [selectedReview, setSelectedReview] = useState("All")
+
+    const addToCart = useCartStore((state) => state.addToCart)
+
+    const getRestaurantById = (restaurantId: string) => {
+        return RESTAURANTS.find(
+            (restaurant) => restaurant.id === restaurantId
+        )
+    }
 
     const handleRestaurantPress = useCallback((restaurantId: string) => {
         preventDoublePress(() => {
@@ -40,6 +52,52 @@ export default function HomeScreen() {
     const handleFavouritePress = useCallback((id: string) => {
         console.log("Favourite:", id)
     }, [])
+
+    const handleAddToCart = useCallback(
+        (item: any) => {
+            if (!item.isActive) {
+                showToast("This item is currently unavailable", "warning")
+
+                return
+            }
+
+            const restaurant = getRestaurantById(item.restaurantId)
+
+            if (!restaurant) {
+                showToast("Restaurant not found", "warning")
+
+                return
+            }
+
+            if (!restaurant.isActive) {
+                showToast("Restaurant is currently closed", "warning")
+
+                return
+            }
+
+            addToCart({
+                restaurant: {
+                    id: restaurant.id,
+                    restaurantName: restaurant.name,
+                    restaurantImage: restaurant.imageUri,
+                    deliveryTime: restaurant.deliveryTime,
+                    deliveryFee: restaurant.deliveryFee,
+                    isActive: restaurant.isActive
+                },
+
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.imageUri,
+                    price: item.price,
+                    description: item.category,
+                    isActive: item.isActive
+                }
+            })
+
+            showToast("added to cart", "success")
+        },[addToCart]
+    )
 
     const handleFoodPress = (foodId: string) => {
         console.log("Selected food:", foodId)
@@ -465,9 +523,7 @@ export default function HomeScreen() {
                                 <FoodCard
                                     item={item}
                                     onPress={() => handleFoodPress(item.id)}
-                                    onAddPress={() =>
-                                        console.log("Add:", item.id)
-                                    }
+                                    onAddPress={() => handleAddToCart(item)}
                                 />
                             )}
                         />

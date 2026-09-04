@@ -7,6 +7,8 @@ import { moderateScale, verticalScale } from "react-native-size-matters"
 
 export interface FoodItem {
     id: string
+    restaurantId: string
+    
     name: string
     imageUri: string
     category: string
