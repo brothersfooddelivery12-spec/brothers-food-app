@@ -379,7 +379,7 @@ export default function PaymentMethodScreen(){
 
                                                 <Text
                                                     className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                    style={{ fontSize: moderateScale(10) }}
+                                                    style={{ fontSize: moderateScale(11) }}
                                                 >
                                                     {item.description}
                                                 </Text>
@@ -475,7 +475,7 @@ export default function PaymentMethodScreen(){
                                                 numberOfLines={1}
                                                 className="text-[#1F1F1F]/65 font-medium"
                                                 style={{
-                                                    fontSize: moderateScale(10),
+                                                    fontSize: moderateScale(11),
                                                     marginTop: verticalScale(3)
                                                 }}
                                             >

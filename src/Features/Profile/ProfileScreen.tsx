@@ -57,10 +57,16 @@ export default function ProfileScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const preventDoublePress = usePreventDoublePress()
     
-    const [vegMode, setVegMode] = useState(false)
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null)
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
     const [selectedLanguage, setSelectedLanguage] = useState("English")
+    const vegMode = useAuthStore(
+        (state) => state.user?.vegMode ?? false
+    )
+
+    const updateUser = useAuthStore(
+        (state) => state.updateUser
+    )
 
     const menuRefs = useRef<{
         appearance: View | null
@@ -566,7 +572,13 @@ export default function ProfileScreen() {
                                     Veg Mode
                                 </Text>
 
-                                <ToggleSwitch enabled={vegMode} onPress={() => setVegMode(!vegMode)} />
+                                <ToggleSwitch enabled={vegMode} 
+                                    onPress={() => {
+                                        updateUser({
+                                            vegMode: !vegMode
+                                        })
+                                    }}
+                                />
                             </View>
 
                             <View

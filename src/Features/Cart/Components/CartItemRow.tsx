@@ -202,22 +202,14 @@ const CartItemRow = memo(
                             <View
                                 className="mt-1 bg-[#E8B93F]/15"
                                 style={{
-                                    paddingHorizontal:
-                                        scale(8),
-
-                                    paddingVertical:
-                                        verticalScale(4),
-
-                                    borderRadius:
-                                        moderateScale(10)
+                                    paddingHorizontal: scale(10),
+                                    paddingVertical: verticalScale(3),
+                                    borderRadius: moderateScale(10)
                                 }}
                             >
                                 <Text
-                                    className="text-[#5C4639] font-semibold"
-                                    style={{
-                                        fontSize:
-                                            moderateScale(10)
-                                    }}
+                                    className="text-[#5C4639] font-semibold tracking-wide"
+                                    style={{ fontSize: moderateScale(10) }}
                                 >
                                     Qty: {item.quantity}
                                 </Text>

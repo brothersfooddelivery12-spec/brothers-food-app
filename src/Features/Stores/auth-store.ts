@@ -11,6 +11,7 @@ export interface User {
     phone: string | null
     role: "USER"
     isActive: boolean
+    vegMode: boolean
     profileImage?: string
     address?: string
     city?: string
@@ -63,7 +64,8 @@ export const useAuthStore = create<AuthState>()(
                             email: "",
                             phone,
                             role: "USER",
-                            isActive: false
+                            isActive: false,
+                            vegMode: true
                         },
 
                     isAuthenticated: true

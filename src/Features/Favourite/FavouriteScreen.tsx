@@ -6,7 +6,7 @@ import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
-import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import Animated, { Extrapolation, interpolate, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
@@ -16,7 +16,7 @@ import FavouriteTabs from "./Components/FavouriteTabs"
 import FavRestaurantCard from "./Components/FavRestaurantCard"
 
 const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
-const SEARCH_BAR_HEIGHT = verticalScale(46) 
+const SEARCH_BAR_HEIGHT = verticalScale(92) 
 
 export default function FavouritesScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
@@ -60,38 +60,72 @@ export default function FavouritesScreen() {
 
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT_FALLBACK)
+    const [headerHeight, setHeaderHeight] = useState(SEARCH_BAR_HEIGHT + verticalScale(68))
     const scrollY = useSharedValue(0)
+
+    const headerOffset = useSharedValue(0)
+    const previousScrollY = useSharedValue(0)
+
+    useEffect(() => {
+        headerOffset.value = 0
+        previousScrollY.value = 0
+        scrollY.value = 0
+    }, [
+        activeTab,
+        headerOffset,
+        previousScrollY,
+        scrollY
+    ])
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
-            scrollY.value = event.contentOffset.y
-        },
-        onMomentumEnd: (event) => {
-            const y = event.contentOffset.y
-            if (y > 0 && y < titleHeight) {
-                const shouldOpen = y < titleHeight / 2
-                scrollTo(animatedRef, 0, shouldOpen ? 0 : titleHeight, true)
+            const currentY = Math.max(
+                event.contentOffset.y,
+                0
+            )
+
+            scrollY.value = currentY
+
+            if (currentY <= 1) {
+                headerOffset.value = withTiming(
+                    0,
+                    {
+                        duration: 180
+                    }
+                )
+
+                return
             }
-        },
+
+            headerOffset.value = withTiming(
+                titleHeight,
+                {
+                    duration: 180
+                }
+            )
+        }
     })
 
     const headerContainerStyle = useAnimatedStyle(() => {
-        const translateY = interpolate(
-            scrollY.value,
-            [0, titleHeight],
-            [0, -titleHeight],
-            Extrapolation.CLAMP
-        )
-        return { transform: [{ translateY }] }
+        return {
+            transform: [
+                {
+                    translateY: -headerOffset.value
+                }
+            ]
+        }
     })
 
     const headerTitleStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
-            scrollY.value,
-            [0, titleHeight * 0.6],
+            headerOffset.value,
+            [
+                0,
+                titleHeight * 0.7
+            ],
             [1, 0],
             Extrapolation.CLAMP
-        ),
+        )
     }))
 
     useEffect(() => {
@@ -218,6 +252,13 @@ export default function FavouritesScreen() {
             />
 
             <Animated.View
+                onLayout={(event) => {
+                    const height = event.nativeEvent.layout.height
+
+                    if (height > 0 && Math.abs(height - headerHeight) > 1) {
+                        setHeaderHeight(height)
+                    }
+                }}
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[
                     {
@@ -258,10 +299,7 @@ export default function FavouritesScreen() {
                 </Animated.View>
 
                 <View
-                    style={{
-                        marginTop: verticalScale(8),
-                        marginBottom: verticalScale(10)
-                    }}
+                    style={{ marginTop: verticalScale(8) }}
                 >
                     <SearchBar
                         value={search}
@@ -270,6 +308,19 @@ export default function FavouritesScreen() {
                         RightIcon={FilterIcon}
                         rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
+                    />
+                </View>
+
+                <View
+                    style={{
+                        paddingHorizontal: scale(8),
+                        paddingTop: verticalScale(12),
+                        paddingBottom: verticalScale(6)
+                    }}
+                >
+                    <FavouriteTabs
+                        activeTab={activeTab}
+                        onChange={setActiveTab}
                     />
                 </View>
             </Animated.View>
@@ -289,14 +340,12 @@ export default function FavouritesScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingTop: SEARCH_BAR_HEIGHT,
+                    paddingTop: headerHeight,
                     paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
-                   <View style={{ marginTop: verticalScale(68) }}>
-                        <FavouriteTabs activeTab={activeTab} onChange={setActiveTab} />
-
-                        <View className="flex-row items-center gap-3 mt-5">
+                   <View style={{ marginTop: verticalScale(8) }}>
+                        <View className="flex-row items-center gap-3">
                             <View
                                 className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                 style={{

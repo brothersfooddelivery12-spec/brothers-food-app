@@ -364,12 +364,12 @@ export default function CheckoutScreen() {
                                     className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
                                     style={{ borderRadius: moderateScale(20)}}
                                 >
-                                    <View className="p-3 flex-row items-center gap-3">
+                                    <View className="p-3 flex-row items-center gap-2">
                                         <View
                                             className="relative items-start overflow-hidden justify-center self-start rounded-full border"
                                             style={{
-                                                width: moderateScale(48),
-                                                height: moderateScale(48),
+                                                width: moderateScale(52),
+                                                height: moderateScale(52),
                                                 borderColor: "rgba(31,31,31,0.10)"
                                             }}
                                         >
@@ -389,6 +389,7 @@ export default function CheckoutScreen() {
     
                                         <View className="flex-1">
                                             <Text
+                                                numberOfLines={1}
                                                 className="text-[#1F1F1F] font-bold"
                                                 style={{ fontSize: moderateScale(14) }}
                                             >
@@ -498,7 +499,7 @@ export default function CheckoutScreen() {
                                                         <View
                                                             style={{
                                                                 height: verticalScale(0.7),
-                                                                marginVertical: verticalScale(10),
+                                                                marginVertical: verticalScale(8),
                                                                 marginHorizontal: verticalScale(2),
                                                                 backgroundColor: "rgba(31,31,31,0.10)"
                                                             }}
@@ -705,7 +706,7 @@ export default function CheckoutScreen() {
                                                     {item.description && (
                                                         <Text
                                                             className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                            style={{ fontSize: moderateScale(10.5) }}
+                                                            style={{ fontSize: moderateScale(11) }}
                                                         >
                                                             {item.description}
                                                         </Text>

@@ -11,6 +11,7 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#F5F5F5"
       },

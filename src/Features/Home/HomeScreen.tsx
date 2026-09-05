@@ -5,6 +5,7 @@ import MicIcon from '@/assets/icon/MicIcon.svg'
 import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
 import RestaurantCard from "@/components/RestaurantCard"
+import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
 import { categories } from "@/constant/CategoryData"
 import { foodItems } from "@/constant/FoodItems"
 import { nearByRestaurants } from "@/constant/NearByRestaurantsData"
@@ -23,6 +24,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import { useAuthStore } from '../Stores/auth-store'
 import { useCartStore } from '../Stores/useCartStore'
 
 export default function HomeScreen() {
@@ -31,6 +33,25 @@ export default function HomeScreen() {
     const {showToast} = useToast()
     const [activeCategory, setActiveCategory] = useState("1")
     const [selectedReview, setSelectedReview] = useState("All")
+
+    const vegMode = useAuthStore(
+        (state) =>
+            state.user?.vegMode ?? false
+    )
+
+    const updateUser = useAuthStore(
+        (state) => state.updateUser
+    )
+
+    const foodType: FoodType = vegMode ? "veg" : "nonveg"
+
+    const handleFoodTypeChange = (
+        value: FoodType
+    ) => {
+        updateUser({
+            vegMode: value === "veg"
+        })
+    }
 
     const addToCart = useCartStore((state) => state.addToCart)
 
@@ -192,6 +213,16 @@ export default function HomeScreen() {
                             </TouchableOpacity>
                         </View>
 
+                        <View
+                            className="items-start"
+                            style={{ marginTop: verticalScale(5) }}
+                        >
+                            <VegNonVegToggle
+                                value={foodType}
+                                onChange={handleFoodTypeChange}
+                            />
+                        </View>
+
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => 
@@ -199,7 +230,7 @@ export default function HomeScreen() {
                                     router.push('/(tabs)/search')
                                 })
                             }
-                            className="flex-row w-full items-center gap-2 mt-5"
+                            className="flex-row w-full items-center gap-2 mt-4"
                         >
                             <View
                                 className="flex-1 flex-row gap-3 items-center bg-white border border-[#1F1F1F]/10"
