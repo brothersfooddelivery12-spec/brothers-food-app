@@ -1,21 +1,15 @@
 import EllipsisVerticalIcon from "@/assets/icon/EllipsisVerticalIcon.svg"
+import { Address } from "@/Features/Services/address-service"
 import React, { memo } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from "react-native-svg"
 
-export type AddressItem = {
-    id: string
-    title: string
-    address: string
-    isDefault: boolean
-}
-
 type SavedAddressCardProps = {
-    item: AddressItem
+    item: Address
     icon: React.FC<SvgProps>
-    onPress?: (item: AddressItem) => void
-    onMenuPress?: (item: AddressItem) => void
+    onPress?: (item: Address) => void
+    onMenuPress?: (item: Address) => void
     menuAnchorRef?: (ref: View | null) => void
 }
 
@@ -26,6 +20,17 @@ function SavedAddressCard({
     onMenuPress,
     menuAnchorRef
 }: SavedAddressCardProps) {
+    const formattedAddress = [
+        item.address_line,
+        item.landmark,
+        item.area,
+        item.city,
+        item.state,
+        item.pincode
+    ]
+        .filter(Boolean)
+        .join(", ")
+
     return (
         <TouchableOpacity
             activeOpacity={0.95}
@@ -89,7 +94,7 @@ function SavedAddressCard({
                             className="text-[#1F1F1F] font-bold tracking-wide"
                             style={{ fontSize: moderateScale(15) }}
                         >
-                            {item.title}
+                            {item.label}
                         </Text>
                     </View>
 
@@ -101,7 +106,7 @@ function SavedAddressCard({
                             marginTop: verticalScale(3)
                         }}
                     >
-                        {item.address}
+                        {formattedAddress}
                     </Text>
                 </View>
             </View>

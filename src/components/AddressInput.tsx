@@ -3,17 +3,19 @@ import { Text, TextInput, View } from "react-native";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
 interface AddressInputProps {
-  addressLine1: string;
-  addressLine2: string;
-  setAddressLine1: (value: string) => void;
-  setAddressLine2: (value: string) => void;
+    loading?: boolean;
+    addressLine1: string;
+    addressLine2: string;
+    setAddressLine1: (value: string) => void;
+    setAddressLine2: (value: string) => void;
 }
 
 export default function AddressInput({
-  addressLine1,
-  addressLine2,
-  setAddressLine1,
-  setAddressLine2,
+    loading=false,
+    addressLine1,
+    addressLine2,
+    setAddressLine1,
+    setAddressLine2,
 }: AddressInputProps) {
   return (
     <View
@@ -56,12 +58,15 @@ export default function AddressInput({
                 placeholder="123, MG Road, Near City Mall"
                 placeholderTextColor="#7A7D81"
                 numberOfLines={1}
-                className="m-0 p-0 font-medium text-[#151515]"
+                className={`p-0 tracking-wide font-medium ${
+                    loading ? "text-[#9CA3AF]" : "text-[#151515]"
+                }`}
                 style={{
                     height: moderateScale(24),
                     fontSize: moderateScale(13)
                 }}
                 selectionColor="#79685e"
+                editable={!loading}
             />
 
             <View
@@ -85,12 +90,15 @@ export default function AddressInput({
                 placeholder="Apartment, suite, unit, etc."
                 placeholderTextColor="#7A7D81"
                 numberOfLines={1}
-                className="m-0 p-0 font-medium text-[#151515]"
+                className={`p-0 tracking-wide font-medium ${
+                    loading ? "text-[#9CA3AF]" : "text-[#151515]"
+                }`}
                 style={{
                     height: moderateScale(24),
                     fontSize: moderateScale(13)
                 }}
                 selectionColor="#79685e"
+                editable={!loading}
             />
         </View>
     </View>

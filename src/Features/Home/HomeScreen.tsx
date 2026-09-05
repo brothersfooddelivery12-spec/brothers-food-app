@@ -18,12 +18,13 @@ import NearByRestaurantsList from "@/Features/Home/components/NearByRestaurants"
 import OfferCard from "@/Features/Home/components/OffersCard"
 import { Image } from "expo-image"
 import { router } from "expo-router"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import { getUserProfile } from '../Services/api-service'
 import { useAuthStore } from '../Stores/auth-store'
 import { useCartStore } from '../Stores/useCartStore'
 
@@ -33,6 +34,59 @@ export default function HomeScreen() {
     const {showToast} = useToast()
     const [activeCategory, setActiveCategory] = useState("1")
     const [selectedReview, setSelectedReview] = useState("All")
+
+    const fetchUserProfile = useCallback(async () => {
+        try {
+           const res = await getUserProfile()
+
+            if (!res.data.success) {
+                return
+            }
+
+            const profile = res.data.data
+
+            const currentUser = useAuthStore.getState().user
+
+            useAuthStore
+                .getState()
+                .updateUser({
+                    ...(profile.id && {
+                        id: profile.id
+                    }),
+
+                    name: profile.name ?? currentUser?.name ?? "",
+                    email: profile.email ?? currentUser?.email ?? "",
+                    phone: profile.phone ?? currentUser?.phone ?? null,
+                    profileImage: profile.image_url ?? currentUser?.profileImage,
+                    isActive: profile.is_active ?? currentUser?.isActive ?? true,
+                    role: profile.role ?? currentUser?.role ?? "USER"
+                })
+        } catch (error: any) {
+            console.log("Fetch profile error:", error)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchUserProfile()
+    }, [])
+
+    const user = useAuthStore((state) => state.user)
+
+    const getGreeting = () => {
+        const hour = new Date().getHours()
+
+        if (hour < 12) {
+            return "Good Morning"
+        }
+
+        if (hour < 17) {
+            return "Good Afternoon"
+        }
+
+        return "Good Evening"
+    }
+
+    const firstName = user?.name?.trim().split(/\s+/)[0] || "User"
 
     const vegMode = useAuthStore(
         (state) =>
@@ -159,7 +213,7 @@ export default function HomeScreen() {
                                     className="text-[#1F1F1F]/65 font-medium"
                                     style={{ fontSize: moderateScale(13) }}
                                 >
-                                    Good Evening, Harsh
+                                    {getGreeting()}, {firstName}
                                 </Text>
 
                                 <View

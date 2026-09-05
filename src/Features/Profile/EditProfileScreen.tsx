@@ -10,12 +10,13 @@ import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import { useEffect, useState } from "react"
-import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Keyboard, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { useAuthStore } from '../Stores/auth-store'
 import { useToast } from '../hook/ToastContext'
+import { editUserProfile } from '../Services/api-service'
+import { useAuthStore } from '../Stores/auth-store'
 
 export default function EditProfileScreen(){
     const insets = useSafeAreaInsets()
@@ -23,6 +24,7 @@ export default function EditProfileScreen(){
     const updateUser = useAuthStore((state) => state.updateUser)
     const {showToast} = useToast()
 
+    const [loading, setLoading] = useState(false)
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
     const [fullName, setFullName] = useState("")
     const [emailAddress, setEmailAddress] = useState("")
@@ -35,6 +37,7 @@ export default function EditProfileScreen(){
     const [nameError, setNameError] = useState(false)
     const [emailError, setEmailError] = useState(false)
     const [numberError, setNumberError] = useState(false)
+    const [pinCodeError, setPinCodeError] = useState(false)
 
     useEffect(() => {
         if (!user) {
@@ -74,20 +77,30 @@ export default function EditProfileScreen(){
     }
 
     const handleUpdateProfile = async () => {
+        if (loading) return
+
         const trimmedName = fullName.trim()
         const trimmedEmail = emailAddress.trim()
+        const trimmedPinCode = pinCode.trim()
 
         let hasError = false
+
+        setNameError(false)
+        setEmailError(false)
+        setNumberError(false)
+        setPinCodeError(false)
 
         if (!trimmedName) {
             setNameError(true)
             hasError = true
         }
 
-        if (
-            trimmedEmail &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
-        ) {
+        if (!trimmedName) {
+            setNameError(true)
+            hasError = true
+        }
+
+        if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
             setEmailError(true)
             hasError = true
         }
@@ -97,23 +110,65 @@ export default function EditProfileScreen(){
             hasError = true
         }
 
+        if (trimmedPinCode && !/^[1-9][0-9]{5}$/.test(trimmedPinCode)) {
+            setPinCodeError(true)
+            hasError = true
+        }
+
         if (hasError) {
             return
         }
 
-        updateUser({
-            name: trimmedName,
-            email: trimmedEmail,
-            phone: mobileNumber,
-            profileImage,
-            address: addressLine1.trim(),
-            city: city.trim(),
-            pincode: pinCode.trim()
-        })
+        try {
+            setLoading(true)
 
-        showToast("Profile updated successfully.", "success")
+            const res = await editUserProfile({
+                name: trimmedName,
+                email: trimmedEmail,
+                phone: mobileNumber,
 
-        router.back()
+                ...(profileImage &&
+                    profileImage.startsWith("http") && {
+                        image_url: profileImage
+                    })
+            })
+
+            console.log("Edit profile response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Failed to update profile", "warning")
+
+                return
+            }
+
+            const updatedProfile = res.data.data
+
+            updateUser({
+                id: updatedProfile?.id,
+                name: updatedProfile?.name ?? trimmedName,
+                email: updatedProfile?.email ?? trimmedEmail,
+                phone: updatedProfile?.phone ?? mobileNumber,
+                profileImage: updatedProfile?.picture_url ?? user?.profileImage,
+                isActive: updatedProfile?.is_active,
+                role: updatedProfile?.role ?? "USER",
+
+                address: addressLine1.trim(),
+                city: city.trim(),
+                pincode: trimmedPinCode
+            })
+
+            showToast("Profile updated successfully", "success")
+
+            router.back()
+
+        } catch (error: any) {
+            console.log("Edit profile error:", error)
+
+            showToast(error?.message || "Unable to update profile", "warning")
+
+        } finally {
+            setLoading(false)
+        }
     }
 
     return(
@@ -207,7 +262,11 @@ export default function EditProfileScreen(){
 
                     <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                         <TextInput
-                            className="p-0 tracking-wide font-medium text-[#151515]"
+                            className={`p-0 tracking-wide font-medium ${
+                                loading
+                                    ? "text-[#9CA3AF]"
+                                    : "text-[#151515]"
+                            }`}
                             style={{
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
@@ -216,14 +275,27 @@ export default function EditProfileScreen(){
                             }}
                             value={fullName}
                             onChangeText={(text) => {
-                                setFullName(text)
+                                const cleaned = text
+                                    .replace(/[^a-zA-Z\s.'-]/g, "")
+                                    .replace(/\s{2,}/g, " ")
+
+                                setFullName(cleaned)
                                 setNameError(false)
                             }}
                             placeholder="Full Name"
                             placeholderTextColor="#7A7D81"
                             keyboardType="default"
-                            returnKeyType="default"
+                            returnKeyType="done"
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            textContentType="name"
+                            autoComplete="name"
+                            maxLength={50}
                             selectionColor="#79685e"
+                            editable={!loading}
+                            onSubmitEditing={() => {
+                                Keyboard.dismiss()
+                            }}
                         />
                     </View>
                 </View>
@@ -268,7 +340,11 @@ export default function EditProfileScreen(){
 
                     <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                         <TextInput
-                            className="p-0 tracking-wide font-medium text-[#151515]"
+                            className={`p-0 tracking-wide font-medium ${
+                                loading
+                                    ? "text-[#9CA3AF]"
+                                    : "text-[#151515]"
+                            }`}
                             style={{
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
@@ -277,14 +353,26 @@ export default function EditProfileScreen(){
                             }}
                             value={emailAddress}
                             onChangeText={(text) => {
-                                setEmailAddress(text)
+                                setEmailAddress(
+                                    text.trimStart().replace(/\s/g, "")
+                                )
+
                                 setEmailError(false)
                             }}
                             placeholder="Email Address"
                             placeholderTextColor="#7A7D81"
-                            keyboardType="default"
-                            returnKeyType="default"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            textContentType="emailAddress"
+                            autoComplete="email"
+                            maxLength={100}
                             selectionColor="#79685e"
+                            editable={!loading}
+                            onSubmitEditing={() => {
+                                Keyboard.dismiss()
+                            }}
                         />
                     </View>
                 </View>
@@ -321,14 +409,22 @@ export default function EditProfileScreen(){
 
                     <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                         <TextInput
-                            className="p-0 tracking-wide font-medium text-[#151515]"
+                            className={`p-0 tracking-wide font-medium ${
+                                loading
+                                    ? "text-[#9CA3AF]"
+                                    : "text-[#151515]"
+                            }`}
                             style={{
                                 height: verticalScale(40),
                                 fontSize: moderateScale(14),
                                 textAlignVertical: "center",
                                 includeFontPadding: false
                             }}
-                            value={mobileNumber.replace(/(\d{5})(\d{0,5})/, "$1 $2").trim()}
+                            value={
+                                mobileNumber
+                                    .replace(/(\d{5})(\d{0,5})/,"$1 $2")
+                                    .trim()
+                            }
                             onChangeText={(text) => {
                                 formatMobileNumber(text)
                                 setNumberError(false)
@@ -337,7 +433,16 @@ export default function EditProfileScreen(){
                             placeholderTextColor="#7A7D81"
                             keyboardType="phone-pad"
                             returnKeyType="done"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            textContentType="telephoneNumber"
+                            autoComplete="tel"
+                            maxLength={11}
                             selectionColor="#79685e"
+                            editable={!loading}
+                            onSubmitEditing={() => {
+                                Keyboard.dismiss()
+                            }}
                         />
                     </View>
                 </View>
@@ -359,6 +464,7 @@ export default function EditProfileScreen(){
                 </Text>
                 
                 <AddressInput
+                    loading={loading}
                     addressLine1={addressLine1}
                     addressLine2={addressLine2}
                     setAddressLine1={setAddressLine1}
@@ -401,16 +507,36 @@ export default function EditProfileScreen(){
                 
                             <TextInput
                                 value={city}
-                                onChangeText={setCity}
+                                onChangeText={(text) => {
+                                    const cleaned = text
+                                        .replace(/[^\p{L}\p{M}\s.'-]/gu, "")
+                                        .replace(/\s{2,}/g, " ")
+
+                                    setCity(cleaned)
+                                }}
                                 placeholder="Jaipur"
                                 placeholderTextColor="#7A7D81"
                                 numberOfLines={1}
-                                className="m-0 p-0 font-medium text-[#151515]"
+                                className={`p-0 tracking-wide font-medium ${
+                                    loading
+                                        ? "text-[#9CA3AF]"
+                                        : "text-[#151515]"
+                                }`}
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14)
+                                    fontSize: moderateScale(14),
+                                    includeFontPadding: false,
+                                    textAlignVertical: "center"
                                 }}
+                                keyboardType="default"
+                                returnKeyType="next"
+                                autoCapitalize="words"
+                                autoCorrect={false}
+                                textContentType="addressCity"
+                                autoComplete="postal-address-locality"
+                                maxLength={50}
                                 selectionColor="#79685e"
+                                editable={!loading}
                             />
                         </View>
                     </View>
@@ -440,30 +566,54 @@ export default function EditProfileScreen(){
                         >
                             <Text
                                 className="font-medium text-[#777777]"
-                                style={{ fontSize: moderateScale(11) }}
+                                style={{
+                                    fontSize: moderateScale(11)
+                                }}
                             >
                                 PIN Code
                             </Text>
-                
+
                             <TextInput
                                 value={pinCode}
-                                onChangeText={setPinCode}
+                                onChangeText={(text) => {
+                                    const cleaned = text
+                                        .replace(/\D/g, "")
+                                        .slice(0, 6)
+
+                                    setPinCode(cleaned)
+                                    setPinCodeError(false)
+                                }}
                                 placeholder="302001"
                                 placeholderTextColor="#7A7D81"
                                 keyboardType="number-pad"
+                                returnKeyType="done"
                                 maxLength={6}
-                                className="m-0 p-0 font-medium text-[#151515]"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                textContentType="postalCode"
+                                autoComplete="postal-code"
+                                className={`p-0 tracking-wide font-medium ${
+                                    loading
+                                        ? "text-[#9CA3AF]"
+                                        : "text-[#151515]"
+                                }`}
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14)
+                                    fontSize: moderateScale(14),
+                                    includeFontPadding: false,
+                                    textAlignVertical: "center"
                                 }}
                                 selectionColor="#79685e"
+                                editable={!loading}
+                                onSubmitEditing={() => {
+                                    Keyboard.dismiss()
+                                }}
                             />
                         </View>
                     </View>
                 </View>
 
-                <GradientButton title='Update Profile' onPress={handleUpdateProfile} />
+                <GradientButton title='Update Profile' onPress={handleUpdateProfile} loading={loading} />
             </KeyboardAwareScrollView>
         </SafeAreaView>
     )

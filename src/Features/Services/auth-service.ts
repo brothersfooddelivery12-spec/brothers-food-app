@@ -1,6 +1,6 @@
 import { useAuthStore } from "../Stores/auth-store"
 import { tokenStorage } from "../Stores/token-storage"
-import { api } from "./http-client"
+import { retryApi } from "./http-client"
 
 export const generateToken = async (): Promise<string> => {
   const storedRefreshToken = await tokenStorage.getRefreshToken()
@@ -9,21 +9,37 @@ export const generateToken = async (): Promise<string> => {
     throw new Error("No refresh token available")
   }
 
-  const response = await api.post("/auth/refresh", {
-    refresh_token: storedRefreshToken,
-  })
+  console.log("Refreshing token...", !!storedRefreshToken)
 
-  const { access_token, refresh_token} = response.data
+  const response = await retryApi.post("/auth/refresh", {refresh_token: storedRefreshToken})
 
-  await tokenStorage.setAccessToken(access_token)
+  console.log("Refresh response:", response.data)
 
-  if (refresh_token) {
-    await tokenStorage.setRefreshToken(refresh_token)
+  // Supports either:
+  // { access_token, refresh_token }
+  // or
+  // { success, data: { access_token, refresh_token } }
+  const tokenData = response.data?.data ?? response.data
+
+  const accessToken = tokenData?.access_token
+
+  const newRefreshToken = tokenData?.refresh_token
+
+  if (!accessToken) {
+    throw new Error("No access token returned from refresh")
+  }
+
+  await tokenStorage.setAccessToken(
+    accessToken
+  )
+
+  if (newRefreshToken) {
+    await tokenStorage.setRefreshToken(newRefreshToken)
   }
 
   useAuthStore.getState().setAuthenticated(true)
 
-  return access_token
+  return accessToken
 }
 
 export const getStoredToken = async (): Promise<string | null> => {
@@ -45,6 +61,8 @@ export const refreshToken = async (): Promise<string> => {
 }
 
 export const clearStoredToken = async (): Promise<void> => {
+  console.log("🚨 CLEARING ACCESS AND REFRESH TOKENS")
+
   await tokenStorage.clearTokens()
 
   useAuthStore.getState().clearAuth()

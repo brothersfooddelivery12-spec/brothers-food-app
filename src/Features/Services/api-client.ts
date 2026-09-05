@@ -15,6 +15,8 @@ api.interceptors.request.use(
 
     const token = await getStoredToken()
 
+    console.log("REQUEST:", config.url, "| Access token:", !!token)
+
     if (token) {
       if (!(config.headers instanceof AxiosHeaders)) {
         config.headers = new AxiosHeaders(config.headers)

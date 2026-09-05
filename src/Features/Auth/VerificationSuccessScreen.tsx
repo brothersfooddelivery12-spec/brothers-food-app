@@ -13,13 +13,19 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-na
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { scheduleOnRN } from "react-native-worklets"
+import { useToast } from '../hook/ToastContext'
+import { editUserProfile } from '../Services/api-service'
+import { hideLoader, showLoader } from '../Services/loader-service'
 import { useAuthStore } from '../Stores/auth-store'
 
 export default function VerificationSuccessScreen() {
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const {showToast} = useToast()
     const [fullName, setFullName] = useState("")
     const [nameError, setNameError] = useState(false)
+    const [isUpdating, setIsUpdating] = useState(false)
+
     const router = useRouter()
     const { isExist, userMobileNumber } = useLocalSearchParams<{
         isExist?: string
@@ -32,26 +38,71 @@ export default function VerificationSuccessScreen() {
         translateX.value = withSpring(0)
     }, [])
 
-    const handleStartOrdering = useCallback(() => {
-        if (!userExists) {
-            const trimmedName = fullName.trim()
+    const handleStartOrdering = useCallback(async () => {
+        if (isUpdating) return
 
-            if (!trimmedName) {
-                setNameError(true)
+        if (userExists) {
+            router.dismissAll()
+            router.replace(
+                "/(tabs)/home"
+            )
+
+            return
+        }
+
+        const trimmedName = fullName.trim()
+
+        if (!trimmedName) {
+            setNameError(true)
+            resetSwipe()
+
+            return
+        }
+
+        setNameError(false)
+        setIsUpdating(true)
+
+        showLoader()
+
+        try {
+            const res = await editUserProfile(
+                {
+                    name: trimmedName
+                }
+            )
+
+            console.log("Edit profile response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Failed to update profile", "warning")
+
                 resetSwipe()
+
                 return
             }
 
-            setNameError(false)
+            useAuthStore
+                .getState()
+                .updateUser({name: res.data.data ?.name ?? trimmedName})
 
-            useAuthStore.getState().updateUser({
-                name: trimmedName
-            })
+            showToast("Profile updated successfully", "success")
+
+            router.dismissAll()
+
+            router.replace(
+                "/(tabs)/home"
+            )
+        } catch (error: any) {
+            console.log("Update profile error:", error)
+
+            showToast(error?.message || "Unable to update profile", "warning")
+
+            resetSwipe()
+        } finally {
+            hideLoader()
+            setIsUpdating(false)
         }
-
-        router.dismissAll()
-        router.replace("/(tabs)/home")
-    }, [userExists,fullName,resetSwipe,router])
+    }, [userExists, fullName, isUpdating, resetSwipe, router, showToast])
 
     const THUMB_SIZE = moderateScale(36)
     const HORIZONTAL_PADDING = scale(8)
@@ -121,7 +172,7 @@ export default function VerificationSuccessScreen() {
                 bottomOffset={30}
                 extraKeyboardSpace={20}
             >
-                <View className="items-center justify-center">
+                <View className="items-center justify-center -mt-2">
                     <LottieView
                         source={require("@/assets/animations/Success_ Animation.json")}
                         autoPlay
@@ -258,12 +309,30 @@ export default function VerificationSuccessScreen() {
 
                 {!userExists && (
                     <>
-                        <Text
-                            className="font-medium text-[#1F1F1F]/85 self-start"
-                            style={{ fontSize: moderateScale(13), marginTop: verticalScale(15), marginLeft: scale(6) }}
+                        <View
+                            className="self-start"
+                            style={{
+                                marginTop: verticalScale(18),
+                                marginLeft: scale(6)
+                            }}
                         >
-                            Full Name
-                        </Text>
+                            <Text
+                                className="font-semibold text-[#1F1F1F]"
+                                style={{ fontSize: moderateScale(13) }}
+                            >
+                                What should we call you?
+                            </Text>
+
+                            <Text
+                                className="font-medium text-[#1F1F1F]/75"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    marginTop: verticalScale(3)
+                                }}
+                            >
+                                Enter your name to personalize your experience.
+                            </Text>
+                        </View>
         
                         <View
                             className={`flex-row items-center overflow-hidden
@@ -301,7 +370,7 @@ export default function VerificationSuccessScreen() {
                                         setFullName(text)
                                         setNameError(false)
                                     }}
-                                    placeholder="Full Name"
+                                    placeholder="Enter your full name"
                                     placeholderTextColor="#7A7D81"
                                     keyboardType="default"
                                     returnKeyType="default"

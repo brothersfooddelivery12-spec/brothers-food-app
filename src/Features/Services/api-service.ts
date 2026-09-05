@@ -19,6 +19,23 @@ type GoogleSignInRequest = {
     role: "USER"
 }
 
+export type UserProfile = {
+    id: string
+    name: string
+    email: string
+    phone: string | null
+    image_url?: string | null
+    role?: "USER"
+    is_active?: boolean
+}
+
+export type EditUserRequest = {
+    name?: string
+    email?: string
+    phone?: string
+    image_url?: string
+}
+
 export const sendOtp = (req: SendOtpRequest) => {
     return api.post("/auth/send-otp", req)
 }
@@ -29,4 +46,12 @@ export const verifyOtp = (req: VerifyOtpRequest) => {
 
 export const googleSignIn = (req: GoogleSignInRequest) => {
     return api.post('auth/google', req)
+}
+
+export const getUserProfile = () => {
+    return api.get("/user/me")
+}
+
+export const editUserProfile = (req: EditUserRequest) => {
+    return api.patch("/user/edit-user", req)
 }

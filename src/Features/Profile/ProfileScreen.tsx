@@ -32,8 +32,10 @@ import { Dimensions, Modal, Pressable, StatusBar, Text, TouchableOpacity, useWin
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { useAuthStore } from '../Stores/auth-store'
+import AccountActionDialog from './Components/AccountActionDialog'
 import ProfileMenuItem from './Components/ProfileMenuItem'
 
 const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
@@ -52,11 +54,15 @@ const LANGUAGE_OPTIONS = [
 type OpenMenu = "appearance" | "language" | null
 
 export default function ProfileScreen() {
-    const user = useAuthStore((state) => state.user)
     const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const preventDoublePress = usePreventDoublePress()
+    const {showToast} = useToast()
     
+    type AccountAction = "logout" | "delete" | null
+
+    const [accountAction, setAccountAction] = useState<AccountAction>(null)
+    const [accountActionLoading, setAccountActionLoading] = useState(false)
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null)
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
     const [selectedLanguage, setSelectedLanguage] = useState("English")
@@ -64,14 +70,12 @@ export default function ProfileScreen() {
         (state) => state.user?.vegMode ?? false
     )
 
+    const user = useAuthStore((state) => state.user)
     const updateUser = useAuthStore(
         (state) => state.updateUser
     )
 
-    const menuRefs = useRef<{
-        appearance: View | null
-        language: View | null
-    }>({
+    const menuRefs = useRef<{appearance: View | null, language: View | null}>({
         appearance: null,
         language: null
     })
@@ -172,14 +176,59 @@ export default function ProfileScreen() {
     const logout = useAuthStore((state) => state.logout)
 
     const handleLogout = async () => {
+        if (accountActionLoading) {
+            return
+        }
+
         try {
+            setAccountActionLoading(true)
+
             await logout()
 
+            setAccountAction(null)
+
             router.replace("/login")
-        } catch (error) {
+
+        } catch (error: any) {
             console.error("Logout failed:", error)
+
+            showToast(error?.message || "Unable to logout", "warning")
+        } finally {
+            setAccountActionLoading(false)
         }
     }
+
+    // const handleDeleteAccount = async () => {
+    //     if (accountActionLoading) {
+    //         return
+    //     }
+
+    //     try {
+    //         setAccountActionLoading(true)
+
+    //         const res = await deleteAccount()
+
+    //         if (!res.data.success) {
+    //             showToast(res.data.message || "Unable to delete account", "warning")
+
+    //             return
+    //         }
+
+    //         await logout()
+
+    //         setAccountAction(null)
+
+    //         showToast(res.data.message || "Account deleted successfully", "success")
+
+    //         router.replace("/login")
+    //     } catch (error: any) {
+    //         console.error("Delete account failed:", error)
+
+    //         showToast(error?.message || "Unable to delete account","warning")
+    //     } finally {
+    //         setAccountActionLoading(false)
+    //     }
+    // }
 
     const formatPhoneNumber = (phone: string | null | undefined) => {
         if (!phone) {
@@ -928,7 +977,9 @@ export default function ProfileScreen() {
 
                         <TouchableOpacity
                             activeOpacity={0.95}
-                            onPress={handleLogout}
+                            onPress={() => {
+                                setAccountAction("logout")
+                            }}
                             className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
                             style={{
                                 marginTop: verticalScale(16),
@@ -949,7 +1000,9 @@ export default function ProfileScreen() {
 
                         <TouchableOpacity
                             activeOpacity={0.95}
-                            onPress={() => {}}
+                            onPress={() => {
+                                setAccountAction("delete")
+                            }}
                             className="flex-row gap-2 items-center justify-center bg-[#FEE2E2]/80 mx-2"
                             style={{
                                 marginTop: verticalScale(16),
@@ -1058,6 +1111,31 @@ export default function ProfileScreen() {
                     )}
                 </View>
             </Modal>
+
+            {accountAction && (
+                <AccountActionDialog
+                    visible={accountAction !== null}
+                    type={accountAction}
+                    loading={accountActionLoading}
+                    onCancel={() => {
+                        if (accountActionLoading) {
+                            return
+                        }
+
+                        setAccountAction(null)
+                    }}
+                    onConfirm={() => {
+                        if (accountAction === "logout") {
+                            handleLogout()
+                            return
+                        }
+
+                        if (accountAction === "delete") {
+                            // handleDeleteAccount()
+                        }
+                    }}
+                />
+            )}
         </SafeAreaView>
     )
 }

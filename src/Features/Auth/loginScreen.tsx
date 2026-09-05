@@ -138,6 +138,7 @@ export default function LoginScreen() {
                     role: authData.user.role,
                     isActive: authData.user.is_active,
                     profileImage: authData.user.picture_url,
+                    vegMode: true
                 })
 
                 showToast(res.data.message || "Google login successful", "success")

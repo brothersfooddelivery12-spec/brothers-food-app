@@ -5,6 +5,7 @@ import GiftIcon from '@/assets/icon/GiftIcon.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import InfoIcon from '@/assets/icon/InfoIcon.svg'
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
+import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -464,43 +465,32 @@ export default function CartScreen() {
                     className="flex-1 items-center justify-center"
                     style={{
                         paddingHorizontal: scale(30),
-                        paddingBottom:
-                            insets.bottom +
-                            verticalScale(40)
+                        paddingBottom: verticalScale(24)
                     }}
                 >
-                    <View
-                        className="items-center justify-center bg-[#E8B93F]/15"
+                    <Image
+                        source={require("@/assets/images/EmptyCartIllustration.png")}
+                        contentFit="contain"
+                        cachePolicy="memory-disk"
                         style={{
-                            width: moderateScale(82),
-                            height: moderateScale(82),
-                            borderRadius: moderateScale(30),
-                            marginBottom: verticalScale(18)
+                            width: moderateScale(175),
+                            height: moderateScale(175)
                         }}
-                    >
-                        <CartIcon
-                            width={moderateScale(38)}
-                            height={moderateScale(38)}
-                            color="#3F2516"
-                            strokeWidth={1.5}
-                        />
-                    </View>
+                    />
 
                     <Text
                         className="text-[#1F1F1F] font-extrabold text-center"
-                        style={{
-                            fontSize: moderateScale(19)
-                        }}
+                        style={{ fontSize: moderateScale(17) }}
                     >
                         Your cart is empty
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/60 font-medium text-center"
+                        className="text-[#1F1F1F]/75 font-medium text-center"
                         style={{
                             fontSize: moderateScale(11),
-                            marginTop: verticalScale(6),
-                            lineHeight: moderateScale(17),
+                            marginTop: verticalScale(4),
+                            lineHeight: moderateScale(14),
                             paddingHorizontal: scale(20)
                         }}
                     >
@@ -519,24 +509,15 @@ export default function CartScreen() {
                             marginTop: verticalScale(20),
                             paddingHorizontal: scale(22),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(22)
+                            borderRadius: moderateScale(24)
                         }}
                     >
                         <Text
                             className="text-white font-semibold"
-                            style={{
-                                fontSize: moderateScale(13)
-                            }}
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             Browse Food
                         </Text>
-
-                        <ArrowRight
-                            width={moderateScale(17)}
-                            height={moderateScale(17)}
-                            color="#FFFFFF"
-                            strokeWidth={1.8}
-                        />
                     </TouchableOpacity>
                 </View>
             ) : (
