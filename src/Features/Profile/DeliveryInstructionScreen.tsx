@@ -17,7 +17,7 @@ import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { AddressItem } from './Components/SavedAddressCard'
+import { AddressItem } from '../Address/Components/SavedAddressCard'
 
 export const SAVED_ADDRESSES: AddressItem[] = [
     {

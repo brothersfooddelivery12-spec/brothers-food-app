@@ -584,8 +584,8 @@ export default function PaymentMethodScreen(){
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,
-                                borderRadius: moderateScale(14),
-                                paddingVertical: verticalScale(4)
+                                borderRadius: moderateScale(16),
+                                paddingVertical: verticalScale(5)
                             }}
                         >
                             {!selectedMenuItem.isDefault && (
@@ -594,13 +594,13 @@ export default function PaymentMethodScreen(){
                                         activeOpacity={0.9}
                                         onPress={() => handleSetDefault(selectedMenuItem.id)}
                                         style={{
-                                            paddingHorizontal: scale(12),
-                                            paddingVertical: verticalScale(9)
+                                            paddingHorizontal: scale(14),
+                                            paddingVertical: verticalScale(8)
                                         }}
                                     >
                                         <Text
-                                            className="text-[#1F1F1F] font-medium"
-                                            style={{ fontSize: moderateScale(12) }}
+                                            className="text-[#1F1F1F]/85 font-medium"
+                                            style={{ fontSize: moderateScale(13) }}
                                         >
                                             Set as Default
                                         </Text>
@@ -620,13 +620,13 @@ export default function PaymentMethodScreen(){
                                 activeOpacity={0.9}
                                 onPress={() => handleRemovePayment(selectedMenuItem.id)}
                                 style={{
-                                    paddingHorizontal: scale(12),
-                                    paddingVertical: verticalScale(9)
+                                    paddingHorizontal: scale(14),
+                                    paddingVertical: verticalScale(8)
                                 }}
                             >
                                 <Text
                                     className="text-[#EF4444] font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     Remove
                                 </Text>

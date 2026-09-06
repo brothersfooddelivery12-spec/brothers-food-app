@@ -1,17 +1,17 @@
+import AddressInput from "@/Features/Address/Components/AddressInput"
+import CityIcon from '@/assets/icon/CityIcon.svg'
+import IndiaFlag from '@/assets/icon/India.svg'
+import MailIcon from '@/assets/icon/MailIcon.svg'
+import PinLocation from '@/assets/icon/PinLocation.svg'
+import UserIcon from '@/assets/icon/UserIcon.svg'
+import GradientButton from "@/components/GradientButton"
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
+import * as ImagePicker from "expo-image-picker"
+import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { ScrollView, StatusBar, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import UserIcon from '@/assets/icon/UserIcon.svg'
-import MailIcon from '@/assets/icon/MailIcon.svg'
-import IndiaFlag from '@/assets/icon/India.svg'
-import { router, useLocalSearchParams } from "expo-router"
-import AddressInput from "@/components/AddressInput"
-import CityIcon from '@/assets/icon/CityIcon.svg'
-import PinLocation from '@/assets/icon/PinLocation.svg'
-import GradientButton from "@/components/GradientButton"
-import * as ImagePicker from "expo-image-picker"
 
 export default function CompleteProfileScreen() {
     const { UserMobileNumber } = useLocalSearchParams()

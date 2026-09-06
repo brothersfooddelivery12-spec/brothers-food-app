@@ -1,3 +1,4 @@
+import ArrowDownIcon from '@/assets/icon/ArrowDown.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon2.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
@@ -88,23 +89,13 @@ export default function HomeScreen() {
 
     const firstName = user?.name?.trim().split(/\s+/)[0] || "User"
 
-    const vegMode = useAuthStore(
-        (state) =>
-            state.user?.vegMode ?? false
-    )
-
-    const updateUser = useAuthStore(
-        (state) => state.updateUser
-    )
+    const vegMode = useAuthStore((state) => state.user?.vegMode ?? false)
+    const updateUser = useAuthStore((state) => state.updateUser)
 
     const foodType: FoodType = vegMode ? "veg" : "nonveg"
 
-    const handleFoodTypeChange = (
-        value: FoodType
-    ) => {
-        updateUser({
-            vegMode: value === "veg"
-        })
+    const handleFoodTypeChange = (value: FoodType) => {
+        updateUser({ vegMode: value === "veg" })
     }
 
     const addToCart = useCartStore((state) => state.addToCart)
@@ -226,11 +217,13 @@ export default function HomeScreen() {
                                     <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" style={{ marginBottom: moderateScale(4) }} />
 
                                     <Text
-                                        className="text-[#1F1F1F] font-extrabold"
+                                        className="text-[#3F2516] font-extrabold"
                                         style={{ fontSize: moderateScale(16.5) }}
                                     >
                                         Home • Sumerpur
                                     </Text>
+
+                                    <ArrowDownIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} strokeWidth={2} />
                                 </View>
                             </View>
 

@@ -1,3 +1,3 @@
-import SavedAddressScreen from "@/Features/Profile/SavedAddressScreen"
+import SavedAddressScreen from "@/Features/Address/SavedAddressScreen"
 
 export default SavedAddressScreen

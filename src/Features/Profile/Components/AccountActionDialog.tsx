@@ -1,4 +1,5 @@
 import DeleteIcon from '@/assets/icon/DeleteIcon.svg'
+import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import LogoutIcon from '@/assets/icon/LogoutIcon.svg'
 import LottieView from 'lottie-react-native'
 import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native"
@@ -6,8 +7,10 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 type AccountActionDialogProps = {
     visible: boolean
-    type: "logout" | "delete"
+    type: "logout" | "delete" | "address-delete" | "set-default-address"
     loading?: boolean
+
+    addressLabel?: string
 
     onCancel: () => void
     onConfirm: () => void
@@ -17,18 +20,43 @@ export default function AccountActionDialog({
     visible,
     type,
     loading = false,
+    addressLabel,
     onCancel,
     onConfirm
 }: AccountActionDialogProps) {
-    const isDelete = type === "delete"
+    const isLogout = type === "logout"
+    const isDeleteAccount = type === "delete"
+    const isAddressDelete = type === "address-delete"
+    const isSetDefault = type === "set-default-address"
 
-    const title = isDelete ? "Delete Account" : "Log Out"
+    const isDanger = isDeleteAccount
 
-    const description = isDelete
-        ? "Are you sure you want to delete your account? All your account data will be permanently removed and this action cannot be undone."
-        : "Are you sure you want to log out of your Brothers account?"
+    const title = isLogout
+        ? "Log Out"
+        : isAddressDelete
+            ? "Delete Address"
+            : isSetDefault
+                ? "Set as Default"
+                : "Delete Account"
 
-    const confirmText = isDelete ? "Delete" : "Log Out"
+    const description = isLogout
+        ? "Are you sure you want to log out of your Brothers account?"
+        : isAddressDelete
+            ? `Are you sure you want to delete ${
+                addressLabel
+                    ? `"${addressLabel}"`
+                    : "this address"
+            }? This action cannot be undone.`
+            : isSetDefault
+                ? `Set ${
+                    addressLabel
+                        ? `"${addressLabel}"`
+                        : "this address"
+                } as your default delivery address? It will be automatically selected for future orders.`
+                : "Are you sure you want to delete your account? All your account data will be permanently removed and this action cannot be undone."
+
+    const confirmText = isLogout ? "Log Out" : isSetDefault
+        ? "Set Default" : "Delete"
 
     return (
         <Modal
@@ -53,38 +81,63 @@ export default function AccountActionDialog({
                 />
 
                 <View
-                    className="bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                    className="bg-white border border-[#1F1F1F]/10"
                     style={{
-                        marginHorizontal: scale(14),
+                        marginHorizontal: scale(12),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
                         paddingHorizontal: scale(20),
-                        paddingTop: verticalScale(18),
+                        paddingTop: verticalScale(14),
                         paddingBottom: verticalScale(14)
                     }}
                 >
-                    <View className="flex-row items-center gap-2">
-                        {type === "logout" ? (
-                            <LogoutIcon
-                                width={moderateScale(22)}
-                                height={moderateScale(22)}
-                                color="#1F1F1F"
-                                strokeWidth={2}
-                            />
-                        ) : (
-                            <DeleteIcon
-                                width={moderateScale(22)}
-                                height={moderateScale(22)}
-                                color="rgba(220, 38, 38, 0.9)"
-                                strokeWidth={2}
-                            />
-                        )}
+                    <View className="flex-row items-center gap-3 -ml-2">
+                        <View
+                            className='items-center justify-center'
+                            style={{
+                                borderRadius: moderateScale(12),
+                                backgroundColor: isDanger ? "rgb(254 226 226 / 0.8)" : "rgb(229 228 226 / 0.65)",
+                                width: moderateScale(34),
+                                height: moderateScale(34)
+                            }}
+                        >
+                            {isLogout ? (
+                                <LogoutIcon
+                                    width={moderateScale(18)}
+                                    height={moderateScale(18)}
+                                    color="#1F1F1F"
+                                    style={{ marginLeft: moderateScale(1) }}
+                                    strokeWidth={1.8}
+                                />
+                            ) : isAddressDelete ? (
+                                <LocationIcon
+                                    width={moderateScale(20)}
+                                    height={moderateScale(20)}
+                                    color="#1F1F1F"
+                                    strokeWidth={1.8}
+                                />
+                            ) : isSetDefault ? (
+                                <LocationIcon
+                                    width={moderateScale(20)}
+                                    height={moderateScale(20)}
+                                    color="#3F2516"
+                                    strokeWidth={1.8}
+                                />
+                            ) : (
+                                <DeleteIcon
+                                    width={moderateScale(20)}
+                                    height={moderateScale(20)}
+                                    color="rgba(220, 38, 38, 0.9)"
+                                    strokeWidth={1.8}
+                                />
+                            )}
+                        </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
+                            className="font-bold"
                             style={{
-                                color: isDelete ? "rgba(220, 38, 38, 0.9)" : "#1F1F1F",
-                                fontSize: moderateScale(18)
+                                color: isDanger ? "rgba(220, 38, 38, 0.9)" : "#1F1F1F",
+                                fontSize: moderateScale(17)
                             }}
                         >
                             {title}
@@ -95,7 +148,7 @@ export default function AccountActionDialog({
                         className="text-[#1F1F1F]/75 font-medium"
                         style={{
                             fontSize: moderateScale(12),
-                            lineHeight: moderateScale(16),
+                            lineHeight: moderateScale(17),
                             marginTop: verticalScale(8)
                         }}
                     >
@@ -133,10 +186,10 @@ export default function AccountActionDialog({
                             onPress={onConfirm}
                             className="flex-1 items-center justify-center"
                             style={{
-                                backgroundColor: isDelete ? "rgba(220, 38, 38, 0.80)" : "#3F2516",
+                                backgroundColor: isDanger ? "rgba(220, 38, 38, 0.80)" : "#3F2516",
                                 height: verticalScale(46),
                                 borderRadius: moderateScale(20),
-                                opacity: loading ? 0.95 : 1
+                                opacity: loading ? 0.85 : 1
                             }}
                         >
                             {loading ? (
@@ -151,7 +204,7 @@ export default function AccountActionDialog({
                                 />
                             ) : (
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
+                                    className="text-white font-semibold"
                                     style={{ fontSize: moderateScale(15) }}
                                 >
                                     {confirmText}

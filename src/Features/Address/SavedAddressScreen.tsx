@@ -9,19 +9,23 @@ import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
+import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, Dimensions, FlatList, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { Dimensions, FlatList, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import AccountActionDialog from '../Profile/Components/AccountActionDialog'
 import { Address, deleteAddress, getAllAddresses, setDefaultAddress } from '../Services/address-service'
+import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import SavedAddressCard from './Components/SavedAddressCard'
 
-const ADDRESS_CATEGORIES = [
+export const ADDRESS_CATEGORIES = [
     "All",
     "Home",
-    "Office",
+    "Work",
     "College",
     "Others"
 ]
@@ -52,18 +56,24 @@ const ADDRESS_CATEGORIES = [
 
 export default function SavedAddressScreen(){
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
+    const { showToast } = useToast()
+    const hasFetchedAddresses = useRef(false)
+    const addressesDirty = useAddressRefreshStore((state) => state.addressesDirty)
+    const clearAddressesDirty = useAddressRefreshStore((state) => state.clearAddressesDirty)
+
+    const [deleteAddressDialogVisible, setDeleteAddressDialogVisible] = useState(false)
+    const [addressToDelete, setAddressToDelete] = useState<Address | null>(null)
+    const [defaultDialogVisible, setDefaultDialogVisible] = useState(false)
+    const [addressToSetDefault, setAddressToSetDefault] = useState<Address | null>(null)
+
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [openMenu, setOpenMenu] = useState<string | null>(null)
 
-    const { showToast } = useToast()
-
     const menuRefs = useRef<Record<string, View | null>>({})
-    const [menuPosition, setMenuPosition] = useState({
-        top: 0,
-        left: 0
-    })
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 })
     const MENU_WIDTH = moderateScale(155)
     const MENU_HEIGHT = moderateScale(125)
 
@@ -155,9 +165,28 @@ export default function SavedAddressScreen(){
         }
     }, [])
 
-    useEffect(() => {
-        fetchAddresses()
-    }, [fetchAddresses])
+    useFocusEffect(
+        useCallback(() => {
+            const shouldFetch = !hasFetchedAddresses.current || addressesDirty
+
+            if (!shouldFetch) {
+                return
+            }
+
+            const loadAddresses = async () => {
+                await fetchAddresses()
+
+                hasFetchedAddresses.current = true
+
+                if (addressesDirty) {
+                    clearAddressesDirty()
+                }
+            }
+
+            loadAddresses()
+
+        }, [addressesDirty, clearAddressesDirty, fetchAddresses])
+    )
 
     const filteredAddresses = useMemo(() => {
         let result = otherAddresses
@@ -319,7 +348,9 @@ export default function SavedAddressScreen(){
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={() => {}}
+                    onPress={() => preventDoublePress(() => {
+                        router.push("/add-address")
+                    })}
                     className="flex-row items-center justify-center gap-2 bg-[#3F2516]"
                     style={{
                         marginTop: verticalScale(15),
@@ -402,24 +433,28 @@ export default function SavedAddressScreen(){
             </View> */}
 
             {loading ? (
-                <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator
-                        size="small"
-                        color="#3F2516"
-                    />
-
-                    <Text
-                        className="text-[#1F1F1F]/65 font-medium"
+                <View className="flex-1"
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 999
+                    }}
+                >
+                    <LottieView
+                        source={require("../../../assets/animations/Food_Loading.json")}
+                        autoPlay
+                        loop
                         style={{
-                            marginTop:
-                                verticalScale(10),
-
-                            fontSize:
-                                moderateScale(12)
+                            width: moderateScale(115),
+                            height: moderateScale(115)
                         }}
-                    >
-                        Loading addresses...
-                    </Text>
+                    />
                 </View>
             ) : addresses.length === 0 ? (
                 <EmptyAddressState />
@@ -641,7 +676,16 @@ export default function SavedAddressScreen(){
                                                 
                                                 <TouchableOpacity
                                                     activeOpacity={0.95}
-                                                    onPress={() => {}}
+                                                    onPress={() => {
+                                                        preventDoublePress(() => {
+                                                            router.push({
+                                                                pathname: "/add-address",
+                                                                params: {
+                                                                    addressId: defaultAddress.id
+                                                                }
+                                                            })
+                                                        })
+                                                    }}
                                                     className='rounded-full flex-row items-center justify-center gap-2 bg-[#FFFFFF]/25'
                                                     style={{
                                                         width: moderateScale(40),
@@ -653,7 +697,11 @@ export default function SavedAddressScreen(){
         
                                                 <TouchableOpacity
                                                     activeOpacity={0.95}
-                                                    onPress={() => {}}
+                                                    onPress={() => {
+                                                        setAddressToDelete(defaultAddress)
+
+                                                        setDeleteAddressDialogVisible(true)
+                                                    }}
                                                     className='rounded-full flex-row items-center justify-center gap-2 bg-[#FFFFFF]/25'
                                                     style={{
                                                         width: moderateScale(40),
@@ -666,20 +714,72 @@ export default function SavedAddressScreen(){
                                         </View>
                                     </>
                                 )}
-        
-                                <Text
-                                    className="text-[#1F1F1F] font-bold mt-5"
-                                    style={{ fontSize: moderateScale(15) }}
+
+                                <View
+                                    style={{ marginTop: verticalScale(15) }}
                                 >
-                                    Other Locations
-                                </Text>
+                                    <Text
+                                        className="text-[#1F1F1F] font-semibold"
+                                        style={{ fontSize: moderateScale(15) }}
+                                    >
+                                        Other Locations
+                                    </Text>
+
+                                    {filteredAddresses.length === 0 && (
+                                        <View
+                                            className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                            style={{
+                                                marginTop: verticalScale(10),
+                                                paddingHorizontal: scale(20),
+                                                paddingVertical: verticalScale(20),
+                                                borderRadius: moderateScale(20)
+                                            }}
+                                        >
+                                            <View
+                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                style={{
+                                                    width: moderateScale(44),
+                                                    height: moderateScale(44)
+                                                }}
+                                            >
+                                                <LocationIcon width={moderateScale(28)} height={moderateScale(28)} color="#5A3825" strokeWidth={1.5} />
+                                            </View>
+
+                                            <Text
+                                                className="text-[#1F1F1F] font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    marginTop: verticalScale(8)
+                                                }}
+                                            >
+                                                {otherAddresses.length === 0
+                                                    ? "No other locations"
+                                                    : "No matching addresses"}
+                                            </Text>
+
+                                            <Text
+                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                {otherAddresses.length === 0
+                                                    ? "Add another delivery address to see it here."
+                                                    : "Try selecting a different address category."}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
                             </View>
                         }
                         ListFooterComponent={
                             <>
                                 <TouchableOpacity
                                     activeOpacity={0.95}
-                                    onPress={() => {}}
+                                    onPress={() => preventDoublePress(() => {
+                                        router.push("/add-address")
+                                    })}
                                     className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
                                     style={{
                                         marginTop: verticalScale(16),
@@ -729,46 +829,63 @@ export default function SavedAddressScreen(){
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,
-                                borderRadius: moderateScale(14),
+                                borderRadius: moderateScale(16),
                                 paddingVertical: verticalScale(5)
                             }}
                         >
                             <TouchableOpacity
-                                activeOpacity={0.9}
+                                activeOpacity={0.95}
                                 onPress={() => {
                                     setOpenMenu(null)
 
-                                    console.log("Edit:", selectedMenuItem)
+                                    preventDoublePress(() => {
+                                        router.push({
+                                            pathname: "/add-address",
+                                            params: {
+                                                addressId: selectedMenuItem.id
+                                            }
+                                        })
+                                    })
                                 }}
                                 style={{
-                                    paddingHorizontal: scale(12),
+                                    paddingHorizontal: scale(14),
                                     paddingVertical: verticalScale(8)
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="text-[#1F1F1F]/85 font-medium"
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     Edit Address
                                 </Text>
                             </TouchableOpacity>
 
+                            <View
+                                className="bg-[#1F1F1F]/10"
+                                style={{
+                                    height: 1,
+                                    marginHorizontal: scale(10)
+                                }}
+                            />
+
                             {!selectedMenuItem.is_default && (
                                 <TouchableOpacity
-                                    activeOpacity={0.9}
+                                    activeOpacity={0.95}
                                     onPress={() => {
                                         setOpenMenu(null)
 
-                                        handleSetDefault(selectedMenuItem.id)
+                                        setAddressToSetDefault(selectedMenuItem)
+
+                                        setDefaultDialogVisible(true)
                                     }}
                                     style={{
-                                        paddingHorizontal: scale(12),
+                                        paddingHorizontal: scale(14),
                                         paddingVertical: verticalScale(8)
                                     }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="text-[#1F1F1F]/85 font-medium"
+                                        style={{ fontSize: moderateScale(13) }}
                                     >
                                         Set as Default
                                     </Text>
@@ -784,20 +901,22 @@ export default function SavedAddressScreen(){
                             />
 
                             <TouchableOpacity
-                                activeOpacity={0.9}
+                                activeOpacity={0.95}
                                 onPress={() => {
                                     setOpenMenu(null)
 
-                                    handleDeleteAddress(selectedMenuItem.id)
+                                    setAddressToDelete(selectedMenuItem)
+
+                                    setDeleteAddressDialogVisible(true)
                                 }}
                                 style={{
-                                    paddingHorizontal: scale(12),
+                                    paddingHorizontal: scale(14),
                                     paddingVertical: verticalScale(8)
                                 }}
                             >
                                 <Text
                                     className="text-[#EF4444] font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     Delete Address
                                 </Text>
@@ -806,6 +925,54 @@ export default function SavedAddressScreen(){
                     )}
                 </View>
             </Modal>
+
+            <AccountActionDialog
+                visible={deleteAddressDialogVisible}
+                type="address-delete"
+                loading={actionLoading}
+                addressLabel={addressToDelete?.label}
+                onCancel={() => {
+                    if (actionLoading) return
+
+                    setDeleteAddressDialogVisible(false)
+                    setAddressToDelete(null)
+                }}
+                onConfirm={async () => {
+                    if (!addressToDelete) return
+
+                    await handleDeleteAddress(
+                        addressToDelete.id
+                    )
+
+                    setDeleteAddressDialogVisible(false)
+                    setAddressToDelete(null)
+                }}
+            />
+
+            <AccountActionDialog
+                visible={defaultDialogVisible}
+                type="set-default-address"
+                loading={actionLoading}
+                addressLabel={addressToSetDefault?.label}
+                onCancel={() => {
+                    if (actionLoading) return
+
+                    setDefaultDialogVisible(false)
+                    setAddressToSetDefault(null)
+                }}
+                onConfirm={async () => {
+                    if (!addressToSetDefault) {
+                        return
+                    }
+
+                    await handleSetDefault(
+                        addressToSetDefault.id
+                    )
+
+                    setDefaultDialogVisible(false)
+                    setAddressToSetDefault(null)
+                }}
+            />
         </SafeAreaView>
     )
 }

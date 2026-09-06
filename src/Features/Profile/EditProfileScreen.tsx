@@ -4,9 +4,9 @@ import IndiaFlag from '@/assets/icon/India.svg'
 import MailIcon from '@/assets/icon/MailIcon.svg'
 import PinLocation from '@/assets/icon/PinLocation.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
-import AddressInput from "@/components/AddressInput"
 import GradientButton from '@/components/GradientButton'
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
+import AddressInput from "@/Features/Address/Components/AddressInput"
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import { useEffect, useState } from "react"
@@ -55,13 +55,13 @@ export default function EditProfileScreen(){
     
     const formatMobileNumber = (text: string) => {
         let numbersOnly = text.replace(/\D/g, "")
-    
+
         if (numbersOnly.startsWith("91") && numbersOnly.length > 10) {
             numbersOnly = numbersOnly.slice(2)
         }
-    
+
         numbersOnly = numbersOnly.slice(0, 10)
-    
+
         setMobileNumber(numbersOnly)
     }
 
@@ -269,7 +269,7 @@ export default function EditProfileScreen(){
                             }`}
                             style={{
                                 height: verticalScale(40),
-                                fontSize: moderateScale(14),
+                                fontSize: moderateScale(13),
                                 textAlignVertical: "center",
                                 includeFontPadding: false
                             }}
@@ -283,7 +283,7 @@ export default function EditProfileScreen(){
                                 setNameError(false)
                             }}
                             placeholder="Full Name"
-                            placeholderTextColor="#7A7D81"
+                            placeholderTextColor="#9A9A9A"
                             keyboardType="default"
                             returnKeyType="done"
                             autoCapitalize="words"
@@ -347,7 +347,7 @@ export default function EditProfileScreen(){
                             }`}
                             style={{
                                 height: verticalScale(40),
-                                fontSize: moderateScale(14),
+                                fontSize: moderateScale(13),
                                 textAlignVertical: "center",
                                 includeFontPadding: false
                             }}
@@ -360,7 +360,7 @@ export default function EditProfileScreen(){
                                 setEmailError(false)
                             }}
                             placeholder="Email Address"
-                            placeholderTextColor="#7A7D81"
+                            placeholderTextColor="#9A9A9A"
                             keyboardType="email-address"
                             returnKeyType="next"
                             autoCapitalize="none"
@@ -416,7 +416,7 @@ export default function EditProfileScreen(){
                             }`}
                             style={{
                                 height: verticalScale(40),
-                                fontSize: moderateScale(14),
+                                fontSize: moderateScale(13),
                                 textAlignVertical: "center",
                                 includeFontPadding: false
                             }}
@@ -429,15 +429,15 @@ export default function EditProfileScreen(){
                                 formatMobileNumber(text)
                                 setNumberError(false)
                             }}
-                            placeholder="Mobile Number"
-                            placeholderTextColor="#7A7D81"
+                            placeholder="Enter 10-digit mobile number"
+                            placeholderTextColor="#9A9A9A"
                             keyboardType="phone-pad"
                             returnKeyType="done"
                             autoCorrect={false}
                             autoCapitalize="none"
                             textContentType="telephoneNumber"
                             autoComplete="tel"
-                            maxLength={11}
+                            maxLength={16}
                             selectionColor="#79685e"
                             editable={!loading}
                             onSubmitEditing={() => {
@@ -515,7 +515,7 @@ export default function EditProfileScreen(){
                                     setCity(cleaned)
                                 }}
                                 placeholder="Jaipur"
-                                placeholderTextColor="#7A7D81"
+                                placeholderTextColor="#9A9A9A"
                                 numberOfLines={1}
                                 className={`p-0 tracking-wide font-medium ${
                                     loading
@@ -524,7 +524,7 @@ export default function EditProfileScreen(){
                                 }`}
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(13),
                                     includeFontPadding: false,
                                     textAlignVertical: "center"
                                 }}
@@ -584,7 +584,7 @@ export default function EditProfileScreen(){
                                     setPinCodeError(false)
                                 }}
                                 placeholder="302001"
-                                placeholderTextColor="#7A7D81"
+                                placeholderTextColor="#9A9A9A"
                                 keyboardType="number-pad"
                                 returnKeyType="done"
                                 maxLength={6}
@@ -599,7 +599,7 @@ export default function EditProfileScreen(){
                                 }`}
                                 style={{
                                     height: moderateScale(22),
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(13),
                                     includeFontPadding: false,
                                     textAlignVertical: "center"
                                 }}

@@ -1,13 +1,13 @@
-import LocationIcon from '@/assets/icon/LocationIcon2.svg';
-import { Text, TextInput, View } from "react-native";
-import { moderateScale, scale, verticalScale } from "react-native-size-matters";
+import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import { Text, TextInput, View } from "react-native"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 interface AddressInputProps {
-    loading?: boolean;
-    addressLine1: string;
-    addressLine2: string;
-    setAddressLine1: (value: string) => void;
-    setAddressLine2: (value: string) => void;
+    loading?: boolean
+    addressLine1: string
+    addressLine2: string
+    setAddressLine1: (value: string) => void
+    setAddressLine2: (value: string) => void
 }
 
 export default function AddressInput({
@@ -56,7 +56,7 @@ export default function AddressInput({
                 value={addressLine1}
                 onChangeText={setAddressLine1}
                 placeholder="123, MG Road, Near City Mall"
-                placeholderTextColor="#7A7D81"
+                placeholderTextColor="#9A9A9A"
                 numberOfLines={1}
                 className={`p-0 tracking-wide font-medium ${
                     loading ? "text-[#9CA3AF]" : "text-[#151515]"
@@ -88,7 +88,7 @@ export default function AddressInput({
                 value={addressLine2}
                 onChangeText={setAddressLine2}
                 placeholder="Apartment, suite, unit, etc."
-                placeholderTextColor="#7A7D81"
+                placeholderTextColor="#9A9A9A"
                 numberOfLines={1}
                 className={`p-0 tracking-wide font-medium ${
                     loading ? "text-[#9CA3AF]" : "text-[#151515]"

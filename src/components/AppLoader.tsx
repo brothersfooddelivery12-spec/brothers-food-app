@@ -1,5 +1,7 @@
-import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useLoader } from "@/Features/hook/LoaderProvider"
+import LottieView from "lottie-react-native"
+import { StyleSheet, View } from "react-native"
+import { moderateScale } from "react-native-size-matters"
 
 export default function AppLoader() {
   const { loading } = useLoader()
@@ -8,7 +10,15 @@ export default function AppLoader() {
 
   return (
     <View style={styles.overlay}>
-      <ActivityIndicator size="large" color="#fff" />
+      <LottieView
+        source={require("../../assets/animations/Food_Loading.json")}
+        autoPlay
+        loop
+        style={{
+            width: moderateScale(115),
+            height: moderateScale(115)
+        }}
+    />
     </View>
   )
 }

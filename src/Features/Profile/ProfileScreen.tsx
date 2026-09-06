@@ -1050,8 +1050,8 @@ export default function ProfileScreen() {
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,
-                                borderRadius: moderateScale(14),
-                                paddingVertical: verticalScale(7)
+                                borderRadius: moderateScale(16),
+                                paddingVertical: verticalScale(5)
                             }}
                         >
                             {activeOptions.map((option, index) => {
@@ -1077,15 +1077,15 @@ export default function ProfileScreen() {
                                                 setOpenMenu(null)
                                             }}
                                             style={{
-                                                paddingHorizontal: scale(12),
-                                                paddingVertical: verticalScale(6)
+                                                paddingHorizontal: scale(14),
+                                                paddingVertical: verticalScale(8)
                                             }}
                                         >
                                             <Text
                                                 className={
                                                     isSelected
                                                         ? "text-[#3F2516] font-semibold"
-                                                        : "text-[#1F1F1F]/75 font-medium"
+                                                        : "text-[#1F1F1F]/85 font-medium"
                                                 }
                                                 style={{ fontSize: moderateScale(13) }}
                                             >
@@ -1099,7 +1099,6 @@ export default function ProfileScreen() {
                                                 className="bg-[#1F1F1F]/10"
                                                 style={{
                                                     height: 1,
-                                                    marginVertical: verticalScale(2),
                                                     marginHorizontal: scale(10)
                                                 }}
                                             />

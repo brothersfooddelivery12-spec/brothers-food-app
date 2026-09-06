@@ -361,7 +361,7 @@ export default function VerificationSuccessScreen() {
                                     className="p-0 tracking-wide font-medium text-[#151515]"
                                     style={{
                                         height: verticalScale(40),
-                                        fontSize: moderateScale(14),
+                                        fontSize: moderateScale(13),
                                         textAlignVertical: "center",
                                         includeFontPadding: false
                                     }}
@@ -371,7 +371,7 @@ export default function VerificationSuccessScreen() {
                                         setNameError(false)
                                     }}
                                     placeholder="Enter your full name"
-                                    placeholderTextColor="#7A7D81"
+                                    placeholderTextColor="#9A9A9A"
                                     keyboardType="default"
                                     returnKeyType="default"
                                     selectionColor="#79685e"

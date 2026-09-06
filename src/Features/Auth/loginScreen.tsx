@@ -38,7 +38,7 @@ export default function LoginScreen() {
         let numbersOnly = text.replace(/\D/g, "")
 
         if (numbersOnly.startsWith("91") && numbersOnly.length > 10) {
-            numbersOnly = numbersOnly.slice(2);
+            numbersOnly = numbersOnly.slice(2)
         }
 
         numbersOnly = numbersOnly.slice(0, 10)
@@ -356,26 +356,39 @@ export default function LoginScreen() {
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                                 <TextInput
                                     className={`p-0 tracking-wide font-medium ${
-                                        loading ? "text-[#9CA3AF]" : "text-[#151515]"
+                                        loading
+                                            ? "text-[#9CA3AF]"
+                                            : "text-[#151515]"
                                     }`}
                                     style={{
                                         height: verticalScale(40),
-                                        fontSize: moderateScale(14),
+                                        fontSize: moderateScale(13),
                                         textAlignVertical: "center",
                                         includeFontPadding: false
                                     }}
-                                    value={mobileNumber.replace(/(\d{5})(\d{0,5})/, "$1 $2").trim()}
+                                    value={
+                                        mobileNumber
+                                            .replace(/(\d{5})(\d{0,5})/,"$1 $2")
+                                            .trim()
+                                    }
                                     onChangeText={(text) => {
                                         formatMobileNumber(text)
                                         setMobileNumberError(false)
                                     }}
-                                    placeholder="Mobile Number"
-                                    placeholderTextColor="#7A7D81"
+                                    placeholder="Enter 10-digit mobile number"
+                                    placeholderTextColor="#9A9A9A"
                                     keyboardType="phone-pad"
-                                    onSubmitEditing={() => Keyboard.dismiss()}
                                     returnKeyType="done"
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    textContentType="telephoneNumber"
+                                    autoComplete="tel"
+                                    maxLength={16}
                                     selectionColor="#79685e"
                                     editable={!loading}
+                                    onSubmitEditing={() => {
+                                        Keyboard.dismiss()
+                                    }}
                                 />
                             </View>
                         </View>
