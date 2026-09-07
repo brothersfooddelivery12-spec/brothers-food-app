@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import { KeyboardTypeOptions, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from "react-native-svg"
@@ -37,6 +38,20 @@ export const AddressField = ({
     onPress,
     editable = true
 }: AddressFieldProps) => {
+    const inputRef = useRef<TextInput>(null)
+
+    const handleFieldPress = () => {
+        if(loading) return
+
+        if(onPress) {
+            onPress()
+
+            return
+        }
+
+        inputRef.current?.focus()
+    }
+
     return (
         <View className="flex-1">
             <View className="flex-row items-center">
@@ -62,9 +77,10 @@ export const AddressField = ({
 
             <TouchableOpacity
                 activeOpacity={onPress ? 0.95 : 1}
-                onPress={onPress}
-                disabled={!onPress}
-                className={`flex-row items-center bg-white border border-[#1F1F1F]/10`}
+                onPress={handleFieldPress}
+                disabled={loading}
+                className={`flex-row items-center overflow-hidden
+                ${error ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
                 style={{
                     height: verticalScale(46),
                     borderRadius: moderateScale(14),
@@ -89,6 +105,7 @@ export const AddressField = ({
                 </View>
 
                 <TextInput
+                    ref={inputRef}
                     value={value}
                     onChangeText={onChangeText}
                     placeholder={placeholder}
@@ -110,6 +127,11 @@ export const AddressField = ({
                         textAlignVertical: "center"
                     }}
                     selectionColor="#79685e"
+                    onPressIn={() => {
+                        if(!loading) {
+                            inputRef.current?.focus()
+                        }
+                    }}
                 />
 
                 {rightIcon}

@@ -4,7 +4,7 @@ import DeleteIcon from '@/assets/icon/DeleteIcon.svg'
 import EditIcon from '@/assets/icon/EditIcon.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import InformationCircleIcon from '@/assets/icon/InformationCircleIcon.svg'
-import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
@@ -433,26 +433,14 @@ export default function SavedAddressScreen(){
             </View> */}
 
             {loading ? (
-                <View className="flex-1"
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 999
-                    }}
-                >
+                <View className="flex-1 items-center justify-center">
                     <LottieView
-                        source={require("../../../assets/animations/Food_Loading.json")}
+                        source={require("../../../assets/animations/Food_Loading2.json")}
                         autoPlay
                         loop
                         style={{
-                            width: moderateScale(115),
-                            height: moderateScale(115)
+                            width: moderateScale(125),
+                            height: moderateScale(125)
                         }}
                     />
                 </View>
@@ -742,7 +730,7 @@ export default function SavedAddressScreen(){
                                                     height: moderateScale(44)
                                                 }}
                                             >
-                                                <LocationIcon width={moderateScale(28)} height={moderateScale(28)} color="#5A3825" strokeWidth={1.5} />
+                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
                                             </View>
 
                                             <Text

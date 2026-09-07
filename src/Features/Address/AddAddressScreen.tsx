@@ -11,8 +11,8 @@ import UserIcon from '@/assets/icon/UserIcon.svg'
 import GradientButton from '@/components/GradientButton'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useState } from 'react'
-import { Keyboard, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Keyboard, Pressable, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -55,6 +55,11 @@ export default function AddAddressScreen(){
     const [cityError, setCityError] = useState(false)
     const [stateError, setStateError] = useState(false)
     const [pinCodeError, setPinCodeError] = useState(false)
+
+    const receiverNameRef = useRef<TextInput>(null)
+    const phoneRef = useRef<TextInput>(null)
+    const addressLineRef = useRef<TextInput>(null)
+    const pincodeRef = useRef<TextInput>(null)
 
     const formatMobileNumber = (text: string) => {
         let numbersOnly = text.replace(/\D/g, "")
@@ -307,26 +312,14 @@ export default function AddAddressScreen(){
             </View>
 
             {initialLoading ? (
-                <View className="flex-1"
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 999
-                    }}
-                >
+                <View className="flex-1 items-center justify-center">
                     <LottieView
-                        source={require("../../../assets/animations/Food_Loading.json")}
+                        source={require("../../../assets/animations/Food_Loading2.json")}
                         autoPlay
                         loop
                         style={{
-                            width: moderateScale(115),
-                            height: moderateScale(115)
+                            width: moderateScale(125),
+                            height: moderateScale(125)
                         }}
                     />
                 </View>
@@ -480,7 +473,12 @@ export default function AddAddressScreen(){
                         </Text>
                     </View>
 
-                    <View
+                    <Pressable
+                        onPress={() => {
+                            if(!loading) {
+                                receiverNameRef.current?.focus()
+                            }
+                        }}
                         className={`flex-row items-center overflow-hidden
                         ${receiverNameError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
                         style={{
@@ -504,6 +502,7 @@ export default function AddAddressScreen(){
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
+                                ref={receiverNameRef}
                                 className={`p-0 tracking-wide font-medium ${
                                     loading
                                         ? "text-[#9CA3AF]"
@@ -540,7 +539,7 @@ export default function AddAddressScreen(){
                                 }}
                             />
                         </View>
-                    </View>
+                    </Pressable>
 
                     {receiverNameError && (
                         <Text
@@ -573,7 +572,12 @@ export default function AddAddressScreen(){
                         </Text>
                     </View>
 
-                    <View
+                    <Pressable
+                        onPress={() => {
+                            if(!loading) {
+                                phoneRef.current?.focus()
+                            }
+                        }}
                         className={`flex-row items-center overflow-hidden
                         ${numberError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
                         style={{
@@ -597,6 +601,7 @@ export default function AddAddressScreen(){
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
+                                ref={phoneRef}
                                 className={`p-0 tracking-wide font-medium ${
                                     loading
                                         ? "text-[#9CA3AF]"
@@ -633,7 +638,7 @@ export default function AddAddressScreen(){
                                 }}
                             />
                         </View>
-                    </View>
+                    </Pressable>
 
                     {numberError && (
                         <Text
@@ -666,7 +671,12 @@ export default function AddAddressScreen(){
                         </Text>
                     </View>
 
-                    <View
+                    <Pressable
+                        onPress={() => {
+                            if(!loading) {
+                                addressLineRef.current?.focus()
+                            }
+                        }}
                         className={`flex-row items-center overflow-hidden
                         ${addressLineError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
                         style={{
@@ -690,6 +700,7 @@ export default function AddAddressScreen(){
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
+                                ref={addressLineRef}
                                 className={`p-0 tracking-wide font-medium ${
                                     loading
                                         ? "text-[#9CA3AF]"
@@ -721,9 +732,12 @@ export default function AddAddressScreen(){
                                 maxLength={120}
                                 selectionColor="#79685e"
                                 editable={!loading}
+                                onSubmitEditing={() => {
+                                    Keyboard.dismiss()
+                                }}
                             />
                         </View>
-                    </View>
+                    </Pressable>
 
                     {addressLineError  && (
                         <Text
@@ -840,7 +854,12 @@ export default function AddAddressScreen(){
                         </Text>
                     </View>
 
-                    <View
+                    <Pressable
+                        onPress={() => {
+                            if(!loading) {
+                                pincodeRef.current?.focus()
+                            }
+                        }}
                         className={`flex-row items-center overflow-hidden
                         ${pinCodeError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
                         style={{
@@ -864,6 +883,7 @@ export default function AddAddressScreen(){
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
+                                ref={pincodeRef}
                                 value={pinCode}
                                 onChangeText={(text) => {
                                     const cleaned = text
@@ -900,7 +920,7 @@ export default function AddAddressScreen(){
                                 }}
                             />
                         </View>
-                    </View>
+                    </Pressable>
 
                     {pinCodeError && (
                         <Text

@@ -4,19 +4,25 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { tokenStorage } from "./token-storage"
 
+export type Gender =
+    | "MALE"
+    | "FEMALE"
+    | "OTHER"
+
 export interface User {
     id: string
     name: string
     email: string
     phone: string | null
+
+    gender: Gender | null
+    dateOfBirth: string | null
+
     role: "USER"
     isActive: boolean
     vegMode: boolean
+
     profileImage?: string
-    address?: string
-    city?: string
-    state?: string
-    pincode?: string
 }
 
 interface AuthState {
@@ -25,105 +31,106 @@ interface AuthState {
 
     setUser: (user: User) => void
 
-    setAuthUser: (
-        id: string,
-        phone: string
-    ) => void
+    setAuthUser: (id: string, phone: string) => void
 
     updateUser: (data: Partial<User>) => void
 
     setAuthenticated: (value: boolean) => void
+
     logout: () => Promise<void>
+
     clearAuth: () => void
 }
 
-export const useAuthStore = create<AuthState>()(
-    persist(
-        (set) => ({
-            user: null,
-            isAuthenticated: false,
+export const useAuthStore =
+    create<AuthState>()(
+        persist(
+            (set) => ({
+                user: null,
 
-            setUser: (user) => {
-                set({
-                    user,
-                    isAuthenticated: true
-                })
-            },
+                isAuthenticated: false,
 
-            setAuthUser: (id, phone) => {
-                set((state) => ({
-                    user: state.user
-                        ? {
-                            ...state.user,
-                            id,
-                            phone
+                setUser: (user) => {
+                    set({
+                        user,
+                        isAuthenticated: true
+                    })
+                },
+
+                setAuthUser: (id, phone) => {
+                    set((state) => ({
+                        user: state.user
+                            ? {
+                                ...state.user,
+                                id,
+                                phone
+                            }
+                            : {
+                                id,
+                                name: "",
+                                email: "",
+                                phone,
+
+                                gender: null,
+                                dateOfBirth: null,
+
+                                role: "USER",
+                                isActive: false,
+                                vegMode: true
+                            },
+
+                        isAuthenticated: true
+                    }))
+                },
+
+                updateUser: (data) => {
+                    set((state) => ({
+                        user: state.user
+                            ? {
+                                ...state.user,
+                                ...data
+                            }
+                            : null
+                    }))
+                },
+
+                setAuthenticated: (value) => {
+                    set({
+                        isAuthenticated: value
+                    })
+                },
+
+                logout: async () => {
+                    try {
+                        if (GoogleSignin.hasPreviousSignIn()) {
+                            await GoogleSignin.signOut()
                         }
-                        : {
-                            id,
-                            name: "",
-                            email: "",
-                            phone,
-                            role: "USER",
-                            isActive: false,
-                            vegMode: true
-                        },
+                    } catch (error) {
+                        console.log("Google sign out failed:", error)
+                    } finally {
+                        await tokenStorage.clearTokens()
 
-                    isAuthenticated: true
-                }))
-            },
-
-            updateUser: (data) => {
-                set((state) => ({
-                    user: state.user
-                        ? {
-                            ...state.user,
-                            ...data
-                        }
-                        : null
-                }))
-            },
-
-            setAuthenticated: (value) => {
-                set({
-                    isAuthenticated: value
-                })
-            },
-
-            logout: async () => {
-                try {
-                    if (GoogleSignin.hasPreviousSignIn()) {
-                        await GoogleSignin.signOut()
+                        set({
+                            user: null,
+                            isAuthenticated: false
+                        })
                     }
-                } catch (error) {
-                    console.log(
-                        "Google sign out failed:",
-                        error
-                    )
-                } finally {
-                    await tokenStorage.clearTokens()
+                },
 
+                clearAuth: () => {
                     set({
                         user: null,
                         isAuthenticated: false
                     })
                 }
-            },
-
-            clearAuth: () => {
-                set({
-                    user: null,
-                    isAuthenticated: false
+            }),
+            {
+                name: "auth-store",
+                storage: createJSONStorage(() => AsyncStorage),
+                partialize: (state) => ({
+                    user: state.user,
+                    isAuthenticated: state.isAuthenticated
                 })
             }
-        }),
-        {
-            name: "auth-store",
-            storage: createJSONStorage(() => AsyncStorage),
-
-            partialize: (state) => ({
-                user: state.user,
-                isAuthenticated: state.isAuthenticated
-            })
-        }
+        )
     )
-)

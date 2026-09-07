@@ -1,7 +1,7 @@
-import { View, Text, Pressable } from "react-native"
-import { Image } from "expo-image"
-import { moderateScale } from "react-native-size-matters"
-import CameraIcon from '@/assets/icon/CameraIcon.svg'
+import CameraIcon from '@/assets/icon/CameraIcon.svg';
+import { Image } from "expo-image";
+import { Pressable, Text, View } from "react-native";
+import { moderateScale } from "react-native-size-matters";
 
 interface ProfilePhotoPickerProps {
   imageUri?: string;
@@ -46,10 +46,10 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
           onPress={onPress}
           className="bg-white items-center justify-center absolute rounded-full"
           style={{
-            right: moderateScale(12),
-            bottom: moderateScale(5),
-            width: moderateScale(38),
-            height: moderateScale(38)
+            right: moderateScale(14),
+            bottom: moderateScale(7),
+            width: moderateScale(34),
+            height: moderateScale(34)
           }}
         >
             <CameraIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} />
