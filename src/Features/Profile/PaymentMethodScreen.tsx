@@ -1,19 +1,16 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
-import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import CardIcon from '@/assets/icon/DebitCardIcon.svg'
 import EllipsisVerticalIcon from "@/assets/icon/EllipsisVerticalIcon.svg"
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
 import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
-import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import { router } from "expo-router"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, Modal, Platform, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import React, { useCallback, useRef, useState } from 'react'
+import { Dimensions, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import UpiApps, { InstalledUpiApp } from "../../../modules/upi-apps"
 import { PaymentMethod } from '../Checkout/CheckoutScreen'
 
 const PAYMENT_METHODS: PaymentMethod[] = [
@@ -53,8 +50,6 @@ const PAYMENT_METHODS: PaymentMethod[] = [
 ]
 
 export default function PaymentMethodScreen(){
-    const [installedUpiApps, setInstalledUpiApps] = useState<InstalledUpiApp[]>([])
-    const [loadingUpiApps, setLoadingUpiApps] = useState(true)
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const [paymentMethods, setPaymentMethods] = useState(PAYMENT_METHODS)
     const menuRefs = useRef<Record<string, View | null>>({})
@@ -112,63 +107,6 @@ export default function PaymentMethodScreen(){
 
         setOpenMenu(null)
     }, [])
-
-    useEffect(() => {
-        const loadUpiApps = async () => {
-            if (Platform.OS !== "android") {
-                setLoadingUpiApps(false)
-                return
-            }
-
-            try {
-                const apps = await UpiApps.getInstalledUpiApps()
-
-                console.log("Installed UPI Apps:", apps)
-
-                setInstalledUpiApps(apps)
-            } catch (error) {
-                console.log("UPI Apps detection failed:", error)
-            } finally {
-                setLoadingUpiApps(false)
-            }
-        }
-
-        loadUpiApps()
-    }, [])
-
-    const getUpiAppIcon = (packageName: string) => {
-        switch (packageName) {
-            case "com.google.android.apps.nbu.paisa.user":
-                return GooglePayIcon
-
-            case "com.phonepe.app":
-                return PhonePeIcon
-
-            case "net.one97.paytm":
-                return PaytmIcon
-
-            case "in.org.npci.upiapp":
-                return BHIMUpiIcon
-
-            case "money.super.payments":
-                return SuperMoneyIcon
-
-            default:
-                return UpiIcon
-        }
-    }
-
-    const deviceUpiMethods = useMemo(() => {
-        return installedUpiApps.map((app) => ({
-            id: `upi-${app.packageName}`,
-            title: app.name,
-            description: "Pay securely using UPI",
-            paymentType: "UPI",
-            packageName: app.packageName,
-            icon: getUpiAppIcon(app.packageName),
-            size: 23
-        }))
-    }, [installedUpiApps])
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -330,77 +268,6 @@ export default function PaymentMethodScreen(){
                         <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.5} />
                     </TouchableOpacity>
                 </View>
-
-                {deviceUpiMethods.length > 0 && (
-                    <>
-                        <Text
-                            className="text-[#1F1F1F] font-semibold mt-4 mb-2"
-                            style={{ fontSize: moderateScale(14) }}
-                        >
-                            UPI Apps
-                        </Text>
-
-                        <View
-                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                            style={{ borderRadius: moderateScale(20) }}
-                        >
-                            {deviceUpiMethods.map((item, index) => {
-                                const Icon = item.icon
-                                const isLast = index === deviceUpiMethods.length - 1
-
-                                return (
-                                    <React.Fragment key={item.id}>
-                                        <TouchableOpacity
-                                            activeOpacity={0.95}
-                                            onPress={() => {}}
-                                            className="flex-row items-center"
-                                            style={{
-                                                paddingHorizontal: scale(14),
-                                                paddingVertical: verticalScale(11)
-                                            }}
-                                        >
-                                            <View
-                                                className="items-center justify-center rounded-full bg-[#E5E4E2]/55"
-                                                style={{
-                                                    width: moderateScale(42),
-                                                    height: moderateScale(42)
-                                                }}
-                                            >
-                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} />
-                                            </View>
-
-                                            <View className="flex-1 ml-3">
-                                                <Text
-                                                    className="text-[#1F1F1F] font-semibold"
-                                                    style={{ fontSize: moderateScale(14) }}
-                                                >
-                                                    {item.title}
-                                                </Text>
-
-                                                <Text
-                                                    className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                    style={{ fontSize: moderateScale(11) }}
-                                                >
-                                                    {item.description}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        {!isLast && (
-                                            <View
-                                                className="bg-[#1F1F1F]/10"
-                                                style={{
-                                                    height: 1,
-                                                    marginHorizontal: scale(14)
-                                                }}
-                                            />
-                                        )}
-                                    </React.Fragment>
-                                )
-                            })}
-                        </View>
-                    </>
-                )}
 
                 <Text
                     className='text-[#1F1F1F] font-semibold mt-6'

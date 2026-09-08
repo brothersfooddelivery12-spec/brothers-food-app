@@ -7,25 +7,23 @@ import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
 import RestaurantCard from "@/components/RestaurantCard"
 import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
-import { categories } from "@/constant/CategoryData"
 import { foodItems } from "@/constant/FoodItems"
-import { nearByRestaurants } from "@/constant/NearByRestaurantsData"
 import { offers } from "@/constant/OffersCardData"
 import { restaurants } from "@/constant/RestaurantData"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import BannerCarousel from "@/Features/Home/components/BannerCarousel"
 import FoodCard from "@/Features/Home/components/FoodCard"
-import NearByRestaurantsList from "@/Features/Home/components/NearByRestaurants"
+import NearByRestaurantsList, { NearByRestaurants } from "@/Features/Home/components/NearByRestaurants"
 import OfferCard from "@/Features/Home/components/OffersCard"
 import { Image } from "expo-image"
 import { router } from "expo-router"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { getUserProfile } from '../Services/api-service'
+import { Category, getCategories, getNearbyRestaurants, getUserProfile, NearbyRestaurant } from '../Services/api-service'
 import { useAuthStore } from '../Stores/auth-store'
 import { useCartStore } from '../Stores/useCartStore'
 
@@ -33,8 +31,6 @@ export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
-    const [activeCategory, setActiveCategory] = useState("1")
-    const [selectedReview, setSelectedReview] = useState("All")
 
     const fetchUserProfile = useCallback(async () => {
         try {
@@ -70,6 +66,227 @@ export default function HomeScreen() {
     useEffect(() => {
         fetchUserProfile()
     }, [])
+
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all")
+    const [categories, setCategories] = useState<Category[]>([])
+    const [loadingCategories, setLoadingCategories] = useState(false)
+
+    const fetchCategories = useCallback(async () => {
+        try {
+            setLoadingCategories(true)
+
+            const res = await getCategories()
+
+            console.log("Categories response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch categories", "warning")
+
+                return
+            }
+
+            setCategories(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Fetch categories error:", error)
+
+            showToast(error?.message || "Unable to fetch categories", "warning")
+        } finally {
+            setLoadingCategories(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchCategories()
+    }, [fetchCategories])
+
+    const categoriesWithAll = useMemo(() => {
+        return [
+            {
+                id: "all",
+                name: "All",
+                restaurant_id: "",
+                description: "",
+                is_active: true,
+                created_at: "",
+                updated_at: ""
+            },
+            ...categories
+        ]
+    }, [categories])
+
+    // const [advertisements, setAdvertisements] = useState<any[]>([])
+    // const [loadingAdvertisements, setLoadingAdvertisements] = useState(false)
+
+    // const fetchAdvertisements = useCallback(async () => {
+    //     try {
+    //         setLoadingAdvertisements(true)
+
+    //         const res = await getAdvertisements()
+
+    //         console.log("Advertisements response:", res.data)
+
+    //         if (!res.data.success) {
+    //             showToast(res.data.message || "Unable to fetch advertisements", "warning")
+
+    //             return
+    //         }
+
+    //         setAdvertisements(res.data.data ?? [])
+    //     } catch (error: any) {
+    //         console.log("Fetch advertisements error:", error)
+
+    //         showToast(error?.message || "Unable to fetch advertisements", "warning")
+    //     } finally {
+    //         setLoadingAdvertisements(false)
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     fetchAdvertisements()
+    // }, [fetchAdvertisements])
+
+    // const [popularRestaurants, setPopularRestaurants] = useState<any[]>([])
+    // const [loadingPopularRestaurants, setLoadingPopularRestaurants] = useState(false)
+
+    // const fetchPopularRestaurants = useCallback(async () => {
+    //     try {
+    //         setLoadingPopularRestaurants(true)
+
+    //         const res = await getPopularRestaurants()
+
+    //         console.log("Popular restaurants response:", res.data)
+
+    //         if (!res.data.success) {
+    //             showToast(res.data.message || "Unable to fetch popular restaurants", "warning")
+
+    //             return
+    //         }
+
+    //         setPopularRestaurants(res.data.data ?? [])
+    //     } catch (error: any) {
+    //         console.log("Popular restaurants error:", error)
+
+    //         showToast(error?.message || "Unable to fetch popular restaurants", "warning")
+    //     } finally {
+    //         setLoadingPopularRestaurants(false)
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     fetchPopularRestaurants()
+    // }, [fetchPopularRestaurants])
+
+    // const [popularMenu, setPopularMenu] = useState<any[]>([])
+    // const [loadingPopularMenu, setLoadingPopularMenu] = useState(false)
+
+    // const fetchPopularMenu = useCallback(async () => {
+    //     try {
+    //         setLoadingPopularMenu(true)
+
+    //         const res = await getPopularMenu()
+
+    //         console.log("Popular menu response:", res.data)
+
+    //         if (!res.data.success) {
+    //             showToast(res.data.message || "Unable to fetch popular menu", "warning")
+
+    //             return
+    //         }
+
+    //         setPopularMenu(res.data.data ?? [])
+    //     } catch (error: any) {
+    //         console.log("Popular menu error:", error)
+
+    //         showToast(error?.message || "Unable to fetch popular menu", "warning")
+    //     } finally {
+    //         setLoadingPopularMenu(false)
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     fetchPopularMenu()
+    // }, [fetchPopularMenu])
+
+    const [nearbyRestaurants, setNearbyRestaurants] = useState<NearByRestaurants[]>([])
+    const [loadingNearby, setLoadingNearby] = useState(false)
+
+    const fetchNearbyRestaurants = useCallback(async (latitude: number, longitude: number) => {
+        try {
+            setLoadingNearby(true)
+
+            const res = await getNearbyRestaurants(latitude, longitude)
+
+            console.log("Nearby restaurants response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch nearby restaurants", "warning")
+
+                return
+            }
+
+            const restaurantData: NearbyRestaurant[] = res.data.data ?? []
+
+            const mappedRestaurants: NearByRestaurants[] = restaurantData.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    imageUri:
+                        item.cover_image_url ||
+                        item.logo_url ||
+                        null,
+                    cuisines: item.description ?? "",
+                    rating: item.rating ?? 0,
+                    distance:
+                        item.distance !=
+                        null
+                            ? `${item.distance} km`
+                            : null,
+                    discount: item.discount ?? null,
+                    priceForTwo: item.price_for_two ?? null,
+                    isActive:
+                        item.is_active &&
+                        item.is_open &&
+                        item.approval_status ===
+                            "APPROVED"
+                })
+            )
+
+            setNearbyRestaurants(mappedRestaurants)
+        } catch (error: any) {
+            console.log("Nearby restaurants error:", error)
+
+            showToast(error?.message || "Unable to fetch nearby restaurants", "warning")
+        } finally {
+            setLoadingNearby(false)
+        }
+    },[])
+
+    useEffect(() => {
+        fetchNearbyRestaurants(
+            25.149131,
+            73.083126
+        )
+    }, [fetchNearbyRestaurants])
+
+    const renderNearbyRestaurant = useCallback(
+        ({ item }: { item: NearByRestaurants }) => {
+            return (
+                <NearByRestaurantsList
+                    restaurant={item}
+                    onPress={() => {
+                        preventDoublePress(() => {
+                            router.push({
+                                pathname: "/restaurant-details",
+                                params: {
+                                    restaurantId: item.id
+                                }
+                            })
+                        })
+                    }}
+                />
+            )
+        },
+        [preventDoublePress]
+    )
 
     const user = useAuthStore((state) => state.user)
 
@@ -185,13 +402,14 @@ export default function HomeScreen() {
             />
 
             <FlatList
-                data={nearByRestaurants}
+                data={nearbyRestaurants}
                 keyExtractor={(item) => item.id}
                 nestedScrollEnabled
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingBottom: verticalScale(78)
+                    paddingBottom: verticalScale(88),
+                    gap: verticalScale(10)
                 }}
                 ListHeaderComponent={
                     <View>
@@ -381,15 +599,15 @@ export default function HomeScreen() {
                                 gap: scale(8)
                             }}
                         >
-                            {categories.map((category) => {
-                                const isSelected = selectedReview === category.title
+                            {categoriesWithAll.map((category) => {
+                                const isSelected = selectedCategoryId === category.id
 
                                 return (
                                     <TouchableOpacity
                                         key={category.id}
                                         activeOpacity={0.85}
                                         onPress={() => {
-                                            setSelectedReview(category.title)
+                                            setSelectedCategoryId(category.id)
                                         }}
                                         className={`items-center justify-center ${
                                             isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
@@ -408,7 +626,7 @@ export default function HomeScreen() {
                                             }`}
                                             style={{ fontSize: moderateScale(13.5) }}
                                         >
-                                            {category.title}
+                                            {category.name}
                                         </Text>
                                     </TouchableOpacity>
                                 )
@@ -610,27 +828,14 @@ export default function HomeScreen() {
                             className="text-[#1F1F1F] font-bold"
                             style={{
                                 fontSize: moderateScale(16),
-                                marginTop: verticalScale(18),
-                                marginBottom: verticalScale(8)
+                                marginTop: verticalScale(18)
                             }}
                         >
                             Nearby Restaurants
                         </Text>
                     </View>
                 }
-
-                renderItem={({ item }) => (
-                    <View
-                        style={{ marginBottom: moderateScale(12) }}
-                    >
-                        <NearByRestaurantsList
-                            restaurant={item}
-                            onPress={() => {
-                                console.log("Restaurant:", item.id)
-                            }}
-                        />
-                    </View>
-                )}
+                renderItem={renderNearbyRestaurant}
             />
         </SafeAreaView>
     )

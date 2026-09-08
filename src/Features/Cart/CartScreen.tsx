@@ -1,21 +1,23 @@
+import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
-import GiftIcon from '@/assets/icon/GiftIcon.svg'
-import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import InfoIcon from '@/assets/icon/InfoIcon.svg'
+import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { router, useFocusEffect } from "expo-router"
+import LottieView from 'lottie-react-native'
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FoodCard from "../Home/components/FoodCard"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import { Address, getAllAddresses } from '../Services/address-service'
+import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import { useCartStore } from '../Stores/useCartStore'
-import OrderPriceRow from "./Components/OrderPriceRow"
 import RestaurantCartCard from "./Components/RestaurantCartCard"
 
 export const FREQUENTLY_ADDED_TOGETHER = [
@@ -91,6 +93,61 @@ export default function CartScreen() {
 
     const updateItemAvailability = useCartStore((state) => state.updateItemAvailability)
 
+    const [addresses, setAddresses] = useState<Address[]>([])
+    const [loadingAddresses, setLoadingAddresses] = useState(true)
+    const hasFetchedAddresses = useRef(false)
+    const addressesDirty = useAddressRefreshStore((state) => state.addressesDirty)
+    const clearAddressesDirty = useAddressRefreshStore((state) => state.clearAddressesDirty)
+
+    const fetchAddresses = useCallback(async () => {
+        try {
+            setLoadingAddresses(true)
+
+            const res = await getAllAddresses()
+
+            console.log("Addresses response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch addresses", "warning")
+
+                return
+            }
+
+            const fetchedAddresses = res.data.data ?? []
+
+            setAddresses(fetchedAddresses)
+        } catch (error: any) {
+            console.log("Fetch addresses error:", error)
+
+            showToast(error?.message || "Unable to fetch addresses", "warning")
+        } finally {
+            setLoadingAddresses(false)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            const shouldFetch = !hasFetchedAddresses.current || addressesDirty
+
+            if (!shouldFetch) {
+                return
+            }
+
+            const loadAddresses = async () => {
+                await fetchAddresses()
+
+                hasFetchedAddresses.current = true
+
+                if (addressesDirty) {
+                    clearAddressesDirty()
+                }
+            }
+
+            loadAddresses()
+
+        }, [addressesDirty, clearAddressesDirty, fetchAddresses])
+    )
+
     useEffect(() => {
         updateRestaurantAvailability(
             "restaurant-1",
@@ -162,37 +219,6 @@ export default function CartScreen() {
         )
     }, [activeCart])
 
-    const deliveryFee = activeCart?.deliveryFee ?? 0
-
-    const platformFee = activeCart ? 5 : 0
-
-    const packingFee = activeCart ? 20 : 0
-
-    const gstRate = 0.05
-
-    const gstAndTaxes = useMemo(() => {
-        return Math.round(itemsTotal * gstRate)
-    }, [itemsTotal])
-
-    const totalToPay = useMemo(() => {
-        const total =
-            itemsTotal +
-            deliveryFee +
-            platformFee +
-            packingFee +
-            gstAndTaxes -
-            couponSavings
-
-        return Math.max(0, total)
-    }, [
-        itemsTotal,
-        deliveryFee,
-        platformFee,
-        packingFee,
-        gstAndTaxes,
-        couponSavings
-    ])
-
     const hasUnavailableItems = useMemo(() => {
         if (!activeCart) {
             return false
@@ -202,10 +228,6 @@ export default function CartScreen() {
             (item) => !item.isActive
         )
     }, [activeCart])
-
-    const canCheckout =
-        !!activeCart && activeCart.isActive &&
-        !hasUnavailableItems && activeCart.items.length > 0
 
     const handleSelectRestaurant = useCallback(
         (restaurantId: string) => {
@@ -320,16 +342,30 @@ export default function CartScreen() {
         },[addToCart, carts]
     )
 
+    const hasSavedAddress = addresses.length > 0
+
     const handleCheckout = useCallback(() => {
-        if (!activeCart) {
-            return
-        }
+        if (!activeCart) return
 
         if (!activeCart.isActive) {
+            showToast("This restaurant is currently unavailable", "warning")
+
             return
         }
 
         if (hasUnavailableItems) {
+            showToast("Remove unavailable items before checkout", "warning")
+
+            return
+        }
+
+        if (loadingAddresses) {
+            return
+        }
+
+        if (!hasSavedAddress) {
+            showToast("Add a delivery address before checkout", "warning")
+
             return
         }
 
@@ -344,6 +380,8 @@ export default function CartScreen() {
     }, [
         activeCart,
         hasUnavailableItems,
+        loadingAddresses,
+        hasSavedAddress,
         preventDoublePress
     ])
 
@@ -380,24 +418,16 @@ export default function CartScreen() {
 
     if (!hasHydrated) {
         return (
-            <View className="flex-1 bg-[#F5F5F5] items-center justify-center">
-                <ActivityIndicator
-                    size="small"
-                    color="#3F2516"
-                />
-
-                <Text
-                    className="text-[#1F1F1F]/65 font-medium"
+            <View className="flex-1 items-center justify-center">
+                <LottieView
+                    source={require("../../../assets/animations/Food_Loading2.json")}
+                    autoPlay
+                    loop
                     style={{
-                        fontSize:
-                            moderateScale(11),
-
-                        marginTop:
-                            verticalScale(10)
+                        width: moderateScale(125),
+                        height: moderateScale(125)
                     }}
-                >
-                    Loading your cart...
-                </Text>
+                />
             </View>
         )
     }
@@ -520,331 +550,224 @@ export default function CartScreen() {
                         </Text>
                     </TouchableOpacity>
                 </View>
+            ) : loadingAddresses ? (
+                <View className="flex-1 items-center justify-center">
+                    <LottieView
+                        source={require("../../../assets/animations/Food_Loading2.json")}
+                        autoPlay
+                        loop
+                        style={{
+                            width: moderateScale(125),
+                            height: moderateScale(125)
+                        }}
+                    />
+                </View>
             ) : (
-                <FlatList
-                    data={carts}
-                    keyExtractor={(item) => item.id}
-                    renderItem={renderRestaurantCart}
-                    ListHeaderComponent={() => (
-                        <View>
-                            <View
-                                className="flex-row gap-2 p-3 items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25"
-                                style={{
-                                    borderRadius: moderateScale(16),
-                                    marginTop: verticalScale(10),
-                                    marginBottom: verticalScale(8)
-                                }}
-                            >
-                                <InfoIcon width={moderateScale(28)} height={moderateScale(28)} />
-
-                                <View className="flex-1 gap-1 items-start">
-                                    <Text
-                                        className="text-[#1F1F1F] font-semibold"
-                                        style={{ fontSize: moderateScale(12)}}
-                                    >
-                                        {`You can checkout items from one restaurant\nat a time`} 
-                                    </Text>
-
-                                    <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
-                                        style={{ fontSize: moderateScale(10) }}
-                                    >
-                                        Switch restaurant to checkout their items
-                                    </Text>
-                                </View>
-
-                            </View>
-                        </View>
-                    )}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="none"
-                    contentContainerStyle={{
-                        paddingHorizontal: scale(14),
-                        paddingBottom: verticalScale(85)
-                    }}
-                    ListFooterComponent={
-                        <View className="mt-5">
-                            <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(14) }}
-                            >
-                                Frequently Added Together
-                            </Text>
-
-                            <FlatList
-                                data={FREQUENTLY_ADDED_TOGETHER}
-                                horizontal
-                                nestedScrollEnabled
-                                directionalLockEnabled
-                                showsHorizontalScrollIndicator={false}
-                                keyExtractor={(item) => item.id}
-                                className="-mx-5 mt-3"
-                                contentContainerStyle={{
-                                    paddingHorizontal: scale(14),
-                                    gap: moderateScale(10)
-                                }}
-                                renderItem={({ item }) => (
-                                    <FoodCard
-                                        item={item}
-                                        onPress={() => {}}
-                                        onAddPress={() => handleFrequentlyAddedItem(item)
-                                    }
-                                    />
-                                )}
-                            />
-
-                            <TouchableOpacity
-                                activeOpacity={0.95}
-                                onPress={() => {}}
-                                className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
-                                style={{
-                                    borderRadius: moderateScale(18),
-                                    marginTop: verticalScale(18)
-                                }}
-                            >
+                <>
+                    <FlatList
+                        data={carts}
+                        keyExtractor={(item) => item.id}
+                        renderItem={renderRestaurantCart}
+                        ListHeaderComponent={() => (
+                            <View>
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                    className="flex-row gap-2 p-3 items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25"
                                     style={{
-                                        width: moderateScale(40),
-                                        height: moderateScale(40)
-                                    }}
-                                >
-                                    <GiftIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
-                                </View>
-
-                                <View className="items-start gap-1 flex-1">
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
-                                    >
-                                        Apply Coupon
-                                    </Text>
-
-                                    <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
-                                        style={{ fontSize: moderateScale(11) }}
-                                    >
-                                        Save up to ₹150 on this order
-                                    </Text>
-                                </View>
-
-                                <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color={"#1F1F1F"} strokeWidth={1.8} />
-                            </TouchableOpacity>
-
-                            <View
-                                className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
-                                style={{
-                                    borderRadius: moderateScale(18),
-                                    marginTop: verticalScale(12)
-                                }}
-                            >
-                                <View
-                                    className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
-                                    style={{
-                                        width: moderateScale(40),
-                                        height: moderateScale(40)
-                                    }}
-                                >
-                                    <HomeIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.5} />
-                                </View>
-
-                                <View className="items-start gap-1 flex-1">
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
-                                    >
-                                        Home
-                                    </Text>
-
-                                    <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
-                                        style={{ fontSize: moderateScale(11) }}
-                                    >
-                                        123 MG Road, Sumerpur
-                                    </Text>
-                                </View>
-
-                                <TouchableOpacity
-                                    activeOpacity={0.95}
-                                    onPress={() => {}}
-                                    className="items-center justify-center bg-[#3F2516]"
-                                    style={{
-                                        paddingHorizontal: moderateScale(10),
-                                        paddingVertical: moderateScale(6),
-                                        borderRadius: moderateScale(18)
-                                    }}
-                                >
-                                    <Text
-                                        className="font-medium text-white"
-                                        style={{ fontSize: moderateScale(12) }}
-                                    >
-                                        Change
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            <View
-                                className="p-5 bg-white border border-[#1F1F1F]/10"
-                                style={{
-                                    borderRadius: moderateScale(18),
-                                    marginTop: verticalScale(14)
-                                }}
-                            >
-                                <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{
-                                        fontSize: moderateScale(14),
+                                        borderRadius: moderateScale(16),
+                                        marginTop: verticalScale(10),
                                         marginBottom: verticalScale(8)
                                     }}
                                 >
-                                    Order Summary
-                                </Text>
+                                    <InfoIcon width={moderateScale(28)} height={moderateScale(28)} />
 
-                                <OrderPriceRow
-                                    label="Item Total"
-                                    value={itemsTotal}
-                                />
-
-                                <OrderPriceRow
-                                    label="Delivery Fee"
-                                    value={deliveryFee === 0 ? "FREE" : deliveryFee}
-                                />
-
-                                <OrderPriceRow
-                                    label="Platform Fee"
-                                    value={platformFee}
-                                />
-
-                                <OrderPriceRow
-                                    label="Restaurant Packing"
-                                    value={packingFee}
-                                />
-
-                                <OrderPriceRow
-                                    label="GST and Taxes"
-                                    value={gstAndTaxes}
-                                />
-
-                                {couponSavings > 0 && (
-                                    <View
-                                        className="items-center flex-row justify-center bg-[#E3F2E8] mt-3"
-                                        style={{
-                                            paddingHorizontal: scale(12),
-                                            paddingVertical: verticalScale(8),
-                                            borderRadius: moderateScale(12)
-                                        }}
-                                    >
+                                    <View className="flex-1 gap-1 items-start">
                                         <Text
-                                            className="text-[#4D9151] font-semibold flex-1"
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="text-[#1F1F1F] font-semibold"
+                                            style={{ fontSize: moderateScale(12)}}
                                         >
-                                            Coupon Savings
+                                            {`You can checkout items from one restaurant\nat a time`} 
                                         </Text>
 
                                         <Text
-                                            className="text-[#4D9151] font-bold"
-                                            style={{ fontSize: moderateScale(14) }}
+                                            className="text-[#1F1F1F]/65 font-medium"
+                                            style={{ fontSize: moderateScale(10) }}
                                         >
-                                            -₹{couponSavings.toLocaleString("en-IN")}
+                                            Switch restaurant to checkout their items
                                         </Text>
                                     </View>
-                                )}
 
-                                <View
-                                    className="rounded-full bg-[#E8DDD3]/65"
-                                    style={{
-                                        height: verticalScale(0.7),
-                                        marginVertical: verticalScale(12),
-                                        marginHorizontal: verticalScale(2)
-                                    }}
-                                />
-
-                                <View className="flex-row justify-between items-center">
-                                    <Text
-                                        className="text-[#1F1F1F]/85 font-extrabold"
-                                        style={{ fontSize: moderateScale(15) }}
-                                    >
-                                        Grand Total
-                                    </Text>
-
-                                    <Text
-                                        className="text-[#1F1F1F] font-black tracking-wide"
-                                        style={{ fontSize: moderateScale(16) }}
-                                    >
-                                        ₹{totalToPay.toLocaleString("en-IN")}
-                                    </Text>
                                 </View>
                             </View>
-                        </View>
-                    }
-                />
-            )}
-
-            {activeCart && (
-                <View
-                    className="flex-row items-center absolute left-0 right-0 bottom-0"
-                    style={{
-                        paddingHorizontal: scale(16),
-                        paddingTop: verticalScale(16),
-                        paddingBottom: verticalScale(12) + insets.bottom,
-                        borderTopRightRadius: moderateScale(22),
-                        borderTopLeftRadius: moderateScale(22),
-                        zIndex: 100,
-                        backgroundColor: canCheckout ? "#3F2516" : "#4D4D4D"
-                    }}
-                >
-                    <View className="items-start gap-1 ml-4">
-                        <Text
-                            className="text-white/75 font-normal"
-                            style={{ fontSize: moderateScale(14) }}
-                        >
-                            Total to pay
-                        </Text>
-
-                        <Text
-                            className="text-white font-extrabold"
-                            style={{ fontSize: moderateScale(18) }}
-                        >
-                            ₹{totalToPay.toLocaleString("en-IN")}
-                        </Text>
-                    </View>
-
-                    <TouchableOpacity
-                        activeOpacity={0.95}
-                        disabled={!canCheckout}
-                        onPress={handleCheckout}
-                        className="flex-row ml-auto items-center justify-center border"
-                        style={{
-                            gap: moderateScale(5),
-                            borderRadius: moderateScale(24),
-                            paddingLeft: scale(12),
-                            paddingRight: scale(8),
-                            paddingVertical: verticalScale(8),
-                            backgroundColor: canCheckout ? "#FFFFFF" : "#D1D1D1",
-                            borderColor: "rgba(31,31,31,0.15)"
+                        )}
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                        keyboardDismissMode="none"
+                        contentContainerStyle={{
+                            paddingHorizontal: scale(14),
+                            paddingBottom: verticalScale(85)
                         }}
-                    >
-                        <Text
-                            className="font-semibold"
+                        ListFooterComponent={
+                            <View className="mt-5">
+                                <Text
+                                    className="text-[#1F1F1F] font-bold flex-1"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    Frequently Added Together
+                                </Text>
+
+                                <FlatList
+                                    data={FREQUENTLY_ADDED_TOGETHER}
+                                    horizontal
+                                    nestedScrollEnabled
+                                    directionalLockEnabled
+                                    showsHorizontalScrollIndicator={false}
+                                    keyExtractor={(item) => item.id}
+                                    className="-mx-5 mt-3"
+                                    contentContainerStyle={{
+                                        paddingHorizontal: scale(14),
+                                        gap: moderateScale(10)
+                                    }}
+                                    renderItem={({ item }) => (
+                                        <FoodCard
+                                            item={item}
+                                            onPress={() => {}}
+                                            onAddPress={() => handleFrequentlyAddedItem(item)
+                                        }
+                                        />
+                                    )}
+                                />
+
+                                {addresses.length === 0 && (
+                                    <>
+                                        <View
+                                            className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                            style={{
+                                                marginTop: verticalScale(18),
+                                                paddingHorizontal: scale(20),
+                                                paddingVertical: verticalScale(20),
+                                                borderRadius: moderateScale(20)
+                                            }}
+                                        >
+                                            <View
+                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                style={{
+                                                    width: moderateScale(44),
+                                                    height: moderateScale(44)
+                                                }}
+                                            >
+                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                                            </View>
+            
+                                            <Text
+                                                className="text-[#1F1F1F] font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    marginTop: verticalScale(8)
+                                                }}
+                                            >
+                                                Add Delivery Address
+                                            </Text>
+            
+                                            <Text
+                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                Add a delivery address before proceeding to checkout.
+                                            </Text>
+                                        </View>
+
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => preventDoublePress(() => {
+                                                router.push("/add-address")
+                                            })}
+                                            className="flex-row gap-2 items-center justify-center p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                                            style={{
+                                                borderRadius: moderateScale(18),
+                                                marginTop: verticalScale(8)
+                                            }}
+                                        >
+                                            <AddLocationIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.8} />
+                
+                                            <Text
+                                                className="text-[#1F1F1F] font-semibold"
+                                                style={{ fontSize: moderateScale(14) }}
+                                            >
+                                                Add Address
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                            </View>
+                        }
+                    />
+                    {activeCart && (
+                        <View
+                            className="flex-row items-center absolute left-0 right-0 bottom-0"
                             style={{
-                                fontSize: moderateScale(14),
-                                color: canCheckout ? "#3F2516" : "#777777"
+                                paddingHorizontal: scale(16),
+                                paddingTop: verticalScale(16),
+                                paddingBottom: verticalScale(12) + insets.bottom,
+                                borderTopRightRadius: moderateScale(22),
+                                borderTopLeftRadius: moderateScale(22),
+                                zIndex: 100,
+                                backgroundColor: "#3F2516"
                             }}
                         >
-                            {!activeCart.isActive
-                                ? "Restaurant Closed"
-                                : hasUnavailableItems
-                                ? "Items Unavailable"
-                                : "Proceed to Checkout"}
-                        </Text>
+                            <View className="items-start gap-1 ml-4">
+                                <Text
+                                    className="text-white/75 font-normal"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    Total to pay
+                                </Text>
 
-                        {canCheckout && (
-                            <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
-                        )}
-                    </TouchableOpacity>
-                </View>
+                                <Text
+                                    className="text-white font-extrabold"
+                                    style={{ fontSize: moderateScale(18) }}
+                                >
+                                    ₹{itemsTotal.toLocaleString("en-IN")}
+                                </Text>
+                            </View>
+
+                            <TouchableOpacity
+                                activeOpacity={0.95}
+                                onPress={handleCheckout}
+                                className="flex-row ml-auto items-center justify-center border"
+                                style={{
+                                    gap: moderateScale(5),
+                                    borderRadius: moderateScale(24),
+                                    paddingLeft: scale(12),
+                                    paddingRight: scale(8),
+                                    paddingVertical: verticalScale(8),
+                                    backgroundColor: "#FFFFFF",
+                                    borderColor: "rgba(31,31,31,0.15)"
+                                }}
+                            >
+                                <Text
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: "#3F2516"
+                                    }}
+                                >
+                                    {!activeCart.isActive
+                                        ? "Restaurant Closed"
+                                        : hasUnavailableItems
+                                        ? "Items Unavailable"
+                                        : "Proceed to Checkout"}
+                                </Text>
+
+                                <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </>
             )}
+
         </SafeAreaView>
     )
 }

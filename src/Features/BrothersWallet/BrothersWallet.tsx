@@ -8,11 +8,13 @@ import SendIcon from '@/assets/icon/SendHorizontalIcon.svg'
 import TransactionHistoryIcon from '@/assets/icon/TransactionHistoryIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { getMyWallet, Wallet } from '../Services/wallet-service'
+import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { TransactionItem, WalletTransaction } from './Components/TransactionItem'
 
@@ -104,8 +106,55 @@ const TRANSACTIONS_CATEGORIES = [
 ]
 
 export default function BrothersWalletScreen(){
-    const [selectedCategory, setSelectedCategory] = useState("1")
+    const {showToast} = useToast()
     const preventDoublePress = usePreventDoublePress()
+    
+    const [loading, setLoading] = useState(true)
+    const [selectedCategory, setSelectedCategory] = useState("1")
+    const [wallet, setWallet] = useState<Wallet | null>(null)
+
+    const fetchWallet = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const res = await getMyWallet()
+
+            console.log("Wallet response:", res.data)
+
+            setWallet(res.data.data)
+        } catch (error: any) {
+            console.log("Fetch wallet error:", error)
+
+            showToast(
+                error?.message || "Unable to fetch wallet",
+                "warning"
+            )
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchWallet()
+        }, [])
+    )
+
+    const formatWalletId = (walletId?: string) => {
+        if (!walletId) return ""
+
+        let hash = 0
+
+        for (let i = 0; i < walletId.length; i++) {
+            hash =
+                (hash * 31 + walletId.charCodeAt(i)) %
+                10000
+        }
+
+        return `BFD-WALLET-${String(hash).padStart(4, "0")}`
+    }
+
+    const displayWalletId = formatWalletId(wallet?.wallet_id)
 
     const currentPoints = 2450
     const currentTierPoints = 2000
@@ -227,7 +276,7 @@ export default function BrothersWalletScreen(){
                                         marginTop: verticalScale(2)
                                     }}
                                 >
-                                    ₹1,850
+                                    ₹{Number(wallet?.balance ?? 0).toFixed(2)}
                                 </Text>
 
                                 <Text
@@ -244,7 +293,7 @@ export default function BrothersWalletScreen(){
                                     className='text-[#F8D56A] font-medium mt-1 ml-2 uppercase'
                                     style={{ fontSize: moderateScale(13) }}
                                 >
-                                    BFD-WALLET-4521
+                                    {displayWalletId}
                                 </Text>
                             </View>
 

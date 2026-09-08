@@ -26,14 +26,15 @@ import VegIcon from '@/assets/icon/VeganIcon.svg'
 import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { Image } from "expo-image"
-import { router } from 'expo-router'
-import React, { useRef, useState } from "react"
+import { router, useFocusEffect } from 'expo-router'
+import React, { useCallback, useRef, useState } from "react"
 import { Dimensions, Modal, Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import { getMyWallet, Wallet } from '../Services/wallet-service'
 import { useAuthStore } from '../Stores/auth-store'
 import AccountActionDialog from './Components/AccountActionDialog'
 import ProfileMenuItem from './Components/ProfileMenuItem'
@@ -61,19 +62,18 @@ export default function ProfileScreen() {
     
     type AccountAction = "logout" | "delete" | null
 
+    const [loading, setLoading] = useState(true)
     const [accountAction, setAccountAction] = useState<AccountAction>(null)
     const [accountActionLoading, setAccountActionLoading] = useState(false)
     const [openMenu, setOpenMenu] = useState<OpenMenu>(null)
     const [selectedAppearance, setSelectedAppearance] = useState("System Default")
     const [selectedLanguage, setSelectedLanguage] = useState("English")
-    const vegMode = useAuthStore(
-        (state) => state.user?.vegMode ?? false
-    )
+    const [wallet, setWallet] = useState<Wallet | null>(null)
+
+    const vegMode = useAuthStore((state) => state.user?.vegMode ?? false)
 
     const user = useAuthStore((state) => state.user)
-    const updateUser = useAuthStore(
-        (state) => state.updateUser
-    )
+    const updateUser = useAuthStore((state) => state.updateUser)
 
     const menuRefs = useRef<{appearance: View | null, language: View | null}>({
         appearance: null,
@@ -172,6 +172,33 @@ export default function ProfileScreen() {
             Extrapolation.CLAMP
         )
     }))
+
+    const fetchWallet = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const res = await getMyWallet()
+
+            console.log("Wallet response:", res.data)
+
+            setWallet(res.data.data)
+        } catch (error: any) {
+            console.log("Fetch wallet error:", error)
+
+            showToast(
+                error?.message || "Unable to fetch wallet",
+                "warning"
+            )
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchWallet()
+        }, [])
+    )
 
     const logout = useAuthStore((state) => state.logout)
 
@@ -543,7 +570,7 @@ export default function ProfileScreen() {
                                         className="text-[#1F1F1F] font-semibold self-start"
                                         style={{ fontSize: moderateScale(14) }}
                                     >
-                                        ₹520
+                                        ₹{Number(wallet?.balance ?? 0).toFixed(2)}
                                     </Text>
                                 </View>
                             </TouchableOpacity>

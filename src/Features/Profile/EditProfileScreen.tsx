@@ -8,11 +8,12 @@ import UserIcon from '@/assets/icon/UserIcon.svg'
 import VenusAndMarsIcon from '@/assets/icon/VenusAndMarsIcon.svg'
 import GradientButton from '@/components/GradientButton'
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
+import DateTimePicker, { DateTimePickerChangeEvent } from "@react-native-community/datetimepicker"
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
 import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, Keyboard, Modal, Pressable, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Dimensions, Keyboard, Modal, Platform, Pressable, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -44,6 +45,8 @@ export default function EditProfileScreen(){
     const {showToast} = useToast()
 
     const [initialLoading, setInitialLoading] = useState(false)
+    const [dateOfBirth, setDateOfBirth] = useState("")
+    const [showDatePicker, setShowDatePicker] = useState(false)
 
     const [loading, setLoading] = useState(false)
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
@@ -70,6 +73,8 @@ export default function EditProfileScreen(){
         setFullName(user.name ?? "")
         setEmailAddress(user.email ?? "")
         setMobileNumber(user.phone ?? "")
+        setSelectedGender(user.gender ?? null)
+        setDateOfBirth(user.dateOfBirth ?? "")
     }, [user])
     
     const formatMobileNumber = (text: string) => {
@@ -82,6 +87,67 @@ export default function EditProfileScreen(){
         numbersOnly = numbersOnly.slice(0, 10)
 
         setMobileNumber(numbersOnly)
+    }
+
+    const formatDateForApi = (date: Date) => {
+        const year = date.getFullYear()
+
+        const month = String(
+            date.getMonth() + 1
+        ).padStart(2, "0")
+
+        const day = String(
+            date.getDate()
+        ).padStart(2, "0")
+
+        return `${year}-${month}-${day}`
+    }
+
+    const formatDateForDisplay = (value: string) => {
+        if (!value) return ""
+
+        const [year, month, day] =
+            value.split("-").map(Number)
+
+        const date = new Date(
+            year,
+            month - 1,
+            day
+        )
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
+            }
+        )
+    }
+
+    const handleDateChange = (event: DateTimePickerChangeEvent, selectedDate: Date) => {
+        setDateOfBirth(formatDateForApi(selectedDate))
+
+        if (Platform.OS === "android") {
+            setShowDatePicker(false)
+        }
+    }
+
+    const getDatePickerValue = () => {
+        if (!dateOfBirth) {
+            return new Date(2000, 0, 1)
+        }
+
+        const [year, month, day] =
+            dateOfBirth
+                .split("-")
+                .map(Number)
+
+        return new Date(
+            year,
+            month - 1,
+            day
+        )
     }
 
     const handlePickImage = async () => {
@@ -166,6 +232,17 @@ export default function EditProfileScreen(){
                 phone:
                     updatedProfile?.phone ??
                     (trimmedPhone || user?.phone || null),
+                gender:
+                    updatedProfile?.gender ??
+                    selectedGender ??
+                    user?.gender ??
+                    null,
+
+                dateOfBirth:
+                    updatedProfile?.date_of_birth ??
+                    dateOfBirth ??
+                    user?.dateOfBirth ??
+                    null,
                 profileImage:
                     updatedProfile?.picture_url ??
                     updatedProfile?.image_url ??
@@ -175,6 +252,7 @@ export default function EditProfileScreen(){
                     updatedProfile?.role ??
                     user?.role ??
                     "USER"
+                    
             })
 
             showToast("Profile updated successfully", "success")
@@ -608,7 +686,12 @@ export default function EditProfileScreen(){
 
                     <TouchableOpacity
                         activeOpacity={0.95}
-                        onPress={() => {}}
+                        disabled={loading}
+                        onPress={() => {
+                            if (!loading) {
+                                setShowDatePicker(true)
+                            }
+                        }}
                         className='bg-[#FFFFFF] border gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
                         style={{
                             marginTop: verticalScale(6),
@@ -630,14 +713,39 @@ export default function EditProfileScreen(){
                         </View>
 
                         <Text
-                            className='tracking-wide font-medium text-[#9A9A9A] flex-1'
+                            className={`tracking-wide font-medium flex-1 ${
+                                dateOfBirth
+                                    ? "text-[#151515]"
+                                    : "text-[#9A9A9A]"
+                            }`}
                             style={{ fontSize: moderateScale(13) }}
                         >
-                            Enter your Date of Birth
+                            {dateOfBirth
+                                ? formatDateForDisplay(
+                                    dateOfBirth
+                                )
+                                : "Enter your Date of Birth"}
                         </Text>
 
                         <CalendarIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F85"} strokeWidth={1.8} />
                     </TouchableOpacity>
+
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={getDatePickerValue()}
+                            mode="date"
+                            display={
+                                Platform.OS === "ios"
+                                    ? "spinner"
+                                    : "default"
+                            }
+                            maximumDate={new Date()}
+                            onValueChange={handleDateChange}
+                            onDismiss={() => {
+                                setShowDatePicker(false)
+                            }}
+                        />
+                    )}
 
                     <View 
                         className="flex-row items-center"
@@ -661,7 +769,9 @@ export default function EditProfileScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {
-                                handleOpenMenu("gender")
+                                if(!loading) {
+                                    handleOpenMenu("gender")
+                                }
                             }}
                             className='bg-[#FFFFFF] border gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
                             style={{

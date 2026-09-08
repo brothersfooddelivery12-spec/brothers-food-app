@@ -1,19 +1,24 @@
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import DefaultRestaurantImage from '../../../../assets/images/profile-placeholder.jpg'
 
 export interface NearByRestaurants {
     id: string
     name: string
-    imageUri: string
-    cuisines: string
-    rating: number
-    distance: string
-    discount: string
-    priceForTwo: number
+
+    imageUri?: string | null
+    cuisines?: string
+
+    rating?: number | null
+
+    distance?: string | null
+    discount?: string | null
+    priceForTwo?: number | null
+
     isActive: boolean
 }
 
@@ -24,6 +29,30 @@ interface RestaurantListCardProps {
 
 const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) => {
     const isInactive = !restaurant.isActive
+
+    const [imageError, setImageError] = useState(false)
+
+    useEffect(() => {
+        setImageError(false)
+    }, [restaurant.imageUri])
+
+    const hasImage =
+        !!restaurant.imageUri &&
+        !imageError
+
+    const rating =
+        restaurant.rating ?? 0
+
+    const hasDistance =
+        !!restaurant.distance
+
+    const hasDiscount =
+        !!restaurant.discount
+
+    const hasPriceForTwo =
+        restaurant.priceForTwo !== null &&
+        restaurant.priceForTwo !== undefined &&
+        restaurant.priceForTwo > 0
 
     return (
         <TouchableOpacity
@@ -50,9 +79,13 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                 }}
             >
                 <Image
-                    source={{
-                        uri: restaurant.imageUri
-                    }}
+                    source={
+                        hasImage
+                            ? {
+                                uri: restaurant.imageUri!
+                            }
+                            : DefaultRestaurantImage
+                    }
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{
@@ -143,44 +176,46 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                                 color: isInactive ? "#8A8A8A" : "#5C4639"
                             }}
                         >
-                            {restaurant.rating.toFixed(1)}
+                            {rating.toFixed(1)}
                         </Text>
                     </View>
 
-                    <View
-                        className="flex-row items-center justify-center gap-1 self-start"
-                        style={{
-                            marginTop: moderateScale(8),
-                            paddingHorizontal: moderateScale(6),
-                            paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12),
-                            backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
-                        }}
-                    >
-                        <LocationIcon
-                            width={moderateScale(14)}
-                            height={moderateScale(14)}
-                            color={isInactive ? "#8A8A8A" : "#5C4639"}
-                        />
-
-                        <Text
-                            className="font-bold"
+                    {hasDistance && (
+                        <View
+                            className="flex-row items-center justify-center gap-1 self-start"
                             style={{
-                                fontSize: moderateScale(10),
-                                marginRight: moderateScale(2),
-                                color: isInactive ? "#8A8A8A" : "#5C4639"
+                                marginTop: moderateScale(8),
+                                paddingHorizontal: moderateScale(6),
+                                paddingVertical: moderateScale(4),
+                                borderRadius: moderateScale(12),
+                                backgroundColor: isInactive
+                                    ? "rgba(31,31,31,0.07)"
+                                    : "rgba(232,185,63,0.15)"
                             }}
                         >
-                            {restaurant.distance}
-                        </Text>
-                    </View>
+                            <LocationIcon
+                                width={moderateScale(14)}
+                                height={moderateScale(14)}
+                                color={isInactive ? "#8A8A8A" : "#5C4639"}
+                            />
+
+                            <Text
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    marginRight: moderateScale(2),
+                                    color: isInactive ? "#8A8A8A" : "#5C4639"
+                                }}
+                            >
+                                {restaurant.distance}
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </View>
 
             <View className="ml-auto items-end justify-between">
-                {!isInactive ? (
+                {!isInactive && hasDiscount && (
                     <View
                         className="self-end flex-row items-center justify-center bg-[#E8B93F]/15"
                         style={{
@@ -198,7 +233,9 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             {restaurant.discount}
                         </Text>
                     </View>
-                ) : (
+                )}
+
+                {isInactive && (
                     <View
                         style={{
                             marginTop: moderateScale(3),
@@ -221,27 +258,29 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                     </View>
                 )}
 
-                <View
-                    className="self-end items-center justify-center"
-                    style={{
-                        marginBottom: moderateScale(3),
-                        marginRight: moderateScale(3),
-                        paddingHorizontal: moderateScale(8),
-                        paddingVertical: moderateScale(4.5),
-                        borderRadius: moderateScale(10),
-                        backgroundColor: isInactive ? "#B7B7B7" : "#3F2516"
-                    }}
-                >
-                    <Text
-                        className="font-bold"
+                {hasPriceForTwo && (
+                    <View
+                        className="self-end items-center justify-center"
                         style={{
-                            fontSize: moderateScale(11),
-                            color: isInactive ? "#FFFFFF" : "#FFFFFF"
+                            marginBottom: moderateScale(3),
+                            marginRight: moderateScale(3),
+                            paddingHorizontal: moderateScale(8),
+                            paddingVertical: moderateScale(4.5),
+                            borderRadius: moderateScale(10),
+                            backgroundColor: isInactive ? "#B7B7B7" : "#3F2516"
                         }}
                     >
-                        ₹{restaurant.priceForTwo} for two
-                    </Text>
-                </View>
+                        <Text
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(11),
+                                color: isInactive ? "#FFFFFF" : "#FFFFFF"
+                            }}
+                        >
+                            ₹{restaurant.priceForTwo} for two
+                        </Text>
+                    </View>
+                )}
             </View>
         </TouchableOpacity>
     )
