@@ -1,0 +1,3 @@
+import MobileNumberUpdatedScreen from "@/Features/ChangeNumber/MobileNumberUpdatedScreen"
+
+export default MobileNumberUpdatedScreen

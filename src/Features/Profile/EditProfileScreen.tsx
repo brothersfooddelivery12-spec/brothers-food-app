@@ -18,6 +18,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { editUserProfile } from '../Services/api-service'
 import { useAuthStore } from '../Stores/auth-store'
 
@@ -40,6 +41,7 @@ const GENDER_OPTIONS: {label: string, value: Gender}[] = [
 
 export default function EditProfileScreen(){
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const user = useAuthStore((state) => state.user)
     const updateUser = useAuthStore((state) => state.updateUser)
     const {showToast} = useToast()
@@ -626,19 +628,15 @@ export default function EditProfileScreen(){
                                 disabled={loading}
                                 className='items-center justify-center bg-[#3F2516] mr-2'
                                 onPress={() => {
-                                    // preventDoublePress(() => {
-                                    //     router.push({
-                                    //         pathname: "/change-phone",
-                                    //         params: {
-                                    //             mode: hasSavedNumber
-                                    //                 ? "change"
-                                    //                 : "add",
-
-                                    //             currentPhone:
-                                    //                 mobileNumber
-                                    //         }
-                                    //     })
-                                    // })
+                                    preventDoublePress(() => {
+                                        router.push({
+                                            pathname: "/change-mobile-number",
+                                            params: {
+                                                mode: hasSavedNumber ? "change" : "add",
+                                                currentPhone: mobileNumber
+                                            }
+                                        })
+                                    })
                                 }}
                                 style={{
                                     borderRadius:moderateScale(16),

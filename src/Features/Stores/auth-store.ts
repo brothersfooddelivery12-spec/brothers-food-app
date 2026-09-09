@@ -15,8 +15,8 @@ export interface User {
     email: string
     phone: string | null
 
-    gender: Gender | null
-    dateOfBirth: string | null
+    gender?: Gender | null
+    dateOfBirth?: string | null
 
     role: "USER"
     isActive: boolean

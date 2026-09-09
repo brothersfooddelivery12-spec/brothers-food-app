@@ -363,25 +363,25 @@ export default function HomeScreen() {
                 return
             }
 
-            // addToCart({
-            //     restaurant: {
-            //         id: restaurant.id,
-            //         restaurantName: restaurant.name,
-            //         restaurantImage: restaurant.imageUri,
-            //         deliveryTime: restaurant.deliveryTime,
-            //         deliveryFee: restaurant.deliveryFee,
-            //         isActive: restaurant.isActive
-            //     },
+            addToCart({
+                restaurant: {
+                    id: restaurant.id,
+                    restaurantName: restaurant.name,
+                    restaurantImage: restaurant.imageUri,
+                    deliveryTime: restaurant.deliveryTime,
+                    deliveryFee: restaurant.deliveryFee,
+                    isActive: restaurant.isActive
+                },
 
-            //     item: {
-            //         id: item.id,
-            //         name: item.name,
-            //         image: item.imageUri,
-            //         price: item.price,
-            //         description: item.category,
-            //         isActive: item.isActive
-            //     }
-            // })
+                item: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.imageUri,
+                    price: item.price,
+                    description: item.category,
+                    isActive: item.isActive
+                }
+            })
 
             showToast("added to cart", "success")
         },[addToCart]

@@ -276,7 +276,7 @@ export default function PaymentMethodScreen(){
                     Saved Payment Methods
                 </Text>
 
-               <View
+                <View
                     className="bg-white border border-[#1F1F1F]/10 overflow-visible mt-3"
                     style={{ borderRadius: moderateScale(20) }}
                 >

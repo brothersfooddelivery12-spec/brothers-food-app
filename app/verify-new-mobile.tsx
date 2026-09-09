@@ -1,0 +1,3 @@
+import VerifyNewMobileNumberScreen from "@/Features/ChangeNumber/VerifyNewMobileNumberScreen"
+
+export default VerifyNewMobileNumberScreen
