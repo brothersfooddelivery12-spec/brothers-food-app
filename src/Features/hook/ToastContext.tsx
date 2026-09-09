@@ -1,11 +1,12 @@
+import ErrorIcon from '@/assets/icon/ErrorIcon.svg'
+import InfoIcon from '@/assets/icon/InformationSquareIcon.svg'
+import SuccessIcon from '@/assets/icon/SuccessIcon.svg'
 import React, { createContext, useContext, useRef, useState } from "react"
 import { Animated, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import SuccessIcon from '@/assets/icon/SuccessIcon.svg'
-import ErrorIcon from '@/assets/icon/ErrorIcon.svg'
 import { moderateScale } from "react-native-size-matters"
 
-type ToastMode = "success" | "warning"
+type ToastMode = "success" | "warning" | "info"
 
 type ToastContextType = {
   showToast: (message: string, mode?: ToastMode) => void
@@ -50,12 +51,12 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       Animated.parallel([
         Animated.timing(translateY, {
           toValue: -80,
-          duration: 350,
+          duration: 400,
           useNativeDriver: true
         }),
         Animated.timing(opacity, {
           toValue: 0,
-          duration: 350,
+          duration: 400,
           useNativeDriver: true
         })
       ]),
@@ -84,16 +85,32 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         >
           <View
             className={`py-1.5 px-2 flex-row items-center gap-2 ${
-              mode === "success"
-                ? "bg-[#5c4639]"
-                : "bg-red-400"
+                mode === "success"
+                    ? "bg-[#523b2d]"
+                    : mode === "warning"
+                        ? "bg-red-400"
+                        : "bg-[#523b2d]"
             }`}
             style={{ borderRadius: moderateScale(12) }}
           >
             {mode === "success" ? (
-              <SuccessIcon width={moderateScale(22)} height={moderateScale(22)} color={"#F8D56A"} />
+                <SuccessIcon
+                    width={moderateScale(22)}
+                    height={moderateScale(22)}
+                    color="#f8d771"
+                />
+            ) : mode === "warning" ? (
+                <ErrorIcon
+                    width={moderateScale(22)}
+                    height={moderateScale(22)}
+                    color="#FFE4E6"
+                />
             ) : (
-              <ErrorIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFE4E6"} />
+                <InfoIcon
+                    width={moderateScale(22)}
+                    height={moderateScale(22)}
+                    color="#f8d771"
+                />
             )}
 
             <Text className="text-[#FFFFFF] text-base font-medium mr-1">

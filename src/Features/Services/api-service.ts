@@ -70,6 +70,12 @@ export const getCategories = () => {
     return api.get("/categories")
 }
 
+export interface Advertisement {
+    id: string
+    image_url: string[]
+    navigate_url?: string | null
+}
+
 export const getAdvertisements = () => {
     return api.get("/admin/advertisement")
 }
@@ -134,4 +140,31 @@ export const getNearbyRestaurants = (latitude: number, longitude: number) => {
             }
         }
     )
+}
+
+export type OrderPaymentMethod = "COD" | "ONLINE" | "WALLET"
+
+export type CreateOrderItem = {
+    menu_id: string
+    quantity: number
+}
+
+export type CreateOrderRequest = {
+    restaurant_id: string
+    address_id: string
+    items: CreateOrderItem[]
+    payment_method: OrderPaymentMethod
+    note?: string
+}
+
+export const createOrder = (payload: CreateOrderRequest) => {
+    return api.post("/order/create", payload)
+}
+
+export const getRestaurantById = (restaurantId: string) => {
+    return api.get(`/restaurant/${restaurantId}`)
+}
+
+export const getMenuById = (menuId: string) => {
+    return api.get(`/menu/${menuId}`)
 }

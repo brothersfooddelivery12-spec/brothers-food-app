@@ -4,7 +4,6 @@ import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import DefaultRestaurantImage from '../../../../assets/images/profile-placeholder.jpg'
 
 export interface NearByRestaurants {
     id: string
@@ -32,23 +31,16 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
 
     const [imageError, setImageError] = useState(false)
 
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Image.png")
+
     useEffect(() => {
-        setImageError(false)
+        setImageError(true)
     }, [restaurant.imageUri])
 
-    const hasImage =
-        !!restaurant.imageUri &&
-        !imageError
-
-    const rating =
-        restaurant.rating ?? 0
-
-    const hasDistance =
-        !!restaurant.distance
-
-    const hasDiscount =
-        !!restaurant.discount
-
+    const hasImage = !!restaurant.imageUri && !imageError
+    const rating = restaurant.rating ?? 0
+    const distance = restaurant.distance ?? "0.0"
+    const hasDiscount = !!restaurant.discount
     const hasPriceForTwo =
         restaurant.priceForTwo !== null &&
         restaurant.priceForTwo !== undefined &&
@@ -57,8 +49,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
     return (
         <TouchableOpacity
             activeOpacity={restaurant.isActive ? 0.95 : 1}
-            onPress={restaurant.isActive ? onPress : undefined}
-            disabled={isInactive}
+            onPress={onPress}
             className="w-full flex-row overflow-hidden border p-2"
             style={{
                 borderRadius: moderateScale(22),
@@ -75,7 +66,9 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                     height: moderateScale(78),
                     borderRadius: moderateScale(18),
                     overflow: "hidden",
-                    position: "relative"
+                    position: "relative",
+                    borderWidth: !hasImage && !isInactive ? 1 : 0,
+                    borderColor: "rgba(31,31,31,0.08)"
                 }}
             >
                 <Image
@@ -180,37 +173,35 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                         </Text>
                     </View>
 
-                    {hasDistance && (
-                        <View
-                            className="flex-row items-center justify-center gap-1 self-start"
+                    <View
+                        className="flex-row items-center justify-center gap-1 self-start"
+                        style={{
+                            marginTop: moderateScale(8),
+                            paddingHorizontal: moderateScale(6),
+                            paddingVertical: moderateScale(4),
+                            borderRadius: moderateScale(12),
+                            backgroundColor: isInactive
+                                ? "rgba(31,31,31,0.07)"
+                                : "rgba(232,185,63,0.15)"
+                        }}
+                    >
+                        <LocationIcon
+                            width={moderateScale(14)}
+                            height={moderateScale(14)}
+                            color={isInactive ? "#8A8A8A" : "#5C4639"}
+                        />
+
+                        <Text
+                            className="font-bold"
                             style={{
-                                marginTop: moderateScale(8),
-                                paddingHorizontal: moderateScale(6),
-                                paddingVertical: moderateScale(4),
-                                borderRadius: moderateScale(12),
-                                backgroundColor: isInactive
-                                    ? "rgba(31,31,31,0.07)"
-                                    : "rgba(232,185,63,0.15)"
+                                fontSize: moderateScale(10),
+                                marginRight: moderateScale(2),
+                                color: isInactive ? "#8A8A8A" : "#5C4639"
                             }}
                         >
-                            <LocationIcon
-                                width={moderateScale(14)}
-                                height={moderateScale(14)}
-                                color={isInactive ? "#8A8A8A" : "#5C4639"}
-                            />
-
-                            <Text
-                                className="font-bold"
-                                style={{
-                                    fontSize: moderateScale(10),
-                                    marginRight: moderateScale(2),
-                                    color: isInactive ? "#8A8A8A" : "#5C4639"
-                                }}
-                            >
-                                {restaurant.distance}
-                            </Text>
-                        </View>
-                    )}
+                            {distance} km
+                        </Text>
+                    </View>
                 </View>
             </View>
 

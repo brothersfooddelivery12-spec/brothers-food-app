@@ -23,7 +23,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { Category, getCategories, getNearbyRestaurants, getUserProfile, NearbyRestaurant } from '../Services/api-service'
+import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getUserProfile, NearbyRestaurant } from '../Services/api-service'
 import { useAuthStore } from '../Stores/auth-store'
 import { useCartStore } from '../Stores/useCartStore'
 
@@ -114,36 +114,36 @@ export default function HomeScreen() {
         ]
     }, [categories])
 
-    // const [advertisements, setAdvertisements] = useState<any[]>([])
-    // const [loadingAdvertisements, setLoadingAdvertisements] = useState(false)
+    const [advertisements, setAdvertisements] = useState<Advertisement[]>([])
+    const [loadingAdvertisements, setLoadingAdvertisements] = useState(false)
 
-    // const fetchAdvertisements = useCallback(async () => {
-    //     try {
-    //         setLoadingAdvertisements(true)
+    const fetchAdvertisements = useCallback(async () => {
+        try {
+            setLoadingAdvertisements(true)
 
-    //         const res = await getAdvertisements()
+            const res = await getAdvertisements()
 
-    //         console.log("Advertisements response:", res.data)
+            console.log("Advertisements response:", res.data)
 
-    //         if (!res.data.success) {
-    //             showToast(res.data.message || "Unable to fetch advertisements", "warning")
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch advertisements", "warning")
 
-    //             return
-    //         }
+                return
+            }
 
-    //         setAdvertisements(res.data.data ?? [])
-    //     } catch (error: any) {
-    //         console.log("Fetch advertisements error:", error)
+            setAdvertisements(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Fetch advertisements error:", error)
 
-    //         showToast(error?.message || "Unable to fetch advertisements", "warning")
-    //     } finally {
-    //         setLoadingAdvertisements(false)
-    //     }
-    // }, [])
+            showToast(error?.message || "Unable to fetch advertisements", "warning")
+        } finally {
+            setLoadingAdvertisements(false)
+        }
+    }, [])
 
-    // useEffect(() => {
-    //     fetchAdvertisements()
-    // }, [fetchAdvertisements])
+    useEffect(() => {
+        fetchAdvertisements()
+    }, [fetchAdvertisements])
 
     // const [popularRestaurants, setPopularRestaurants] = useState<any[]>([])
     // const [loadingPopularRestaurants, setLoadingPopularRestaurants] = useState(false)
@@ -245,8 +245,7 @@ export default function HomeScreen() {
                     isActive:
                         item.is_active &&
                         item.is_open &&
-                        item.approval_status ===
-                            "APPROVED"
+                        item.approval_status === "APPROVED"
                 })
             )
 
@@ -273,6 +272,12 @@ export default function HomeScreen() {
                 <NearByRestaurantsList
                     restaurant={item}
                     onPress={() => {
+                        if (!item.isActive) {
+                            showToast("Restaurant unavailable", "info")
+
+                            return
+                        }
+
                         preventDoublePress(() => {
                             router.push({
                                 pathname: "/restaurant-details",
@@ -358,25 +363,25 @@ export default function HomeScreen() {
                 return
             }
 
-            addToCart({
-                restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantImage: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isActive: restaurant.isActive
-                },
+            // addToCart({
+            //     restaurant: {
+            //         id: restaurant.id,
+            //         restaurantName: restaurant.name,
+            //         restaurantImage: restaurant.imageUri,
+            //         deliveryTime: restaurant.deliveryTime,
+            //         deliveryFee: restaurant.deliveryFee,
+            //         isActive: restaurant.isActive
+            //     },
 
-                item: {
-                    id: item.id,
-                    name: item.name,
-                    image: item.imageUri,
-                    price: item.price,
-                    description: item.category,
-                    isActive: item.isActive
-                }
-            })
+            //     item: {
+            //         id: item.id,
+            //         name: item.name,
+            //         image: item.imageUri,
+            //         price: item.price,
+            //         description: item.category,
+            //         isActive: item.isActive
+            //     }
+            // })
 
             showToast("added to cart", "success")
         },[addToCart]
@@ -633,11 +638,14 @@ export default function HomeScreen() {
                             })}
                         </ScrollView>
 
-                        <BannerCarousel />
+                        <BannerCarousel
+                            advertisements={advertisements}
+                            loading={loadingAdvertisements}
+                        />
 
                         <View
                             className="flex-row items-center w-full"
-                            style={{ marginTop: verticalScale(18) }}
+                            style={{ marginTop: verticalScale(14) }}
                         >
                             <Text
                                 className="text-[#1F1F1F] font-bold flex-1"

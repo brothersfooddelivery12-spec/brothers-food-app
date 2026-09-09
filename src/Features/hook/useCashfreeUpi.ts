@@ -92,7 +92,7 @@ export const useCashfreeUpi = ({ onVerify, onError }: UseCashfreeUpiProps) => {
     )
 
     const startUpiPayment = useCallback(
-        async ({ orderId, paymentSessionId, appPackage}: StartPaymentParams) => {
+        async ({ orderId, paymentSessionId, appPackage }: StartPaymentParams) => {
             try {
                 if (!orderId || !paymentSessionId) {
                     throw new Error("Invalid payment session.")
