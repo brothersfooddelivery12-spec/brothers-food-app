@@ -1,3 +1,4 @@
+import CallIcon from '@/assets/icon/CallOutlineIcon.svg'
 import EllipsisVerticalIcon from "@/assets/icon/EllipsisVerticalIcon.svg"
 import { Address } from "@/Features/Services/address-service"
 import React, { memo } from "react"
@@ -99,6 +100,17 @@ function SavedAddressCard({
                     </View>
 
                     <Text
+                        numberOfLines={1}
+                        className="font-semibold text-[#1F1F1F]/75"
+                        style={{
+                            fontSize: moderateScale(13),
+                            marginTop: verticalScale(3)
+                        }}
+                    >
+                        {item.receiver_name}
+                    </Text>
+
+                    <Text
                         className="text-[#1F1F1F]/75 font-medium"
                         style={{
                             fontSize: moderateScale(11),
@@ -108,6 +120,18 @@ function SavedAddressCard({
                     >
                         {formattedAddress}
                     </Text>
+
+                    <View className="flex-row gap-1 items-center justify-center self-start mt-2">
+                        <CallIcon width={moderateScale(14)} height={moderateScale(14)} color={"#1F1F1F"} strokeWidth={1.8} />
+                    
+                        <Text
+                            numberOfLines={1}
+                            className="font-normal text-[#1F1F1F]"
+                            style={{ fontSize: moderateScale(11) }}
+                        >
+                            {item.receiver_phone}
+                        </Text>
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>

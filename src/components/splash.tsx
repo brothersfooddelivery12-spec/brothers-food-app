@@ -1,5 +1,5 @@
-import LocationIcon from "@/assets/icon/locationIcon.svg"
 import GradientText from "@/components/GradientText"
+import { Image } from "expo-image"
 import { LinearGradient } from "expo-linear-gradient"
 import { useEffect, useRef } from "react"
 import { Animated, Text, View } from "react-native"
@@ -69,7 +69,7 @@ export default function CustomSplashScreen() {
       />
 
       <Animated.View
-        className="overflow-hidden rounded-[30px] border border-[#4A2C1A]/40"
+        className="overflow-hidden rounded-[30px] border border-[#311707]/40"
         style={{
           width: logoSize,
           height: logoSize,
@@ -95,7 +95,15 @@ export default function CustomSplashScreen() {
             justifyContent: "center"
           }}
         >
-          <View className="flex-row items-center justify-center">
+          <Image
+            source={require("@/assets/images/Transparent_Logo.png")}
+            contentFit="cover"
+            style={{
+                width: moderateScale(100),
+                height: moderateScale(100)
+            }}
+          />
+          {/* <View className="flex-row items-center justify-center">
             <Text
               className="font-bold text-[#CEAB3D]"
               style={{
@@ -155,7 +163,7 @@ export default function CustomSplashScreen() {
                 marginLeft: scale(1.3)
               }}
             />
-          </View>
+          </View> */}
         </LinearGradient>
       </Animated.View>
 

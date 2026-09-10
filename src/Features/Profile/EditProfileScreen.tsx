@@ -641,7 +641,7 @@ export default function EditProfileScreen(){
                                 style={{
                                     borderRadius:moderateScale(16),
                                     paddingHorizontal: scale(14),
-                                    paddingVertical: verticalScale(5)
+                                    paddingVertical: verticalScale(6)
                                 }}
                             >
                                 <Text

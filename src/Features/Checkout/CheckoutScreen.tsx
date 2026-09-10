@@ -394,19 +394,19 @@ export default function CheckoutScreen() {
         }
 
         if (!selectedCart.isActive) {
-            showToast("Restaurant is currently closed", "warning")
+            showToast("Restaurant is currently closed", "info")
 
             return
         }
 
         if (hasUnavailableItems) {
-            showToast("Some items are currently unavailable", "warning")
+            showToast("Some items are currently unavailable", "info")
 
             return
         }
 
         if (!selectedPayment) {
-            showToast("Please select a payment method", "warning")
+            showToast("Please select a payment method", "info")
 
             return
         }

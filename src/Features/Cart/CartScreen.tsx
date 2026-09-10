@@ -348,13 +348,13 @@ export default function CartScreen() {
         if (!activeCart) return
 
         if (!activeCart.isActive) {
-            showToast("This restaurant is currently unavailable", "warning")
+            showToast("This restaurant is currently unavailable", "info")
 
             return
         }
 
         if (hasUnavailableItems) {
-            showToast("Remove unavailable items before checkout", "warning")
+            showToast("Remove unavailable items before checkout", "info")
 
             return
         }
@@ -364,7 +364,7 @@ export default function CartScreen() {
         }
 
         if (!hasSavedAddress) {
-            showToast("Add a delivery address before checkout", "warning")
+            showToast("Add a delivery address before checkout", "info")
 
             return
         }

@@ -1,8 +1,8 @@
 import GoogleIcon from '@/assets/icon/Google.svg'
 import IndiaFlag from '@/assets/icon/India.svg'
-import LocationIcon from '@/assets/icon/locationIcon.svg'
 import GradientButton from "@/components/GradientButton"
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
+import { Image } from 'expo-image'
 import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
 import { useEffect, useRef, useState } from "react"
@@ -256,7 +256,16 @@ export default function LoginScreen() {
                                     justifyContent: "center"
                                 }}
                             >
-                                <View className="flex-row items-center justify-center">
+                                <Image
+                                    source={require("@/assets/images/Transparent_Logo.png")}
+                                    contentFit="cover"
+                                    style={{
+                                        width: moderateScale(95),
+                                        height: moderateScale(95)
+                                    }}
+                                />
+
+                                {/* <View className="flex-row items-center justify-center">
                                     <Text
                                         className="font-bold text-[#CEAB3D] text-[80%]"
                                         style={{
@@ -314,7 +323,7 @@ export default function LoginScreen() {
                                             marginLeft: scale(1.25)
                                         }}
                                     />
-                                </View>
+                                </View> */}
                             </LinearGradient>
                         </Animated.View>
 

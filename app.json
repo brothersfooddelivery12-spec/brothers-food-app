@@ -4,7 +4,7 @@
     "slug": "BrothersFoodDelivery",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Brand_Logo.png",
     "scheme": "brothersfooddelivery",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -13,7 +13,8 @@
     "android": {
       "allowBackup": false,
       "adaptiveIcon": {
-        "backgroundColor": "#F5F5F5"
+        "foregroundImage": "./assets/images/Brand_Logo.png",
+        "backgroundColor": "#3F2516"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brotherfood.userapp"
