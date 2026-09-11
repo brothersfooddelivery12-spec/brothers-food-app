@@ -398,7 +398,7 @@ export default function VerificationSuccessScreen() {
                         }}
                         style={{
                             marginTop: userExists
-                                ? verticalScale(35)
+                                ? verticalScale(55)
                                 : verticalScale(20)
                         }}
                     >

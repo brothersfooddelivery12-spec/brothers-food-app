@@ -23,7 +23,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getUserProfile, NearbyRestaurant } from '../Services/api-service'
+import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant } from '../Services/api-service'
 import { useAuthStore } from '../Stores/auth-store'
 import { useCartStore } from '../Stores/useCartStore'
 
@@ -75,7 +75,7 @@ export default function HomeScreen() {
         try {
             setLoadingCategories(true)
 
-            const res = await getCategories()
+            const res = await getCategories(25.149131, 73.083126)
 
             console.log("Categories response:", res.data)
 
@@ -145,67 +145,67 @@ export default function HomeScreen() {
         fetchAdvertisements()
     }, [fetchAdvertisements])
 
-    // const [popularRestaurants, setPopularRestaurants] = useState<any[]>([])
-    // const [loadingPopularRestaurants, setLoadingPopularRestaurants] = useState(false)
+    const [popularRestaurants, setPopularRestaurants] = useState<any[]>([])
+    const [loadingPopularRestaurants, setLoadingPopularRestaurants] = useState(false)
 
-    // const fetchPopularRestaurants = useCallback(async () => {
-    //     try {
-    //         setLoadingPopularRestaurants(true)
+    const fetchPopularRestaurants = useCallback(async () => {
+        try {
+            setLoadingPopularRestaurants(true)
 
-    //         const res = await getPopularRestaurants()
+            const res = await getPopularRestaurants(25.149131, 73.083126)
 
-    //         console.log("Popular restaurants response:", res.data)
+            console.log("Popular restaurants response:", res.data)
 
-    //         if (!res.data.success) {
-    //             showToast(res.data.message || "Unable to fetch popular restaurants", "warning")
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch popular restaurants", "warning")
 
-    //             return
-    //         }
+                return
+            }
 
-    //         setPopularRestaurants(res.data.data ?? [])
-    //     } catch (error: any) {
-    //         console.log("Popular restaurants error:", error)
+            setPopularRestaurants(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Popular restaurants error:", error)
 
-    //         showToast(error?.message || "Unable to fetch popular restaurants", "warning")
-    //     } finally {
-    //         setLoadingPopularRestaurants(false)
-    //     }
-    // }, [])
+            showToast(error?.message || "Unable to fetch popular restaurants", "warning")
+        } finally {
+            setLoadingPopularRestaurants(false)
+        }
+    }, [])
 
-    // useEffect(() => {
-    //     fetchPopularRestaurants()
-    // }, [fetchPopularRestaurants])
+    useEffect(() => {
+        fetchPopularRestaurants()
+    }, [fetchPopularRestaurants])
 
-    // const [popularMenu, setPopularMenu] = useState<any[]>([])
-    // const [loadingPopularMenu, setLoadingPopularMenu] = useState(false)
+    const [popularMenu, setPopularMenu] = useState<any[]>([])
+    const [loadingPopularMenu, setLoadingPopularMenu] = useState(false)
 
-    // const fetchPopularMenu = useCallback(async () => {
-    //     try {
-    //         setLoadingPopularMenu(true)
+    const fetchPopularMenu = useCallback(async () => {
+        try {
+            setLoadingPopularMenu(true)
 
-    //         const res = await getPopularMenu()
+            const res = await getPopularMenu(25.149131, 73.083126)
 
-    //         console.log("Popular menu response:", res.data)
+            console.log("Popular menu response:", res.data)
 
-    //         if (!res.data.success) {
-    //             showToast(res.data.message || "Unable to fetch popular menu", "warning")
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch popular menu", "warning")
 
-    //             return
-    //         }
+                return
+            }
 
-    //         setPopularMenu(res.data.data ?? [])
-    //     } catch (error: any) {
-    //         console.log("Popular menu error:", error)
+            setPopularMenu(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Popular menu error:", error)
 
-    //         showToast(error?.message || "Unable to fetch popular menu", "warning")
-    //     } finally {
-    //         setLoadingPopularMenu(false)
-    //     }
-    // }, [])
+            showToast(error?.message || "Unable to fetch popular menu", "warning")
+        } finally {
+            setLoadingPopularMenu(false)
+        }
+    }, [])
 
-    // useEffect(() => {
-    //     fetchPopularMenu()
-    // }, [fetchPopularMenu])
+    useEffect(() => {
+        fetchPopularMenu()
+    }, [fetchPopularMenu])
 
     const [nearbyRestaurants, setNearbyRestaurants] = useState<NearByRestaurants[]>([])
     const [loadingNearby, setLoadingNearby] = useState(false)
@@ -398,7 +398,7 @@ export default function HomeScreen() {
         })
     }
 
-    const isLoading = loadingCategories || loadingAdvertisements || loadingNearby
+    const isLoading = loadingCategories || loadingAdvertisements || loadingPopularRestaurants || loadingPopularMenu || loadingNearby
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">

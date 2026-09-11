@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
+import { api } from "../Services/http-client"
 import { tokenStorage } from "./token-storage"
 
 export type Gender =
@@ -102,11 +103,30 @@ export const useAuthStore =
 
                 logout: async () => {
                     try {
-                        if (GoogleSignin.hasPreviousSignIn()) {
-                            await GoogleSignin.signOut()
+                        const refreshToken = await tokenStorage.getRefreshToken()
+
+                        if (refreshToken) {
+                            try {
+                                const res = await api.post("/auth/logout",
+                                    {
+                                        refresh_token: refreshToken
+                                    }
+                                )
+
+                                console.log("Logout response:", res.data)
+                            } catch (error: any) {
+                                console.log("Backend logout failed:", error?.response?.data || error?.message || error)
+                            }
                         }
-                    } catch (error) {
-                        console.log("Google sign out failed:", error)
+
+                        try {
+                            if (GoogleSignin.hasPreviousSignIn()) {
+                                await GoogleSignin.signOut()
+                            }
+                        } catch (error) {
+                            console.log("Google sign out failed:", error)
+                        }
+
                     } finally {
                         await tokenStorage.clearTokens()
 

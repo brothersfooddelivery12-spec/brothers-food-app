@@ -31,6 +31,7 @@ import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
 import { useCashfreeUpi } from '../hook/useCashfreeUpi'
 import { Address, getAllAddresses } from '../Services/address-service'
+import { getMyWallet, Wallet } from '../Services/wallet-service'
 import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import { useCartStore } from '../Stores/useCartStore'
 import AddressCard from "./Components/AddressCard"
@@ -80,28 +81,10 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     }
 ]
 
-const walletBalance = 1850
-
-const OTHER_PAYMENT_METHODS = [
-    {
-        id: "cod",
-        title: "Cash on Delivery",
-        description: "Pay in cash when your order is delivered",
-        icon: MoneyBagIcon
-    },
-    {
-        id: "wallet",
-        title: "Brothers Wallet",
-        description: "Pay using your wallet balance",
-        icon: WalletIcon,
-        badge: `Balance: ₹${walletBalance.toLocaleString("en-IN")}`
-    }
-]
-
 export default function CheckoutScreen() {
     const { restaurantId } = useLocalSearchParams<{restaurantId: string}>()
-    const preventDoublePress = usePreventDoublePress()
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const {showToast} = useToast()
 
@@ -114,6 +97,58 @@ export default function CheckoutScreen() {
     const [selectedAddress, setSelectedAddress] = useState<string | null>(null)
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
     const [couponSavings, setCouponSavings] = useState(100)
+    const [loading, setLoading] = useState(true)
+    const [wallet, setWallet] = useState<Wallet | null>(null)
+
+    const fetchWallet = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const res = await getMyWallet()
+
+            console.log("Wallet response:", res.data)
+
+            setWallet(res.data.data)
+        } catch (error: any) {
+            console.log("Fetch wallet error:", error)
+
+            showToast(
+                error?.message || "Unable to fetch wallet",
+                "warning"
+            )
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchWallet()
+        }, [fetchWallet])
+    )
+
+    const walletBalance = wallet?.balance ?? 0
+
+    const OTHER_PAYMENT_METHODS = useMemo(
+        () => [
+            {
+                id: "cod",
+                title: "Cash on Delivery",
+                description: "Pay in cash when your order is delivered",
+                icon: MoneyBagIcon
+            },
+            {
+                id: "wallet",
+                title: "Brothers Wallet",
+                description: "Pay using your wallet balance",
+                icon: WalletIcon,
+                badge: loading
+                    ? "Loading..."
+                    : `Balance: ₹${walletBalance.toLocaleString("en-IN")}`
+            }
+        ],
+        [walletBalance, loading]
+    )
 
     const fetchAddresses = useCallback(async () => {
         try {
@@ -409,6 +444,46 @@ export default function CheckoutScreen() {
             showToast("Please select a payment method", "info")
 
             return
+        }
+
+        if (selectedPayment === "wallet") {
+            if (loading) {
+                showToast("Please wait while we check your wallet balance", "info")
+
+                return
+            }
+
+            if (!wallet) {
+                showToast("Unable to access your wallet", "warning")
+
+                return
+            }
+
+            const walletBalance = Number(wallet.balance ?? 0)
+
+            const payableAmount = Number(grandTotal ?? 0)
+
+            if (walletBalance <= 0) {
+                showToast("Your Brothers Wallet has insufficient balance", "info")
+
+                return
+            }
+
+            if (walletBalance < payableAmount) {
+                const requiredAmount = payableAmount - walletBalance
+
+                showToast(
+                    `Insufficient wallet balance. Add ₹${requiredAmount.toLocaleString(
+                        "en-IN",
+                        {
+                            maximumFractionDigits: 2
+                        }
+                    )} more to continue.`,
+                    "info"
+                )
+
+                return
+            }
         }
 
         if (creatingOrder || verifyingPayment) {

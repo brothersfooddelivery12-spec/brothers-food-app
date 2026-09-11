@@ -66,8 +66,15 @@ export interface Category {
     updated_at: string
 }
 
-export const getCategories = () => {
-    return api.get("/categories")
+export const getCategories = (latitude: number, longitude: number) => {
+    return api.get("/categories",
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
 export interface Advertisement {
@@ -80,12 +87,26 @@ export const getAdvertisements = () => {
     return api.get("/admin/advertisement")
 }
 
-export const getPopularRestaurants = () => {
-    return api.get("/restaurants/popular")
+export const getPopularRestaurants = (latitude: number, longitude: number) => {
+    return api.get("/restaurants/popular",
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
-export const getPopularMenu = () => {
-    return api.get("/menu/popular")
+export const getPopularMenu = (latitude: number, longitude: number) => {
+    return api.get("/menu/popular",
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
 export interface NearbyRestaurant {

@@ -74,23 +74,14 @@ export default function CartScreen() {
     const {showToast} = useToast()
 
     const carts = useCartStore((state) => state.carts)
-
     const addToCart = useCartStore((state) => state.addToCart)
-
     const activeRestaurantId = useCartStore((state) => state.activeRestaurantId)
-
     const hasHydrated = useCartStore((state) => state.hasHydrated)
-
     const selectRestaurant = useCartStore((state) => state.selectRestaurant)
-
     const increaseQuantity = useCartStore((state) => state.increaseQuantity)
-
     const decreaseQuantity = useCartStore((state) => state.decreaseQuantity)
-
     const removeItem = useCartStore((state) => state.removeItem)
-
     const updateRestaurantAvailability = useCartStore((state) => state.updateRestaurantAvailability)
-
     const updateItemAvailability = useCartStore((state) => state.updateItemAvailability)
 
     const [addresses, setAddresses] = useState<Address[]>([])
