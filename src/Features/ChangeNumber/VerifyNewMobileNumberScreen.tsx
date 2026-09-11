@@ -12,7 +12,7 @@ import { useToast } from '../hook/ToastContext'
 
 export default function VerifyNewMobileNumberScreen(){
     const {showToast} = useToast()
-    const { mobileNumber, purpose } = useLocalSearchParams<{mobileNumber: string, purpose: "LOGIN" | "VERIFY"}>()
+    const { mobileNumber, purpose, mode } = useLocalSearchParams<{mobileNumber: string, purpose: "LOGIN" | "VERIFY", mode?: "add" | "change"}>()
     const otpInputRef = useRef<TextInput>(null)
 
     const [otp, setOtp] = useState("")
@@ -126,7 +126,12 @@ export default function VerifyNewMobileNumberScreen(){
             if (res.data.success) {
                 showToast("Verification Successfully", "success")
 
-                router.replace('/mobile-number-updated')
+                router.replace({
+                    pathname: "/mobile-number-updated",
+                    params: {
+                        mode
+                    }
+                })
 
                 return
             }

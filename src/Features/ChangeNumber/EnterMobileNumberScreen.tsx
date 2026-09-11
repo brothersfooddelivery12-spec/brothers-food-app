@@ -2,7 +2,7 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import IndiaFlag from '@/assets/icon/India.svg'
 import GradientButton from '@/components/GradientButton'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 import { useState } from 'react'
 import { Keyboard, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -15,6 +15,21 @@ export default function EnterMobileNumberScreen(){
     const [loading, setLoading] = useState(false)
     const [mobileNumberError, setMobileNumberError] = useState(false)
     const {showToast} = useToast()
+
+    const {mode, currentPhone} = useLocalSearchParams<{mode?: "add" | "change", currentPhone?: string}>()
+    const isChangeMode = mode === "change"
+
+    const screenTitle = isChangeMode
+        ? "Enter New Mobile Number"
+        : "Enter Mobile Number"
+
+    const screenDescription = isChangeMode
+        ? "We'll send a 6-digit verification code to\nyour new mobile number."
+        : "We'll send a 6-digit verification code to\nverify your mobile number."
+
+    const bottomDescription = isChangeMode
+        ? "You'll receive an SMS with a 6-digit code\non your new number."
+        : "You'll receive an SMS with a 6-digit code\non this number."
 
     const formatMobileNumber = (text: string) => {
         let numbersOnly = text.replace(/\D/g, "")
@@ -31,6 +46,16 @@ export default function EnterMobileNumberScreen(){
     const handleSentVerificationCode = async () => {
         if (mobileNumber.length !== 10) {
             setMobileNumberError(true)
+            return
+        }
+
+        if (
+            isChangeMode &&
+            currentPhone &&
+            mobileNumber === currentPhone
+        ) {
+            showToast("Please enter a different mobile number", "info")
+
             return
         }
 
@@ -56,7 +81,8 @@ export default function EnterMobileNumberScreen(){
                     pathname: "/verify-new-mobile",
                     params: {
                         mobileNumber,
-                        purpose: "VERIFY"
+                        purpose: "VERIFY",
+                        mode: mode
                     }
                 })
 
@@ -135,7 +161,7 @@ export default function EnterMobileNumberScreen(){
                         marginTop: verticalScale(12)
                     }}
                 >
-                    Enter New Mobile Number
+                    {screenTitle}
                 </Text>
 
                 <Text
@@ -146,7 +172,7 @@ export default function EnterMobileNumberScreen(){
                         marginTop: verticalScale(5)
                     }}
                 >
-                    We'll send a 6-digit verification code{"\n"}to this number.
+                    {screenDescription}
                 </Text>
 
                 <Text
@@ -240,7 +266,7 @@ export default function EnterMobileNumberScreen(){
                         lineHeight: moderateScale(16)
                     }}
                 >
-                    You'll receive a SMS with a 6-digit code{"\n"}on your new number.
+                   {bottomDescription}
                 </Text>
             </ScrollView>
         </SafeAreaView>

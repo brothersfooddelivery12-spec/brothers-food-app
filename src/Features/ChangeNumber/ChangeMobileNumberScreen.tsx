@@ -3,7 +3,7 @@ import LockIcon from '@/assets/icon/LockIcon.svg'
 import SecurityIcon from '@/assets/icon/ShieldCheckIcon.svg'
 import GradientButton from '@/components/GradientButton'
 import { Image } from 'expo-image'
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -11,6 +11,41 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 
 export default function ChangeMobileNumberScreen(){
     const preventDoublePress = usePreventDoublePress()
+
+    const {mode, currentPhone} = useLocalSearchParams<{mode?: "change" | "add", currentPhone?: string}>()
+
+    const isChangeMode = mode === "change"
+
+    const screenTitle =
+        isChangeMode
+            ? "Change Mobile Number"
+            : "Add Mobile Number"
+
+    const screenDescription =
+        isChangeMode
+            ? `We'll send a verification code to your\nnew mobile number to confirm the change.`
+            : "Add a mobile number to your account. We'll send a verification code to confirm it."
+
+    const securityTitle =
+        isChangeMode
+            ? "Your account stays safe"
+            : "Secure your account"
+
+    const securityDescription =
+        isChangeMode
+            ? "We'll verify your new number before updating it."
+            : "We'll verify your mobile number before adding it to your account."
+
+    const dataTitle =
+        isChangeMode
+            ? "All your data remains secure"
+            : "Your data stays protected"
+
+    const dataDescription =
+        isChangeMode
+            ? "Your orders, addresses and preferences will not be lost."
+            : "Your mobile number will be securely linked to your Brothers account."
+
     
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -74,7 +109,7 @@ export default function ChangeMobileNumberScreen(){
                         marginTop: verticalScale(16)
                     }}
                 >
-                    Change Mobile Number
+                    {screenTitle}
                 </Text>
 
                 <Text
@@ -85,7 +120,7 @@ export default function ChangeMobileNumberScreen(){
                         marginTop: verticalScale(5)
                     }}
                 >
-                    We'll send a verification code to{"\n"}your new mobile number to confirm the change.
+                    {screenDescription}
                 </Text>
 
                 <View className='w-full items-center justify-center mt-8'>
@@ -120,14 +155,14 @@ export default function ChangeMobileNumberScreen(){
                                 className='text-[#1F1F1F] font-semibold'
                                 style={{ fontSize: moderateScale(13) }}
                             >
-                                Your account stays safe
+                                {securityTitle}
                             </Text>
 
                             <Text
                                 className='text-[#1F1F1F]/75 font-medium mt-1'
                                 style={{ fontSize: moderateScale(11) }}
                             >
-                                We'll verify your new number before updating it.
+                                {securityDescription}
                             </Text>
                         </View>
                     </View>
@@ -157,21 +192,27 @@ export default function ChangeMobileNumberScreen(){
                                 className='text-[#1F1F1F] font-semibold'
                                 style={{ fontSize: moderateScale(13) }}
                             >
-                                All your data remains secure
+                               {dataTitle}
                             </Text>
 
                             <Text
                                 className='text-[#1F1F1F]/75 font-medium mt-1'
                                 style={{ fontSize: moderateScale(11) }}
                             >
-                                Your orders, addresses and preferences will not be lost.
+                                {dataDescription}
                             </Text>
                         </View>
                     </View>
                 </View>
 
                 <GradientButton title='Continue' onPress={() => preventDoublePress(() => {
-                    router.push('/enter-new-mobile-number')
+                    router.push({
+                        pathname : "/enter-new-mobile-number",
+                        params: {
+                            mode: mode,
+                            currentPhone: currentPhone
+                        }
+                    })
                 })}/>
             </ScrollView>
         </SafeAreaView>

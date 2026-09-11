@@ -1,7 +1,7 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import GradientButton from '@/components/GradientButton'
 import { Image } from 'expo-image'
-import { useFocusEffect, useRouter } from "expo-router"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback } from 'react'
 import { BackHandler, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -11,6 +11,17 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 export default function MobileNumberUpdatedScreen(){
     const preventDoublePress = usePreventDoublePress()
     const router = useRouter()
+
+    const { mode } = useLocalSearchParams<{mode?: "add" | "change"}>()
+
+    const isChangeMode = mode === "change"
+    const title = isChangeMode
+        ? "Mobile Number Updated!"
+        : "Mobile Number Added!"
+
+    const description = isChangeMode
+        ? "Your mobile number has been\nsuccessfully changed."
+        : "Your mobile number has been successfully\nadded to your account."
 
     useFocusEffect(
         useCallback(() => {
@@ -107,7 +118,7 @@ export default function MobileNumberUpdatedScreen(){
                         marginTop: verticalScale(16)
                     }}
                 >
-                    Mobile Number Updated!
+                    {title}
                 </Text>
 
                 <Text
@@ -118,7 +129,7 @@ export default function MobileNumberUpdatedScreen(){
                         marginTop: verticalScale(5)
                     }}
                 >
-                    Your mobile number has been{"\n"}successfully changed.
+                    {description}
                 </Text>
 
                 <GradientButton title='Go to Profile' onPress={() => preventDoublePress(() => {
