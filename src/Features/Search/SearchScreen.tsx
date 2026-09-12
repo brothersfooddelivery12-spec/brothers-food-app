@@ -141,7 +141,7 @@ export default function SearchScreen() {
                 style={{ marginTop: moderateScale(12) }}
             >
                 <RestaurantCard
-                    {...item}
+                    restaurant={item}
                     onPress={() =>
                         handleRestaurantPress(item.id)
                     }

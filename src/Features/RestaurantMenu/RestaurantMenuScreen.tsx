@@ -2,11 +2,8 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DessertIcon from '@/assets/icon/DessertIcon.svg'
-import FavouriteFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
-import FavouriteOutlineIcon from '@/assets/icon/FavouriteIconOutline.svg'
 import MicIcon from '@/assets/icon/MicIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
-import ShareIcon from '@/assets/icon/ShareIcon.svg'
 import SearchBar from '@/components/SearchBar'
 import { COMBO_OFFERS } from '@/constant/ComboData'
 import { popularitems } from "@/constant/PopularItemData"
@@ -32,6 +29,7 @@ const TAB_TITLES = {
 export const FREQUENTLY_ORDERED_TOGETHER = [
     {
         id: "1",
+        restaurantId: "restaurant-1",
         name: "Peri Peri Fries",
         category: "Sides",
         price: 119,
@@ -41,6 +39,7 @@ export const FREQUENTLY_ORDERED_TOGETHER = [
     },
     {
         id: "2",
+        restaurantId: "restaurant-1",
         name: "Cold Coffee",
         category: "Beverages",
         price: 89,
@@ -50,6 +49,7 @@ export const FREQUENTLY_ORDERED_TOGETHER = [
     },
     {
         id: "3",
+        restaurantId: "restaurant-1",
         name: "Cheesy Garlic Bread",
         category: "Sides",
         price: 149,
@@ -59,6 +59,7 @@ export const FREQUENTLY_ORDERED_TOGETHER = [
     },
     {
         id: "4",
+        restaurantId: "restaurant-1",
         name: "Chocolate Brownie",
         category: "Desserts",
         price: 109,
@@ -194,7 +195,7 @@ export default function RestaurantMenuScreen(){
                     </Text>
                 </View>
 
-                <View
+                {/* <View
                     className="flex-row items-center"
                     style={{ gap: moderateScale(10) }}
                 >
@@ -225,7 +226,7 @@ export default function RestaurantMenuScreen(){
                     >
                         <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
 
             <FlatList

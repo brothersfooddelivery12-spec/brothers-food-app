@@ -9,7 +9,7 @@ export interface NearByRestaurants {
     id: string
     name: string
 
-    imageUri?: string | null
+    imageUrl?: string | null
     cuisines?: string
 
     rating?: number | null
@@ -35,9 +35,9 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
 
     useEffect(() => {
         setImageError(true)
-    }, [restaurant.imageUri])
+    }, [restaurant.imageUrl])
 
-    const hasImage = !!restaurant.imageUri && !imageError
+    const hasImage = !!restaurant.imageUrl && !imageError
     const rating = restaurant.rating ?? 0
     const distance = restaurant.distance ?? "0.0"
     const hasDiscount = !!restaurant.discount
@@ -75,7 +75,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                     source={
                         hasImage
                             ? {
-                                uri: restaurant.imageUri!
+                                uri: restaurant.imageUrl!
                             }
                             : DefaultRestaurantImage
                     }
@@ -169,7 +169,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                                 color: isInactive ? "#8A8A8A" : "#5C4639"
                             }}
                         >
-                            {rating.toFixed(1)}
+                            {(rating ?? 0).toFixed(1)}
                         </Text>
                     </View>
 

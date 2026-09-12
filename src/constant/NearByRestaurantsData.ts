@@ -4,7 +4,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
     {
         id: "1",
         name: "The Breakfast Club",
-        imageUri:
+        imageUrl:
             "https://i.pinimg.com/1200x/76/a4/da/76a4dab7a47278d617960cd77347b217.jpg",
         cuisines: "American • Pancakes • Coffee",
         rating: 4.5,
@@ -16,7 +16,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
     {
         id: "2",
         name: "Royal Spice Kitchen",
-        imageUri:
+        imageUrl:
             "https://res.cloudinary.com/dcdg3s1pf/image/upload/v1786697794/ChatGPT_Image_Aug_14_2026_02_25_41_PM_jqsknv.png",
         cuisines: "North Indian • Mughlai • Tandoor",
         rating: 4.7,
@@ -28,7 +28,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
     {
         id: "3",
         name: "Mizu Sushi House",
-        imageUri:
+        imageUrl:
             "https://res.cloudinary.com/dcdg3s1pf/image/upload/v1786697794/ChatGPT_Image_Aug_14_2026_02_25_41_PM_jqsknv.png",
         cuisines: "Japanese • Seafood • Fine Dining",
         rating: 4.5,
@@ -40,7 +40,7 @@ export const nearByRestaurants: NearByRestaurants[] = [
     {
         id: "4",
         name: "The Green Leaf",
-        imageUri:
+        imageUrl:
             "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
         cuisines: "Healthy • Salads • Vegan",
         rating: 4.6,

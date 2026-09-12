@@ -177,7 +177,7 @@ export default function RestaurantSearchScreen() {
                         (restaurant) => (
                             <RestaurantCard
                                 key={restaurant.id}
-                                {...restaurant}
+                                restaurant={restaurant}
                                 onPress={() => handleRestaurantPress(restaurant)}
                                 onFavouritePress={() => handleFavouritePress(restaurant)}
                             />

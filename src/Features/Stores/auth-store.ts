@@ -3,12 +3,11 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { api } from "../Services/http-client"
+import { useLocationStore } from "./locationStore"
 import { tokenStorage } from "./token-storage"
+import { useCartStore } from "./useCartStore"
 
-export type Gender =
-    | "MALE"
-    | "FEMALE"
-    | "OTHER"
+export type Gender = "MALE" | "FEMALE" | "OTHER"
 
 export interface User {
     id: string
@@ -43,114 +42,117 @@ interface AuthState {
     clearAuth: () => void
 }
 
-export const useAuthStore =
-    create<AuthState>()(
-        persist(
-            (set) => ({
-                user: null,
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            user: null,
 
-                isAuthenticated: false,
+            isAuthenticated: false,
 
-                setUser: (user) => {
-                    set({
-                        user,
-                        isAuthenticated: true
-                    })
-                },
+            setUser: (user) => {
+                set({
+                    user,
+                    isAuthenticated: true
+                })
+            },
 
-                setAuthUser: (id, phone) => {
-                    set((state) => ({
-                        user: state.user
-                            ? {
-                                ...state.user,
-                                id,
-                                phone
-                            }
-                            : {
-                                id,
-                                name: "",
-                                email: "",
-                                phone,
-
-                                gender: null,
-                                dateOfBirth: null,
-
-                                role: "USER",
-                                isActive: false,
-                                vegMode: true
-                            },
-
-                        isAuthenticated: true
-                    }))
-                },
-
-                updateUser: (data) => {
-                    set((state) => ({
-                        user: state.user
-                            ? {
-                                ...state.user,
-                                ...data
-                            }
-                            : null
-                    }))
-                },
-
-                setAuthenticated: (value) => {
-                    set({
-                        isAuthenticated: value
-                    })
-                },
-
-                logout: async () => {
-                    try {
-                        const refreshToken = await tokenStorage.getRefreshToken()
-
-                        if (refreshToken) {
-                            try {
-                                const res = await api.post("/auth/logout",
-                                    {
-                                        refresh_token: refreshToken
-                                    }
-                                )
-
-                                console.log("Logout response:", res.data)
-                            } catch (error: any) {
-                                console.log("Backend logout failed:", error?.response?.data || error?.message || error)
-                            }
+            setAuthUser: (id, phone) => {
+                set((state) => ({
+                    user: state.user
+                        ? {
+                            ...state.user,
+                            id,
+                            phone
                         }
+                        : {
+                            id,
+                            name: "",
+                            email: "",
+                            phone,
 
+                            gender: null,
+                            dateOfBirth: null,
+
+                            role: "USER",
+                            isActive: false,
+                            vegMode: true
+                        },
+
+                    isAuthenticated: true
+                }))
+            },
+
+            updateUser: (data) => {
+                set((state) => ({
+                    user: state.user
+                        ? {
+                            ...state.user,
+                            ...data
+                        }
+                        : null
+                }))
+            },
+
+            setAuthenticated: (value) => {
+                set({
+                    isAuthenticated: value
+                })
+            },
+
+            logout: async () => {
+                try {
+                    const refreshToken = await tokenStorage.getRefreshToken()
+
+                    if (refreshToken) {
                         try {
-                            if (GoogleSignin.hasPreviousSignIn()) {
-                                await GoogleSignin.signOut()
-                            }
-                        } catch (error) {
-                            console.log("Google sign out failed:", error)
+                            const res = await api.post("/auth/logout",
+                                {
+                                    refresh_token: refreshToken
+                                }
+                            )
+
+                            console.log("Logout response:", res.data)
+                        } catch (error: any) {
+                            console.log("Backend logout failed:", error?.response?.data || error?.message || error)
                         }
-
-                    } finally {
-                        await tokenStorage.clearTokens()
-
-                        set({
-                            user: null,
-                            isAuthenticated: false
-                        })
                     }
-                },
 
-                clearAuth: () => {
+                    try {
+                        if (GoogleSignin.hasPreviousSignIn()) {
+                            await GoogleSignin.signOut()
+                        }
+                    } catch (error) {
+                        console.log("Google sign out failed:", error)
+                    }
+
+                } finally {
+                    await tokenStorage.clearTokens()
+
+                    useLocationStore.getState().clearLocation()
+
+                    useCartStore.getState().clearCart()
+
                     set({
                         user: null,
                         isAuthenticated: false
                     })
                 }
-            }),
-            {
-                name: "auth-store",
-                storage: createJSONStorage(() => AsyncStorage),
-                partialize: (state) => ({
-                    user: state.user,
-                    isAuthenticated: state.isAuthenticated
+            },
+
+            clearAuth: () => {
+                set({
+                    user: null,
+                    isAuthenticated: false
                 })
             }
-        )
+        }),
+        {
+            name: "auth-store",
+            storage: createJSONStorage(() => AsyncStorage),
+            partialize: (state) => ({
+                user: state.user,
+                isAuthenticated: state.isAuthenticated
+            })
+        }
     )
+)

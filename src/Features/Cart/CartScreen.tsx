@@ -26,7 +26,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         restaurantId: "restaurant-1",
 
         name: "French Fries",
-        category: "Sides",
+        description: "Sides",
         price: 99,
         imageUri:
             "https://i.pinimg.com/736x/73/7e/d9/737ed93987aae98a76fc2e5f12fc0ecc.jpg",
@@ -37,7 +37,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         restaurantId: "restaurant-1",
 
         name: "Coke",
-        category: "Beverages",
+        description: "Beverages",
         price: 59,
         imageUri:
             "https://i.pinimg.com/1200x/60/70/9b/60709bf9dee58b89448c04a6a518b45b.jpg",
@@ -48,7 +48,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         restaurantId: "restaurant-1",
 
         name: "Garlic Bread",
-        category: "Sides",
+        description: "Sides",
         price: 129,
         imageUri:
             "https://i.pinimg.com/1200x/89/52/62/8952620f20999169e06c97f10a5eb24b.jpg",
@@ -59,7 +59,7 @@ export const FREQUENTLY_ADDED_TOGETHER = [
         restaurantId: "restaurant-1",
 
         name: "Brownie",
-        category: "Desserts",
+        description: "Desserts",
         price: 99,
         imageUri:
             "https://i.pinimg.com/736x/18/39/b5/1839b51798c581c9219f3d7ccd62cbda.jpg",
@@ -241,7 +241,7 @@ export default function CartScreen() {
             }
 
             router.push({
-                pathname: "/restaurant-details",
+                pathname: "/restaurant-menu",
                 params: {
                     restaurantId
                 }

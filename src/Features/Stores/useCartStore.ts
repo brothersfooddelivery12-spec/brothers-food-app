@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from "zustand/middleware"
 export type CartItem = {
     id: string
     name: string
-    image: string
+    image?: string | null
     quantity: number
     price: number
     description?: string
@@ -35,7 +35,7 @@ export type AddToCartPayload = {
     item: {
         id: string
         name: string
-        image: string
+        image?: string | null
         price: number
         description?: string
         isActive: boolean

@@ -1,24 +1,24 @@
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
 import TradeUpIcon from "@/assets/icon/TradeUpIcon.svg"
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
-export interface FoodItem {
+export interface MenuItem {
     id: string
     restaurantId: string
     
     name: string
-    imageUri: string
-    category: string
+    imageUrl?: string | null
+    description: string
     price: number
     isHot?: boolean
     isActive: boolean
 }
 
 interface FoodCardProps {
-    item: FoodItem
+    item: MenuItem
     onPress?: () => void
     onAddPress?: () => void
 }
@@ -29,6 +29,16 @@ const FoodCard = ({
     onAddPress
 }: FoodCardProps) => {
     const isInactive = !item.isActive
+    
+    const [imageError, setImageError] = useState(false)
+    
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Food_image.png")
+    
+    useEffect(() => {
+        setImageError(true)
+    }, [item.imageUrl])
+
+    const hasImage = !!item.imageUrl && !imageError
 
     return (
         <TouchableOpacity
@@ -54,13 +64,19 @@ const FoodCard = ({
                         width: "100%",
                         height: "100%",
                         borderRadius: moderateScale(18),
-                        overflow: "hidden"
+                        overflow: "hidden",
+                        borderWidth: !hasImage && !isInactive ? 1 : 0,
+                        borderColor: "rgba(31,31,31,0.08)"
                     }}
                 >
                     <Image
-                        source={{
-                            uri: item.imageUri
-                        }}
+                        source={
+                            hasImage
+                                ? {
+                                    uri: item.imageUrl!
+                                }
+                                : DefaultRestaurantImage
+                        }
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         style={{
@@ -131,8 +147,8 @@ const FoodCard = ({
             <View
                 className="px-3 pb-3"
                 style={{
-                    height: verticalScale(75),
-                    paddingTop: moderateScale(2)
+                    height: verticalScale(80),
+                    paddingTop: moderateScale(1)
                 }}
             >
                 <Text
@@ -150,14 +166,15 @@ const FoodCard = ({
                     numberOfLines={2}
                     className="font-medium"
                     style={{
-                        fontSize: moderateScale(10.5),
+                        fontSize: moderateScale(11),
                         marginTop: moderateScale(3),
+                        lineHeight: moderateScale(14),
                         color: isInactive
                             ? "rgba(31,31,31,0.38)"
                             : "rgba(31,31,31,0.75)"
                     }}
                 >
-                    {item.category}
+                    {item.description}
                 </Text>
 
                 <View className="flex-row items-center mt-auto">
@@ -184,7 +201,7 @@ const FoodCard = ({
                     </View>
 
                     <TouchableOpacity
-                        activeOpacity={0.9}
+                        activeOpacity={0.95}
                         disabled={isInactive}
                         onPress={(event) => {
                             event.stopPropagation()

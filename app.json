@@ -27,9 +27,22 @@
       "expo-router",
       "expo-font",
       "@react-native-google-signin/google-signin",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#3F2516",
+          "image": "./assets/images/Brand_Logo.png",
+          "imageWidth": 76
+        }
+      ],
       "expo-secure-store",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Brothers Food Delivery to access your location."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

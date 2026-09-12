@@ -87,6 +87,32 @@ export const getAdvertisements = () => {
     return api.get("/admin/advertisement")
 }
 
+export interface PopularRestaurant {
+    id: string
+
+    name: string
+    description: string
+
+    logo_url: string | null
+    cover_image_url: string | null
+
+    is_open: boolean
+
+    rating?: string | null
+    distance?: number | null
+    discount?: string | null
+    price_for_two?: number | null
+
+    latitude: number
+    longitude: number
+
+    opening_time: string
+    closing_time: string
+
+    estimated_time_minutes: number | null
+    delivery_fee: string | null
+}
+
 export const getPopularRestaurants = (latitude: number, longitude: number) => {
     return api.get("/restaurants/popular",
         {
@@ -96,6 +122,29 @@ export const getPopularRestaurants = (latitude: number, longitude: number) => {
             }
         }
     )
+}
+
+export interface PopularMenu {
+    id: string
+    restaurant_id: string
+
+    name: string
+    description: string
+    image_url: string | null
+
+    category_name: string
+
+    is_available: boolean
+    is_veg: boolean
+
+    price: string
+
+    estimated_time_minutes: number
+
+    latitude: number
+    longitude: number
+
+    delivery_fee: string
 }
 
 export const getPopularMenu = (latitude: number, longitude: number) => {
@@ -111,19 +160,9 @@ export const getPopularMenu = (latitude: number, longitude: number) => {
 
 export interface NearbyRestaurant {
     id: string
-    owner_id: string
 
     name: string
     description: string
-
-    email: string
-    phone: string
-
-    address: string
-    area: string
-    city: string
-    state: string
-    pincode: string
 
     latitude: number
     longitude: number
@@ -134,21 +173,12 @@ export interface NearbyRestaurant {
     logo_url: string
     cover_image_url: string
 
-    gallery: string[]
-
     is_open: boolean
-    is_active: boolean
-    accepts_cod: boolean
 
-    approval_status: "PENDING" | "APPROVED" | "REJECTED"
-
-    rating?: number | null
+    rating?: string | null
     distance?: number | null
     discount?: string | null
     price_for_two?: number | null
-
-    created_at: string
-    updated_at: string
 }
 
 export const getNearbyRestaurants = (latitude: number, longitude: number) => {
