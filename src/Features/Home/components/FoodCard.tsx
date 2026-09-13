@@ -5,16 +5,26 @@ import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
+export interface MenuItemRestaurant {
+    id: string
+    name: string
+    LogoUrl?: string | null
+    isOpen: boolean
+}
+
 export interface MenuItem {
     id: string
-    restaurantId: string
+    restaurant: MenuItemRestaurant
     
     name: string
     imageUrl?: string | null
     description: string
     price: number
+    deliveryTime?: number
+    deliveryFee?: string
     isHot?: boolean
-    isActive: boolean
+    isAvailable: boolean
+    isVeg: boolean
 }
 
 interface FoodCardProps {
@@ -28,11 +38,11 @@ const FoodCard = ({
     onPress,
     onAddPress
 }: FoodCardProps) => {
-    const isInactive = !item.isActive
+    const isInactive = !item.isAvailable
     
     const [imageError, setImageError] = useState(false)
     
-    const DefaultRestaurantImage = require("../../../../assets/images/Default_Food_image.png")
+    const DefaultFoodImage = require("../../../../assets/images/Default_Food_image.png")
     
     useEffect(() => {
         setImageError(true)
@@ -42,12 +52,12 @@ const FoodCard = ({
 
     return (
         <TouchableOpacity
-            activeOpacity={item.isActive ? 0.95 : 1}
-            onPress={item.isActive ? onPress : undefined}
+            activeOpacity={item.isAvailable ? 0.95 : 1}
+            onPress={item.isAvailable ? onPress : undefined}
             disabled={isInactive}
             className="overflow-hidden border"
             style={{
-                width: moderateScale(140),
+                width: moderateScale(150),
                 borderRadius: moderateScale(22),
                 backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
                 borderColor: isInactive
@@ -75,7 +85,7 @@ const FoodCard = ({
                                 ? {
                                     uri: item.imageUrl!
                                 }
-                                : DefaultRestaurantImage
+                                : DefaultFoodImage
                         }
                         contentFit="cover"
                         cachePolicy="memory-disk"
@@ -206,7 +216,7 @@ const FoodCard = ({
                         onPress={(event) => {
                             event.stopPropagation()
 
-                            if (!item.isActive) return
+                            if (!item.isAvailable) return
 
                             onAddPress?.()
                         }}

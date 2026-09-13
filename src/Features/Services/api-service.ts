@@ -124,9 +124,17 @@ export const getPopularRestaurants = (latitude: number, longitude: number) => {
     )
 }
 
+export interface PopularMenuRestaurant {
+    id: string
+    name: string
+    logo_url: string | null
+    is_open: boolean
+}
+
 export interface PopularMenu {
     id: string
-    restaurant_id: string
+
+    restaurant: PopularMenuRestaurant
 
     name: string
     description: string
@@ -218,4 +226,72 @@ export const getRestaurantById = (restaurantId: string) => {
 
 export const getMenuById = (menuId: string) => {
     return api.get(`/menu/${menuId}`)
+}
+
+export type CartPreviewItem = {
+    menu_id: string
+    name: string
+    unit_price: string
+    quantity: number
+    total: string
+    is_available: boolean
+}
+
+export type CartPreviewAddress = {
+    id: string
+    user_id: string
+
+    label: string
+
+    receiver_name: string
+    receiver_phone: string
+
+    address_line: string
+    landmark: string
+    area: string
+
+    city: string
+    state: string
+    pincode: string
+
+    latitude: number
+    longitude: number
+
+    is_default: boolean
+
+    created_at: string
+    updated_at: string
+}
+
+export type CartPreview = {
+    restaurant_id: string
+    restaurant_name: string
+    restaurant_is_open: boolean
+
+    distance: string
+
+    address: CartPreviewAddress | null
+
+    items: CartPreviewItem[]
+
+    subtotal: string
+    delivery_fee: string
+    taxes: string
+    discount: string
+    final_total: string
+}
+
+export type CartItemRequest = {
+    menu_id: string
+    quantity: number
+}
+
+export type CartPreviewRequest = {
+    restaurant_id: string
+    address_id?: string | null
+    items: CartItemRequest[]
+}
+
+export const getCartPreview = (payload: CartPreviewRequest) => {
+    return api.post("/cart/preview",payload)
 }

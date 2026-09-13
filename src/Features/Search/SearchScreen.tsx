@@ -107,19 +107,19 @@ export default function SearchScreen() {
                 restaurant: {
                     id: restaurant.id,
                     restaurantName: restaurant.name,
-                    restaurantImage: restaurant.imageUri,
+                    restaurantLogoUrl: restaurant.imageUri,
                     deliveryTime: restaurant.deliveryTime,
                     deliveryFee: restaurant.deliveryFee,
-                    isActive: restaurant.isActive
+                    isOpen: restaurant.isActive
                 },
 
                 item: {
                     id: item.id,
                     name: item.name,
-                    image: item.imageUri,
+                    imageUrl: item.imageUri,
                     price: item.price,
                     description: item.category,
-                    isActive: item.isActive
+                    isAvailable: item.isActive
                 }
             })
 

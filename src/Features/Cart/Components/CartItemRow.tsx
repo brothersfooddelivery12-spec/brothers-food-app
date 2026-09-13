@@ -1,24 +1,15 @@
 import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
 import PlusIcon from '@/assets/icon/PlusIcon.svg'
+import { CartItem } from '@/Features/Stores/useCartStore'
 import { Image } from "expo-image"
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-
-export type CartItem = {
-    id: string
-    name: string
-    image: string
-    quantity: number
-    price: number
-    description?: string
-    isActive: boolean
-}
 
 type CartItemRowProps = {
     item: CartItem
 
-    isRestaurantActive: boolean
+    isRestaurantOpen: boolean
 
     editable?: boolean
 
@@ -30,14 +21,24 @@ type CartItemRowProps = {
 const CartItemRow = memo(
     ({
         item,
-        isRestaurantActive,
+        isRestaurantOpen,
         editable = true,
         onIncrease,
         onDecrease,
         onRemove
     }: CartItemRowProps) => {
-        const isUnavailable = !isRestaurantActive || !item.isActive
+        const isUnavailable = !isRestaurantOpen || !item.isAvailable
         const canDecrease = item.quantity > 1
+
+        const [imageError, setImageError] = useState(false)
+            
+        const DefaultFoodImage = require("../../../../assets/images/Default_Food_image.png")
+        
+        useEffect(() => {
+            setImageError(true)
+        }, [item.imageUrl])
+    
+        const hasImage = !!item.imageUrl && !imageError
 
         return (
             <View>
@@ -47,13 +48,19 @@ const CartItemRow = memo(
                         style={{
                             width: moderateScale(68),
                             height: moderateScale(68),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(14),
+                            borderWidth: !hasImage && !isUnavailable ? 1 : 0,
+                            borderColor: "rgba(31,31,31,0.08)"
                         }}
                     >
                         <Image
-                            source={{
-                                uri: item.image
-                            }}
+                            source={
+                                hasImage
+                                    ? {
+                                        uri: item.imageUrl!
+                                    }
+                                    : DefaultFoodImage
+                            }
                             contentFit="cover"
                             cachePolicy="memory-disk"
                             transition={0}

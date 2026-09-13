@@ -114,7 +114,7 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                         marginTop: moderateScale(1)
                     }}
                 >
-                    {item.cuisines.join(" • ")}
+                    {item.cuisines}
                 </Text>
 
                 <View

@@ -11,7 +11,7 @@ export const foodItems: MenuItem[] = [
         description: "Bakery • Dessert",
         price: 249,
         isHot: true,
-        isActive: true
+        isAvailable: true
     },
     {
         id: "restaurant-1-paneer-tikka",
@@ -23,7 +23,7 @@ export const foodItems: MenuItem[] = [
         description: "North Indian • Starter",
         price: 229,
         isHot: false,
-        isActive: true
+        isAvailable: true
     },
     {
         id: "restaurant-3-masala-dosa",
@@ -35,7 +35,7 @@ export const foodItems: MenuItem[] = [
         description: "South Indian • Breakfast",
         price: 149,
         isHot: true,
-        isActive: false
+        isAvailable: false
     },
     {
         id: "restaurant-4-margherita-pizza",
@@ -47,6 +47,6 @@ export const foodItems: MenuItem[] = [
         description: "Italian • Pizza",
         price: 299,
         isHot: false,
-        isActive: true
+        isAvailable: true
     }
 ]

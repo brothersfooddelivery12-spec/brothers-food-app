@@ -3,30 +3,18 @@ import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
 import ClockIcon from "@/assets/icon/ClockIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
+import { CartItem } from '@/Features/Stores/useCartStore'
 import { Image } from "expo-image"
-import React, { memo, useCallback, useEffect } from "react"
+import React, { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import CartItemRow, { CartItem } from "./CartItemRow"
-
-export type RestaurantCart = {
-    id: string
-    restaurantName: string
-    restaurantImage: string
-    deliveryTime: string
-    deliveryFee: number
-
-    isActiveCart: boolean
-    isActive: boolean
-
-    items: CartItem[]
-}
+import CartItemRow from "./CartItemRow"
 
 type RestaurantCartContentProps = {
     items: CartItem[]
     restaurantId: string
-    isRestaurantActive: boolean
+    isRestaurantOpen: boolean
 
     onAddItem?: (restaurantId: string) => void
     onIncrease?: (restaurantId: string, item: CartItem) => void
@@ -38,7 +26,7 @@ const RestaurantCartContent = memo(
     ({
         items,
         restaurantId,
-        isRestaurantActive,
+        isRestaurantOpen,
         onAddItem,
         onIncrease,
         onDecrease,
@@ -49,7 +37,7 @@ const RestaurantCartContent = memo(
                 className="p-3 border"
                 style={{
                     borderRadius: moderateScale(18),
-                    backgroundColor: isRestaurantActive ? "#FFFFFF" : "#F3F3F3",
+                    backgroundColor: isRestaurantOpen ? "#FFFFFF" : "#F3F3F3",
                     borderColor: "rgba(31,31,31,0.10)"
                 }}
             >
@@ -57,7 +45,7 @@ const RestaurantCartContent = memo(
                     <React.Fragment key={item.id}>
                         <CartItemRow
                             item={item}
-                            isRestaurantActive={isRestaurantActive}
+                            isRestaurantOpen={isRestaurantOpen}
 
                             onIncrease={() => onIncrease?.(restaurantId, item)}
                             onDecrease={() => onDecrease?.(restaurantId, item)}
@@ -80,10 +68,10 @@ const RestaurantCartContent = memo(
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    disabled={!isRestaurantActive}
+                    disabled={!isRestaurantOpen}
                     onPress={() => {
                         if (
-                            !isRestaurantActive
+                            !isRestaurantOpen
                         ) {
                             return
                         }
@@ -97,7 +85,7 @@ const RestaurantCartContent = memo(
                         paddingVertical: moderateScale(6),
                         borderRadius: moderateScale(14),
                         backgroundColor:
-                            isRestaurantActive
+                            isRestaurantOpen
                                 ? "rgba(232,185,63,0.15)"
                                 : "rgba(31,31,31,0.06)"
                     }}
@@ -105,7 +93,7 @@ const RestaurantCartContent = memo(
                     <PlusSignCircleIcon
                         width={moderateScale(23)}
                         height={moderateScale(23)}
-                        color={isRestaurantActive ? "#3F2516" : "#858585"}
+                        color={isRestaurantOpen ? "#3F2516" : "#858585"}
                         strokeWidth={1.5}
                     />
 
@@ -113,15 +101,15 @@ const RestaurantCartContent = memo(
                         className="font-semibold flex-1"
                         style={{
                             fontSize: moderateScale(11),
-                            color: isRestaurantActive ? "#1F1F1F" : "rgba(31,31,31,0.45)"
+                            color: isRestaurantOpen ? "#1F1F1F" : "rgba(31,31,31,0.45)"
                         }}
                     >
-                        {isRestaurantActive
+                        {isRestaurantOpen
                             ? "Add more item from this restaurant"
                             : "Restaurant is currently unavailable"}
                     </Text>
 
-                    {isRestaurantActive && (
+                    {isRestaurantOpen && (
                         <ArrowRightIcon
                             width={moderateScale(18)}
                             height={moderateScale(18)}
@@ -140,12 +128,12 @@ RestaurantCartContent.displayName = "RestaurantCartContent"
 type RestaurantCartCardProps = {
     restaurantId: string
     restaurantName: string
-    restaurantImage: string
+    restaurantLogoUrl: string
     deliveryFee: number
     deliveryTime: string
 
     isActiveCart: boolean
-    isRestaurantActive: boolean
+    isRestaurantOpen: boolean
 
     items: CartItem[]
 
@@ -161,12 +149,12 @@ const RestaurantCartCard = memo(
     ({
         restaurantId,
         restaurantName,
-        restaurantImage,
+        restaurantLogoUrl,
         deliveryFee,
         deliveryTime,
 
         isActiveCart,
-        isRestaurantActive,
+        isRestaurantOpen,
 
         items,
 
@@ -179,6 +167,16 @@ const RestaurantCartCard = memo(
         const progress = useSharedValue(isActiveCart ? 1 : 0)
         const contentHeight = useSharedValue(0)
         const expandedMargin = verticalScale(12)
+
+        const [imageError, setImageError] = useState(false)
+    
+        const DefaultRestaurantLogo = require("../../../../assets/images/Default_Restaurant_Logo.png")
+        
+        useEffect(() => {
+            setImageError(true)
+        }, [restaurantLogoUrl])
+
+        const hasImage = !!restaurantLogoUrl && !imageError
 
         useEffect(() => {
             progress.value =
@@ -226,9 +224,9 @@ const RestaurantCartCard = memo(
                 style={{
                     borderRadius: moderateScale(20),
                     marginTop: verticalScale(8),
-                    backgroundColor: isRestaurantActive ? "#FFFFFF" : "#EFEFEF",
+                    backgroundColor: isRestaurantOpen ? "#FFFFFF" : "#EFEFEF",
                     borderColor:
-                        isRestaurantActive
+                        isRestaurantOpen
                             ? "rgba(31,31,31,0.10)"
                             : "rgba(31,31,31,0.08)"
                 }}
@@ -239,28 +237,33 @@ const RestaurantCartCard = memo(
                     className="flex-row gap-2 items-center"
                 >
                     <View
-                        className="relative items-start overflow-hidden justify-center self-start rounded-full border"
+                        className="relative items-start overflow-hidden justify-center self-start rounded-full"
                         style={{
                             width: moderateScale(46),
                             height: moderateScale(46),
-                            borderColor: "rgba(31,31,31,0.10)"
+                            borderWidth: !hasImage && !isRestaurantOpen ? 1 : 0,
+                            borderColor: "rgba(31,31,31,0.08)"
                         }}
                     >
                         <Image
-                            source={{
-                                uri: restaurantImage
-                            }}
+                            source={
+                                hasImage
+                                    ? {
+                                        uri: restaurantLogoUrl!
+                                    }
+                                    : DefaultRestaurantLogo
+                            }
                             contentFit="cover"
                             cachePolicy="memory-disk"
                             transition={0}
                             style={{
                                 width: "100%",
                                 height: "100%",
-                                opacity: isRestaurantActive ? 1 : 0.45
+                                opacity: isRestaurantOpen ? 1 : 0.45
                             }}
                         />
 
-                        {!isRestaurantActive && (
+                        {!isRestaurantOpen && (
                             <View
                                 pointerEvents="none"
                                 className="absolute inset-0"
@@ -278,7 +281,7 @@ const RestaurantCartCard = memo(
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(13),
-                                color: isRestaurantActive ? "#1F1F1F" : "rgba(31,31,31,0.50)"
+                                color: isRestaurantOpen ? "#1F1F1F" : "rgba(31,31,31,0.50)"
                             }}
                         >
                             {restaurantName}
@@ -293,7 +296,7 @@ const RestaurantCartCard = memo(
                                     paddingVertical: moderateScale(3),
                                     borderRadius: moderateScale(10),
                                     backgroundColor:
-                                        isRestaurantActive
+                                        isRestaurantOpen
                                             ? "rgba(232,185,63,0.15)"
                                             : "rgba(31,31,31,0.07)"
                                 }}
@@ -301,14 +304,14 @@ const RestaurantCartCard = memo(
                                 <DeliveryIcon
                                     width={moderateScale(16)}
                                     height={moderateScale(16)}
-                                    color={isRestaurantActive? "#5C4639" : "#858585"}
+                                    color={isRestaurantOpen? "#5C4639" : "#858585"}
                                 />
 
                                 <Text
                                     className="font-semibold"
                                     style={{
                                         fontSize: moderateScale(10),
-                                        color: isRestaurantActive ? "#5C4639" : "#858585"
+                                        color: isRestaurantOpen ? "#5C4639" : "#858585"
                                     }}
                                 >
                                     {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
@@ -322,7 +325,7 @@ const RestaurantCartCard = memo(
                                         width: moderateScale(22),
                                         height: moderateScale(22),
                                         backgroundColor:
-                                            isRestaurantActive
+                                            isRestaurantOpen
                                                 ? "rgba(232,185,63,0.15)"
                                                 : "rgba(31,31,31,0.07)"
                                     }}
@@ -330,7 +333,7 @@ const RestaurantCartCard = memo(
                                     <ClockIcon
                                         width={moderateScale(14)}
                                         height={moderateScale(14)}
-                                        color={isRestaurantActive ? "#5C4639" : "#858585"}
+                                        color={isRestaurantOpen ? "#5C4639" : "#858585"}
                                     />
                                 </View>
 
@@ -339,18 +342,18 @@ const RestaurantCartCard = memo(
                                     style={{
                                         fontSize: moderateScale(10),
                                         color:
-                                            isRestaurantActive
+                                            isRestaurantOpen
                                                 ? "rgba(31,31,31,0.75)"
                                                 : "rgba(31,31,31,0.45)"
                                     }}
                                 >
-                                    {isRestaurantActive ? deliveryTime : "Currently Closed"}
+                                    {isRestaurantOpen ? `${deliveryTime} min` : "Currently Closed"}
                                 </Text>
                             </View>
                         </View>
                     </View>
 
-                    {!isRestaurantActive ? (
+                    {!isRestaurantOpen ? (
                         <View
                             className="items-center justify-center"
                             style={{
@@ -411,7 +414,7 @@ const RestaurantCartCard = memo(
                                 width: moderateScale(26),
                                 height: moderateScale(26),
                                 backgroundColor:
-                                    isRestaurantActive
+                                    isRestaurantOpen
                                         ? "rgba(232,185,63,0.15)"
                                         : "rgba(31,31,31,0.07)"
                             }
@@ -421,7 +424,7 @@ const RestaurantCartCard = memo(
                         <ArrowDownIcon
                             width={moderateScale(16)}
                             height={moderateScale(16)}
-                            color={isRestaurantActive ? "#5C4639" : "#858585"}
+                            color={isRestaurantOpen ? "#5C4639" : "#858585"}
                             style={{ marginTop: moderateScale(2) }}
                         />
                     </Animated.View>
@@ -449,7 +452,7 @@ const RestaurantCartCard = memo(
                     <RestaurantCartContent
                         items={items}
                         restaurantId={restaurantId}
-                        isRestaurantActive={isRestaurantActive}
+                        isRestaurantOpen={isRestaurantOpen}
                         onAddItem={onAddItem}
                         onIncrease={onIncrease}
                         onDecrease={onDecrease}
@@ -463,7 +466,7 @@ const RestaurantCartCard = memo(
                     <RestaurantCartContent
                         items={items}
                         restaurantId={restaurantId}
-                        isRestaurantActive={isRestaurantActive}
+                        isRestaurantOpen={isRestaurantOpen}
                         onAddItem={onAddItem}
                         onIncrease={onIncrease}
                         onDecrease={onDecrease}

@@ -31,41 +31,41 @@ export const FREQUENTLY_ORDERED_TOGETHER = [
         id: "1",
         restaurantId: "restaurant-1",
         name: "Peri Peri Fries",
-        category: "Sides",
+        description: "Sides",
         price: 119,
         imageUri:
             "https://i.pinimg.com/736x/73/7e/d9/737ed93987aae98a76fc2e5f12fc0ecc.jpg",
-        isActive: true
+        isAvailable: true
     },
     {
         id: "2",
         restaurantId: "restaurant-1",
         name: "Cold Coffee",
-        category: "Beverages",
+        description: "Beverages",
         price: 89,
         imageUri:
             "https://i.pinimg.com/236x/23/b2/bc/23b2bcc80be05c9169a1333470d920e5.jpg",
-        isActive: false
+        isAvailable: false
     },
     {
         id: "3",
         restaurantId: "restaurant-1",
         name: "Cheesy Garlic Bread",
-        category: "Sides",
+        description: "Sides",
         price: 149,
         imageUri:
             "https://i.pinimg.com/1200x/89/52/62/8952620f20999169e06c97f10a5eb24b.jpg",
-        isActive: true
+        isAvailable: true
     },
     {
         id: "4",
         restaurantId: "restaurant-1",
         name: "Chocolate Brownie",
-        category: "Desserts",
+        description: "Desserts",
         price: 109,
         imageUri:
             "https://i.pinimg.com/736x/18/39/b5/1839b51798c581c9219f3d7ccd62cbda.jpg",
-        isActive: true
+        isAvailable: true
     },
 ]
 

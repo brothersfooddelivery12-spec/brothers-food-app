@@ -4,21 +4,21 @@ import { createJSONStorage, persist } from "zustand/middleware"
 
 export type CartItem = {
     id: string
+    imageUrl?: string | null
     name: string
-    image?: string | null
+    description?: string
     quantity: number
     price: number
-    description?: string
-    isActive: boolean
+    isAvailable: boolean
 }
 
 export type RestaurantCart = {
     id: string
     restaurantName: string
-    restaurantImage: string
-    deliveryTime: string
-    deliveryFee: number
-    isActive: boolean
+    restaurantLogoUrl?: string | null
+    deliveryFee?: number
+    deliveryTime?: number
+    isOpen: boolean
     items: CartItem[]
 }
 
@@ -26,19 +26,19 @@ export type AddToCartPayload = {
     restaurant: {
         id: string
         restaurantName: string
-        restaurantImage: string
-        deliveryTime: string
-        deliveryFee: number
-        isActive: boolean
+        restaurantLogoUrl?: string | null
+        deliveryFee?: number
+        deliveryTime?: number
+        isOpen: boolean
     }
 
     item: {
         id: string
+        imageUrl?: string | null
         name: string
-        image?: string | null
-        price: number
         description?: string
-        isActive: boolean
+        price: number
+        isAvailable: boolean
     }
 }
 
@@ -74,64 +74,61 @@ export const useCartStore = create<CartStore>()(
 
             addToCart: ({ restaurant, item }) => {
                 set((state) => {
-                    const existingRestaurant = state.carts.find((cart) => cart.id === restaurant.id)
+                    const existingRestaurant =
+                        state.carts.find(
+                            (cart) => cart.id === restaurant.id
+                        )
+
+                    if (!restaurant.isOpen) {
+                        return state
+                    }
+
+                    if (!item.isAvailable) {
+                        return state
+                    }
 
                     if (existingRestaurant) {
-                        if (!existingRestaurant.isActive) {
-                            return state
-                        }
-
-                        const existingItem = existingRestaurant.items.find((cartItem) => cartItem.id === item.id)
-
-                        if (existingItem && !existingItem.isActive) {
-                            return state
-                        }
-
-                        if (!item.isActive) {
-                            return state
-                        }
+                        const existingItem =
+                            existingRestaurant.items.find(
+                                (cartItem) => cartItem.id === item.id
+                            )
 
                         const updatedCarts =
-                            state.carts.map(
-                                (cart) => {
-                                    if (cart.id !== restaurant.id) {
-                                        return cart
-                                    }
+                            state.carts.map((cart) => {
+                                if (cart.id !== restaurant.id) {
+                                    return cart
+                                }
 
-                                    const cartItem = cart.items.find((currentItem) => currentItem.id === item.id)
+                                return {
+                                    ...cart,
 
-                                    if (cartItem) {
-                                        return {
-                                            ...cart,
-                                            items:
-                                                cart.items.map(
-                                                    (
-                                                        currentItem
-                                                    ) =>
-                                                        currentItem.id ===
-                                                        item.id
-                                                            ? {
-                                                                ...currentItem,
-                                                                quantity: currentItem.quantity + 1
-                                                            }
-                                                            : currentItem
-                                                )
-                                        }
-                                    }
+                                    restaurantName: restaurant.restaurantName,
+                                    restaurantLogoUrl: restaurant.restaurantLogoUrl,
+                                    deliveryFee: restaurant.deliveryFee,
+                                    deliveryTime: restaurant.deliveryTime,
+                                    isOpen: restaurant.isOpen,
 
-                                    return {
-                                        ...cart,
-                                        items: [
+                                    items: existingItem
+                                        ? cart.items.map(
+                                            (currentItem) =>
+                                                currentItem.id ===
+                                                item.id
+                                                    ? {
+                                                        ...currentItem,
+                                                        ...item,
+                                                        quantity: currentItem.quantity + 1
+                                                    }
+                                                    : currentItem
+                                        )
+                                        : [
                                             ...cart.items,
-
                                             {
                                                 ...item,
                                                 quantity: 1
                                             }
                                         ]
-                                    }
                                 }
-                            )
+                            })
 
                         return {
                             carts: updatedCarts,
@@ -139,21 +136,15 @@ export const useCartStore = create<CartStore>()(
                         }
                     }
 
-                    if (!restaurant.isActive || !item.isActive) {
-                        return state
+                    const newRestaurantCart: RestaurantCart = {
+                        ...restaurant,
+                        items: [
+                            {
+                                ...item,
+                                quantity: 1
+                            }
+                        ]
                     }
-
-                    const newRestaurantCart:
-                        RestaurantCart = {
-                            ...restaurant,
-
-                            items: [
-                                {
-                                    ...item,
-                                    quantity: 1
-                                }
-                            ]
-                        }
 
                     return {
                         carts: [
@@ -178,7 +169,7 @@ export const useCartStore = create<CartStore>()(
                                     return restaurant
                                 }
 
-                                if (!restaurant.isActive) {
+                                if (!restaurant.isOpen) {
                                     return restaurant
                                 }
 
@@ -190,7 +181,7 @@ export const useCartStore = create<CartStore>()(
                                                 if (item.id !== itemId) {
                                                     return item
                                                 }
-                                                if (!item.isActive) {
+                                                if (!item.isAvailable) {
                                                     return item
                                                 }
 
@@ -311,7 +302,7 @@ export const useCartStore = create<CartStore>()(
                     carts:
                         state.carts.map(
                             (restaurant) =>
-                                restaurant.id === restaurantId ? {...restaurant, isActive} : restaurant
+                                restaurant.id === restaurantId ? {...restaurant, isOpen: isActive} : restaurant
                         )
                 }))
             },

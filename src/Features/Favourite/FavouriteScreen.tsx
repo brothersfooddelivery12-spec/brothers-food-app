@@ -173,7 +173,7 @@ export default function FavouritesScreen() {
     const handleFoodAdd = useCallback(
         (item: any) => {
             if (!item.isActive) {
-                showToast("This item is currently unavailable", "warning")
+                showToast("This item is currently unavailable", "info")
 
                 return
             }
@@ -181,13 +181,13 @@ export default function FavouritesScreen() {
             const restaurant = getRestaurantById(item.restaurantId)
 
             if (!restaurant) {
-                showToast("Restaurant not found", "warning")
+                showToast("Restaurant not found", "info")
 
                 return
             }
 
             if (!restaurant.isActive) {
-                showToast("Restaurant is currently closed", "warning")
+                showToast("Restaurant is currently closed", "info")
 
                 return
             }
@@ -196,19 +196,19 @@ export default function FavouritesScreen() {
                 restaurant: {
                     id: restaurant.id,
                     restaurantName: restaurant.name,
-                    restaurantImage: restaurant.imageUri,
+                    restaurantLogoUrl: restaurant.imageUri,
                     deliveryTime: restaurant.deliveryTime,
                     deliveryFee: restaurant.deliveryFee,
-                    isActive: restaurant.isActive
+                    isOpen: restaurant.isActive
                 },
 
                 item: {
                     id: item.id,
                     name: item.name,
-                    image: item.imageUri,
+                    imageUrl: item.imageUri,
                     price: item.price,
                     description: item.category,
-                    isActive: item.isActive
+                    isAvailable: item.isActive
                 }
             })
 

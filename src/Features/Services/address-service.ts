@@ -1,5 +1,29 @@
 import { api } from "./http-client"
 
+export interface UserAddress {
+    id: string
+    user_id: string
+
+    label: string
+    receiver_name: string
+    receiver_phone: string
+
+    address_line: string
+    landmark: string
+    area: string
+    city: string
+    state: string
+    pincode: string
+
+    latitude: number
+    longitude: number
+
+    is_default: boolean
+
+    created_at: string
+    updated_at: string
+}
+
 export type Address = {
     id: string
     label: string

@@ -30,7 +30,9 @@ import { SvgProps } from 'react-native-svg'
 import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
 import { useCashfreeUpi } from '../hook/useCashfreeUpi'
-import { Address, getAllAddresses } from '../Services/address-service'
+import { getAllAddresses, UserAddress } from '../Services/address-service'
+import { CartPreview, CartPreviewRequest, getCartPreview } from '../Services/api-service'
+import { hideLoader, showLoader } from '../Services/loader-service'
 import { getMyWallet, Wallet } from '../Services/wallet-service'
 import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import { useCartStore } from '../Stores/useCartStore'
@@ -92,13 +94,14 @@ export default function CheckoutScreen() {
     const addressesDirty = useAddressRefreshStore((state) => state.addressesDirty)
     const clearAddressesDirty = useAddressRefreshStore((state) => state.clearAddressesDirty)
 
-    const [addresses, setAddresses] = useState<Address[]>([])
+    const [addresses, setAddresses] = useState<UserAddress[]>([])
     const [loadingAddresses, setLoadingAddresses] = useState(true)
     const [selectedAddress, setSelectedAddress] = useState<string | null>(null)
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
     const [couponSavings, setCouponSavings] = useState(100)
     const [loading, setLoading] = useState(true)
     const [wallet, setWallet] = useState<Wallet | null>(null)
+    const [hasPreviewLoaded, setHasPreviewLoaded] = useState(false)
 
     const fetchWallet = useCallback(async () => {
         try {
@@ -150,36 +153,45 @@ export default function CheckoutScreen() {
         [walletBalance, loading]
     )
 
-    const fetchAddresses = useCallback(async () => {
-        try {
-            setLoadingAddresses(true)
+    const fetchAddresses = useCallback(
+        async () => {
+            try {
+                setLoadingAddresses(true)
 
-            const res = await getAllAddresses()
+                const res = await getAllAddresses()
 
-            console.log("Addresses response:", res.data)
+                console.log("Addresses response:", res.data)
 
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch addresses", "warning")
+                if (!res.data.success) {
+                    showToast(res.data.message || "Unable to fetch addresses", "warning")
 
-                return
+                    return
+                }
+
+                const fetchedAddresses = res.data.data ?? []
+
+                const defaultAddress =
+                    fetchedAddresses.find(
+                        (address: UserAddress) => address.is_default
+                    ) ?? fetchedAddresses[0]
+
+                setAddresses(fetchedAddresses)
+
+                if (defaultAddress) {
+                    setSelectedAddress(
+                        (currentAddress) =>
+                            currentAddress ?? defaultAddress.id
+                    )
+                }
+            } catch (error: any) {
+                console.log("Fetch addresses error:", error)
+
+                showToast(error?.message || "Unable to fetch addresses", "warning")
+            } finally {
+                setLoadingAddresses(false)
             }
-
-            const fetchedAddresses = res.data.data ?? []
-
-            setAddresses(fetchedAddresses)
-
-            if (fetchedAddresses.length > 0 && !selectedAddress) {
-                setSelectedAddress(fetchedAddresses[0].id)
-            }
-
-        } catch (error: any) {
-            console.log("Fetch addresses error:", error)
-
-            showToast(error?.message || "Unable to fetch addresses", "warning")
-        } finally {
-            setLoadingAddresses(false)
-        }
-    }, [])
+        },[]
+    )
 
     useFocusEffect(
         useCallback(() => {
@@ -226,46 +238,91 @@ export default function CheckoutScreen() {
         )
     }, [carts, restaurantId])
 
-    const itemsTotal = useMemo(() => {
-        if (!selectedCart) {
-            return 0
+    const [imageError, setImageError] = useState(false)
+    
+    const DefaultRestaurantLogo = require("../../../assets/images/Default_Restaurant_Logo.png")
+
+    useEffect(() => {
+        setImageError(true)
+    }, [selectedCart?.restaurantLogoUrl])
+
+    const hasImage = !!selectedCart?.restaurantLogoUrl && !imageError
+
+    const [cartPreview, setCartPreview] = useState<CartPreview | null>(null)
+    const [previewLoading, setPreviewLoading] = useState(false)
+
+    const handleCartPreview = useCallback(
+        async () => {
+            if (
+                !selectedCart ||
+                selectedCart.items.length === 0 ||
+                !selectedAddress
+            ) {
+                return
+            }
+
+            try {
+                setPreviewLoading(true)
+
+                const payload: CartPreviewRequest = {
+                    restaurant_id: selectedCart.id,
+                    address_id: selectedAddress,
+                    items: selectedCart.items.map(
+                        (item) => ({
+                            menu_id: item.id,
+                            quantity: item.quantity
+                        })
+                    )
+                }
+
+                console.log("Cart preview payload:", payload)
+
+                const res = await getCartPreview(payload)
+
+                console.log("Cart preview response:", res.data)
+
+                if (res.data.success) {
+                    setCartPreview(res.data.data)
+                }
+            } catch (error: any) {
+                console.log("Cart preview error:", error?.response?.data || error?.message || error)
+
+                showToast(error?.message || "Unable to calculate cart", "warning")
+            } finally {
+                setPreviewLoading(false)
+                setHasPreviewLoaded(true)
+            }
+        },
+        [selectedCart, selectedAddress]
+    )
+
+    useEffect(() => {
+        if (
+            loadingAddresses ||
+            !selectedAddress ||
+            !selectedCart ||
+            selectedCart.items.length === 0
+        ) {
+            return
         }
 
-        return selectedCart.items.reduce(
-            (total, item) =>
-                total + item.price * item.quantity,
-            0
-        )
-    }, [selectedCart])
+        handleCartPreview()
+    }, [loadingAddresses, selectedAddress, selectedCart, handleCartPreview])
 
-    const deliveryFee = selectedCart?.deliveryFee ?? 0
-
+    const itemsTotal = Number(cartPreview?.subtotal ?? 0)
+    const deliveryFee = Number(cartPreview?.delivery_fee ?? 0)
+    const gstAndTaxes = Number(cartPreview?.taxes ?? 0)
     const platformFee = selectedCart ? 5 : 0
-
     const packingFee = selectedCart ? 20 : 0
-
-    const gstAndTaxes = useMemo(() => {
-        return Math.round(itemsTotal * 0.05)
-    }, [itemsTotal])
-
-    const grandTotal = useMemo(() => {
-        const total =
-            itemsTotal +
+    const grandTotal = Math.max(
+        itemsTotal +
             deliveryFee +
             platformFee +
             packingFee +
             gstAndTaxes -
-            couponSavings
-
-        return Math.max(total, 0)
-    }, [
-        itemsTotal,
-        deliveryFee,
-        platformFee,
-        packingFee,
-        gstAndTaxes,
-        couponSavings
-    ])
+            couponSavings,
+        0
+    )
 
     const hasUnavailableItems = useMemo(() => {
         if (!selectedCart) {
@@ -273,13 +330,13 @@ export default function CheckoutScreen() {
         }
 
         return selectedCart.items.some(
-            (item) => !item.isActive
+            (item) => !item.isAvailable
         )
     }, [selectedCart])
 
     const canPlaceOrder =
         !!selectedCart &&
-        selectedCart.isActive &&
+        selectedCart.isOpen &&
         selectedCart.items.length > 0 &&
         !hasUnavailableItems &&
         !!selectedPayment &&
@@ -355,7 +412,35 @@ export default function CheckoutScreen() {
         fetchUpiApps()
     }, [fetchUpiApps])
 
-    const isCheckoutLoading = loadingAddresses || loadingApps
+    const isCheckoutLoading =
+        loadingAddresses ||
+        loadingApps ||
+        (
+            addresses.length > 0 &&
+            !!selectedCart &&
+            !hasPreviewLoaded
+        )
+    
+    const isPreviewRefreshing = hasPreviewLoaded && previewLoading
+
+    useEffect(() => {
+        if (isPreviewRefreshing) {
+            showLoader()
+            return
+        }
+
+        hideLoader()
+    }, [
+        isPreviewRefreshing,
+        showLoader,
+        hideLoader
+    ])
+
+    useEffect(() => {
+        return () => {
+            hideLoader()
+        }
+    }, [hideLoader])
 
     const getUpiAppIcon = (packageName: string) => {
         switch (packageName) {
@@ -428,7 +513,7 @@ export default function CheckoutScreen() {
             return
         }
 
-        if (!selectedCart.isActive) {
+        if (!selectedCart.isOpen) {
             showToast("Restaurant is currently closed", "info")
 
             return
@@ -579,8 +664,7 @@ export default function CheckoutScreen() {
         creatingOrder,
         verifyingPayment,
         startUpiPayment,
-        router,
-        showToast
+        router
     ])
 
     return(
@@ -740,17 +824,22 @@ export default function CheckoutScreen() {
                                     >
                                         <View className="p-3 flex-row items-center gap-2">
                                             <View
-                                                className="relative items-start overflow-hidden justify-center self-start rounded-full border"
+                                                className="relative items-start overflow-hidden justify-center self-start rounded-full"
                                                 style={{
                                                     width: moderateScale(52),
                                                     height: moderateScale(52),
-                                                    borderColor: "rgba(31,31,31,0.10)"
+                                                    borderWidth: !hasImage && !selectedCart.isOpen ? 1 : 0,
+                                                    borderColor: "rgba(31,31,31,0.08)"
                                                 }}
                                             >
                                                 <Image
-                                                    source={{
-                                                        uri: selectedCart.restaurantImage
-                                                    }}
+                                                    source={
+                                                        hasImage
+                                                            ? {
+                                                                uri: selectedCart.restaurantLogoUrl!
+                                                            }
+                                                            : DefaultRestaurantLogo
+                                                    }
                                                     contentFit="cover"
                                                     cachePolicy="memory-disk"
                                                     transition={0}
@@ -821,7 +910,7 @@ export default function CheckoutScreen() {
                                                                 color: "rgba(31,31,31,0.75)"
                                                             }}
                                                         >
-                                                            {selectedCart.deliveryTime}
+                                                            {selectedCart.deliveryTime} min
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -863,8 +952,8 @@ export default function CheckoutScreen() {
                                                     >
                                                         <CartItemRow
                                                             item={item}
-                                                            isRestaurantActive={
-                                                                selectedCart.isActive
+                                                            isRestaurantOpen={
+                                                                selectedCart.isOpen
                                                             }
                                                             editable={false}
                                                         />
@@ -1681,7 +1770,7 @@ export default function CheckoutScreen() {
                                                     : "#777777"
                                             }}
                                         >
-                                            {!selectedCart.isActive
+                                            {!selectedCart.isOpen
                                                 ? "Restaurant Closed"
                                                 : hasUnavailableItems
                                                 ? "Items Unavailable"

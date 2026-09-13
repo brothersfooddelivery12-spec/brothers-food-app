@@ -440,12 +440,20 @@ export default function HomeScreen() {
 
             const mappedPopularMenu: MenuItem[] = PopularMenuData.map((item) => ({
                     id: item.id,
-                    restaurantId: item.restaurant_id,
+                    restaurant: {
+                        id: item.restaurant.id,
+                        name: item.restaurant.name,
+                        LogoUrl: item.restaurant.logo_url ?? null,
+                        isOpen: item.restaurant.is_open
+                    },
                     name: item.name,
-                    imageUrl: item.image_url || null,
                     description: item.description ?? "",
+                    imageUrl: item.image_url || null,
                     price: Number(item.price),
-                    isActive: item.is_available
+                    deliveryTime: item.estimated_time_minutes,
+                    deliveryFee: item.delivery_fee,
+                    isAvailable: item.is_available,
+                    isVeg: item.is_veg
                 })
             )
 
@@ -603,43 +611,51 @@ export default function HomeScreen() {
 
     const handleAddToCart = useCallback(
         (item: MenuItem) => {
-            if (!item.isActive) {
-                showToast("This item is currently unavailable", "warning")
+            console.log(
+                "Restaurant active:",
+                item.restaurant.isOpen
+            )
+
+            console.log(
+                "Restaurant data:",
+                item.restaurant
+            )
+            
+            if (!item.isAvailable) {
+                showToast("This item is currently unavailable", "info")
 
                 return
             }
 
-            const restaurant = getRestaurantById(item.restaurantId)
-
-            if (!restaurant) {
-                showToast("Restaurant not found", "warning")
+            if (!item.restaurant) {
+                showToast("Restaurant not found", "info")
 
                 return
             }
 
-            if (!restaurant.isActive) {
-                showToast("Restaurant is currently closed", "warning")
+            if (!item.restaurant.isOpen) {
+                showToast("Restaurant is currently closed", "info")
 
                 return
             }
 
             addToCart({
                 restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantImage: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isActive: restaurant.isActive
+                    id: item.restaurant.id,
+                    restaurantName: item.restaurant.name,
+                    restaurantLogoUrl: item.restaurant.LogoUrl,
+                    deliveryFee: Number(item.deliveryFee) || 0,
+                    deliveryTime: item.deliveryTime,
+                    isOpen: item.restaurant.isOpen
                 },
 
                 item: {
                     id: item.id,
+                    imageUrl: item.imageUrl,
                     name: item.name,
-                    image: item.imageUrl,
-                    price: item.price,
                     description: item.description,
-                    isActive: item.isActive
+                    price: item.price,
+                    isAvailable: item.isAvailable
                 }
             })
 
@@ -728,7 +744,7 @@ export default function HomeScreen() {
                 disabled={locationLoading}
                 className="w-full flex-row gap-2 bg-[#3F2516] items-center justify-center"
                 style={{
-                    marginTop: verticalScale(18),
+                    marginTop: verticalScale(10),
                     height: verticalScale(40),
                     borderRadius: moderateScale(22)
                 }}

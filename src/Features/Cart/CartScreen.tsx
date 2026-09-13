@@ -4,15 +4,14 @@ import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 import InfoIcon from '@/assets/icon/InfoIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
-import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import FoodCard from "../Home/components/FoodCard"
+import FoodCard, { MenuItem } from "../Home/components/FoodCard"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import { Address, getAllAddresses } from '../Services/address-service'
@@ -20,57 +19,107 @@ import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import { useCartStore } from '../Stores/useCartStore'
 import RestaurantCartCard from "./Components/RestaurantCartCard"
 
-export const FREQUENTLY_ADDED_TOGETHER = [
+export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
     {
         id: "restaurant-1-french-fries",
-        restaurantId: "restaurant-1",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
 
         name: "French Fries",
-        description: "Sides",
-        price: 99,
-        imageUri:
+        description: "Crispy golden french fries",
+        imageUrl:
             "https://i.pinimg.com/736x/73/7e/d9/737ed93987aae98a76fc2e5f12fc0ecc.jpg",
-        isActive: true
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 99.00,
+
+        deliveryTime: 15,
+        deliveryFee: "25"
     },
+
     {
-        id: "restaurant-2-coke",
-        restaurantId: "restaurant-1",
+        id: "restaurant-1-coke",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
 
         name: "Coke",
-        description: "Beverages",
-        price: 59,
-        imageUri:
+        description: "Chilled soft drink",
+        imageUrl:
             "https://i.pinimg.com/1200x/60/70/9b/60709bf9dee58b89448c04a6a518b45b.jpg",
-        isActive: false
+
+        isAvailable: false,
+        isVeg: true,
+
+        price: 59.00,
+
+        deliveryTime: 5,
+        deliveryFee: "25"
     },
+
     {
-        id: "restaurant-3-garlic-bread",
-        restaurantId: "restaurant-1",
+        id: "restaurant-1-garlic-bread",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
 
         name: "Garlic Bread",
-        description: "Sides",
-        price: 129,
-        imageUri:
+        description: "Crispy garlic bread with herbs",
+        imageUrl:
             "https://i.pinimg.com/1200x/89/52/62/8952620f20999169e06c97f10a5eb24b.jpg",
-        isActive: true
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 129.00,
+
+        deliveryTime: 12,
+        deliveryFee: "25"
     },
+
     {
-        id: "restaurant-4-brownie",
-        restaurantId: "restaurant-1",
+        id: "restaurant-1-brownie",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
 
         name: "Brownie",
-        description: "Desserts",
-        price: 99,
-        imageUri:
+        description: "Rich chocolate brownie",
+        imageUrl:
             "https://i.pinimg.com/736x/18/39/b5/1839b51798c581c9219f3d7ccd62cbda.jpg",
-        isActive: true
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 99.00,
+
+        deliveryTime: 10,
+        deliveryFee: "25"
     }
 ]
 
 export default function CartScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
-    const [couponSavings, setCouponSavings] = useState(100)
     const {showToast} = useToast()
 
     const carts = useCartStore((state) => state.carts)
@@ -139,27 +188,6 @@ export default function CartScreen() {
         }, [addressesDirty, clearAddressesDirty, fetchAddresses])
     )
 
-    useEffect(() => {
-        updateRestaurantAvailability(
-            "restaurant-1",
-            true
-        )
-    }, [updateRestaurantAvailability])
-
-    useEffect(() => {
-        updateItemAvailability(
-            "restaurant-1",
-            "restaurant-1-paneer-tikka",
-            true
-        )
-    }, [updateItemAvailability])
-
-    const getRestaurantById = (restaurantId: string) => {
-        return RESTAURANTS.find(
-            (restaurant) => restaurant.id === restaurantId
-        )
-    }
-
     const activeCart = useMemo(() => {
         if (!activeRestaurantId) {
             return null
@@ -167,9 +195,7 @@ export default function CartScreen() {
 
         return (
             carts.find(
-                (restaurant) =>
-                    restaurant.id ===
-                    activeRestaurantId
+                (restaurant) => restaurant.id === activeRestaurantId
             ) ?? null
         )
     }, [
@@ -184,12 +210,7 @@ export default function CartScreen() {
             (total, restaurant) => {
                 return (
                     total +
-                    restaurant.items.reduce(
-                        (count, item) =>
-                            count +
-                            item.quantity,
-                        0
-                    )
+                    restaurant.items.reduce((count, item) => count + item.quantity, 0)
                 )
             },
             0
@@ -202,10 +223,7 @@ export default function CartScreen() {
         }
 
         return activeCart.items.reduce(
-            (total, item) =>
-                total +
-                item.price *
-                    item.quantity,
+            (total, item) => total + item.price * item.quantity,
             0
         )
     }, [activeCart])
@@ -216,7 +234,7 @@ export default function CartScreen() {
         }
 
         return activeCart.items.some(
-            (item) => !item.isActive
+            (item) => !item.isAvailable
         )
     }, [activeCart])
 
@@ -234,9 +252,7 @@ export default function CartScreen() {
                 return
             }
 
-            if (
-                !restaurant.isActive
-            ) {
+            if (!restaurant.isOpen) {
                 return
             }
 
@@ -251,86 +267,64 @@ export default function CartScreen() {
 
     const handleIncrease = useCallback(
         (restaurantId: string, item: any) => {
-            increaseQuantity(
-                restaurantId,
-                item.id
-            )
+            increaseQuantity(restaurantId, item.id)
         },[increaseQuantity]
     )
 
     const handleDecrease = useCallback(
         (restaurantId: string, item: any) => {
-            decreaseQuantity(
-                restaurantId,
-                item.id
-            )
+            decreaseQuantity(restaurantId, item.id)
         },[decreaseQuantity]
     )
 
     const handleRemove = useCallback(
         (restaurantId: string, item: any) => {
-            removeItem(
-                restaurantId,
-                item.id
-            )
+            removeItem(restaurantId, item.id)
         },[removeItem]
     )
 
     const handleFrequentlyAddedItem = useCallback(
-        (item: any) => {
-            if (!item.isActive) {
-                showToast("This item is currently unavailable", "warning")
+        (item: MenuItem) => {
+            if (!item.isAvailable) {
+                showToast("This item is currently unavailable", "info")
 
                 return
             }
 
-            const cartRestaurant = carts.find((cart) => cart.id === item.restaurantId)
-
-            if (cartRestaurant && !cartRestaurant.isActive) {
-                showToast("Restaurant is currently closed", "warning")
+            if (!item.restaurant) {
+                showToast("Restaurant not found", "info")
 
                 return
             }
 
-            const restaurant = getRestaurantById(item.restaurantId)
-
-            if (!restaurant) {
-                showToast("Restaurant not found", "warning")
-
-                return
-            }
-
-            if (!cartRestaurant && !restaurant.isActive) {
-                showToast("Restaurant is currently closed", "warning")
+            if (!item.restaurant.isOpen) {
+                showToast("Restaurant is currently closed", "info")
 
                 return
             }
 
             addToCart({
                 restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantImage: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isActive:
-                        cartRestaurant
-                            ?.isActive ??
-                        restaurant.isActive
+                    id: item.restaurant.id,
+                    restaurantName: item.restaurant.name,
+                    restaurantLogoUrl: item.restaurant.LogoUrl,
+                    deliveryFee: Number(item.deliveryFee),
+                    deliveryTime: item.deliveryTime,
+                    isOpen: item.restaurant.isOpen
                 },
 
                 item: {
                     id: item.id,
+                    imageUrl: item.imageUrl,
                     name: item.name,
-                    image: item.imageUri,
+                    description: item.description,
                     price: item.price,
-                    description: item.category,
-                    isActive: item.isActive
+                    isAvailable: item.isAvailable
                 }
             })
 
-            showToast("added to cart","success")
-        },[addToCart, carts]
+            showToast("added to cart", "success")
+        },[addToCart]
     )
 
     const hasSavedAddress = addresses.length > 0
@@ -338,7 +332,7 @@ export default function CartScreen() {
     const handleCheckout = useCallback(() => {
         if (!activeCart) return
 
-        if (!activeCart.isActive) {
+        if (!activeCart.isOpen) {
             showToast("This restaurant is currently unavailable", "info")
 
             return
@@ -381,12 +375,12 @@ export default function CartScreen() {
             <RestaurantCartCard
                 restaurantId={item.id}
                 restaurantName={item.restaurantName}
-                restaurantImage={item.restaurantImage}
+                restaurantLogoUrl={item.restaurantImage}
                 deliveryFee={item.deliveryFee}
                 deliveryTime={item.deliveryTime}
 
                 isActiveCart={item.id === activeRestaurantId}
-                isRestaurantActive={item.isActive}
+                isRestaurantOpen={item.isOpen}
 
                 items={item.items}
 
@@ -745,7 +739,7 @@ export default function CartScreen() {
                                         color: "#3F2516"
                                     }}
                                 >
-                                    {!activeCart.isActive
+                                    {!activeCart.isOpen
                                         ? "Restaurant Closed"
                                         : hasUnavailableItems
                                         ? "Items Unavailable"
