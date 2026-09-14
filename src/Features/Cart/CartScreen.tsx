@@ -616,8 +616,7 @@ export default function CartScreen() {
                                         <FoodCard
                                             item={item}
                                             onPress={() => {}}
-                                            onAddPress={() => handleFrequentlyAddedItem(item)
-                                        }
+                                            onAddPress={() => {}}
                                         />
                                     )}
                                 />

@@ -28,6 +28,9 @@ const ADDRESS_LABELS = [
     "Others"
 ]
 
+const DEFAULT_LATITUDE = 25.1526
+const DEFAULT_LONGITUDE = 73.0823
+
 export default function AddAddressScreen(){
     const { showToast } = useToast()
     const { addressId } = useLocalSearchParams<{addressId?: string}>()
@@ -45,8 +48,8 @@ export default function AddAddressScreen(){
     const [state, setState] = useState("")
     const [pinCode, setPinCode] = useState("")
     const [addressLine, setAddressLine] = useState("")
-    const [latitude, setLatitude] = useState(0)
-    const [longitude, setLongitude] = useState(0)
+    const [latitude, setLatitude] = useState(DEFAULT_LATITUDE)
+    const [longitude, setLongitude] = useState(DEFAULT_LONGITUDE)
     
     const [receiverNameError, setReceiverNameError] = useState(false)
     const [addressLineError, setAddressLineError] = useState(false)
@@ -101,8 +104,26 @@ export default function AddAddressScreen(){
             setCity(address.city || "")
             setState(address.state || "")
             setPinCode(address.pincode || "")
-            setLatitude(address.latitude ?? 0)
-            setLongitude(address.longitude ?? 0)
+            const apiLatitude = Number(address.latitude)
+            const apiLongitude = Number(address.longitude)
+
+            const hasValidCoordinates =
+                Number.isFinite(apiLatitude) &&
+                Number.isFinite(apiLongitude) &&
+                apiLatitude !== 0 &&
+                apiLongitude !== 0
+
+            setLatitude(
+                hasValidCoordinates
+                    ? apiLatitude
+                    : DEFAULT_LATITUDE
+            )
+
+            setLongitude(
+                hasValidCoordinates
+                    ? apiLongitude
+                    : DEFAULT_LONGITUDE
+            )
         } catch (error: any) {
             console.log("Fetch address error:", error)
 

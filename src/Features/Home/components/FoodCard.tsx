@@ -33,6 +33,54 @@ interface FoodCardProps {
     onAddPress?: () => void
 }
 
+const FoodTypeIndicator = ({ isVeg, isInactive }: {
+    isVeg: boolean
+    isInactive: boolean
+}) => {
+    const color = isVeg ? "#22C55E" : "#C44512"
+
+    return (
+        <View
+            className="flex-row items-center self-start"
+            style={{
+                gap: moderateScale(4),
+                borderRadius: moderateScale(9)
+            }}
+        >
+            <View
+                className="items-center justify-center"
+                style={{
+                    width: moderateScale(13),
+                    height: moderateScale(13),
+
+                    borderWidth: moderateScale(1.2),
+                    borderColor: isInactive ? "rgba(31,31,31,0.40)" : color,
+                    borderRadius: moderateScale(3)
+                }}
+            >
+                <View
+                    style={{
+                        width: moderateScale(6),
+                        height: moderateScale(6),
+                        borderRadius: moderateScale(4),
+                        backgroundColor: isInactive ? "rgba(31,31,31,0.40)" : color
+                    }}
+                />
+            </View>
+
+            <Text
+                className="font-semibold tracking-wide"
+                style={{
+                    fontSize: moderateScale(10),
+                    color: isInactive ? "rgba(31,31,31,0.45)" : color
+                }}
+            >
+                {isVeg ? "Veg" : "Non-Veg"}
+            </Text>
+        </View>
+    )
+}
+
 const FoodCard = ({
     item,
     onPress,
@@ -157,7 +205,7 @@ const FoodCard = ({
             <View
                 className="px-3 pb-3"
                 style={{
-                    height: verticalScale(80),
+                    height: verticalScale(95),
                     paddingTop: moderateScale(1)
                 }}
             >
@@ -186,6 +234,17 @@ const FoodCard = ({
                 >
                     {item.description}
                 </Text>
+
+                <View
+                    style={{
+                        marginTop: verticalScale(5)
+                    }}
+                >
+                    <FoodTypeIndicator
+                        isVeg={item.isVeg}
+                        isInactive={isInactive}
+                    />
+                </View>
 
                 <View className="flex-row items-center mt-auto">
                     <View

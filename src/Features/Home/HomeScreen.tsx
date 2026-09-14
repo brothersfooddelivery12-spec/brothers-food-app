@@ -8,7 +8,6 @@ import SearchIcon from '@/assets/icon/SearchOutline.svg'
 import RestaurantCard, { Restaurants } from "@/components/RestaurantCard"
 import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
 import { offers } from "@/constant/OffersCardData"
-import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import BannerCarousel from "@/Features/Home/components/BannerCarousel"
 import FoodCard, { MenuItem } from "@/Features/Home/components/FoodCard"
 import NearByRestaurantsList, { NearByRestaurants } from "@/Features/Home/components/NearByRestaurants"
@@ -16,7 +15,7 @@ import OfferCard from "@/Features/Home/components/OffersCard"
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
 import { Image } from "expo-image"
 import * as Location from "expo-location"
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Alert, FlatList, Linking, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
@@ -516,42 +515,53 @@ export default function HomeScreen() {
         }
     },[])
 
-    useEffect(() => {
-        if (!hasHydrated || !location) {
-            return
-        }
+    const [loadingHome, setLoadingHome] = useState(false)
 
-        fetchAdvertisements()
+    const fetchHomeData = useCallback(
+        async (latitude: number, longitude: number) => {
+            try {
+                setLoadingHome(true)
 
-        fetchCategories(
-            25.149131,
-            73.083126
-        )
+                await Promise.all([
+                    fetchAdvertisements(),
+                    fetchCategories(latitude, longitude),
+                    fetchPopularMenu(latitude, longitude),
+                    fetchPopularRestaurants(latitude, longitude),
+                    fetchNearbyRestaurants(latitude, longitude)
+                ])
+            } catch (error) {
+                console.log("Home data fetch error:", error)
+            } finally {
+                setLoadingHome(false)
+            }
+        },
+        [
+            fetchAdvertisements,
+            fetchCategories,
+            fetchPopularMenu,
+            fetchPopularRestaurants,
+            fetchNearbyRestaurants
+        ]
+    )
 
-        fetchPopularMenu(
-            25.149131,
-            73.083126
-        )
+    useFocusEffect(
+        useCallback(() => {
+            if (!hasHydrated || !location) {
+                return
+            }
 
-        fetchPopularRestaurants(
-            25.149131,
-            73.083126
-        )
+            void fetchHomeData(
+                25.149131,
+                73.083126
+            )
+        }, [
+            hasHydrated,
+            location?.latitude,
+            location?.longitude,
+            fetchHomeData
+        ])
+    )
 
-        fetchNearbyRestaurants(
-            25.149131,
-            73.083126
-        )
-    }, [
-        hasHydrated,
-        location?.latitude,
-        location?.longitude,
-        fetchAdvertisements,
-        fetchCategories,
-        fetchPopularMenu,
-        fetchPopularRestaurants,
-        fetchNearbyRestaurants
-    ])
 
     const user = useAuthStore((state) => state.user)
 
@@ -581,12 +591,6 @@ export default function HomeScreen() {
     }
 
     const addToCart = useCartStore((state) => state.addToCart)
-
-    const getRestaurantById = (restaurantId: string) => {
-        return RESTAURANTS.find(
-            (restaurant) => restaurant.id === restaurantId
-        )
-    }
 
     const handleRestaurantPress = useCallback((restaurantId: string, isActive: boolean) => {
         if (!isActive) {
@@ -793,8 +797,6 @@ export default function HomeScreen() {
         </View>
     )
 
-    const isLoading = loadingCategories || loadingAdvertisements || loadingPopularRestaurants || loadingPopularMenu || loadingNearby
-
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
             <StatusBar
@@ -819,7 +821,7 @@ export default function HomeScreen() {
                 </View>
             ) : (
                 <FlatList
-                    data={location && !isLoading ? nearbyRestaurants : []}
+                    data={location && !loadingHome ? nearbyRestaurants : []}
                     keyExtractor={(item) => item.id}
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
@@ -956,7 +958,7 @@ export default function HomeScreen() {
                                 </View>
                             </View>
 
-                            {location && !isLoading && (
+                            {location && !loadingHome && (
                                 <>
                                     <View
                                         className="items-start"
@@ -1299,7 +1301,7 @@ export default function HomeScreen() {
                             )}
                         </>
                     }
-                    ListEmptyComponent={!location ? (renderLocationRequired()) : isLoading ? (
+                    ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
                         <View
                             className="items-center justify-center"
                             style={{ minHeight: screenHeight - headerHeight - verticalScale(100) }}

@@ -216,8 +216,16 @@ export type CreateOrderRequest = {
     note?: string
 }
 
-export const createOrder = (payload: CreateOrderRequest) => {
+export const createCheckoutOrder = (payload: CreateOrderRequest) => {
     return api.post("/order/create", payload)
+}
+
+export type VerifyPaymentRequest = {
+    order_id: string
+}
+
+export const verifyCashfreePayment = (payload: VerifyPaymentRequest) => {
+    return api.post("/payments/verify", payload)
 }
 
 export const getRestaurantById = (restaurantId: string) => {

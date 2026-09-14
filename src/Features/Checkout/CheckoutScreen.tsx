@@ -24,6 +24,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FlatList, StatusBar, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
+import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from 'react-native-svg'
@@ -31,7 +32,7 @@ import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
 import { useCashfreeUpi } from '../hook/useCashfreeUpi'
 import { getAllAddresses, UserAddress } from '../Services/address-service'
-import { CartPreview, CartPreviewRequest, getCartPreview } from '../Services/api-service'
+import { CartPreview, CartPreviewRequest, createCheckoutOrder, CreateOrderRequest, getCartPreview, OrderPaymentMethod, verifyCashfreePayment } from '../Services/api-service'
 import { hideLoader, showLoader } from '../Services/loader-service'
 import { getMyWallet, Wallet } from '../Services/wallet-service'
 import { useAddressRefreshStore } from '../Stores/address-refresh-store'
@@ -98,7 +99,7 @@ export default function CheckoutScreen() {
     const [loadingAddresses, setLoadingAddresses] = useState(true)
     const [selectedAddress, setSelectedAddress] = useState<string | null>(null)
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
-    const [couponSavings, setCouponSavings] = useState(100)
+    const [couponSavings, setCouponSavings] = useState(0)
     const [loading, setLoading] = useState(true)
     const [wallet, setWallet] = useState<Wallet | null>(null)
     const [hasPreviewLoaded, setHasPreviewLoaded] = useState(false)
@@ -317,8 +318,6 @@ export default function CheckoutScreen() {
     const grandTotal = Math.max(
         itemsTotal +
             deliveryFee +
-            platformFee +
-            packingFee +
             gstAndTaxes -
             couponSavings,
         0
@@ -339,38 +338,41 @@ export default function CheckoutScreen() {
         selectedCart.isOpen &&
         selectedCart.items.length > 0 &&
         !hasUnavailableItems &&
-        !!selectedPayment &&
-        !creatingOrder &&
-        !verifyingPayment
+        !!selectedPayment
+
+    const isPaymentProcessing =
+        creatingOrder ||
+        verifyingPayment
 
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
         try {
-            // setVerifyingPayment(true)
+            setVerifyingPayment(true)
+            showLoader()
 
-            // console.log("Verifying payment:", cashfreeOrderId)
+            console.log("Verifying payment:", cashfreeOrderId)
 
-            // const res = await verifyCashfreePayment(cashfreeOrderId)
+            const res = await verifyCashfreePayment({order_id: cashfreeOrderId})
 
-            // console.log("Verify response:", res.data)
+            console.log("Verify response:", res.data)
 
-            // if (res.data.success && res.data.paid) {
-            //     setProcessingUpiApp(null)
+            if (res.data.success) {
+                setProcessingUpiApp(null)
 
-            //     showToast("Payment successful", "success")
+                showToast("Payment successful", "success")
 
-            //     router.replace({
-            //         pathname: "/order-success",
-            //         params: {
-            //             orderId: res.data.data.order_id
-            //         }
-            //     })
+                router.replace({
+                    pathname: "/order-success",
+                    params: {
+                        orderId: cashfreeOrderId
+                    }
+                })
 
-            //     return
-            // }
+                return
+            }
 
-            // setProcessingUpiApp(null)
+            setProcessingUpiApp(null)
 
-            // showToast(res.data.message || "Payment is being verified.", "warning")
+            showToast(res.data.message || "Payment is being verified.", "warning")
         } catch (error: any) {
             console.log("Payment verification error:", error)
 
@@ -379,6 +381,7 @@ export default function CheckoutScreen() {
             showToast(error?.message || "Unable to verify payment.", "warning")
         } finally {
             setVerifyingPayment(false)
+            hideLoader()
         }
     },[router])
 
@@ -508,40 +511,66 @@ export default function CheckoutScreen() {
         selectedPayment
     ])
 
+    const getOrderPaymentMethod = (): OrderPaymentMethod => {
+        if (selectedPayment === "cod") {
+            return "COD"
+        }
+
+        if (selectedPayment === "wallet") {
+            return "WALLET"
+        }
+
+        if (selectedPayment?.startsWith("upi-")) {
+            return "ONLINE"
+        }
+
+        return "ONLINE"
+    }
+
     const handlePlaceOrder = useCallback(async () => {
         if (!selectedCart) {
             return
         }
 
+        if (!selectedAddress) {
+            showToast("Please select a delivery address", "info")
+            
+            return
+        }
+
         if (!selectedCart.isOpen) {
             showToast("Restaurant is currently closed", "info")
-
+            
             return
         }
 
         if (hasUnavailableItems) {
             showToast("Some items are currently unavailable", "info")
-
+            
             return
         }
 
         if (!selectedPayment) {
             showToast("Please select a payment method", "info")
+            
+            return
+        }
 
+        if (creatingOrder || verifyingPayment) {
             return
         }
 
         if (selectedPayment === "wallet") {
             if (loading) {
                 showToast("Please wait while we check your wallet balance", "info")
-
+                
                 return
             }
 
             if (!wallet) {
                 showToast("Unable to access your wallet", "warning")
-
                 return
+
             }
 
             const walletBalance = Number(wallet.balance ?? 0)
@@ -550,7 +579,7 @@ export default function CheckoutScreen() {
 
             if (walletBalance <= 0) {
                 showToast("Your Brothers Wallet has insufficient balance", "info")
-
+                
                 return
             }
 
@@ -558,12 +587,9 @@ export default function CheckoutScreen() {
                 const requiredAmount = payableAmount - walletBalance
 
                 showToast(
-                    `Insufficient wallet balance. Add ₹${requiredAmount.toLocaleString(
-                        "en-IN",
-                        {
-                            maximumFractionDigits: 2
-                        }
-                    )} more to continue.`,
+                    `Add ₹${requiredAmount.toLocaleString("en-IN", {
+                        maximumFractionDigits: 2
+                    })} to continue.`,
                     "info"
                 )
 
@@ -571,81 +597,103 @@ export default function CheckoutScreen() {
             }
         }
 
-        if (creatingOrder || verifyingPayment) {
-            return
+        const payload: CreateOrderRequest = {
+            restaurant_id: selectedCart.id,
+            address_id: selectedAddress,
+            payment_method: getOrderPaymentMethod(),
+            items:
+                selectedCart.items.map(
+                    (item) => ({
+                        menu_id: item.id,
+                        quantity: item.quantity
+                    })
+                ),
+            note: "Hello Order Kar po"
         }
 
         try {
-            // setCreatingOrder(true)
+            setCreatingOrder(true)
+            showLoader()
 
-            // if (selectedUpiMethod) {
-            //     setProcessingUpiApp(
-            //         selectedUpiMethod.packageName
-            //     )
+            console.log("Create Order Payload:", payload)
 
-            //     const res = await createCheckoutOrder({
-            //         restaurant_id: selectedCart.id,
-            //         address_id: selectedAddress,
-            //         payment_method: "UPI",
-            //         items:
-            //             selectedCart.items.map(
-            //                 (item) => ({
-            //                     food_id: item.id,
-            //                     quantity: item.quantity
-            //                 })
-            //             )
-            //     })
+            if (selectedPayment === "wallet") {
+                const res = await createCheckoutOrder(payload)
 
-            //     console.log("Create order response:", res.data)
+                console.log("Wallet order response:", res.data)
 
-            //     if (!res.data.success) {
-            //         throw new Error(res.data.message || "Unable to create order.")
-            //     }
+                if (!res.data.success) {
+                    throw new Error(res.data.message || "Unable to place order.")
+                }
 
-            //     const payment = res.data.data.payment
+                const orderId = res.data.data?.order_id
 
-            //     if (!payment?.cashfree_order_id || !payment?.payment_session_id) {
-            //         throw new Error("Invalid Cashfree payment session.")
-            //     }
+                if (!orderId) {
+                    throw new Error("Order ID not found.")
+                }
 
-            //     await startUpiPayment({
-            //         orderId: payment.cashfree_order_id,
-            //         paymentSessionId: payment.payment_session_id,
-            //         appPackage: selectedUpiMethod.packageName
-            //     })
+                router.replace({
+                    pathname: "/order-success",
+                    params: {
+                        orderId
+                    }
+                })
 
-            //     return
-            // }
+                return
+            }
 
-            // if (selectedPayment === "cod") {
-            //     const res = await createCheckoutOrder({
-            //         restaurant_id: selectedCart.id,
-            //         address_id: selectedAddress,
-            //         payment_method: "COD",
-            //         items:
-            //             selectedCart.items.map(
-            //                 (item) => ({
-            //                     food_id: item.id,
-            //                     quantity: item.quantity
-            //                 })
-            //             )
-            //     })
+            if (selectedPayment === "cod") {
+                const res = await createCheckoutOrder(payload)
 
-            //     if (!res.data.success) {
-            //         throw new Error(res.data.message || "Unable to place order.")
-            //     }
+                console.log("COD order response:", res.data)
 
-            //     router.replace({
-            //         pathname: "/order-success",
-            //         params: {
-            //             orderId: res.data.data.order_id
-            //         }
-            //     })
+                if (!res.data.success) {
+                    throw new Error(res.data.message || "Unable to place order.")
+                }
 
-            //     return
-            // }
+                const orderId = res.data.data?.order_id
 
-            // showToast("This payment method is not available yet.", "warning")
+                if (!orderId) {
+                    throw new Error("Order ID not found.")
+                }
+
+                router.replace({
+                    pathname: "/order-success",
+                    params: {
+                        orderId
+                    }
+                })
+
+                return
+            }
+
+            if (selectedUpiMethod) {
+                setProcessingUpiApp(selectedUpiMethod.packageName)
+
+                const res = await createCheckoutOrder(payload)
+
+                console.log("UPI order response:", res.data)
+
+                if (!res.data.success) {
+                    throw new Error(res.data.message || "Unable to create order.")
+                }
+
+                const payment = res.data.data
+
+                if (!payment?.order_id || !payment?.payment_session_id) {
+                    throw new Error("Invalid Cashfree payment session.")
+                }
+
+                await startUpiPayment({
+                    orderId: payment.order_id,
+                    paymentSessionId: payment.payment_session_id,
+                    appPackage: selectedUpiMethod.packageName
+                })
+
+                return
+            }
+
+            showToast("This payment method is not available yet.", "warning")
         } catch (error: any) {
             console.log("Place order error:", error)
 
@@ -654,18 +702,54 @@ export default function CheckoutScreen() {
             showToast(error?.message || "Unable to place order.", "warning")
         } finally {
             setCreatingOrder(false)
+            hideLoader()
         }
     }, [
         selectedCart,
+        selectedAddress,
         selectedPayment,
         selectedUpiMethod,
-        selectedAddress,
         hasUnavailableItems,
         creatingOrder,
         verifyingPayment,
+        loading,
+        wallet,
+        grandTotal,
+        getOrderPaymentMethod,
         startUpiPayment,
         router
     ])
+
+    const LoadingDots = React.memo(() => {
+        const [count, setCount] = useState(0)
+
+        useEffect(() => {
+            const interval = setInterval(() => {
+                setCount((prev) =>
+                    prev === 3 ? 0 : prev + 1
+                )
+            }, 450)
+
+            return () => clearInterval(interval)
+        }, [])
+
+        return (
+            <View
+                style={{
+                    width: moderateScale(16)
+                }}
+            >
+                <Text
+                    className="text-[#3F2516] font-extrabold"
+                    style={{
+                        fontSize: moderateScale(15.5)
+                    }}
+                >
+                    {".".repeat(count)}
+                </Text>
+            </View>
+        )
+    })
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -1271,7 +1355,7 @@ export default function CheckoutScreen() {
                                     </>
                                 )}
         
-                                <Text
+                                {/* <Text
                                     className="text-[#1F1F1F] font-semibold"
                                     style={{
                                         fontSize: moderateScale(15),
@@ -1382,7 +1466,7 @@ export default function CheckoutScreen() {
                                             </React.Fragment>
                                         )
                                     })}
-                                </View>
+                                </View> */}
         
                                 <TouchableOpacity
                                     activeOpacity={0.95}
@@ -1735,18 +1819,23 @@ export default function CheckoutScreen() {
                                     borderColor: "rgba(31,31,31,0.15)"
                                 }}
                             >
-                                {creatingOrder || verifyingPayment ? (
-                                    <>
-                                        <LottieView
-                                            source={require("../../../assets/animations/Loading.json")}
-                                            autoPlay
-                                            loop
-                                            style={{
-                                                width: moderateScale(62),
-                                                height: moderateScale(62)
-                                            }}
-                                        />
-
+                                {isPaymentProcessing ? (
+                                    <Animated.View
+                                        entering={
+                                            FadeInDown
+                                                .duration(400)
+                                                .withInitialValues({
+                                                    opacity: 0,
+                                                    transform: [
+                                                        { translateY: -4 }
+                                                    ]
+                                                })
+                                        }
+                                        exiting={
+                                            FadeOutUp.duration(250)
+                                        }
+                                        className="flex-row items-center"
+                                    >
                                         <Text
                                             className="font-semibold"
                                             style={{
@@ -1755,10 +1844,12 @@ export default function CheckoutScreen() {
                                             }}
                                         >
                                             {verifyingPayment
-                                                ? "Verifying..."
-                                                : "Processing..."}
+                                                ? "Verifying"
+                                                : "Processing"}
                                         </Text>
-                                    </>
+
+                                        <LoadingDots />
+                                    </Animated.View>
                                 ) : (
                                     <>
                                         <Text
