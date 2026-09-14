@@ -104,7 +104,7 @@ export default function VerificationSuccessScreen() {
         }
     }, [userExists, fullName, isUpdating, resetSwipe, router, showToast])
 
-    const THUMB_SIZE = moderateScale(36)
+    const THUMB_SIZE = moderateScale(40)
     const HORIZONTAL_PADDING = scale(8)
 
     const buttonWidth = useSharedValue(0)
@@ -412,7 +412,7 @@ export default function VerificationSuccessScreen() {
                                 animatedThumbStyle
                             ]}
                         >
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
+                            <ArrowRightIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={2} />
                         </Animated.View>
 
                         <View

@@ -1,8 +1,8 @@
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import ClockIcon from "@/assets/icon/TimerIcon.svg"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -23,7 +23,7 @@ export interface Restaurants {
     discount?: string | null
     priceForTwo?: number | null
 
-    isActive: boolean
+    isOpen: boolean
 }
 
 interface RestaurantCardProps {
@@ -40,7 +40,7 @@ const RestaurantCard = ({
     onFavouritePress,
     isFavourite = false
 }: RestaurantCardProps) => {
-    const isInactive = !restaurant.isActive
+    const isInactive = !restaurant.isOpen
     
     const [imageError, setImageError] = useState(false)
 
@@ -61,7 +61,7 @@ const RestaurantCard = ({
 
     return (
         <TouchableOpacity
-            activeOpacity={restaurant.isActive ? 0.95 : 1}
+            activeOpacity={restaurant.isOpen ? 0.95 : 1}
             onPress={onPress}
             className="w-full overflow-hidden border"
             style={{
@@ -201,7 +201,7 @@ const RestaurantCard = ({
                                 lineHeight: moderateScale(14),
                                 color: isInactive
                                     ? "rgba(31,31,31,0.38)"
-                                    : "rgba(31,31,31,0.75)"
+                                    : "rgba(31,31,31,0.65)"
                             }}
                         >
                             {restaurant.cuisines}
@@ -290,7 +290,7 @@ const RestaurantCard = ({
                             <ClockIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
-                                color={isInactive ? "#858585" : "#5C4639"}
+                                color={isInactive ? "#858585" : "#5C4639"} strokeWidth={1.8}
                             />
                         </View>
 

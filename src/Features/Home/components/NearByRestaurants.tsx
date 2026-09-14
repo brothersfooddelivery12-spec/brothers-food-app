@@ -18,7 +18,7 @@ export interface NearByRestaurants {
     discount?: string | null
     priceForTwo?: number | null
 
-    isActive: boolean
+    isOpen: boolean
 }
 
 interface RestaurantListCardProps {
@@ -27,7 +27,7 @@ interface RestaurantListCardProps {
 }
 
 const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) => {
-    const isInactive = !restaurant.isActive
+    const isInactive = !restaurant.isOpen
 
     const [imageError, setImageError] = useState(false)
 
@@ -48,7 +48,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
 
     return (
         <TouchableOpacity
-            activeOpacity={restaurant.isActive ? 0.95 : 1}
+            activeOpacity={restaurant.isOpen ? 0.95 : 1}
             onPress={onPress}
             className="w-full flex-row overflow-hidden border p-2"
             style={{
@@ -136,7 +136,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                         marginTop: moderateScale(1),
                         color: isInactive
                             ? "rgba(31,31,31,0.40)"
-                            : "rgba(31,31,31,0.75)"
+                            : "rgba(31,31,31,0.65)"
                     }}
                 >
                     {restaurant.cuisines}

@@ -93,7 +93,7 @@ const PastOrdersCard = ({
                         }}
                     >
                         {status === "Delivered" ? (
-                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#4d9151" strokeWidth={1.5} />
+                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#20bb59" strokeWidth={1.5} />
                         ) : (
                             <CancelCircleIcon width={moderateScale(16)} height={moderateScale(16)} color="#DC2626" strokeWidth={1.5} />
                         )}
@@ -102,7 +102,7 @@ const PastOrdersCard = ({
                             className="font-medium"
                             style={{
                                 fontSize: moderateScale(10),
-                                color: status === "Delivered" ? "#4d9151" : "#DC2626"
+                                color: status === "Delivered" ? "#20bb59" : "#DC2626"
                             }}
                         >
                             {status}

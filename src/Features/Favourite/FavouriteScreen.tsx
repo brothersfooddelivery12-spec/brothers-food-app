@@ -192,25 +192,25 @@ export default function FavouritesScreen() {
                 return
             }
 
-            addToCart({
-                restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantLogoUrl: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isOpen: restaurant.isActive
-                },
+            // addToCart({
+            //     restaurant: {
+            //         id: restaurant.id,
+            //         restaurantName: restaurant.name,
+            //         restaurantLogoUrl: restaurant.imageUri,
+            //         deliveryTime: restaurant.deliveryTime,
+            //         deliveryFee: restaurant.deliveryFee,
+            //         isOpen: restaurant.isActive
+            //     },
 
-                item: {
-                    id: item.id,
-                    name: item.name,
-                    imageUrl: item.imageUri,
-                    price: item.price,
-                    description: item.category,
-                    isAvailable: item.isActive
-                }
-            })
+            //     item: {
+            //         id: item.id,
+            //         name: item.name,
+            //         imageUrl: item.imageUri,
+            //         price: item.price,
+            //         description: item.category,
+            //         isAvailable: item.isActive
+            //     }
+            // })
 
             showToast("added to cart", "success")
         },[addToCart]

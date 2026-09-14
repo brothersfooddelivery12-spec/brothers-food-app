@@ -1,10 +1,10 @@
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import BoxIcon from '@/assets/icon/BoxIcon.svg'
 import BoxTimeIcon from '@/assets/icon/BoxTimeIcon.svg'
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 import CustomerServiceIcon from "@/assets/icon/CustomerServiceIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
+import ClockIcon from "@/assets/icon/TimerIcon.svg"
 import { Image } from "expo-image"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -122,7 +122,7 @@ const ActiveOrderCard = ({
                                 height: moderateScale(22)
                             }}
                         >
-                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color="#5c4639" />
+                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color="#5c4639" strokeWidth={1.8} />
                         </View>
 
                         <Text

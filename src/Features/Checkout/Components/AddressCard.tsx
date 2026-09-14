@@ -105,7 +105,7 @@ const AddressCard = ({
                             }}
                         >
                             <Text   
-                                className="text-[#4d9151] font-medium"
+                                className="text-[#20bb59] font-medium"
                                 style={{ fontSize: moderateScale(10) }}
                             >
                                 Selected
@@ -174,7 +174,7 @@ const AddressCard = ({
                             borderRadius: moderateScale(14)
                         }}
                     >
-                        <EditIcon width={moderateScale(12)} height={moderateScale(12)} color="#FFFFFF" strokeWidth={1.5} />
+                        <EditIcon width={moderateScale(12)} height={moderateScale(12)} color="#FFFFFF" strokeWidth={1.8} />
 
                         <Text
                             className="text-white font-medium tracking-wider"

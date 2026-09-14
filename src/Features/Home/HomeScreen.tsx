@@ -25,7 +25,9 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant, PopularMenu, PopularRestaurant } from '../Services/api-service'
+import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '../Services/favorite-service'
 import { useAuthStore } from '../Stores/auth-store'
+import { useFavouriteStore } from '../Stores/favourite-store'
 import { useLocationStore } from '../Stores/locationStore'
 import { useCartStore } from '../Stores/useCartStore'
 
@@ -404,7 +406,7 @@ export default function HomeScreen() {
                             : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
-                    isActive: item.is_open
+                    isOpen: item.is_open
                 })
             )
 
@@ -501,7 +503,7 @@ export default function HomeScreen() {
                             : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
-                    isActive: item.is_open
+                    isOpen: item.is_open
                 })
             )
 
@@ -592,9 +594,9 @@ export default function HomeScreen() {
 
     const addToCart = useCartStore((state) => state.addToCart)
 
-    const handleRestaurantPress = useCallback((restaurantId: string, isActive: boolean) => {
-        if (!isActive) {
-            showToast("Restaurant unavailable", "info")
+    const handleRestaurantPress = useCallback((restaurantId: string, isOpen: boolean) => {
+        if (!isOpen) {
+            showToast("Restaurant is currently closed", "info")
 
             return
         }
@@ -609,23 +611,54 @@ export default function HomeScreen() {
         })
     }, [showToast, preventDoublePress, router])
 
-    const handleFavouritePress = useCallback((id: string) => {
-        console.log("Favourite:", id)
-    }, [])
+    const {
+        restaurantIds,
+        addRestaurant,
+        removeRestaurant
+    } = useFavouriteStore()
+
+    const handleFavouritePress = useCallback(async (id: string) => {
+        const isFavourite = useFavouriteStore
+                .getState().restaurantIds.includes(id)
+
+        if (isFavourite) {
+            removeRestaurant(id)
+        } else {
+            addRestaurant(id)
+        }
+
+        try {
+            const res = isFavourite
+                ? await removeRestaurantFromFavorites(id)
+                : await addRestaurantToFavorites(id)
+
+            console.log("Favourite response:", res.data)
+
+            if (!res.data.success) {
+                if (isFavourite) {
+                    addRestaurant(id)
+                } else {
+                    removeRestaurant(id)
+                }
+
+                showToast(res.data.message || "Unable to update favourite.", "info")
+            }
+        } catch (error: any) {
+            console.log("Favourite error:", error)
+
+            if (isFavourite) {
+                addRestaurant(id)
+            } else {
+                removeRestaurant(id)
+            }
+
+            showToast("Unable to update favourite.", "info")
+        }
+    }, [addRestaurant, removeRestaurant])
 
     const handleAddToCart = useCallback(
         (item: MenuItem) => {
-            console.log(
-                "Restaurant active:",
-                item.restaurant.isOpen
-            )
-
-            console.log(
-                "Restaurant data:",
-                item.restaurant
-            )
-            
-            if (!item.isAvailable) {
+           if (!item.isAvailable) {
                 showToast("This item is currently unavailable", "info")
 
                 return
@@ -663,7 +696,7 @@ export default function HomeScreen() {
                 }
             })
 
-            showToast("added to cart", "success")
+            showToast("Item added to cart", "success")
         },[addToCart]
     )
 
@@ -702,7 +735,7 @@ export default function HomeScreen() {
                 <NearByRestaurantsList
                     restaurant={item}
                     onPress={() => {
-                        handleRestaurantPress(item.id, item.isActive)
+                        handleRestaurantPress(item.id, item.isOpen)
                     }}
                 />
             )
@@ -1136,18 +1169,23 @@ export default function HomeScreen() {
                                             gap: moderateScale(15)
                                         }}
                                     >
-                                        {popularRestaurants.map((restaurant) => (
-                                            <RestaurantCard
-                                                key={restaurant.id}
-                                                restaurant={restaurant}
-                                                onPress={() =>
-                                                    handleRestaurantPress(restaurant.id, restaurant.isActive)
-                                                }
-                                                onFavouritePress={() =>
-                                                    handleFavouritePress(restaurant.id)
-                                                }
-                                            />
-                                        ))}
+                                        {popularRestaurants.map((restaurant) => {
+                                            const isFavourite = restaurantIds.includes(restaurant.id)
+
+                                            return (
+                                                <RestaurantCard
+                                                    key={restaurant.id}
+                                                    restaurant={restaurant}
+                                                    isFavourite={isFavourite}
+                                                    onPress={() =>
+                                                        handleRestaurantPress(restaurant.id, restaurant.isOpen)
+                                                    }
+                                                    onFavouritePress={() =>
+                                                        handleFavouritePress(restaurant.id)
+                                                    }
+                                                />
+                                            )
+                                        })}
                                     </View>
             
                                     <Text
@@ -1304,7 +1342,7 @@ export default function HomeScreen() {
                     ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
                         <View
                             className="items-center justify-center"
-                            style={{ minHeight: screenHeight - headerHeight - verticalScale(100) }}
+                            style={{ minHeight: screenHeight - headerHeight - verticalScale(88) }}
                         >
                             <LottieView
                                 source={require(

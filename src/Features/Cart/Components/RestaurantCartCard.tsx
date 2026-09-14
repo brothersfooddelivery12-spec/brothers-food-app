@@ -1,8 +1,8 @@
 import ArrowDownIcon from '@/assets/icon/ArrowDown.svg'
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
+import ClockIcon from "@/assets/icon/TimerIcon.svg"
 import { CartItem } from '@/Features/Stores/useCartStore'
 import { Image } from "expo-image"
 import React, { memo, useCallback, useEffect, useState } from "react"
@@ -333,7 +333,7 @@ const RestaurantCartCard = memo(
                                     <ClockIcon
                                         width={moderateScale(14)}
                                         height={moderateScale(14)}
-                                        color={isRestaurantOpen ? "#5C4639" : "#858585"}
+                                        color={isRestaurantOpen ? "#5C4639" : "#858585"} strokeWidth={1.8}
                                     />
                                 </View>
 
@@ -383,7 +383,7 @@ const RestaurantCartCard = memo(
                             }}
                         >
                             <Text
-                                className="text-[#4D9151] font-semibold uppercase"
+                                className="text-[#20bb59] font-semibold uppercase"
                                 style={{ fontSize: moderateScale(8) }}
                             >
                                 Active Cart

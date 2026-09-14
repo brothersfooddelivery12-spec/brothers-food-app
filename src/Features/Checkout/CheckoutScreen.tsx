@@ -3,7 +3,6 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import { default as ArrowRight, default as ArrowRightIcon } from '@/assets/icon/ArrowRight.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
-import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import CouponIcon from '@/assets/icon/CouponIcon.svg'
 import CreditCardIcon from '@/assets/icon/DebitCardIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
@@ -15,6 +14,7 @@ import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
 import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
 import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
+import ClockIcon from '@/assets/icon/TimerIcon.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
@@ -30,7 +30,7 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from 'react-native-svg'
 import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
-import { useCashfreeUpi } from '../hook/useCashfreeUpi'
+import { CashfreePaymentError, useCashfreeUpi } from '../hook/useCashfreeUpi'
 import { getAllAddresses, UserAddress } from '../Services/address-service'
 import { CartPreview, CartPreviewRequest, createCheckoutOrder, CreateOrderRequest, getCartPreview, OrderPaymentMethod, verifyCashfreePayment } from '../Services/api-service'
 import { hideLoader, showLoader } from '../Services/loader-service'
@@ -385,19 +385,25 @@ export default function CheckoutScreen() {
         }
     },[router])
 
-    const handlePaymentError = useCallback((message: string, orderId?: string) => {
-        console.log("Cashfree payment error:",
-            {
-                message,
-                orderId
-            }
-        )
+    const handlePaymentError = useCallback((
+        error: CashfreePaymentError
+    ) => {
+        console.log("Cashfree payment error:", {
+            message: error.message,
+            orderId: error.orderId,
+            code: error.code,
+            type: error.type,
+            status: error.status,
+            originalError: error.originalError
+        })
 
         setCreatingOrder(false)
         setVerifyingPayment(false)
         setProcessingUpiApp(null)
 
-        showToast(message, "warning")
+        hideLoader()
+
+        showToast(error.message, "warning")
     }, [])
 
     const {
@@ -983,7 +989,7 @@ export default function CheckoutScreen() {
                                                             <ClockIcon
                                                                 width={moderateScale(14)}
                                                                 height={moderateScale(14)}
-                                                                color={"#5C4639"}
+                                                                color={"#5C4639"} strokeWidth={1.8}
                                                             />
                                                         </View>
                         
@@ -1036,9 +1042,7 @@ export default function CheckoutScreen() {
                                                     >
                                                         <CartItemRow
                                                             item={item}
-                                                            isRestaurantOpen={
-                                                                selectedCart.isOpen
-                                                            }
+                                                            isRestaurantOpen={selectedCart.isOpen}
                                                             editable={false}
                                                         />
         
@@ -1307,7 +1311,7 @@ export default function CheckoutScreen() {
                                                                 </Text>
         
                                                                 <Text
-                                                                    className="text-[#1F1F1F]/75 font-medium mt-1"
+                                                                    className="text-[#1F1F1F]/65 font-medium mt-1"
                                                                     style={{ fontSize: moderateScale(11) }}
                                                                 >
                                                                     {item.description}
@@ -1565,7 +1569,7 @@ export default function CheckoutScreen() {
                                                         </View>
         
                                                         <Text
-                                                            className="text-[#1F1F1F]/75 font-medium"
+                                                            className="text-[#1F1F1F]/65 font-medium"
                                                             style={{
                                                                 fontSize: moderateScale(10.5),
                                                                 marginTop: verticalScale(2)

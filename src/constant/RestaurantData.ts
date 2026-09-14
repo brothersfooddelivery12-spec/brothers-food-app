@@ -22,7 +22,7 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 700,
 
-        isActive: true
+        isOpen: true
     },
 
     {
@@ -46,7 +46,7 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 500,
 
-        isActive: false
+        isOpen: false
     },
 
     {
@@ -70,7 +70,7 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 600,
 
-        isActive: true
+        isOpen: true
     },
 
     {
@@ -94,7 +94,7 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 450,
 
-        isActive: true
+        isOpen: true
     },
 
     {
@@ -118,7 +118,7 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 750,
 
-        isActive: true
+        isOpen: true
     },
 
     {
@@ -142,6 +142,6 @@ export const restaurants: Restaurants[] = [
 
         priceForTwo: 350,
 
-        isActive: true
+        isOpen: true
     }
 ]

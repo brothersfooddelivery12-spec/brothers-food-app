@@ -1,8 +1,8 @@
-import ClockIcon from "@/assets/icon/ClockIcon.svg"
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import ClockIcon from "@/assets/icon/TimerIcon.svg"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { Image } from "expo-image"
 import { router } from "expo-router"
@@ -12,7 +12,7 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 interface FavRestaurantCard {
     name: string
-    imageUri: string
+    imageUrl: string
     rating: number
     cuisines: string[]
     deliveryFee: number
@@ -43,7 +43,7 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
             >
                 <Image
                     source={{
-                        uri: item.imageUri
+                        uri: item.imageUrl
                     }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
@@ -65,8 +65,8 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                     style={{
                         right: moderateScale(14),
                         top: moderateScale(14),
-                        width: moderateScale(32),
-                        height: moderateScale(32)
+                        width: moderateScale(34),
+                        height: moderateScale(34)
                     }}
                 >
                     {item.isFavourite ? (
@@ -156,14 +156,14 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                                 height: moderateScale(22)
                             }}
                         >
-                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color ="#5c4639" style={{ marginLeft: moderateScale(0.5) }} />
+                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color ="#5c4639" strokeWidth={1.8} />
                         </View>
 
                         <Text
                             className="font-medium text-[#1F1F1F]/75"
                             style={{ fontSize: moderateScale(11) }}
                         >
-                            {item.deliveryTime}
+                            {item.deliveryTime} min
                         </Text>
                     </View>
 

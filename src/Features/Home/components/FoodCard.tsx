@@ -3,7 +3,7 @@ import TradeUpIcon from "@/assets/icon/TradeUpIcon.svg"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
-import { moderateScale, verticalScale } from "react-native-size-matters"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 export interface MenuItemRestaurant {
     id: string
@@ -37,14 +37,17 @@ const FoodTypeIndicator = ({ isVeg, isInactive }: {
     isVeg: boolean
     isInactive: boolean
 }) => {
-    const color = isVeg ? "#22C55E" : "#C44512"
+    const color = isVeg ? "#20bb59" : "#DC2626"
 
     return (
         <View
             className="flex-row items-center self-start"
             style={{
                 gap: moderateScale(4),
-                borderRadius: moderateScale(9)
+                borderRadius: moderateScale(8),
+                backgroundColor: isInactive ? "rgba(31,31,31,0.07)" : isVeg ? "#E3F2E8" : "#FEE2E2",
+                paddingHorizontal: scale(8),
+                paddingVertical: verticalScale(4)
             }}
         >
             <View
@@ -105,7 +108,7 @@ const FoodCard = ({
             disabled={isInactive}
             className="overflow-hidden border"
             style={{
-                width: moderateScale(150),
+                width: moderateScale(155),
                 borderRadius: moderateScale(22),
                 backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
                 borderColor: isInactive
@@ -205,7 +208,7 @@ const FoodCard = ({
             <View
                 className="px-3 pb-3"
                 style={{
-                    height: verticalScale(95),
+                    height: verticalScale(100),
                     paddingTop: moderateScale(1)
                 }}
             >
@@ -213,7 +216,7 @@ const FoodCard = ({
                     numberOfLines={1}
                     className="font-bold"
                     style={{
-                        fontSize: moderateScale(14),
+                        fontSize: moderateScale(13),
                         color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
                     }}
                 >
@@ -229,16 +232,14 @@ const FoodCard = ({
                         lineHeight: moderateScale(14),
                         color: isInactive
                             ? "rgba(31,31,31,0.38)"
-                            : "rgba(31,31,31,0.75)"
+                            : "rgba(31,31,31,0.65)"
                     }}
                 >
                     {item.description}
                 </Text>
 
                 <View
-                    style={{
-                        marginTop: verticalScale(5)
-                    }}
+                    style={{ marginTop: verticalScale(5) }}
                 >
                     <FoodTypeIndicator
                         isVeg={item.isVeg}
@@ -248,8 +249,9 @@ const FoodCard = ({
 
                 <View className="flex-row items-center mt-auto">
                     <View
-                        className="items-center mt-1 justify-center self-start"
+                        className="items-center justify-center self-start"
                         style={{
+                            marginTop: verticalScale(5),
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),
@@ -259,7 +261,7 @@ const FoodCard = ({
                         }}
                     >
                         <Text
-                            className="font-bold tracking-wide"
+                            className="font-semibold tracking-wide"
                             style={{
                                 fontSize: moderateScale(13),
                                 color: isInactive ? "rgba(31,31,31,0.45)" : "#5C4639"
@@ -281,8 +283,8 @@ const FoodCard = ({
                         }}
                         className="items-center justify-center ml-auto"
                         style={{
-                            width: moderateScale(28),
-                            height: moderateScale(28),
+                            width: moderateScale(30),
+                            height: moderateScale(30),
                             borderRadius: moderateScale(12),
                             backgroundColor: isInactive ? "#B8B8B8" : "#3F2516"
                         }}

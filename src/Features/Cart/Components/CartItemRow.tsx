@@ -121,7 +121,7 @@ const CartItemRow = memo(
                                     fontSize: moderateScale(10),
                                     color: isUnavailable
                                         ? "rgba(31,31,31,0.35)"
-                                        : "rgba(31,31,31,0.75)"
+                                        : "rgba(31,31,31,0.65)"
                                 }}
                             >
                                 {item.description}
