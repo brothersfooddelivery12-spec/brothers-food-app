@@ -1,6 +1,7 @@
 import { LoaderProvider } from "@/Features/hook/LoaderProvider"
 import { ToastProvider } from "@/Features/hook/ToastContext"
 import AppLoader from "@/components/AppLoader"
+import SessionExpiredModal from "@/components/SessionExpiredModal"
 import CustomSplashScreen from "@/components/splash"
 import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
@@ -32,26 +33,36 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-            <KeyboardProvider>
-                <LoaderProvider>
-                    <ToastProvider>
-                        <AppLoader />
+        <GestureHandlerRootView
+            style={{ flex: 1 }}
+        >
+            <SafeAreaProvider>
+                <KeyboardProvider>
+                    <LoaderProvider>
+                        <ToastProvider>
+                            <AppLoader />
 
-                        <Stack screenOptions={{ headerShown: false }} >
-                          <Stack.Screen
-                            name="add-address"
-                            options={{
-                              presentation: "modal",
-                              animation: "slide_from_bottom"
-                            }}
-                          />
-                        </Stack>
-                    </ToastProvider>
-                </LoaderProvider>
-            </KeyboardProvider>
-        </SafeAreaProvider>
-    </GestureHandlerRootView>
-)
+                            <Stack
+                                screenOptions={{
+                                    headerShown: false
+                                }}
+                            >
+                                <Stack.Screen
+                                    name="add-address"
+                                    options={{
+                                        presentation:
+                                            "modal",
+                                        animation:
+                                            "slide_from_bottom"
+                                    }}
+                                />
+                            </Stack>
+
+                            <SessionExpiredModal />
+                        </ToastProvider>
+                    </LoaderProvider>
+                </KeyboardProvider>
+            </SafeAreaProvider>
+        </GestureHandlerRootView>
+    )
 }

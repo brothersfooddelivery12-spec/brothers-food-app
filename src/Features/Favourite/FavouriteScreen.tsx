@@ -6,7 +6,7 @@ import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
-import Animated, { Extrapolation, interpolate, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
@@ -15,8 +15,8 @@ import FavFoodCard from "./Components/FavFoodCard"
 import FavouriteTabs from "./Components/FavouriteTabs"
 import FavRestaurantCard from "./Components/FavRestaurantCard"
 
-const TITLE_HEIGHT_FALLBACK  = verticalScale(48)
-const SEARCH_BAR_HEIGHT = verticalScale(92) 
+const TITLE_HEIGHT = verticalScale(48)
+const SEARCH_BAR_HEIGHT = verticalScale(46) 
 
 export default function FavouritesScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
@@ -59,73 +59,42 @@ export default function FavouritesScreen() {
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 2
 
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
-    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT_FALLBACK)
     const [headerHeight, setHeaderHeight] = useState(SEARCH_BAR_HEIGHT + verticalScale(68))
+
+    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
+    const [searchBarHeight, setSearchBarHeight] = useState(SEARCH_BAR_HEIGHT)
     const scrollY = useSharedValue(0)
-
-    const headerOffset = useSharedValue(0)
-    const previousScrollY = useSharedValue(0)
-
-    useEffect(() => {
-        headerOffset.value = 0
-        previousScrollY.value = 0
-        scrollY.value = 0
-    }, [
-        activeTab,
-        headerOffset,
-        previousScrollY,
-        scrollY
-    ])
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
-            const currentY = Math.max(
-                event.contentOffset.y,
-                0
-            )
-
-            scrollY.value = currentY
-
-            if (currentY <= 1) {
-                headerOffset.value = withTiming(
-                    0,
-                    {
-                        duration: 180
-                    }
-                )
-
-                return
+            scrollY.value = event.contentOffset.y
+        },
+        onMomentumEnd: (event) => {
+            const y = event.contentOffset.y
+            if (y > 0 && y < titleHeight) {
+                const shouldOpen = y < titleHeight / 2
+                scrollTo(animatedRef, 0, shouldOpen ? 0 : titleHeight, true)
             }
-
-            headerOffset.value = withTiming(
-                titleHeight,
-                {
-                    duration: 180
-                }
-            )
-        }
+        },
     })
 
     const headerContainerStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {
-                    translateY: -headerOffset.value
-                }
-            ]
-        }
+        const translateY = interpolate(
+            scrollY.value,
+            [0, titleHeight],
+            [0, -titleHeight],
+            Extrapolation.CLAMP
+        )
+        return { transform: [{ translateY }] }
     })
 
     const headerTitleStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
-            headerOffset.value,
-            [
-                0,
-                titleHeight * 0.7
-            ],
+            scrollY.value,
+            [0, titleHeight * 0.6],
             [1, 0],
             Extrapolation.CLAMP
-        )
+        ),
     }))
 
     useEffect(() => {
@@ -252,21 +221,14 @@ export default function FavouritesScreen() {
             />
 
             <Animated.View
-                onLayout={(event) => {
-                    const height = event.nativeEvent.layout.height
-
-                    if (height > 0 && Math.abs(height - headerHeight) > 1) {
-                        setHeaderHeight(height)
-                    }
-                }}
                 className="w-full bg-[#F5F5F5] absolute left-0 right-0"
                 style={[
                     {
-                        paddingHorizontal: scale(14),
                         top: insets.top,
+                        paddingHorizontal: moderateScale(14),
                         zIndex: 10
                     },
-                    headerContainerStyle
+                    headerContainerStyle,
                 ]}
             >
                 <Animated.View
@@ -299,7 +261,16 @@ export default function FavouritesScreen() {
                 </Animated.View>
 
                 <View
-                    style={{ marginTop: verticalScale(8) }}
+                    onLayout={(e) => {
+                        const h = e.nativeEvent.layout.height
+                        if (h > 0 && Math.abs(h - searchBarHeight) > 1) {
+                            setSearchBarHeight(h)
+                        }
+                    }}
+                    style={{
+                        paddingTop: verticalScale(8),
+                        paddingBottom: verticalScale(8)
+                    }}
                 >
                     <SearchBar
                         value={search}
@@ -308,19 +279,6 @@ export default function FavouritesScreen() {
                         RightIcon={FilterIcon}
                         rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
-                    />
-                </View>
-
-                <View
-                    style={{
-                        paddingHorizontal: scale(8),
-                        paddingTop: verticalScale(12),
-                        paddingBottom: verticalScale(6)
-                    }}
-                >
-                    <FavouriteTabs
-                        activeTab={activeTab}
-                        onChange={setActiveTab}
                     />
                 </View>
             </Animated.View>
@@ -340,11 +298,23 @@ export default function FavouritesScreen() {
                 keyboardDismissMode="none"
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingTop: headerHeight,
+                    paddingTop: titleHeight + searchBarHeight,
                     paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
-                   <View style={{ marginTop: verticalScale(8) }}>
+                   <View style={{ marginTop: verticalScale(4) }}>
+                        <View
+                            style={{
+                                paddingHorizontal: scale(8),
+                                paddingBottom: verticalScale(12)
+                            }}
+                        >
+                            <FavouriteTabs
+                                activeTab={activeTab}
+                                onChange={setActiveTab}
+                            />
+                        </View>
+                
                         <View className="flex-row items-center gap-3">
                             <View
                                 className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"

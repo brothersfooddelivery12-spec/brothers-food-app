@@ -344,8 +344,20 @@ export default function CheckoutScreen() {
         creatingOrder ||
         verifyingPayment
 
+    const paymentHandledRef = useRef(false)
+    const paymentVerifyingRef = useRef(false)
+
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
+        if (
+            paymentHandledRef.current ||
+            paymentVerifyingRef.current
+        ) {
+            return
+        }
+
         try {
+            paymentVerifyingRef.current = true
+
             setVerifyingPayment(true)
             showLoader()
 
@@ -355,7 +367,13 @@ export default function CheckoutScreen() {
 
             console.log("Verify response:", res.data)
 
-            if (res.data.success) {
+            const message = res.data.message?.trim().toLowerCase()
+
+            if (
+                res.data.success &&
+                message === "payment verified successfully"
+            ) {
+                paymentHandledRef.current = true
                 setProcessingUpiApp(null)
 
                 showToast("Payment successful", "success")
@@ -370,6 +388,14 @@ export default function CheckoutScreen() {
                 return
             }
 
+            if (message === "payment is still incomplete") {
+                setProcessingUpiApp(null)
+
+                showToast("Payment is incomplete", "warning")
+
+                return
+            }
+
             setProcessingUpiApp(null)
 
             showToast(res.data.message || "Payment is being verified.", "warning")
@@ -380,31 +406,59 @@ export default function CheckoutScreen() {
 
             showToast(error?.message || "Unable to verify payment.", "warning")
         } finally {
+            paymentVerifyingRef.current = false
+
             setVerifyingPayment(false)
             hideLoader()
         }
     },[router])
 
-    const handlePaymentError = useCallback((
-        error: CashfreePaymentError
-    ) => {
-        console.log("Cashfree payment error:", {
-            message: error.message,
-            orderId: error.orderId,
-            code: error.code,
-            type: error.type,
-            status: error.status,
-            originalError: error.originalError
-        })
+    const handlePaymentError = useCallback(
+        async (error: CashfreePaymentError) => {
+            console.log("Cashfree payment error:", {
+                message: error.message,
+                orderId: error.orderId,
+                code: error.code,
+                type: error.type,
+                status: error.status,
+                originalError: error.originalError
+            })
 
-        setCreatingOrder(false)
-        setVerifyingPayment(false)
-        setProcessingUpiApp(null)
+            // Payment already handled successfully
+            if (paymentHandledRef.current) {
+                return
+            }
 
-        hideLoader()
+            // Verification already running
+            if (paymentVerifyingRef.current) {
+                return
+            }
 
-        showToast(error.message, "warning")
-    }, [])
+            // Cashfree may call onError when user returns
+            // from its payment result screen.
+            // Verify with backend before treating it as failed.
+            if (error.orderId) {
+                await handleVerifyPayment(
+                    error.orderId
+                )
+
+                return
+            }
+
+            setCreatingOrder(false)
+            setVerifyingPayment(false)
+            setProcessingUpiApp(null)
+
+            hideLoader()
+
+            showToast(error.message || "Payment was not completed", "warning")
+        },
+        [
+            handleVerifyPayment,
+            hideLoader,
+            showToast
+        ]
+    )
 
     const {
         upiApps,
@@ -689,6 +743,9 @@ export default function CheckoutScreen() {
                 if (!payment?.order_id || !payment?.payment_session_id) {
                     throw new Error("Invalid Cashfree payment session.")
                 }
+
+                paymentHandledRef.current = false
+                paymentVerifyingRef.current = false
 
                 await startUpiPayment({
                     orderId: payment.order_id,

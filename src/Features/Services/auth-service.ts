@@ -60,10 +60,8 @@ export const refreshToken = async (): Promise<string> => {
   return generateToken()
 }
 
-export const clearStoredToken = async (): Promise<void> => {
+export const clearStoredTokens = async (): Promise<void> => {
   console.log("🚨 CLEARING ACCESS AND REFRESH TOKENS")
 
   await tokenStorage.clearTokens()
-
-  useAuthStore.getState().clearAuth()
 }

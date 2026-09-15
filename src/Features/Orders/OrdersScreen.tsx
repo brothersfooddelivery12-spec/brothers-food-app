@@ -21,7 +21,6 @@ export default function OrdersScreen() {
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
-    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
     const { width: SCREEN_WIDTH } = useWindowDimensions()
 
@@ -37,6 +36,8 @@ export default function OrdersScreen() {
         return () => clearTimeout(timer)
     }, [search])
 
+    const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
+    const [searchBarHeight, setSearchBarHeight] = useState(SEARCH_BAR_HEIGHT)
     const scrollY = useSharedValue(0)
 
     const scrollHandler = useAnimatedScrollHandler({
@@ -154,7 +155,6 @@ export default function OrdersScreen() {
                 ]}
             >
                 <Animated.View
-                    className="flex-row gap-2"
                     style={headerTitleStyle}
                     onLayout={(e) => {
                         const h = e.nativeEvent.layout.height
@@ -163,32 +163,37 @@ export default function OrdersScreen() {
                         }
                     }}
                 >
-                    <View className="items-start gap-1">
-                        <Text
-                            className="text-[#1F1F1F] font-extrabold"
-                            style={{
-                                fontSize: moderateScale(18),
-                                marginTop: verticalScale(10),
-                            }}
-                        >
-                            My Orders
-                        </Text>
+                    <Text
+                        className="text-[#1F1F1F] font-extrabold"
+                        style={{
+                            fontSize: moderateScale(18),
+                            marginTop: verticalScale(10),
+                        }}
+                    >
+                        My Orders
+                    </Text>
 
-                        <Text
-                            className="text-[#1F1F1F]/65 font-medium"
-                            style={{
-                                fontSize: moderateScale(12)
-                            }}
-                        >
-                            {`Track your active orders and revisit your\nprevious meals.`}
-                        </Text>
-                    </View>
+                    <Text
+                        className="text-[#1F1F1F]/65 font-medium"
+                        style={{
+                            fontSize: moderateScale(12),
+                            marginTop: verticalScale(2)
+                        }}
+                    >
+                        Track your active orders and revisit your previous meals.
+                    </Text>
                 </Animated.View>
 
                 <View
+                    onLayout={(e) => {
+                        const h = e.nativeEvent.layout.height
+                        if (h > 0 && Math.abs(h - searchBarHeight) > 1) {
+                            setSearchBarHeight(h)
+                        }
+                    }}
                     style={{
-                        marginTop: verticalScale(8),
-                        marginBottom: verticalScale(10)
+                        paddingTop: verticalScale(8),
+                        paddingBottom: verticalScale(8)
                     }}
                 >
                     <SearchBar
@@ -213,11 +218,11 @@ export default function OrdersScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingTop: SEARCH_BAR_HEIGHT,
+                    paddingTop: titleHeight + searchBarHeight,
                     paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
-                    <View style={{ marginTop: verticalScale(78) }}>
+                    <View style={{ marginTop: verticalScale(4) }}>
                         <View className="flex-row items-center justify-center gap-3 mb-5">
                             <View
                                 className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"

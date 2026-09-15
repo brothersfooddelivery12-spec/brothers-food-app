@@ -103,25 +103,25 @@ export default function SearchScreen() {
                 return
             }
 
-            addToCart({
-                restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantLogoUrl: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isOpen: restaurant.isActive
-                },
+            // addToCart({
+            //     restaurant: {
+            //         id: restaurant.id,
+            //         restaurantName: restaurant.name,
+            //         restaurantLogoUrl: restaurant.imageUri,
+            //         deliveryTime: restaurant.deliveryTime,
+            //         deliveryFee: restaurant.deliveryFee,
+            //         isOpen: restaurant.isActive
+            //     },
 
-                item: {
-                    id: item.id,
-                    name: item.name,
-                    imageUrl: item.imageUri,
-                    price: item.price,
-                    description: item.category,
-                    isAvailable: item.isActive
-                }
-            })
+            //     item: {
+            //         id: item.id,
+            //         name: item.name,
+            //         imageUrl: item.imageUri,
+            //         price: item.price,
+            //         description: item.category,
+            //         isAvailable: item.isActive
+            //     }
+            // })
 
             showToast("added to cart", "success")
         },[addToCart]
@@ -172,6 +172,7 @@ export default function SearchScreen() {
     )
 
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
+    const [searchBarHeight, setSearchBarHeight] = useState(SEARCH_BAR_HEIGHT)
     const scrollY = useSharedValue(0)
 
     const scrollHandler = useAnimatedScrollHandler({
@@ -256,9 +257,15 @@ export default function SearchScreen() {
                 </Animated.View>
 
                 <View
+                    onLayout={(e) => {
+                        const h = e.nativeEvent.layout.height
+                        if (h > 0 && Math.abs(h - searchBarHeight) > 1) {
+                            setSearchBarHeight(h)
+                        }
+                    }}
                     style={{
-                        marginTop: verticalScale(8),
-                        marginBottom: verticalScale(10)
+                        paddingTop: verticalScale(8),
+                        paddingBottom: verticalScale(8)
                     }}
                 >
                     <SearchBar
@@ -284,12 +291,12 @@ export default function SearchScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
-                    paddingTop: SEARCH_BAR_HEIGHT,
+                    paddingTop: titleHeight + searchBarHeight,
                     paddingBottom: verticalScale(88)
                 }}
                 ListHeaderComponent={
                     <View>
-                        <View style={{ marginTop: verticalScale(65) }}>
+                        <View style={{ marginTop: verticalScale(4) }}>
                             <ScrollView
                                 horizontal
                                 nestedScrollEnabled

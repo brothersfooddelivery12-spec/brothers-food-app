@@ -15,7 +15,7 @@ import OfferCard from "@/Features/Home/components/OffersCard"
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
 import { Image } from "expo-image"
 import * as Location from "expo-location"
-import { router, useFocusEffect } from "expo-router"
+import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Alert, FlatList, Linking, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
@@ -25,7 +25,7 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant, PopularMenu, PopularRestaurant } from '../Services/api-service'
-import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '../Services/favorite-service'
+import { addMenuItemToFavorites, addRestaurantToFavorites, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '../Services/favorite-service'
 import { useAuthStore } from '../Stores/auth-store'
 import { useFavouriteStore } from '../Stores/favourite-store'
 import { useLocationStore } from '../Stores/locationStore'
@@ -72,6 +72,52 @@ export default function HomeScreen() {
     useEffect(() => {
         fetchUserProfile()
     }, [])
+
+    const syncFavourites = async () => {
+        try {
+            const [restaurantRes, menuItemRes] = await Promise.allSettled([
+                getFavoriteRestaurants(),
+                getFavoriteMenuItems()
+            ])
+
+            const {
+                setRestaurantIds,
+                setMenuItemIds
+            } = useFavouriteStore.getState()
+
+            if (
+                restaurantRes.status === "fulfilled" &&
+                restaurantRes.value.data.success
+            ) {
+                console.log("Favorite restaurants response:", restaurantRes.value.data)
+
+                const ids = restaurantRes.value.data.data.map((item: any) => item.restaurant_id)
+
+                console.log("Favorite restaurant IDs:", ids)
+
+                setRestaurantIds(ids)
+            }
+
+            if (
+                menuItemRes.status === "fulfilled" &&
+                menuItemRes.value.data.success
+            ) {
+                console.log("Favorite menus response:", menuItemRes.value.data)
+
+                const ids = menuItemRes.value.data.data.map((item: any) => item.menu_item_id)
+                
+                console.log("Favorite menu IDs:", ids)
+
+                setMenuItemIds(ids)
+            }
+        } catch (error) {
+            console.log("Sync favourites error:", error)
+        }
+    }
+
+    useEffect(() => {
+        syncFavourites()
+    },[])
 
     type LocationPermissionState =
         | "checking"
@@ -546,24 +592,32 @@ export default function HomeScreen() {
         ]
     )
 
-    useFocusEffect(
-        useCallback(() => {
-            if (!hasHydrated || !location) {
-                return
-            }
+    useEffect(() => {
+        if (!hasHydrated || !location) {
+            return
+        }
 
-            void fetchHomeData(
-                25.149131,
-                73.083126
-            )
-        }, [
-            hasHydrated,
-            location?.latitude,
-            location?.longitude,
-            fetchHomeData
-        ])
-    )
-
+        void fetchHomeData(
+            25.149131,
+            73.083126
+        )
+    },[
+        hasHydrated,
+        location?.latitude,
+        location?.longitude,
+        fetchHomeData
+    ])
+    
+    // useFocusEffect(
+    //     useCallback(() => {
+            
+    //     }, [
+    //         hasHydrated,
+    //         location?.latitude,
+    //         location?.longitude,
+    //         fetchHomeData
+    //     ])
+    // )
 
     const user = useAuthStore((state) => state.user)
 
@@ -619,7 +673,9 @@ export default function HomeScreen() {
 
     const handleFavouritePress = useCallback(async (id: string) => {
         const isFavourite = useFavouriteStore
-                .getState().restaurantIds.includes(id)
+            .getState()
+            .restaurantIds
+            .includes(id)
 
         if (isFavourite) {
             removeRestaurant(id)
@@ -642,7 +698,13 @@ export default function HomeScreen() {
                 }
 
                 showToast(res.data.message || "Unable to update favourite.", "info")
+
+                return
             }
+
+            showToast(isFavourite
+                        ? "Removed from favourites."
+                        : "Added to favourites.", "success")
         } catch (error: any) {
             console.log("Favourite error:", error)
 
@@ -652,14 +714,67 @@ export default function HomeScreen() {
                 removeRestaurant(id)
             }
 
-            showToast("Unable to update favourite.", "info")
+            showToast(error?.message || "Unable to update favourite.", "info")
         }
     }, [addRestaurant, removeRestaurant])
+
+    const {
+        menuItemIds,
+        addMenuItem,
+        removeMenuItem
+    } = useFavouriteStore()
+
+    const handleMenuFavouritePress = useCallback(async (id: string) => {
+        const isFavourite = useFavouriteStore
+            .getState()
+            .menuItemIds
+            .includes(id)
+
+        if (isFavourite) {
+            removeMenuItem(id)
+        } else {
+            addMenuItem(id)
+        }
+
+        try {
+            const res = isFavourite
+                ? await removeMenuItemFromFavorites(id)
+                : await addMenuItemToFavorites(id)
+
+            console.log("Menu favourite response:", res.data)
+
+            if (!res.data.success) {
+                if (isFavourite) {
+                    addMenuItem(id)
+                } else {
+                    removeMenuItem(id)
+                }
+
+                showToast(res.data.message || "Unable to update favourite.", "info")
+
+                return
+            }
+
+            showToast(isFavourite
+                        ? "Removed from favourites."
+                        : "Added to favourites.", "success")
+        } catch (error: any) {
+            console.log("Menu favourite error:", error)
+
+            if (isFavourite) {
+                addMenuItem(id)
+            } else {
+                removeMenuItem(id)
+            }
+
+            showToast(error?.message || "Unable to update favourite.", "info")
+        }
+    }, [addMenuItem, removeMenuItem])
 
     const handleAddToCart = useCallback(
         (item: MenuItem) => {
            if (!item.isAvailable) {
-                showToast("This item is currently unavailable", "info")
+                showToast("This menu is currently unavailable", "info")
 
                 return
             }
@@ -696,7 +811,7 @@ export default function HomeScreen() {
                 }
             })
 
-            showToast("Item added to cart", "success")
+            showToast("Menu added to cart", "success")
         },[addToCart]
     )
 
@@ -715,18 +830,31 @@ export default function HomeScreen() {
     )
 
     const renderPopularFood = useCallback(
-        ({ item }: { item: MenuItem }) => (
-            <FoodCard
-                item={item}
-                onPress={() =>
-                    handleFoodPress(item.id)
-                }
-                onAddPress={() =>
-                    handleAddToCart(item)
-                }
-            />
-        ),
-        [handleFoodPress, handleAddToCart]
+        ({ item }: { item: MenuItem }) => {
+            const isFavourite = menuItemIds.includes(item.id)
+
+            return (
+                <FoodCard
+                    item={item}
+                    isFavourite={isFavourite}
+                    onPress={() =>
+                        handleFoodPress(item.id)
+                    }
+                    onAddPress={() =>
+                        handleAddToCart(item)
+                    }
+                    onFavouritePress={() =>
+                        handleMenuFavouritePress(item.id)
+                    }
+                />
+            )
+        },
+        [
+            menuItemIds,
+            handleFoodPress,
+            handleAddToCart,
+            handleMenuFavouritePress
+        ]
     )
 
     const renderNearbyRestaurant = useCallback(

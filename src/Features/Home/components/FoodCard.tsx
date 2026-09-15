@@ -1,3 +1,5 @@
+import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
+import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
 import TradeUpIcon from "@/assets/icon/TradeUpIcon.svg"
 import { Image } from "expo-image"
@@ -31,6 +33,8 @@ interface FoodCardProps {
     item: MenuItem
     onPress?: () => void
     onAddPress?: () => void
+    onFavouritePress?: () => void
+    isFavourite?: boolean
 }
 
 const FoodTypeIndicator = ({ isVeg, isInactive }: {
@@ -44,10 +48,7 @@ const FoodTypeIndicator = ({ isVeg, isInactive }: {
             className="flex-row items-center self-start"
             style={{
                 gap: moderateScale(4),
-                borderRadius: moderateScale(8),
-                backgroundColor: isInactive ? "rgba(31,31,31,0.07)" : isVeg ? "#E3F2E8" : "#FEE2E2",
-                paddingHorizontal: scale(8),
-                paddingVertical: verticalScale(4)
+                borderRadius: moderateScale(8)
             }}
         >
             <View
@@ -87,7 +88,9 @@ const FoodTypeIndicator = ({ isVeg, isInactive }: {
 const FoodCard = ({
     item,
     onPress,
-    onAddPress
+    onAddPress,
+    onFavouritePress,
+    isFavourite = false
 }: FoodCardProps) => {
     const isInactive = !item.isAvailable
     
@@ -183,14 +186,51 @@ const FoodCard = ({
                     </View>
                 )}
 
+                <TouchableOpacity
+                    activeOpacity={0.95}
+                    onPress={(event) => {
+                        event.stopPropagation()
+                        onFavouritePress?.()
+                    }}
+                    hitSlop={8}
+                    className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
+                    style={{
+                        right: moderateScale(12),
+                        top: moderateScale(12),
+                        width: moderateScale(32),
+                        height: moderateScale(32),
+                        backgroundColor: isInactive
+                            ? "rgba(255,255,255,0.75)"
+                            : "#FFFFFF",
+                        borderColor: "rgba(31,31,31,0.10)"
+                    }}
+                >
+                    {isFavourite ? (
+                        <FavouriteIconFilled
+                            width={moderateScale(20)}
+                            height={moderateScale(20)}
+                            color={isInactive ? "#777777" : "#3F2516"}
+                            style={{ marginTop: moderateScale(1.5) }}
+                        />
+                    ) : (
+                        <FavouriteIcon
+                            width={moderateScale(20)}
+                            height={moderateScale(20)}
+                            color={isInactive ? "#777777" : "#3F2516"}
+                            strokeWidth={1.5}
+                            style={{ marginTop: moderateScale(1.5) }}
+                        />
+                    )}
+                </TouchableOpacity>
+
                 {isInactive && (
                     <View
                         className="absolute items-center justify-center"
                         style={{
                             left: moderateScale(14),
-                            right: moderateScale(14),
                             bottom: moderateScale(13),
                             backgroundColor: "rgba(31,31,31,0.82)",
+                            paddingHorizontal: scale(8),
                             paddingVertical: verticalScale(5),
                             borderRadius: moderateScale(10)
                         }}
@@ -208,7 +248,7 @@ const FoodCard = ({
             <View
                 className="px-3 pb-3"
                 style={{
-                    height: verticalScale(100),
+                    height: verticalScale(98),
                     paddingTop: moderateScale(1)
                 }}
             >
@@ -239,7 +279,7 @@ const FoodCard = ({
                 </Text>
 
                 <View
-                    style={{ marginTop: verticalScale(5) }}
+                    style={{ marginTop: verticalScale(6) }}
                 >
                     <FoodTypeIndicator
                         isVeg={item.isVeg}
@@ -251,7 +291,7 @@ const FoodCard = ({
                     <View
                         className="items-center justify-center self-start"
                         style={{
-                            marginTop: verticalScale(5),
+                            marginTop: verticalScale(3),
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),

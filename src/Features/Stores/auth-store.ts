@@ -144,6 +144,10 @@ export const useAuthStore = create<AuthState>()(
                     user: null,
                     isAuthenticated: false
                 })
+
+                useLocationStore.getState().clearLocation()
+
+                useCartStore.getState().clearCart()
             }
         }),
         {

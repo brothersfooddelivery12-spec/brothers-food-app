@@ -1,59 +1,156 @@
-import { RecommendedCard } from "@/Features/Search/Components/RecommendedCard";
-
-export const recommendedItems: RecommendedCard[] = [
+export const recommendedItems = [
     {
         id: "1",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Biryani House",
+            LogoUrl: "https://example.com/biryani-house-logo.png",
+            isOpen: true
+        },
+
         name: "Royal Chicken Biryani",
-        imageUri:
+
+        imageUrl:
             "https://i.pinimg.com/736x/e8/b3/49/e8b349e9ded63a896834f2638400a377.jpg",
-        restaurantName: "Biryani House",
-        deliveryTime: "20–30 min",
+
+        description:
+            "Aromatic basmati rice cooked with tender chicken and traditional spices.",
+
         price: 299,
-        rating: 4.8,
-        isActive: true
+
+        deliveryTime: 25,
+
+        deliveryFee: "40",
+
+        isHot: true,
+
+        isAvailable: true,
+
+        isVeg: false
     },
+
     {
         id: "2",
+
+        restaurant: {
+            id: "restaurant-2",
+            name: "The Spice Kitchen",
+            LogoUrl: "https://example.com/spice-kitchen-logo.png",
+            isOpen: true
+        },
+
         name: "Paneer Tikka Masala",
-        imageUri:
+
+        imageUrl:
             "https://i.pinimg.com/1200x/75/25/c2/7525c28b815e93b8f4ad4a3bb889090e.jpg",
-        restaurantName: "The Spice Kitchen",
-        deliveryTime: "25–35 min",
+
+        description:
+            "Grilled paneer cubes served in a rich and creamy tomato-based gravy.",
+
         price: 249,
-        rating: 4.7,
-        isActive: false
+
+        deliveryTime: 30,
+
+        deliveryFee: "35",
+
+        isHot: false,
+
+        isAvailable: true,
+
+        isVeg: true
     },
+
     {
         id: "3",
+
+        restaurant: {
+            id: "restaurant-3",
+            name: "Punjab Rasoi",
+            LogoUrl: "https://example.com/punjab-rasoi-logo.png",
+            isOpen: true
+        },
+
         name: "Butter Chicken",
-        imageUri:
+
+        imageUrl:
             "https://i.pinimg.com/736x/c8/4c/06/c84c061108416125bef92d3caa6011ab.jpg",
-        restaurantName: "Punjab Rasoi",
-        deliveryTime: "20–30 min",
+
+        description:
+            "Tender chicken cooked in a buttery tomato gravy with aromatic Indian spices.",
+
         price: 329,
-        rating: 4.9,
-        isActive: true
+
+        deliveryTime: 25,
+
+        deliveryFee: "45",
+
+        isHot: true,
+
+        isAvailable: true,
+
+        isVeg: false
     },
+
     {
         id: "4",
+
+        restaurant: {
+            id: "restaurant-4",
+            name: "South Indian Corner",
+            LogoUrl: "https://example.com/south-indian-corner-logo.png",
+            isOpen: false
+        },
+
         name: "Masala Dosa",
-        imageUri:
+
+        imageUrl:
             "https://i.pinimg.com/736x/2d/9d/d5/2d9dd58461c1dc79f86bc62a77e970b3.jpg",
-        restaurantName: "South Indian Corner",
-        deliveryTime: "15–25 min",
+
+        description:
+            "Crispy dosa filled with spiced potato masala and served with chutney.",
+
         price: 149,
-        rating: 4.6,
-        isActive: false
+
+        deliveryTime: 20,
+
+        deliveryFee: "30",
+
+        isHot: false,
+
+        isAvailable: false,
+
+        isVeg: true
     },
+
     {
         id: "5",
+
+        restaurant: {
+            id: "restaurant-5",
+            name: "Delhi Darbar",
+            LogoUrl: "https://example.com/delhi-darbar-logo.png",
+            isOpen: true
+        },
+
         name: "Amritsari Chole Bhature",
-        imageUri:
+
+        imageUrl:
             "https://i.pinimg.com/1200x/10/f5/cf/10f5cfa40e72de26aa9dbab7c9272547.jpg",
-        restaurantName: "Delhi Darbar",
-        deliveryTime: "20–30 min",
+
+        description:
+            "Spicy Punjabi chole served with fluffy and crispy bhature.",
+
         price: 179,
-        rating: 4.7,
-        isActive: true
+
+        deliveryTime: 25,
+
+        deliveryFee: "35",
+
+        isHot: true,
+
+        isAvailable: true,
+
+        isVeg: true
     }
 ]

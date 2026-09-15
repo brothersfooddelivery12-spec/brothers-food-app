@@ -165,8 +165,19 @@ export default function CartScreen() {
         }
     }, [])
 
+    const hasCartItems = useMemo(() => {
+        return carts.some(
+            (restaurant) => restaurant.items.length > 0
+        )
+    }, [carts])
+
     useFocusEffect(
         useCallback(() => {
+            if (!hasCartItems) {
+                setLoadingAddresses(false)
+                return
+            }
+
             const shouldFetch = !hasFetchedAddresses.current || addressesDirty
 
             if (!shouldFetch) {
