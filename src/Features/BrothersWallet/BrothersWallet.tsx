@@ -13,7 +13,7 @@ import { useCallback, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getMyWallet, Wallet } from '../Services/wallet-service'
+import { getMyWallet, Wallet } from '../../Services/wallet-service'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import { TransactionItem, WalletTransaction } from './Components/TransactionItem'

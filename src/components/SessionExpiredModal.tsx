@@ -1,5 +1,5 @@
-import { useAuthStore } from "@/Features/Stores/auth-store"
-import { useSessionStore } from "@/Features/Stores/useSessionStore"
+import { useAuthStore } from "@/Stores/auth-store"
+import { useSessionStore } from "@/Stores/useSessionStore"
 import { Image } from "expo-image"
 import { useRouter } from "expo-router"
 import { useCallback } from "react"

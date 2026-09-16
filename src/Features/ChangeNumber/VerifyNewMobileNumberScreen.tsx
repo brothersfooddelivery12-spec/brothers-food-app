@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Keyboard, Pressable, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { sendOtp, verifyOtp } from '../Services/api-service'
-import { hideLoader, showLoader } from '../Services/loader-service'
+import { sendOtp, verifyOtp } from '../../Services/api-service'
+import { hideLoader, showLoader } from '../../Services/loader-service'
 import { useToast } from '../hook/ToastContext'
 
 export default function VerifyNewMobileNumberScreen(){

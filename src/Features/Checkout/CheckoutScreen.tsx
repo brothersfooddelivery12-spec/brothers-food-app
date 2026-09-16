@@ -28,15 +28,15 @@ import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { SvgProps } from 'react-native-svg'
+import { getAllAddresses, UserAddress } from '../../Services/address-service'
+import { CartPreview, CartPreviewRequest, createCheckoutOrder, CreateOrderRequest, getCartPreview, OrderPaymentMethod, verifyCashfreePayment } from '../../Services/api-service'
+import { hideLoader, showLoader } from '../../Services/loader-service'
+import { getMyWallet, Wallet } from '../../Services/wallet-service'
+import { useAddressRefreshStore } from '../../Stores/address-refresh-store'
+import { useCartStore } from '../../Stores/useCartStore'
 import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
 import { CashfreePaymentError, useCashfreeUpi } from '../hook/useCashfreeUpi'
-import { getAllAddresses, UserAddress } from '../Services/address-service'
-import { CartPreview, CartPreviewRequest, createCheckoutOrder, CreateOrderRequest, getCartPreview, OrderPaymentMethod, verifyCashfreePayment } from '../Services/api-service'
-import { hideLoader, showLoader } from '../Services/loader-service'
-import { getMyWallet, Wallet } from '../Services/wallet-service'
-import { useAddressRefreshStore } from '../Stores/address-refresh-store'
-import { useCartStore } from '../Stores/useCartStore'
 import AddressCard from "./Components/AddressCard"
 
 export type PaymentMethod = {

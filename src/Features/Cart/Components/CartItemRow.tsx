@@ -1,6 +1,6 @@
 import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
 import PlusIcon from '@/assets/icon/PlusIcon.svg'
-import { CartItem } from '@/Features/Stores/useCartStore'
+import { CartItem } from '@/Stores/useCartStore'
 import { Image } from "expo-image"
 import { memo, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"

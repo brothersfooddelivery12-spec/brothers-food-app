@@ -7,8 +7,8 @@ import { useState } from 'react'
 import { Keyboard, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { sendOtp } from '../../Services/api-service'
 import { useToast } from '../hook/ToastContext'
-import { sendOtp } from '../Services/api-service'
 
 export default function EnterMobileNumberScreen(){
     const [mobileNumber, setMobileNumber] = useState("")

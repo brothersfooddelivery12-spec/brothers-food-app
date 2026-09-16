@@ -13,10 +13,10 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-na
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { scheduleOnRN } from "react-native-worklets"
+import { editUserProfile } from '../../Services/api-service'
+import { hideLoader, showLoader } from '../../Services/loader-service'
+import { useAuthStore } from '../../Stores/auth-store'
 import { useToast } from '../hook/ToastContext'
-import { editUserProfile } from '../Services/api-service'
-import { hideLoader, showLoader } from '../Services/loader-service'
-import { useAuthStore } from '../Stores/auth-store'
 
 export default function VerificationSuccessScreen() {
     const insets = useSafeAreaInsets()

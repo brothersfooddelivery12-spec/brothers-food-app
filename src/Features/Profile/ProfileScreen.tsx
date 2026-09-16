@@ -32,10 +32,10 @@ import { Dimensions, Modal, Pressable, StatusBar, Text, TouchableOpacity, useWin
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { getMyWallet, Wallet } from '../../Services/wallet-service'
+import { useAuthStore } from '../../Stores/auth-store'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { getMyWallet, Wallet } from '../Services/wallet-service'
-import { useAuthStore } from '../Stores/auth-store'
 import AccountActionDialog from './Components/AccountActionDialog'
 import ProfileMenuItem from './Components/ProfileMenuItem'
 

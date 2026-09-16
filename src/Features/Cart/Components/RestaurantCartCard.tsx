@@ -3,7 +3,7 @@ import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
 import ClockIcon from "@/assets/icon/TimerIcon.svg"
-import { CartItem } from '@/Features/Stores/useCartStore'
+import { CartItem } from '@/Stores/useCartStore'
 import { Image } from "expo-image"
 import React, { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"

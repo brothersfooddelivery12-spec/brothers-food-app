@@ -15,11 +15,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, FlatList, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { Address, deleteAddress, getAllAddresses, setDefaultAddress } from '../../Services/address-service'
+import { useAddressRefreshStore } from '../../Stores/address-refresh-store'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import AccountActionDialog from '../Profile/Components/AccountActionDialog'
-import { Address, deleteAddress, getAllAddresses, setDefaultAddress } from '../Services/address-service'
-import { useAddressRefreshStore } from '../Stores/address-refresh-store'
 import SavedAddressCard from './Components/SavedAddressCard'
 
 export const ADDRESS_CATEGORIES = [

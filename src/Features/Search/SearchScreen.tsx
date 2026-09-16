@@ -11,7 +11,7 @@ import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "r
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { useCartStore } from '../Stores/useCartStore'
+import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import RecommendedCard from "./Components/RecommendedCard"

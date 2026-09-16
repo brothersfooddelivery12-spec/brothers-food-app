@@ -20,19 +20,18 @@ import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Alert, FlatList, Linking, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated'
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant, PopularMenu, PopularRestaurant } from '../../Services/api-service'
+import { addMenuItemToFavorites, addRestaurantToFavorites, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '../../Services/favorite-service'
+import { useAuthStore } from '../../Stores/auth-store'
+import { useFavouriteStore } from '../../Stores/favourite-store'
+import { useLocationStore } from '../../Stores/locationStore'
+import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant, PopularMenu, PopularRestaurant } from '../Services/api-service'
-import { addMenuItemToFavorites, addRestaurantToFavorites, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '../Services/favorite-service'
-import { useAuthStore } from '../Stores/auth-store'
-import { useFavouriteStore } from '../Stores/favourite-store'
-import { useLocationStore } from '../Stores/locationStore'
-import { useCartStore } from '../Stores/useCartStore'
 
 export default function HomeScreen() {
-    const insets = useSafeAreaInsets()
     const { height: screenHeight } = useWindowDimensions()
     const [headerHeight, setHeaderHeight] = useState(0)
     const preventDoublePress = usePreventDoublePress()
@@ -996,9 +995,7 @@ export default function HomeScreen() {
                         <>
                             <View
                                 onLayout={(event) => {
-                                    setHeaderHeight(
-                                        event.nativeEvent.layout.height
-                                    )
+                                    setHeaderHeight(event.nativeEvent.layout.height)
                                 }}
                             >
                                 <View

@@ -1,4 +1,4 @@
-import { restoreAccessToken } from "@/Features/Services/auth-service"
+import { restoreAccessToken } from "@/Services/auth-service"
 import { Redirect } from "expo-router"
 import { useEffect, useState } from "react"
 

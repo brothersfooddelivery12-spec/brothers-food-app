@@ -11,12 +11,12 @@ import { useCallback, useMemo, useRef, useState } from "react"
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { Address, getAllAddresses } from '../../Services/address-service'
+import { useAddressRefreshStore } from '../../Stores/address-refresh-store'
+import { useCartStore } from '../../Stores/useCartStore'
 import FoodCard, { MenuItem } from "../Home/components/FoodCard"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { Address, getAllAddresses } from '../Services/address-service'
-import { useAddressRefreshStore } from '../Stores/address-refresh-store'
-import { useCartStore } from '../Stores/useCartStore'
 import RestaurantCartCard from "./Components/RestaurantCartCard"
 
 export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [

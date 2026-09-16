@@ -8,12 +8,12 @@ import { Animated, ImageBackground, Keyboard, Pressable, StatusBar, Text, TextIn
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { sendOtp, verifyOtp } from "../../Services/api-service"
+import { hideLoader, showLoader } from '../../Services/loader-service'
+import { useAuthStore } from "../../Stores/auth-store"
+import { tokenStorage } from '../../Stores/token-storage'
 import { useToast } from "../hook/ToastContext"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { sendOtp, verifyOtp } from "../Services/api-service"
-import { hideLoader, showLoader } from '../Services/loader-service'
-import { useAuthStore } from "../Stores/auth-store"
-import { tokenStorage } from "../Stores/token-storage"
 
 export default function VerifyOtpScreen() {
     const preventDoublePress = usePreventDoublePress()

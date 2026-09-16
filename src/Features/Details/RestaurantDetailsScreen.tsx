@@ -23,10 +23,10 @@ import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { getRestaurantById } from '../../Services/api-service'
+import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { getRestaurantById } from '../Services/api-service'
-import { useCartStore } from '../Stores/useCartStore'
 import ImageGrid from "./components/ImageGrid"
 import PopularItemCard from "./components/PopularItemCard"
 import RatingDistribution from "./components/RatingDistribution"
@@ -211,25 +211,25 @@ export default function RestaurantDetailsScreen() {
                 return
             }
 
-            addToCart({
-                restaurant: {
-                    id: restaurant.id,
-                    restaurantName: restaurant.name,
-                    restaurantLogoUrl: restaurant.imageUri,
-                    deliveryTime: restaurant.deliveryTime,
-                    deliveryFee: restaurant.deliveryFee,
-                    isOpen: restaurant.isActive
-                },
+            // addToCart({
+            //     restaurant: {
+            //         id: restaurant.id,
+            //         restaurantName: restaurant.name,
+            //         restaurantLogoUrl: restaurant.imageUri,
+            //         deliveryTime: restaurant.deliveryTime,
+            //         deliveryFee: restaurant.deliveryFee,
+            //         isOpen: restaurant.isActive
+            //     },
 
-                item: {
-                    id: item.id,
-                    name: item.name,
-                    imageUrl: item.imageUri,
-                    price: item.price,
-                    description: item.description,
-                    isAvailable: item.isActive
-                }
-            })
+            //     item: {
+            //         id: item.id,
+            //         name: item.name,
+            //         imageUrl: item.imageUri,
+            //         price: item.price,
+            //         description: item.description,
+            //         isAvailable: item.isActive
+            //     }
+            // })
 
             showToast("added to cart", "success")
         },[addToCart]

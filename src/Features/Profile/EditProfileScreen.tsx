@@ -17,10 +17,10 @@ import { Dimensions, Keyboard, Modal, Platform, Pressable, StatusBar, Text, Text
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { editUserProfile } from '../../Services/api-service'
+import { useAuthStore } from '../../Stores/auth-store'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { editUserProfile } from '../Services/api-service'
-import { useAuthStore } from '../Stores/auth-store'
 
 type Gender = "MALE" | "FEMALE" | "OTHER"
 

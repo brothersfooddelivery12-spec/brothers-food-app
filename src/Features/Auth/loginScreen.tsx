@@ -1,6 +1,8 @@
 import GoogleIcon from '@/assets/icon/Google.svg'
 import IndiaFlag from '@/assets/icon/India.svg'
 import GradientButton from "@/components/GradientButton"
+import { useAuthStore } from "@/Stores/auth-store"
+import { tokenStorage } from "@/Stores/token-storage"
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { Image } from 'expo-image'
 import { LinearGradient } from "expo-linear-gradient"
@@ -11,12 +13,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import "../../config/googleSignIn"
+import { googleSignIn, sendOtp } from "../../Services/api-service"
+import { hideLoader, showLoader } from "../../Services/loader-service"
 import { useToast } from "../hook/ToastContext"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
-import { googleSignIn, sendOtp } from "../Services/api-service"
-import { hideLoader, showLoader } from "../Services/loader-service"
-import { useAuthStore } from "../Stores/auth-store"
-import { tokenStorage } from "../Stores/token-storage"
 
 export default function LoginScreen() {
     const logoScale = useRef(new Animated.Value(0.8)).current

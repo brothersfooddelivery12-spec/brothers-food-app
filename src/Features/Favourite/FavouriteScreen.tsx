@@ -9,8 +9,8 @@ import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
-import { useCartStore } from '../Stores/useCartStore'
 import FavFoodCard from "./Components/FavFoodCard"
 import FavouriteTabs from "./Components/FavouriteTabs"
 import FavRestaurantCard from "./Components/FavRestaurantCard"

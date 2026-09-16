@@ -1,5 +1,5 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import { setLoaderHandler } from "../Services/loader-service"
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { setLoaderHandler } from "../../Services/loader-service";
 
 type LoaderContextType = {
   loading: boolean;
