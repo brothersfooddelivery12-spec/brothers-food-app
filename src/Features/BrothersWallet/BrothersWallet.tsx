@@ -9,6 +9,7 @@ import TransactionHistoryIcon from '@/assets/icon/TransactionHistoryIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
+import LottieView from 'lottie-react-native'
 import { useCallback, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -252,61 +253,102 @@ export default function BrothersWalletScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-4 py-4 items-center flex-row gap-2"
+                            className="bg-[#3F2516] flex-row items-center overflow-hidden"
                             style={{
                                 borderRadius: moderateScale(22),
-                                marginTop: verticalScale(14)
+                                marginTop: verticalScale(14),
+                                paddingHorizontal: scale(18),
+                                paddingVertical: verticalScale(18),
+                                minHeight: verticalScale(125)
                             }}
                         >
-                            <View className='justify-center flex-1 items-start'>
+                            <View
+                                className="flex-1 mt-2"
+                                style={{ minWidth: 0 }}
+                            >
                                 <Text
-                                    className='text-[#FFFFFF]/80 font-normal ml-2'
-                                    style={{
-                                        fontSize: moderateScale(13),
-                                        marginTop: verticalScale(10)
-                                    }}
+                                    className="text-white/80 font-normal"
+                                    style={{ fontSize: moderateScale(12.5) }}
                                 >
                                     Available Balance
                                 </Text>
 
-                                <Text
-                                    className='text-[#FFFFFF] tracking-wider font-black ml-2'
+                                <View
+                                    className="justify-center"
                                     style={{
-                                        fontSize: moderateScale(28.5),
-                                        marginTop: verticalScale(2)
+                                        height: verticalScale(42),
+                                        overflow: "hidden"
                                     }}
                                 >
-                                    ₹{Number(wallet?.balance ?? 0).toFixed(2)}
-                                </Text>
+                                    {loading ? (
+                                        <LottieView
+                                            source={require("../../../assets/animations/Loading2.json")}
+                                            autoPlay
+                                            loop
+                                            style={{
+                                                width: moderateScale(90),
+                                                height: verticalScale(40),
+                                                transform: [
+                                                    {
+                                                        translateX: -moderateScale(10)
+                                                    },
+                                                    {
+                                                        scale: 3.15
+                                                    }
+                                                ]
+                                            }}
+                                        />
+                                    ) : (
+                                        <Text
+                                            className="text-white tracking-wider font-black"
+                                            numberOfLines={1}
+                                            style={{ fontSize: moderateScale(28.5) }}
+                                        >
+                                            ₹{Number(wallet?.balance ?? 0).toFixed(2)}
+                                        </Text>
+                                    )}
+                                </View>
 
                                 <Text
-                                    className='text-[#FFFFFF]/70 font-normal ml-2'
+                                    className="text-white/65 font-normal"
                                     style={{
-                                        fontSize: moderateScale(12),
-                                        marginTop: verticalScale(10)
+                                        fontSize: moderateScale(11.5),
+                                        marginTop: verticalScale(6)
                                     }}
                                 >
                                     Wallet ID
                                 </Text>
 
                                 <Text
-                                    className='text-[#F8D56A] font-medium mt-1 ml-2 uppercase'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="text-[#F8D56A] font-semibold uppercase"
+                                    numberOfLines={1}
+                                    style={{
+                                        fontSize: moderateScale(12.5),
+                                        marginTop: verticalScale(3)
+                                    }}
                                 >
-                                    {displayWalletId}
+                                    {displayWalletId || "BFD-WALLET-000000"}
                                 </Text>
                             </View>
 
-                            <Image
-                                source={require("@/assets/images/BrotherWalletIllustration.png")}
-                                contentFit="contain"
-                                cachePolicy="memory-disk"
+                            <View
+                                className="items-end justify-center"
                                 style={{
-                                    width: moderateScale(165),
-                                    height: moderateScale(110),
-                                    marginRight: -moderateScale(6)
+                                    width: moderateScale(135),
+                                    marginLeft: scale(6),
+                                    marginRight: -moderateScale(10)
                                 }}
-                            />
+                            >
+                                <Image
+                                    source={require("@/assets/images/BrotherWalletIllustration.png")}
+                                    contentFit="contain"
+                                    cachePolicy="memory-disk"
+                                    style={{
+                                        width: moderateScale(165),
+                                        height: moderateScale(115)
+                                    }}
+                                />
+                            </View>
                         </View>
 
                         <View className="flex-row items-start mt-5">

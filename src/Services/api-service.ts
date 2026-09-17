@@ -229,7 +229,7 @@ export const verifyCashfreePayment = (payload: VerifyPaymentRequest) => {
 }
 
 export const getRestaurantById = (restaurantId: string) => {
-    return api.get(`/restaurant/${restaurantId}`)
+    return api.get(`/restaurants/${restaurantId}`)
 }
 
 export const getMenuById = (menuId: string) => {
