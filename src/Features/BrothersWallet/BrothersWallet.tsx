@@ -63,7 +63,8 @@ const WALLET_ACTIONS = [
         id: "add",
         title: "Add Money",
         icon: PlusIcon,
-        strokeWidth: 1.8
+        strokeWidth: 1.8,
+        route: "/add-money"
     },
     {
         id: "send",
