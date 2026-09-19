@@ -451,6 +451,8 @@ export default function HomeScreen() {
                             : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
+                    openingTime: item.opening_time,
+                    closingTime: item.closing_time,
                     isOpen: item.is_open
                 })
             )
@@ -648,11 +650,11 @@ export default function HomeScreen() {
     const addToCart = useCartStore((state) => state.addToCart)
 
     const handleRestaurantPress = useCallback((restaurantId: string, isOpen: boolean) => {
-        if (!isOpen) {
-            showToast("Restaurant is currently closed", "info")
+        // if (!isOpen) {
+        //     showToast("Restaurant is currently closed", "info")
 
-            return
-        }
+        //     return
+        // }
 
         preventDoublePress(() => {
             router.push({
@@ -662,7 +664,7 @@ export default function HomeScreen() {
                 }
             })
         })
-    }, [showToast, preventDoublePress, router])
+    }, [preventDoublePress, router])
 
     const {
         restaurantIds,
@@ -815,12 +817,12 @@ export default function HomeScreen() {
     )
 
     const handleFoodPress = useCallback(
-        (foodId: string) => {
+        (menuId: string) => {
             preventDoublePress(() => {
                 router.push({
                     pathname: "/food-details",
                     params: {
-                        foodId
+                        menuId
                     }
                 })
             })

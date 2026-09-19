@@ -32,7 +32,7 @@ const CartItemRow = memo(
 
         const [imageError, setImageError] = useState(false)
             
-        const DefaultFoodImage = require("../../../../assets/images/Default_Food_image.png")
+        const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
         
         useEffect(() => {
             setImageError(true)

@@ -1,8 +1,10 @@
+import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
-import ClockIcon from "@/assets/icon/TimerIcon.svg"
+import TimerIcon from "@/assets/icon/TimerIcon.svg"
+import { formatRestaurantTime } from "@/utils/time-utils"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -18,6 +20,9 @@ export interface Restaurants {
     rating?: number | null
     deliveryFee: number | null
     deliveryTime: number | null
+
+    openingTime?: string | null
+    closingTime?: string | null
 
     distance?: string | null
     discount?: string | null
@@ -49,6 +54,9 @@ const RestaurantCard = ({
     useEffect(() => {
         setImageError(true)
     }, [restaurant.imageUrl])
+
+    const openingTime = formatRestaurantTime(restaurant.openingTime)
+    const closingTime = formatRestaurantTime(restaurant.closingTime)
 
     const hasImage = !!restaurant.imageUrl && !imageError
     const rating = restaurant.rating ?? 0
@@ -206,6 +214,42 @@ const RestaurantCard = ({
                         >
                             {restaurant.cuisines}
                         </Text>
+
+                        {restaurant.openingTime && restaurant.closingTime && (
+                            <View
+                                className="flex-row items-center"
+                                style={{
+                                    gap: moderateScale(5),
+                                    marginTop: moderateScale(6)
+                                }}
+                            >
+                                <ClockIcon
+                                    width={moderateScale(16)}
+                                    height={moderateScale(16)}
+                                    color={isInactive ? "#858585" : "#5C4639"}
+                                    strokeWidth={1.8}
+                                />
+
+                                <Text
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10.5),
+                                        color: isInactive
+                                            ? "rgba(31,31,31,0.45)"
+                                            : "rgba(31,31,31,0.65)"
+                                    }}
+                                >
+                                    {isInactive
+                                        ? openingTime
+                                            ? `Opens at ${openingTime}`
+                                            : "Currently closed"
+                                        : openingTime && closingTime
+                                            ? `${openingTime} – ${closingTime}`
+                                            : "Hours unavailable"
+                                    }
+                                </Text>
+                            </View>
+                        )}
                     </View>
 
                     <View
@@ -287,7 +331,7 @@ const RestaurantCard = ({
                                     : "rgba(232,185,63,0.15)"
                             }}
                         >
-                            <ClockIcon
+                            <TimerIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
                                 color={isInactive ? "#858585" : "#5C4639"} strokeWidth={1.8}

@@ -7,6 +7,42 @@ import { api, retryApi } from "./http-client"
 let interceptorId: number | null = null
 let refreshPromise: Promise<string> | null = null
 
+const isRefreshTokenExpired = (error: any): boolean => {
+  const status = error?.response?.status
+  const message = error?.response?.data?.message
+    ?.trim()?.toLowerCase() ?? ""
+
+  if (status === 401 || status === 403) {
+    return true
+  }
+
+  const expiredMessages = [
+    "refresh token has been revoked",
+    "refresh token has expired",
+    "refresh token expired",
+    "invalid refresh token",
+    "refresh token is invalid"
+  ]
+
+  return expiredMessages.some(item => message.includes(item))
+}
+
+const handleSessionExpired = async (): Promise<void> => {
+  const session = useSessionStore.getState()
+  
+  if (session.sessionExpired) {
+    return
+  }
+
+  console.log("⛔ [AUTH] Session expired")
+
+  session.showSessionExpired()
+
+  await clearStoredTokens()
+
+  console.log("🗑️ [AUTH] Invalid tokens cleared")
+}
+
 const getNewAccessToken = (): Promise<string> => {
   if (refreshPromise) {
     console.log("⏳ [AUTH] Joining existing refresh")
@@ -22,6 +58,25 @@ const getNewAccessToken = (): Promise<string> => {
 
       return token
     })
+    .catch(async (refreshError: any) => {
+      const status = refreshError?.response?.status
+
+      const data = refreshError?.response?.data
+
+      console.log("❌ [AUTH] TOKEN REFRESH FAILED",
+        {
+          status,
+          data,
+          message: refreshError?.message
+        }
+      )
+
+      if (isRefreshTokenExpired(refreshError)) {
+        await handleSessionExpired()
+      }
+
+      throw refreshError
+    })
     .finally(() => {
       console.log("🏁 [AUTH] Refresh finished")
 
@@ -30,7 +85,6 @@ const getNewAccessToken = (): Promise<string> => {
 
   return refreshPromise
 }
-
 
 const getAuthorizationHeader = (headers: any): string | undefined => {
   if (!headers) {
@@ -41,14 +95,10 @@ const getAuthorizationHeader = (headers: any): string | undefined => {
     return (headers.get("Authorization")?.toString() ?? undefined)
   }
 
-  return (
-    headers.Authorization ??
-    headers.authorization
-  )
+  return (headers.Authorization ?? headers.authorization)
 }
 
-
-const setAuthorizationHeader = (request: any, token: string) => {
+const setAuthorizationHeader = (request: any, token: string): void => {
   if (!(request.headers instanceof AxiosHeaders)) {
     request.headers = new AxiosHeaders(request.headers)
   }
@@ -56,21 +106,28 @@ const setAuthorizationHeader = (request: any, token: string) => {
   request.headers.set("Authorization", `Bearer ${token}`)
 }
 
-
 export const registerAuthInterceptor = (): void => {
-  if (interceptorId !== null) {
+  if (
+    interceptorId !== null
+  ) {
+    console.log("ℹ️ [AUTH] Interceptor already registered")
+
     return
   }
+
+  console.log("✅ [AUTH] Registering auth interceptor")
 
   interceptorId = api.interceptors.response.use(
     response => response,
 
     async (error: AxiosError) => {
       const originalRequest = error.config as any
+
       const status = error.response?.status
 
-      console.log("🔴 [AUTH] API ERROR", 
+      console.log("🔴 [AUTH] API ERROR",
         {
+          method: originalRequest?.method,
           url: originalRequest?.url,
           status,
           retry: originalRequest?._retry,
@@ -78,109 +135,88 @@ export const registerAuthInterceptor = (): void => {
         }
       )
 
-      if (status !== 401 || !originalRequest || originalRequest._retry) {
+      if (status !== 401 || !originalRequest) {
         return Promise.reject(error)
       }
 
-      /*
-        * Check whether another
-        * request already refreshed
-        * the token.
-        */
-        const currentToken = await tokenStorage.getAccessToken()
+      if (originalRequest._retry) {
+        console.log("⚠️ [AUTH] Request already retried:", originalRequest.url)
 
-        const requestAuth = getAuthorizationHeader(originalRequest.headers)
+        return Promise.reject(error)
+      }
 
-        const currentAuth = currentToken ? `Bearer ${currentToken}` : undefined
+      const currentToken = await tokenStorage.getAccessToken()
 
-        /*
-          * Request used OLD token,
-          * but storage already has
-          * NEW token.
-          *
-          * Don't refresh again.
-          */
-        if (currentToken && requestAuth && requestAuth !== currentAuth) {
-          console.log("♻️ [AUTH] Token already refreshed by another request")
+      const requestAuth = getAuthorizationHeader(originalRequest.headers)
 
-          originalRequest._retry = true
+      const currentAuth = currentToken? `Bearer ${currentToken}` : undefined
 
-          setAuthorizationHeader(originalRequest, currentToken)
+      if (currentToken && requestAuth && requestAuth !== currentAuth) {
+        console.log("♻️ [AUTH] Token already refreshed by another request")
 
-            console.log("🔁 [AUTH] Retrying with already refreshed token:", originalRequest.url)
+        originalRequest._retry = true
 
-            return retryApi(originalRequest)
-          }
+        setAuthorizationHeader(originalRequest, currentToken)
 
-          originalRequest._retry = true
+        try {
+          console.log("🔁 [AUTH] Retrying with already refreshed token:", originalRequest.url)
 
-          /*
-            * No newer token exists.
-            * Refresh or join the
-            * currently running refresh.
-            */
-          let newToken: string
+          const response = await retryApi(originalRequest)
 
-          try {
-            newToken = await getNewAccessToken()
-          } catch (
-            refreshError: any
-          ) {
-            const refreshStatus = refreshError ?.response ?.status
+          console.log("✅ [AUTH] Retry succeeded:", originalRequest.url)
 
-            console.log("❌ [AUTH] TOKEN REFRESH FAILED",
-                {
-                  status: refreshStatus,
-                  data: refreshError?.response?.data,
-                  message: refreshError?.message
-                }
-              )
+          return response
+        } catch (
+          retryError: any
+        ) {
+          console.log("❌ [AUTH] RETRY WITH STORED TOKEN FAILED",
+            {
+              url: originalRequest.url,
+              status: retryError?.response?.status,
+              data: retryError?.response?.data
+            }
+          )
 
-              if (refreshStatus === 401 || refreshStatus === 403) {
-                console.log("⛔ [AUTH] Session expired")
-
-                await clearStoredTokens()
-
-                const session = useSessionStore.getState()
-
-                if (!session.sessionExpired) {
-                  session.showSessionExpired()
-                }
-              }
-
-            return Promise.reject(refreshError)
-          }
-
-          /*
-            * Put new access token
-            * into failed request.
-            */
-          setAuthorizationHeader(originalRequest, newToken)
-
-          /*
-            * Retry original request.
-            */
-          try {
-            console.log("🔁 [AUTH] Retrying:", originalRequest.url)
-
-            const response = await retryApi(originalRequest)
-
-            console.log("✅ [AUTH] Retry succeeded:", originalRequest.url)
-
-            return response
-          } catch (
-            retryError: any
-          ) {
-            console.log("❌ [AUTH] RETRIED API FAILED",
-              {
-                url: originalRequest.url,
-                status: retryError?.response?.status,
-                data: retryError?.response?.data
-              }
-            )
-
-            return Promise.reject(retryError)
-          }
+          return Promise.reject(retryError)
         }
-      )
+      }
+
+      originalRequest._retry = true
+
+      let newToken: string
+
+      try {
+        newToken = await getNewAccessToken()
+      } catch (
+        refreshError
+      ) {
+        return Promise.reject(refreshError)
+      }
+
+      setAuthorizationHeader(originalRequest, newToken)
+
+      try {
+        console.log("🔁 [AUTH] Retrying:", originalRequest.url)
+
+        const response = await retryApi(originalRequest)
+
+        console.log("✅ [AUTH] Retry succeeded:", originalRequest.url)
+
+        return response
+      } catch (
+        retryError: any
+      ) {
+        console.log("❌ [AUTH] RETRIED API FAILED",
+          {
+            url: originalRequest.url,
+            status: retryError?.response?.status,
+            data: retryError?.response?.data, 
+            message: retryError?.message
+          }
+        )
+
+        return Promise.reject(retryError)
+      }
     }
+  )
+}

@@ -699,6 +699,7 @@ export default function CartScreen() {
                             </View>
                         }
                     />
+                    
                     {activeCart && (
                         <View
                             className="flex-row items-center absolute left-0 right-0 bottom-0"

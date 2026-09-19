@@ -14,7 +14,10 @@ import WalletIcon from '@/assets/icon/WalletIcon.svg'
 import { popularitems } from "@/constant/PopularItemData"
 import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
+import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
+import { useFavouriteStore } from '@/Stores/favourite-store'
 import { getRatingStars } from "@/utils/rating"
+import { formatRestaurantTime } from '@/utils/time-utils'
 import { Image } from "expo-image"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -23,7 +26,7 @@ import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getRestaurantById } from '../../Services/api-service'
+import { getRestaurantById, RestaurantDetails } from '../../Services/api-service'
 import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
@@ -122,7 +125,7 @@ export default function RestaurantDetailsScreen() {
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
 
-    const [restaurant, setRestaurant] = useState<any | null>(null)
+    const [restaurant, setRestaurant] = useState<RestaurantDetails | null>(null)
     const [loadingRestaurant, setLoadingRestaurant] = useState(false)
 
     const fetchRestaurant = useCallback(async () => {
@@ -155,7 +158,90 @@ export default function RestaurantDetailsScreen() {
         fetchRestaurant()
     }, [fetchRestaurant])
 
-    const [favourite, setFavourite] = useState(false)
+    const [coverImageError, setCoverImageError] = useState(false)
+    const [logoImageError, setLogoImageError] = useState(false)
+
+    const DefaultRestaurantCoverImage = require("../../../assets/images/Default_Restaurant_Cover_Image.png")
+    const DefaultRestaurantLogo = require("../../../assets/images/Default_Restaurant_Logo.png")
+
+    useEffect(() => {
+        setCoverImageError(true)
+    }, [restaurant?.cover_image_url])
+
+    useEffect(() => {
+        setLogoImageError(true)
+    }, [restaurant?.logo_url])
+
+    const hasCoverImage = !!restaurant?.cover_image_url && !coverImageError
+    const hasLogoImage = !!restaurant?.logo_url && !logoImageError
+
+    const openingTime = formatRestaurantTime(restaurant?.opening_time)
+    const closingTime = formatRestaurantTime(restaurant?.closing_time)
+
+    const addRestaurant = useFavouriteStore(state => state.addRestaurant)
+    const removeRestaurant = useFavouriteStore(state => state.removeRestaurant)
+    
+    const isFavourite = useFavouriteStore(
+        state => !!restaurantId && state.restaurantIds.includes(restaurantId)
+    )
+
+    const handleFavouritePress = useCallback(async () => {
+        if (!restaurantId) {
+            return
+        }
+
+        const wasFavourite =
+            useFavouriteStore
+                .getState()
+                .restaurantIds
+                .includes(restaurantId)
+
+        // Optimistic UI update
+        if (wasFavourite) {
+            removeRestaurant(restaurantId)
+        } else {
+            addRestaurant(restaurantId)
+        }
+
+        try {
+            const res =
+                wasFavourite
+                    ? await removeRestaurantFromFavorites(restaurantId)
+                    : await addRestaurantToFavorites(restaurantId)
+
+            if (!res.data.success) {
+                // rollback
+                if (wasFavourite) {
+                    addRestaurant(restaurantId)
+                } else {
+                    removeRestaurant(restaurantId)
+                }
+
+                showToast(res.data.message || "Unable to update favourite.", "info")
+
+                return
+            }
+
+            showToast(wasFavourite
+                    ? "Removed from favourites."
+                    : "Added to favourites.",
+                "success")
+        } catch (error: any) {
+            // rollback
+            if (wasFavourite) {
+                addRestaurant(restaurantId)
+            } else {
+                removeRestaurant(restaurantId)
+            }
+
+            showToast(error?.message || "Unable to update favourite.", "info")
+        }
+    }, [
+        restaurantId,
+        addRestaurant,
+        removeRestaurant
+    ])
+
     const [activeTab, setActiveTab] = useState("Popular")
 
     const addToCart = useCartStore((state) => state.addToCart)
@@ -166,12 +252,8 @@ export default function RestaurantDetailsScreen() {
         )
     }
 
-    const rating = 4.8
-    const stars = getRatingStars(rating)
-
-    const handleFavourite = useCallback(() => {
-        setFavourite((prev) => !prev)
-    }, [])
+    const ratingStar = 4.8
+    const stars = getRatingStars(ratingStar)
 
     const handleBack = useCallback(() => {
         router.back()
@@ -286,6 +368,20 @@ export default function RestaurantDetailsScreen() {
         },[handleSimilarRestaurantPress]
     )
 
+    const rating = Number(restaurant?.rating ?? 0)
+    const reviewCount = Number(restaurant?.review_count ?? 0)
+    const isVerified = restaurant?.approval_status === "APPROVED"
+    const isRestaurantOpen =
+        restaurant?.is_active === true &&
+        restaurant?.is_open === true
+    const preparationTime = restaurant?.average_preparation_time ?? null
+    const restaurantStatus =
+        !restaurant?.is_active
+            ? "UNAVAILABLE"
+            : restaurant?.is_open
+                ? "OPEN NOW"
+                : "CLOSED"
+
     return(
         <SafeAreaView className="flex-1">
             {loadingRestaurant ? (
@@ -319,9 +415,13 @@ export default function RestaurantDetailsScreen() {
                                 style={{ height: verticalScale(200) }}
                             >
                                 <Image
-                                    source={{
-                                        uri: "https://i.pinimg.com/736x/98/b5/5b/98b55b61b77fb05cfe91063d39436f40.jpg",
-                                    }}
+                                    source={
+                                        hasCoverImage
+                                            ? {
+                                                uri: restaurant.cover_image_url!
+                                            }
+                                            : DefaultRestaurantCoverImage
+                                    }
                                     contentFit="cover"
                                     style={{
                                         width: "100%",
@@ -356,14 +456,14 @@ export default function RestaurantDetailsScreen() {
                                     >
                                         <TouchableOpacity
                                             activeOpacity={0.95}
-                                            onPress={handleFavourite}
+                                            onPress={handleFavouritePress}
                                             className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                             style={{
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
                                         >
-                                            {favourite ? (
+                                            {isFavourite ? (
                                                 <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
                                             ): (
                                                 <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
@@ -412,9 +512,13 @@ export default function RestaurantDetailsScreen() {
                                             }}
                                         >
                                             <Image
-                                                source={{
-                                                    uri: "https://i.pinimg.com/736x/04/5c/e2/045ce255f197758acff31daef213e62d.jpg",
-                                                }}
+                                                source={
+                                                    hasLogoImage
+                                                        ? {
+                                                            uri: restaurant.logo_url!
+                                                        }
+                                                        : DefaultRestaurantLogo
+                                                }
                                                 contentFit="cover"
                                                 style={{
                                                     width: "100%",
@@ -423,50 +527,57 @@ export default function RestaurantDetailsScreen() {
                                             />
                                         </View>
     
-                                        <View className="items-center gap-1">
+                                        <View
+                                            className="flex-1 gap-1"
+                                            style={{ minWidth: 0 }}
+                                        >
                                             <Text
+                                                ellipsizeMode="tail"
                                                 className="text-[#1F1F1F] self-start font-extrabold"
-                                                style={{
-                                                    fontSize: moderateScale(20)
-                                                }}
+                                                style={{ fontSize: moderateScale(18) }}
                                             >
-                                                The Burger king
+                                                {restaurant?.name || "Restaurant"}
                                             </Text>
     
                                             <Text
+                                                numberOfLines={2}
+                                                ellipsizeMode="tail"
                                                 className="font-medium text-[#1F1F1F]/65"
                                                 style={{
-                                                    fontSize: moderateScale(12),
-                                                    marginTop: moderateScale(2)
+                                                    fontSize: moderateScale(11),
+                                                    marginTop: moderateScale(2),
+                                                    lineHeight: moderateScale(15)
                                                 }}
                                             >
-                                                North Indian, Chinese, Fast Food
+                                                {restaurant?.description || "Restaurant information unavailable"}
                                             </Text>
                                         </View>
                                     </View>
     
                                     <View className="flex-row gap-2 items-center mt-3">
-                                        <View
-                                            className="self-start flex-row items-center bg-[#E8B93F]/20"
-                                            style={{
-                                                paddingHorizontal: moderateScale(7),
-                                                paddingVertical: moderateScale(3.5),
-                                                borderRadius: moderateScale(14)
-                                            }}
-                                        >
-                                            <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
-                        
-                                            <Text
-                                                className="font-bold text-[#3F2516]"
+                                        {isVerified && (
+                                            <View
+                                                className="self-start flex-row items-center bg-[#E8B93F]/20"
                                                 style={{
-                                                    fontSize: moderateScale(10.5),
-                                                    marginLeft: moderateScale(2),
-                                                    marginRight: moderateScale(2)
+                                                    paddingHorizontal: moderateScale(7),
+                                                    paddingVertical: moderateScale(3.5),
+                                                    borderRadius: moderateScale(14)
                                                 }}
                                             >
-                                                Verified
-                                            </Text>
-                                        </View>
+                                                <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                            
+                                                <Text
+                                                    className="font-bold text-[#3F2516]"
+                                                    style={{
+                                                        fontSize: moderateScale(10.5),
+                                                        marginLeft: moderateScale(2),
+                                                        marginRight: moderateScale(2)
+                                                    }}
+                                                >
+                                                    Verified
+                                                </Text>
+                                            </View>
+                                        )}
     
                                         <View
                                             className="self-start flex-row items-center justify-center gap-1 bg-[#E8B93F]/20"
@@ -482,17 +593,56 @@ export default function RestaurantDetailsScreen() {
                                                 className="font-bold text-[#3F2516]"
                                                 style={{ fontSize: moderateScale(12), marginRight: moderateScale(2) }}
                                             >
-                                                4.5
+                                                {rating.toFixed(1)}
                                             </Text>
     
                                             <Text
                                                 className="font-medium text-[#3F2516]/85"
                                                 style={{ fontSize: moderateScale(11) }}
                                             >
-                                                (5,200 + Ratings)
+                                                {reviewCount > 0
+                                                    ? `(${reviewCount.toLocaleString(
+                                                        "en-IN"
+                                                    )} Ratings)`
+                                                    : "(No Ratings)"
+                                                }
                                             </Text>
                                         </View>
                                     </View>
+
+                                    {/* {restaurant?.opening_time && restaurant.closing_time && (
+                                        <View
+                                            className="flex-row items-center"
+                                            style={{
+                                                gap: moderateScale(5),
+                                                marginTop: moderateScale(6)
+                                            }}
+                                        >
+                                            <ClockIcon
+                                                width={moderateScale(16)}
+                                                height={moderateScale(16)}
+                                                color={"#5C4639"}
+                                                strokeWidth={1.8}
+                                            />
+
+                                            <Text
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(10.5),
+                                                    color: "rgba(31,31,31,0.65)"
+                                                }}
+                                            >
+                                                {!restaurant.is_open
+                                                    ? openingTime
+                                                        ? `Opens at ${openingTime}`
+                                                        : "Currently closed"
+                                                    : openingTime && closingTime
+                                                        ? `${openingTime} – ${closingTime}`
+                                                        : "Hours unavailable"
+                                                }
+                                            </Text>
+                                        </View>
+                                    )} */}
     
                                     <View
                                         className="rounded-full bg-[#E8DDD3]/75"
@@ -528,7 +678,10 @@ export default function RestaurantDetailsScreen() {
                                                         className="text-[#1F1F1F] font-bold"
                                                         style={{ fontSize: moderateScale(12) }}
                                                     >
-                                                        20–25 mins
+                                                        {restaurant?.average_preparation_time
+                                                            ? `${restaurant.average_preparation_time} min`
+                                                            : "-- min"
+                                                        }
                                                     </Text>
                                                 </View>
                                             </View>
@@ -556,7 +709,12 @@ export default function RestaurantDetailsScreen() {
                                                         className="text-[#1F1F1F] font-bold"
                                                         style={{ fontSize: moderateScale(12) }}
                                                     >
-                                                        2.3 km
+                                                         {restaurant?.distance != null
+                                                            ? `${Number(
+                                                                restaurant.distance
+                                                            ).toFixed(1)} km`
+                                                            : "-- km"
+                                                        }
                                                     </Text>
                                                 </View>
                                             </View>
@@ -586,7 +744,14 @@ export default function RestaurantDetailsScreen() {
                                                         className="text-[#1F1F1F] font-bold"
                                                         style={{ fontSize: moderateScale(12) }}
                                                     >
-                                                        ₹350 for two
+                                                         {restaurant?.price_for_two != null
+                                                            ? `₹${Number(
+                                                                restaurant.price_for_two
+                                                            ).toLocaleString(
+                                                                "en-IN"
+                                                            )} for two`
+                                                            : "Not available"
+                                                        }
                                                     </Text>
                                                 </View>
                                             </View>
@@ -612,9 +777,16 @@ export default function RestaurantDetailsScreen() {
     
                                                     <Text
                                                         className="text-green-600 font-bold"
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                        style={{ 
+                                                            fontSize: moderateScale(12),
+                                                            color:
+                                                                restaurantStatus ===
+                                                                "OPEN NOW"
+                                                                    ? "#16A34A"
+                                                                    : "#E05252"
+                                                        }}
                                                     >
-                                                        OPEN NOW
+                                                        {restaurantStatus}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -760,7 +932,7 @@ export default function RestaurantDetailsScreen() {
                                     className="text-[#1F1F1F] font-black text-center mt-3"
                                     style={{ fontSize: moderateScale(38) }}
                                 >
-                                    {rating}
+                                    {ratingStar}
                                 </Text>
     
                                 <View

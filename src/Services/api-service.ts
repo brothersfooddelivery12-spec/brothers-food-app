@@ -228,8 +228,80 @@ export const verifyCashfreePayment = (payload: VerifyPaymentRequest) => {
     return api.post("/payments/verify", payload)
 }
 
+export interface RestaurantDetails {
+    id: string
+    owner_id: string
+
+    name: string
+    description: string
+
+    phone: string
+    email: string
+
+    address: string
+    area: string
+    city: string
+    state: string
+    pincode: string
+
+    latitude: number
+    longitude: number
+
+    logo_url: string | null
+    cover_image_url: string | null
+    gallery: string[]
+
+    opening_time: string
+    closing_time: string
+
+    average_preparation_time: number
+
+    is_open: boolean
+    is_active: boolean
+    accepts_cod: boolean
+
+    approval_status:
+        | "APPROVED"
+        | "PENDING"
+        | "REJECTED"
+
+    created_at: string
+    updated_at: string
+
+    // Add these later if API starts returning them
+    rating?: number | string | null
+    review_count?: number | null
+    distance?: number | null
+    price_for_two?: number | null
+}
+
 export const getRestaurantById = (restaurantId: string) => {
     return api.get(`/restaurants/${restaurantId}`)
+}
+
+export interface MenuDetails {
+    id: string
+    category_id: string
+    restaurant_id: string
+
+    name: string
+    description: string
+    rating: string
+    review_count: string
+    calories: string
+
+    image_url: string | null
+
+    price: number
+
+    is_available: boolean
+    is_vegetarian: boolean
+
+    preparation_time: number
+    display_order: number
+
+    created_at: string
+    updated_at: string
 }
 
 export const getMenuById = (menuId: string) => {

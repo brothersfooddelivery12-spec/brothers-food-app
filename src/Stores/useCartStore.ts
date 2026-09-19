@@ -38,6 +38,7 @@ export type AddToCartPayload = {
         name: string
         description?: string
         price: number
+        quantity?: number
         isAvailable: boolean
     }
 }
@@ -74,11 +75,6 @@ export const useCartStore = create<CartStore>()(
 
             addToCart: ({ restaurant, item }) => {
                 set((state) => {
-                    const existingRestaurant =
-                        state.carts.find(
-                            (cart) => cart.id === restaurant.id
-                        )
-
                     if (!restaurant.isOpen) {
                         return state
                     }
@@ -87,48 +83,51 @@ export const useCartStore = create<CartStore>()(
                         return state
                     }
 
+                    const quantityToAdd = Math.max(1, item.quantity ?? 1)
+
+                    const existingRestaurant = state.carts.find(cart => cart.id === restaurant.id)
+
                     if (existingRestaurant) {
-                        const existingItem =
-                            existingRestaurant.items.find(
-                                (cartItem) => cartItem.id === item.id
-                            )
+                        const existingItem = existingRestaurant.items.find(cartItem => cartItem.id === item.id)
 
                         const updatedCarts =
-                            state.carts.map((cart) => {
-                                if (cart.id !== restaurant.id) {
-                                    return cart
+                            state.carts.map(
+                                cart => {
+                                    if (cart.id !== restaurant.id) {
+                                        return cart
+                                    }
+
+                                    return {
+                                        ...cart,
+
+                                        restaurantName: restaurant.restaurantName,
+                                        restaurantLogoUrl: restaurant.restaurantLogoUrl,
+                                        deliveryFee: restaurant.deliveryFee,
+                                        deliveryTime: restaurant.deliveryTime,
+                                        isOpen: restaurant.isOpen,
+                                        items: existingItem
+                                            ? cart.items.map(
+                                                currentItem =>
+                                                    currentItem.id ===
+                                                    item.id
+                                                        ? {
+                                                                ...currentItem,
+                                                                ...item,
+
+                                                                quantity: currentItem.quantity + quantityToAdd
+                                                            }
+                                                        : currentItem
+                                            )
+                                            : [
+                                                ...cart.items,
+                                                {
+                                                    ...item,
+                                                    quantity: quantityToAdd
+                                                }
+                                            ]
+                                    }
                                 }
-
-                                return {
-                                    ...cart,
-
-                                    restaurantName: restaurant.restaurantName,
-                                    restaurantLogoUrl: restaurant.restaurantLogoUrl,
-                                    deliveryFee: restaurant.deliveryFee,
-                                    deliveryTime: restaurant.deliveryTime,
-                                    isOpen: restaurant.isOpen,
-
-                                    items: existingItem
-                                        ? cart.items.map(
-                                            (currentItem) =>
-                                                currentItem.id ===
-                                                item.id
-                                                    ? {
-                                                        ...currentItem,
-                                                        ...item,
-                                                        quantity: currentItem.quantity + 1
-                                                    }
-                                                    : currentItem
-                                        )
-                                        : [
-                                            ...cart.items,
-                                            {
-                                                ...item,
-                                                quantity: 1
-                                            }
-                                        ]
-                                }
-                            })
+                            )
 
                         return {
                             carts: updatedCarts,
@@ -136,15 +135,17 @@ export const useCartStore = create<CartStore>()(
                         }
                     }
 
-                    const newRestaurantCart: RestaurantCart = {
-                        ...restaurant,
-                        items: [
-                            {
-                                ...item,
-                                quantity: 1
-                            }
-                        ]
-                    }
+                    const newRestaurantCart:
+                        RestaurantCart = {
+                            ...restaurant,
+
+                            items: [
+                                {
+                                    ...item,
+                                    quantity: quantityToAdd
+                                }
+                            ]
+                        }
 
                     return {
                         carts: [
@@ -310,22 +311,31 @@ export const useCartStore = create<CartStore>()(
             updateItemAvailability: (
                 restaurantId,
                 itemId,
-                isActive
+                isAvailable
             ) => {
                 set((state) => ({
-                    carts:
-                        state.carts.map(
-                            (restaurant) => {
-                                if (restaurant.id !== restaurantId) {
-                                    return restaurant
-                                }
-
-                                return {
-                                    ...restaurant,
-                                    items: restaurant.items.map((item) => item.id === itemId ? {...item, isActive} : item)
-                                }
+                    carts: state.carts.map(
+                        restaurant => {
+                            if (restaurant.id !== restaurantId) {
+                                return restaurant
                             }
-                        )
+
+                            return {
+                                ...restaurant,
+
+                                items:
+                                    restaurant.items.map(
+                                        item =>
+                                            item.id === itemId
+                                            ? {
+                                                ...item,
+                                                isAvailable
+                                            }
+                                            : item
+                                    )
+                            }
+                        }
+                    )
                 }))
             }
         }),

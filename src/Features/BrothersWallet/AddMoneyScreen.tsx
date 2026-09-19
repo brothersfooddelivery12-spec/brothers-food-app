@@ -1,5 +1,6 @@
 import { verifyCashfreePayment } from '@/Services/api-service'
 import { hideLoader, showLoader } from '@/Services/loader-service'
+import { topupWallet } from '@/Services/wallet-service'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
@@ -30,30 +31,12 @@ export default function AddMoneyScreen(){
     const {showToast} = useToast()
 
     const [loading, setLoading] = useState(false)
-    const [selectedAmount, setSelectedAmount] = useState<number>(500)
-    const amountRef = useRef<TextInput>(null)
+    const [selectedAmount, setSelectedAmount] = useState<number | null>(500)
     const [amount, setAmount] = useState("")
     const [amountError, setAmountError] = useState(false)
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
 
-    const handleAddMoney = () => {
-        const value = Number(amount)
-
-        if (!amount || value <= 0) {
-            setAmountError(true)
-            return
-        }
-
-        if (value < 100) {
-            setAmountError(true)
-
-            showToast("Minimum amount is ₹100", "warning")
-
-            return
-        }
-
-        console.log("Add money:", value)
-    }
+    const amountRef = useRef<TextInput>(null)
 
     const horizontalPadding = scale(14)
     const gap = scale(8)
@@ -65,10 +48,6 @@ export default function AddMoneyScreen(){
     const [creatingOrder, setCreatingOrder] = useState(false)
     const [verifyingPayment, setVerifyingPayment] = useState(false)
     const [processingUpiApp, setProcessingUpiApp] = useState<string | null>(null)
-
-    const canPlaceOrder = !!selectedPayment
-
-    const isPaymentProcessing = creatingOrder || verifyingPayment
 
     const paymentHandledRef = useRef(false)
     const paymentVerifyingRef = useRef(false)
@@ -262,10 +241,120 @@ export default function AddMoneyScreen(){
         return deviceUpiMethods.find(
             (item) => item.id === selectedPayment
         ) ?? null
+    }, [deviceUpiMethods, selectedPayment])
+
+    const handleAddMoney = useCallback(async () => {
+        if (loading || creatingOrder || verifyingPayment) {
+            return
+        }
+
+        const finalAmount = amount.trim()
+            ? Number(amount)
+            : selectedAmount ?? 0
+
+        if (!finalAmount || Number.isNaN(finalAmount)) {
+            setAmountError(true)
+
+            showToast("Please enter a valid amount", "info")
+
+            return
+        }
+
+        if (finalAmount < 100) {
+            setAmountError(true)
+
+            showToast("Minimum amount is ₹100", "info")
+
+            return
+        }
+
+        if (finalAmount > 50000) {
+            setAmountError(true)
+
+            showToast("Maximum amount is ₹50,000", "info")
+
+            return
+        }
+
+        if (!selectedPayment) {
+            showToast("Please select a payment method", "info")
+
+            return
+        }
+
+        if (!selectedUpiMethod) {
+            showToast("Please select a UPI app", "info")
+
+            return
+        }
+
+        try {
+            setLoading(true)
+            setCreatingOrder(true)
+
+            showLoader()
+
+            paymentHandledRef.current = false
+            paymentVerifyingRef.current = false
+
+            console.log("Wallet topup amount:", finalAmount)
+
+            const res = await topupWallet({
+                amount: finalAmount
+            })
+
+            console.log("Wallet topup response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to initiate wallet topup", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? res.data
+            const orderId = data?.order_id
+            const paymentSessionId = data?.payment_session_id
+
+            if (!orderId || !paymentSessionId) {
+                showToast("Unable to start payment", "warning")
+
+                return
+            }
+
+            setProcessingUpiApp(selectedUpiMethod.packageName)
+
+            setLoading(false)
+            setCreatingOrder(false)
+
+            hideLoader()
+
+            // await startUpiPayment({
+            //     orderId,
+            //     paymentSessionId,
+            //     appPackage: selectedUpiMethod.packageName
+            // })
+        } catch (error: any) {
+            console.log("Wallet topup error:", error)
+
+            setProcessingUpiApp(null)
+
+            showToast(error?.message || "Unable to add money", "warning")
+        } finally {
+            setLoading(false)
+            setCreatingOrder(false)
+
+            hideLoader()
+        }
     }, [
-        deviceUpiMethods,
-        selectedPayment
-        ])
+        amount,
+        selectedAmount,
+        selectedPayment,
+        selectedUpiMethod,
+        loading,
+        creatingOrder,
+        verifyingPayment,
+        startUpiPayment
+    ])
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -347,7 +436,12 @@ export default function AddMoneyScreen(){
                                     <TouchableOpacity
                                         key={amount}
                                         activeOpacity={0.95}
-                                        onPress={() => setSelectedAmount(amount)}
+                                        onPress={() => {
+                                            setSelectedAmount(amount)
+
+                                            setAmount("")
+                                            setAmountError(false)
+                                        }}
                                         className="items-center justify-center"
                                         style={{
                                             width: cardWidth,
@@ -470,6 +564,7 @@ export default function AddMoneyScreen(){
                                         const cleaned = text.replace(/[^0-9]/g, "")
 
                                         setAmount(cleaned)
+                                        setSelectedAmount(null)
                                         setAmountError(false)
                                     }}
                                     placeholder="Enter amount"
@@ -624,7 +719,15 @@ export default function AddMoneyScreen(){
                             </>
                         )}
 
-                        <GradientButton title='Add Money' onPress={() => {}} loading={loading} />
+                        <GradientButton
+                            title="Add Money"
+                            onPress={handleAddMoney}
+                            loading={
+                                loading ||
+                                creatingOrder ||
+                                verifyingPayment
+                            }
+                        />
                     </>
                 }
             />

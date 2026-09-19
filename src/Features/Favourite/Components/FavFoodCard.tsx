@@ -83,7 +83,7 @@ const FavFoodCard = ({ item, onPress, onAddPress, onFavouritePress }: FavFoodCar
         
     const [imageError, setImageError] = useState(false)
     
-    const DefaultFoodImage = require("../../../../assets/images/Default_Food_image.png")
+    const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
     
     useEffect(() => {
         setImageError(true)

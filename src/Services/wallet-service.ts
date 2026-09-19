@@ -11,7 +11,8 @@ export const getMyWallet = () => {
 }
 
 export interface WalletTopupRequest {
-    amount: number
+    amount: number,
+    description?: string
 }
 
 export const topupWallet = (payload: WalletTopupRequest) => {
