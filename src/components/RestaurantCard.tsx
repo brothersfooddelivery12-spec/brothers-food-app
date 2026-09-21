@@ -226,7 +226,7 @@ const RestaurantCard = ({
                                 <ClockIcon
                                     width={moderateScale(16)}
                                     height={moderateScale(16)}
-                                    color={isInactive ? "#858585" : "#5C4639"}
+                                    color={isInactive ? "#858585" : "rgba(31,31,31,0.65)"}
                                     strokeWidth={1.8}
                                 />
 

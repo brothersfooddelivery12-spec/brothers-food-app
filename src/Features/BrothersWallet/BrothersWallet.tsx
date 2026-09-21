@@ -205,7 +205,7 @@ export default function BrothersWalletScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
@@ -257,7 +257,7 @@ export default function BrothersWalletScreen(){
                             className="bg-[#3F2516] flex-row items-center overflow-hidden"
                             style={{
                                 borderRadius: moderateScale(22),
-                                marginTop: verticalScale(14),
+                                marginTop: verticalScale(10),
                                 paddingHorizontal: scale(18),
                                 paddingVertical: verticalScale(18),
                                 minHeight: verticalScale(125)

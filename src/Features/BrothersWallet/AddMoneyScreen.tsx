@@ -1,6 +1,7 @@
 import { verifyCashfreePayment } from '@/Services/api-service'
 import { hideLoader, showLoader } from '@/Services/loader-service'
 import { topupWallet } from '@/Services/wallet-service'
+import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
@@ -36,6 +37,8 @@ export default function AddMoneyScreen(){
     const [amountError, setAmountError] = useState(false)
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
 
+    const {savedPaymentMethods, addPaymentMethod, removePaymentMethod} = usePaymentMethodStore()
+    const currentPaymentUpiRef = useRef<SavedPaymentMethod | null>(null)
     const amountRef = useRef<TextInput>(null)
 
     const horizontalPadding = scale(14)
@@ -53,10 +56,7 @@ export default function AddMoneyScreen(){
     const paymentVerifyingRef = useRef(false)
 
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
-        if (
-            paymentHandledRef.current ||
-            paymentVerifyingRef.current
-        ) {
+        if (paymentHandledRef.current || paymentVerifyingRef.current) {
             return
         }
 
@@ -74,21 +74,22 @@ export default function AddMoneyScreen(){
 
             const message = res.data.message?.trim().toLowerCase()
 
-            if (
-                res.data.success &&
-                message === "payment verified successfully"
-            ) {
+            if (res.data.success && message === "payment verified successfully") {
                 paymentHandledRef.current = true
+
+                if (currentPaymentUpiRef.current) {
+                    console.log("Saving payment method:", currentPaymentUpiRef.current)
+
+                    addPaymentMethod(currentPaymentUpiRef.current)
+
+                    currentPaymentUpiRef.current = null
+                }
+
                 setProcessingUpiApp(null)
 
                 showToast("Payment successful", "success")
 
-                router.replace({
-                    pathname: "/order-success",
-                    params: {
-                        orderId: cashfreeOrderId
-                    }
-                })
+                router.back()
 
                 return
             }
@@ -106,6 +107,8 @@ export default function AddMoneyScreen(){
             showToast(res.data.message || "Payment is being verified.", "warning")
         } catch (error: any) {
             console.log("Payment verification error:", error)
+
+            currentPaymentUpiRef.current = null
 
             setProcessingUpiApp(null)
 
@@ -150,6 +153,7 @@ export default function AddMoneyScreen(){
                 return
             }
 
+            currentPaymentUpiRef.current = null
             setCreatingOrder(false)
             setVerifyingPayment(false)
             setProcessingUpiApp(null)
@@ -227,7 +231,6 @@ export default function AddMoneyScreen(){
     const deviceUpiMethods = useMemo(() => {
         return upiApps.map((app) => ({
             id: `upi-${app.appPackage}`,
-
             title: app.appName || getUpiAppName(app.appPackage),
             description: "Pay securely using UPI",
             paymentType: "UPI" as const,
@@ -237,20 +240,72 @@ export default function AddMoneyScreen(){
         }))
     }, [upiApps])
 
+    const defaultPaymentMethod = useMemo(() => {
+        return (
+            savedPaymentMethods.find((item) => item.isDefault) ?? null
+        )
+    }, [savedPaymentMethods])
+
+    useEffect(() => {
+        if (selectedPayment) {
+            return
+        }
+
+        if (!defaultPaymentMethod) {
+            return
+        }
+
+        if (defaultPaymentMethod.type === "UPI") {
+            const isAvailable = deviceUpiMethods.some((item) => item.id === defaultPaymentMethod.id)
+
+            if (!isAvailable) {
+                return
+            }
+        }
+
+        setSelectedPayment(defaultPaymentMethod.id)
+    }, [defaultPaymentMethod, deviceUpiMethods, selectedPayment])
+
+    const savedUpiMethods = useMemo(() => {
+        return savedPaymentMethods.filter(
+            (item) =>
+                item.type === "UPI" &&
+                !!item.packageName
+        )
+    }, [savedPaymentMethods])
+
+    const savedDeviceUpiMethods = useMemo(() => {
+        return savedUpiMethods
+            .map((savedMethod) => {
+                return (
+                    deviceUpiMethods.find((item) => item.packageName === savedMethod.packageName) ?? null
+                )
+            })
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+    }, [savedUpiMethods, deviceUpiMethods])
+
     const selectedUpiMethod = useMemo(() => {
-        return deviceUpiMethods.find(
-            (item) => item.id === selectedPayment
-        ) ?? null
+        return (
+            deviceUpiMethods.find((item) => item.id === selectedPayment) ?? null
+        )
     }, [deviceUpiMethods, selectedPayment])
+
+    const otherUpiMethods = useMemo(() => {
+        const savedPackages = new Set(
+            savedUpiMethods
+                .map((item) => item.packageName)
+                .filter(Boolean)
+        )
+
+        return deviceUpiMethods.filter((item) => !savedPackages.has(item.packageName))
+    }, [deviceUpiMethods, savedUpiMethods])
 
     const handleAddMoney = useCallback(async () => {
         if (loading || creatingOrder || verifyingPayment) {
             return
         }
 
-        const finalAmount = amount.trim()
-            ? Number(amount)
-            : selectedAmount ?? 0
+        const finalAmount = amount.trim() ? Number(amount) : selectedAmount ?? 0
 
         if (!finalAmount || Number.isNaN(finalAmount)) {
             setAmountError(true)
@@ -296,6 +351,13 @@ export default function AddMoneyScreen(){
 
             paymentHandledRef.current = false
             paymentVerifyingRef.current = false
+            
+            currentPaymentUpiRef.current = {
+                id: selectedUpiMethod.id,
+                type: "UPI",
+                name: selectedUpiMethod.title,
+                packageName: selectedUpiMethod.packageName
+            }
 
             console.log("Wallet topup amount:", finalAmount)
 
@@ -312,7 +374,7 @@ export default function AddMoneyScreen(){
             }
 
             const data = res.data.data ?? res.data
-            const orderId = data?.order_id
+            const orderId = data?.payment_id
             const paymentSessionId = data?.payment_session_id
 
             if (!orderId || !paymentSessionId) {
@@ -328,11 +390,11 @@ export default function AddMoneyScreen(){
 
             hideLoader()
 
-            // await startUpiPayment({
-            //     orderId,
-            //     paymentSessionId,
-            //     appPackage: selectedUpiMethod.packageName
-            // })
+            await startUpiPayment({
+                orderId,
+                paymentSessionId,
+                appPackage: selectedUpiMethod.packageName
+            })
         } catch (error: any) {
             console.log("Wallet topup error:", error)
 
@@ -605,25 +667,141 @@ export default function AddMoneyScreen(){
                             Min ₹100  •  Max ₹50,000
                         </Text>
 
-                        <Text
-                            className='text-[#1F1F1F] font-semibold'
-                            style={{
-                                fontSize: moderateScale(15),
-                                marginTop: moderateScale(22)
-                            }}
-                        >
-                            Choose Payment Method
-                        </Text>
-
-                        {deviceUpiMethods.length > 0 && (
+                        {savedDeviceUpiMethods.length > 0 && (
                             <>
+                                <Text
+                                    className="text-[#1F1F1F] font-semibold mt-8 mb-2"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    Saved Payment Method
+                                </Text>
+        
                                 <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden mt-3"
+                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
                                     style={{ borderRadius: moderateScale(20) }}
                                 >
-                                    {deviceUpiMethods.map((item, index) => {
+                                    {savedDeviceUpiMethods.map((item, index) => {
+                                        const isSelected = selectedPayment === item.id
+                                        const isLast = index === savedDeviceUpiMethods.length - 1
                                         const Icon = item.icon
-                                        const isLast = index === deviceUpiMethods.length - 1
+        
+                                        return (
+                                            <React.Fragment key={item.id}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.95}
+                                                    onPress={() => {
+                                                        setSelectedPayment(item.id)
+                                                    }}
+                                                    className="flex-row items-center"
+                                                    style={{
+                                                        paddingHorizontal: scale(14),
+                                                        paddingVertical: verticalScale(10)
+                                                    }}
+                                                >
+                                                    <View
+                                                        className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                        style={{
+                                                            width: moderateScale(42),
+                                                            height: moderateScale(42)
+                                                        }}
+                                                    >
+                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                    </View>
+        
+                                                    <View className="flex-1 ml-3">
+                                                        <Text
+                                                            className="text-[#1F1F1F] font-semibold"
+                                                            style={{ fontSize: moderateScale(14) }}
+                                                        >
+                                                            {item.title}
+                                                        </Text>
+        
+                                                        {item.description && (
+                                                            <Text
+                                                                className="text-[#1F1F1F]/75 font-medium mt-1"
+                                                                style={{ fontSize: moderateScale(11) }}
+                                                            >
+                                                                {item.description}
+                                                            </Text>
+                                                        )}
+                                                    </View>
+        
+                                                    <View
+                                                        className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                        style={{
+                                                            borderRadius: moderateScale(8),
+                                                            paddingHorizontal: scale(8),
+                                                            paddingVertical: verticalScale(3)
+                                                        }}
+                                                    >
+                                                        <Text 
+                                                            className='text-[#1F1F1F] font-medium uppercase'
+                                                            style={{ fontSize: moderateScale(10) }}
+                                                        >
+                                                            {item.paymentType}
+                                                        </Text>
+                                                    </View>
+        
+                                                    <View
+                                                        className="items-center justify-center ml-3"
+                                                        style={{
+                                                            width: moderateScale(22),
+                                                            height: moderateScale(22),
+                                                            borderRadius: "100%",
+                                                            borderWidth: moderateScale(2),
+                                                            borderColor: isSelected
+                                                                ? "#5c4639"
+                                                                : "#D6D0CA"
+                                                        }}
+                                                    >
+                                                        {isSelected && (
+                                                            <View
+                                                                style={{
+                                                                    width: moderateScale(14),
+                                                                    height: moderateScale(14),
+                                                                    borderRadius: "100%",
+                                                                    backgroundColor: "#5c4639"
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </View>
+                                                </TouchableOpacity>
+        
+                                                {!isLast && (
+                                                    <View
+                                                        className="bg-[#1F1F1F]/10"
+                                                        style={{
+                                                            height: 1,
+                                                            marginHorizontal: scale(14)
+                                                        }}
+                                                    />
+                                                )}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </View>
+                            </>
+                        )}
+
+                        {otherUpiMethods.length > 0 && (
+                            <>
+                                <Text
+                                    className="text-[#1F1F1F] font-semibold mb-2"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
+                                    }}
+                                >
+                                    {savedPaymentMethods.length > 0 ? "Other UPI Apps" : "UPI Apps"}
+                                </Text>
+
+                                <View
+                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
+                                    style={{ borderRadius: moderateScale(20) }}
+                                >
+                                    {otherUpiMethods.map((item, index) => {
+                                        const Icon = item.icon
+                                        const isLast = index === otherUpiMethods.length - 1
                                         const isProcessing = processingUpiApp === item.packageName
                                         const isSelected = selectedPayment === item.id
 
@@ -642,11 +820,8 @@ export default function AddMoneyScreen(){
                                                         paddingHorizontal: scale(14),
                                                         paddingVertical: verticalScale(11),
                                                         opacity: 
-                                                            processingUpiApp !==
-                                                                null &&
-                                                            !isProcessing
-                                                                ? 0.5
-                                                                : 1
+                                                            processingUpiApp !== null &&
+                                                            !isProcessing ? 0.5 : 1
                                                     }}
                                                 >
                                                     <View
@@ -700,7 +875,7 @@ export default function AddMoneyScreen(){
                                                                 }}
                                                             />
                                                         )}
-                                            </View>
+                                                    </View>
                                                 </TouchableOpacity>
 
                                                 {!isLast && (

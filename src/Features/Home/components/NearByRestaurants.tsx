@@ -39,7 +39,6 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
 
     const hasImage = !!restaurant.imageUrl && !imageError
     const rating = restaurant.rating ?? 0
-    const distance = restaurant.distance ?? "0.0"
     const hasDiscount = !!restaurant.discount
     const hasPriceForTwo =
         restaurant.priceForTwo !== null &&
@@ -199,7 +198,12 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                                 color: isInactive ? "#8A8A8A" : "#5C4639"
                             }}
                         >
-                            {distance} km
+                            {restaurant.distance != null
+                                ? `${Number(
+                                    restaurant.distance
+                                ).toFixed(1)} km`
+                                : "-- km"
+                            }
                         </Text>
                     </View>
                 </View>

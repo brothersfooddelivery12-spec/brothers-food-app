@@ -1,58 +1,96 @@
+import { usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
+import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import CardIcon from '@/assets/icon/DebitCardIcon.svg'
 import EllipsisVerticalIcon from "@/assets/icon/EllipsisVerticalIcon.svg"
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
 import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
+import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import { router } from "expo-router"
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Dimensions, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { PaymentMethod } from '../Checkout/CheckoutScreen'
-
-const PAYMENT_METHODS: PaymentMethod[] = [
-    {
-        id: "gpay",
-        title: "Google Pay",
-        description: "harshsuthar@oksbi",
-        paymentType: "upi",
-        icon: GooglePayIcon,
-        size: 20,
-        isDefault: true
-    },
-    {
-        id: "phonepe",
-        title: "PhonePe",
-        description: "harshsuthar@ybl",
-        paymentType: "upi",
-        icon: PhonePeIcon,
-        size: 20
-    },
-    {
-        id: "paytm",
-        title: "Paytm",
-        description: "harshsuthar@paytm",
-        paymentType: "upi",
-        icon: PaytmIcon,
-        size: 28
-    },
-    {
-        id: "hdfc-card",
-        title: "HDFC Bank ****4567",
-        description: "Credit Card",
-        paymentType: "card",
-        icon: CardIcon,
-        size: 22
-    }
-]
+import { useToast } from '../hook/ToastContext'
 
 export default function PaymentMethodScreen(){
+    const { showToast } = useToast()
     const [openMenu, setOpenMenu] = useState<string | null>(null)
-    const [paymentMethods, setPaymentMethods] = useState(PAYMENT_METHODS)
     const menuRefs = useRef<Record<string, View | null>>({})
+    const { savedPaymentMethods, removePaymentMethod, setDefaultPaymentMethod } = usePaymentMethodStore()
+
+    const getUpiAppIcon = (packageName: string) => {
+        switch (packageName) {
+            case "com.google.android.apps.nbu.paisa.user":
+                return GooglePayIcon
+
+            case "com.phonepe.app":
+                return PhonePeIcon
+
+            case "net.one97.paytm":
+                return PaytmIcon
+
+            case "in.org.npci.upiapp":
+                return BHIMUpiIcon
+
+            case "money.super.payments":
+                return SuperMoneyIcon
+
+            default:
+                return UpiIcon
+        }
+    }
+
+    const getUpiAppName = (packageName: string) => {
+        switch (packageName) {
+            case "com.google.android.apps.nbu.paisa.user":
+                return "Google Pay"
+
+            case "com.phonepe.app":
+                return "PhonePe"
+
+            case "net.one97.paytm":
+                return "Paytm"
+
+            case "in.org.npci.upiapp":
+                return "BHIM"
+
+            case "money.super.payments":
+                return "super.money"
+
+            default:
+                return "UPI App"
+        }
+    }
+
+    const paymentMethods = useMemo(() => {
+        return savedPaymentMethods.map((item) => {
+            if (item.type === "UPI") {
+                return {
+                    id: item.id,
+                    title: item.name || getUpiAppName(item.packageName ?? ""),
+                    description: "Saved UPI payment method",
+                    paymentType: "UPI" as const,
+                    packageName: item.packageName,
+                    icon: getUpiAppIcon(item.packageName ?? ""),
+                    size: 23,
+                    isDefault: item.isDefault ?? false
+                }
+            }
+
+            return {
+                id: item.id,
+                title: item.name ?? "Payment Method",
+                description: "Saved payment method",
+                paymentType: item.type,
+                icon: CardIcon,
+                size: 23,
+                isDefault: item.isDefault ?? false
+            }
+        })
+    }, [savedPaymentMethods])
 
     const selectedMenuItem = paymentMethods.find((item) => item.id === openMenu)
     const [menuPosition, setMenuPosition] = useState({
@@ -90,23 +128,20 @@ export default function PaymentMethodScreen(){
     }
 
     const handleSetDefault = useCallback((id: string) => {
-        setPaymentMethods((prev) =>
-            prev.map((item) => ({
-                ...item,
-                isDefault: item.id === id
-            }))
-        )
+        setDefaultPaymentMethod(id)
 
         setOpenMenu(null)
-    }, [])
+
+        showToast("Default payment method updated", "success")
+    },[setDefaultPaymentMethod])
 
     const handleRemovePayment = useCallback((id: string) => {
-        setPaymentMethods((prev) =>
-            prev.filter((item) => item.id !== id)
-        )
+        removePaymentMethod(id)
 
         setOpenMenu(null)
-    }, [])
+
+        showToast("Payment method removed", "success")
+    }, [removePaymentMethod])
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -162,7 +197,7 @@ export default function PaymentMethodScreen(){
                 }}
                 showsVerticalScrollIndicator={false}
             >
-                <Text
+                {/* <Text
                     className='text-[#1F1F1F] font-semibold'
                     style={{ fontSize: moderateScale(15) }}
                 >
@@ -267,162 +302,187 @@ export default function PaymentMethodScreen(){
 
                         <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.5} />
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
-                <Text
-                    className='text-[#1F1F1F] font-semibold mt-6'
-                    style={{ fontSize: moderateScale(15) }}
-                >
-                    Saved Payment Methods
-                </Text>
+                {paymentMethods.length > 0 ? (
+                    <>
+                    
+                        <Text
+                            className='text-[#1F1F1F] font-semibold mt-2'
+                            style={{ fontSize: moderateScale(15) }}
+                        >
+                            Saved Payment Methods
+                        </Text>
 
-                <View
-                    className="bg-white border border-[#1F1F1F]/10 overflow-visible mt-3"
-                    style={{ borderRadius: moderateScale(20) }}
-                >
-                    {paymentMethods.map((item, index) => {
-                        const isLast = index === PAYMENT_METHODS.length - 1
-                        const Icon = item.icon
+                        <View
+                            className="bg-white border border-[#1F1F1F]/10 overflow-visible mt-3"
+                            style={{ borderRadius: moderateScale(20) }}
+                        >
+                            {paymentMethods.map((item, index) => {
+                                const isLast = index === paymentMethods.length - 1
+                                const Icon = item.icon
 
-                        return (
-                            <React.Fragment key={item.id}>
-                                <View
-                                    className="flex-row items-center relative"
-                                    style={{
-                                        paddingLeft: scale(14),
-                                        paddingRight: scale(10),
-                                        paddingVertical: verticalScale(11),
-                                        zIndex: openMenu === item.id ? 100 : 1
-                                    }}
-                                >
-                                    <View
-                                        className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
-                                        style={{
-                                            width: moderateScale(42),
-                                            height: moderateScale(42)
-                                        }}
-                                    >
-                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
-                                    </View>
-
-                                    <View
-                                        className="flex-1"
-                                        style={{ marginLeft: scale(11) }}
-                                    >
-                                        <View className="flex-row items-center gap-2">
-                                            <Text
-                                                numberOfLines={1}
-                                                className="text-[#1F1F1F] font-semibold"
-                                                style={{ fontSize: moderateScale(13) }}
-                                            >
-                                                {item.title}
-                                            </Text>
-
-                                            {item.isDefault && (
-                                                <View
-                                                    className="bg-[#E8B93F]/15"
-                                                    style={{
-                                                        borderRadius: moderateScale(10),
-                                                        paddingHorizontal: scale(6),
-                                                        paddingVertical: verticalScale(3)
-                                                    }}
-                                                >
-                                                    <Text
-                                                        className="text-[#3F2516] font-semibold uppercase"
-                                                        style={{ fontSize: moderateScale(7.5) }}
-                                                    >
-                                                        Default
-                                                    </Text>
-                                                </View>
-                                            )}
-                                        </View>
-
-                                        {item.description && (
-                                            <Text
-                                                numberOfLines={1}
-                                                className="text-[#1F1F1F]/65 font-medium"
-                                                style={{
-                                                    fontSize: moderateScale(11),
-                                                    marginTop: verticalScale(3)
-                                                }}
-                                            >
-                                                {item.description}
-                                            </Text>
-                                        )}
-                                    </View>
-
-                                    <View
-                                        className="flex-row items-center"
-                                        style={{
-                                            gap: scale(5),
-                                            marginLeft: scale(8)
-                                        }}
-                                    >
-                                        {item.paymentType && (
-                                            <View
-                                                className="border border-[#1F1F1F]/10 items-center justify-center"
-                                                style={{
-                                                    borderRadius: moderateScale(8),
-                                                    paddingHorizontal: scale(7),
-                                                    paddingVertical: verticalScale(3)
-                                                }}
-                                            >
-                                                <Text
-                                                    numberOfLines={1}
-                                                    className="text-[#1F1F1F]/75 font-semibold uppercase"
-                                                    style={{ fontSize: moderateScale(8.5) }}
-                                                >
-                                                    {item.paymentType}
-                                                </Text>
-                                            </View>
-                                        )}
-
+                                return (
+                                    <React.Fragment key={item.id}>
                                         <View
-                                            ref={(ref) => {
-                                                menuRefs.current[item.id] = ref
+                                            className="flex-row items-center relative"
+                                            style={{
+                                                paddingLeft: scale(14),
+                                                paddingRight: scale(10),
+                                                paddingVertical: verticalScale(11),
+                                                zIndex: openMenu === item.id ? 100 : 1
                                             }}
-                                            collapsable={false}
                                         >
-                                            <TouchableOpacity
-                                                activeOpacity={0.95}
-                                                onPress={() => {
-                                                    if (openMenu === item.id) {
-                                                        setOpenMenu(null)
-                                                        return
-                                                    }
-
-                                                    handleOpenMenu(item.id)
-                                                }}
-                                                className="items-center justify-center"
+                                            <View
+                                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
                                                 style={{
-                                                    width: moderateScale(30),
-                                                    height: moderateScale(30)
+                                                    width: moderateScale(42),
+                                                    height: moderateScale(42)
                                                 }}
                                             >
-                                                <EllipsisVerticalIcon
-                                                    width={moderateScale(19)}
-                                                    height={moderateScale(19)}
-                                                    color="rgba(31,31,31,0.65)"
-                                                    strokeWidth={1.8}
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
+                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                            </View>
 
-                                {!isLast && (
-                                    <View
-                                        className="bg-[#1F1F1F]/10"
-                                        style={{
-                                            height: 1,
-                                            marginHorizontal: scale(14)
-                                        }}
-                                    />
-                                )}
-                            </React.Fragment>
-                        )
-                    })}
-                </View>
+                                            <View
+                                                className="flex-1"
+                                                style={{ marginLeft: scale(11) }}
+                                            >
+                                                <View className="flex-row items-center gap-2">
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        className="text-[#1F1F1F] font-semibold"
+                                                        style={{ fontSize: moderateScale(13) }}
+                                                    >
+                                                        {item.title}
+                                                    </Text>
+
+                                                    {item.isDefault && (
+                                                        <View
+                                                            className="bg-[#E8B93F]/15"
+                                                            style={{
+                                                                borderRadius: moderateScale(10),
+                                                                paddingHorizontal: scale(6),
+                                                                paddingVertical: verticalScale(3)
+                                                            }}
+                                                        >
+                                                            <Text
+                                                                className="text-[#3F2516] font-semibold uppercase"
+                                                                style={{ fontSize: moderateScale(7.5) }}
+                                                            >
+                                                                Default
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+
+                                                {item.description && (
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        className="text-[#1F1F1F]/65 font-medium"
+                                                        style={{
+                                                            fontSize: moderateScale(11),
+                                                            marginTop: verticalScale(4)
+                                                        }}
+                                                    >
+                                                        {item.description}
+                                                    </Text>
+                                                )}
+                                            </View>
+
+                                            <View
+                                                className="flex-row items-center"
+                                                style={{
+                                                    gap: scale(5),
+                                                    marginLeft: scale(8)
+                                                }}
+                                            >
+                                                {item.paymentType && (
+                                                    <View
+                                                        className="border border-[#1F1F1F]/10 items-center justify-center"
+                                                        style={{
+                                                            borderRadius: moderateScale(8),
+                                                            paddingHorizontal: scale(7),
+                                                            paddingVertical: verticalScale(3)
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            numberOfLines={1}
+                                                            className="text-[#1F1F1F]/75 font-semibold uppercase"
+                                                            style={{ fontSize: moderateScale(8.5) }}
+                                                        >
+                                                            {item.paymentType}
+                                                        </Text>
+                                                    </View>
+                                                )}
+
+                                                <View
+                                                    ref={(ref) => {
+                                                        menuRefs.current[item.id] = ref
+                                                    }}
+                                                    collapsable={false}
+                                                >
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.95}
+                                                        onPress={() => {
+                                                            if (openMenu === item.id) {
+                                                                setOpenMenu(null)
+                                                                return
+                                                            }
+
+                                                            handleOpenMenu(item.id)
+                                                        }}
+                                                        className="items-center justify-center"
+                                                        style={{
+                                                            width: moderateScale(30),
+                                                            height: moderateScale(30)
+                                                        }}
+                                                    >
+                                                        <EllipsisVerticalIcon
+                                                            width={moderateScale(19)}
+                                                            height={moderateScale(19)}
+                                                            color="rgba(31,31,31,0.65)"
+                                                            strokeWidth={1.8}
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+
+                                        {!isLast && (
+                                            <View
+                                                className="bg-[#1F1F1F]/10"
+                                                style={{
+                                                    height: 1,
+                                                    marginHorizontal: scale(14)
+                                                }}
+                                            />
+                                        )}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </View>
+                    </>
+                ) : (
+                    <View
+                        className="bg-white border border-[#1F1F1F]/10 items-center mt-3"
+                        style={{
+                            borderRadius:
+                                moderateScale(20),
+                            paddingVertical:
+                                verticalScale(24)
+                        }}
+                    >
+                        <Text
+                            className="text-[#1F1F1F]/60 font-medium"
+                            style={{
+                                fontSize:
+                                    moderateScale(12)
+                            }}
+                        >
+                            No saved payment methods yet
+                        </Text>
+                    </View>
+                )}
             </ScrollView>
 
             <Modal

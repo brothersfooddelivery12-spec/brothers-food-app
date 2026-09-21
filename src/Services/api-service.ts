@@ -369,6 +369,7 @@ export type CartItemRequest = {
 export type CartPreviewRequest = {
     restaurant_id: string
     address_id?: string | null
+    coupon_id?: string
     items: CartItemRequest[]
 }
 

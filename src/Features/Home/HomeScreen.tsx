@@ -1,4 +1,5 @@
 import ArrowDownIcon from '@/assets/icon/ArrowDown.svg'
+import ArrowUpIcon from '@/assets/icon/ArrowUpIcon.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon2.svg'
 import LocateFixedIcon from '@/assets/icon/LocateFixedIcon.svg'
@@ -17,10 +18,10 @@ import { Image } from "expo-image"
 import * as Location from "expo-location"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { Alert, FlatList, Linking, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
-import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated'
-import { SafeAreaView } from "react-native-safe-area-context"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Alert, FlatList, Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
+import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated'
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { Advertisement, Category, getAdvertisements, getCategories, getNearbyRestaurants, getPopularMenu, getPopularRestaurants, getUserProfile, NearbyRestaurant, PopularMenu, PopularRestaurant } from '../../Services/api-service'
 import { addMenuItemToFavorites, addRestaurantToFavorites, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '../../Services/favorite-service'
@@ -32,10 +33,61 @@ import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 
 export default function HomeScreen() {
+    const insets = useSafeAreaInsets()
     const { height: screenHeight } = useWindowDimensions()
     const [headerHeight, setHeaderHeight] = useState(0)
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
+
+    const listRef = useRef<FlatList>(null)
+    const [showBackToTop, setShowBackToTop] = useState(false)
+    const previousScrollY = useRef(0)
+    const backToTopVisibleRef = useRef(false)
+
+    const setBackToTopVisible = useCallback(
+        (visible: boolean) => {
+            if (backToTopVisibleRef.current === visible) {
+                return
+            }
+
+            backToTopVisibleRef.current = visible
+
+            setShowBackToTop(visible)
+        },
+        []
+    )
+
+    const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const currentY = Math.max(event.nativeEvent.contentOffset.y, 0)
+
+        const previousY = previousScrollY.current
+
+        const difference = currentY - previousY
+
+        const SHOW_AFTER = 400
+        const DIRECTION_THRESHOLD = 2
+
+        // Near the top → always hide
+        if (currentY < SHOW_AFTER) {
+            setBackToTopVisible(false)
+
+            previousScrollY.current = currentY
+
+            return
+        }
+
+        // User scrolling DOWN
+        if (difference > DIRECTION_THRESHOLD) {
+            setBackToTopVisible(true)
+        }
+
+        // User scrolling UP
+        if (difference < -DIRECTION_THRESHOLD) {
+            setBackToTopVisible(false)
+        }
+
+        previousScrollY.current = currentY
+    },[setBackToTopVisible])
 
     const fetchUserProfile = useCallback(async () => {
         try {
@@ -982,510 +1034,566 @@ export default function HomeScreen() {
                     />
                 </View>
             ) : (
-                <FlatList
-                    data={location && !loadingHome ? nearbyRestaurants : []}
-                    keyExtractor={(item) => item.id}
-                    nestedScrollEnabled
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        paddingHorizontal: scale(14),
-                        paddingBottom: verticalScale(88),
-                        gap: verticalScale(10)
-                    }}
-                    ListHeaderComponent={
-                        <>
-                            <View
-                                onLayout={(event) => {
-                                    setHeaderHeight(event.nativeEvent.layout.height)
-                                }}
-                            >
+                <>
+                    <FlatList
+                        ref={listRef}
+                        data={location && !loadingHome ? nearbyRestaurants : []}
+                        keyExtractor={(item) => item.id}
+                        nestedScrollEnabled
+                        onScroll={handleScroll}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            paddingHorizontal: scale(14),
+                            paddingBottom: verticalScale(88),
+                            gap: verticalScale(10)
+                        }}
+                        ListHeaderComponent={
+                            <>
                                 <View
-                                    className="flex-row items-center w-full"
-                                    style={{ marginTop: verticalScale(10),gap: scale(8) }}
+                                    onLayout={(event) => {
+                                        setHeaderHeight(event.nativeEvent.layout.height)
+                                    }}
                                 >
-                                    <View className="flex-1 min-w-0">
-                                        <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(13) }}
-                                        >
-                                            {getGreeting()}, {firstName}
-                                        </Text>
-        
-                                        <TouchableOpacity
-                                            activeOpacity={0.95}
-                                            className="flex-row items-center"
-                                            style={{
-                                                marginTop: verticalScale(2),
-                                                marginLeft: -verticalScale(4),
-                                                minWidth: 0
-                                            }}
-                                            onPress={handleLocationPress}
-                                        >
-                                            <View style={{ flexShrink: 0 }}>
-                                                <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
-                                            </View>
-        
-                                            <Animated.View
-                                                key={locationTitle}
-                                                entering={
-                                                    FadeInDown
-                                                        .duration(400)
-                                                        .withInitialValues({
-                                                            opacity: 0,
-                                                            transform: [
-                                                                { translateY: -4 }
-                                                            ]
-                                                        })
-                                                }
-                                                exiting={
-                                                    FadeOutUp.duration(250)
-                                                }
-                                                className="flex-row items-center"
-                                                style={{
-                                                    flexShrink: 1,
-                                                    minWidth: 0
-                                                }}
-                                            >
-                                                <Text
-                                                    numberOfLines={1}
-                                                    className="text-[#3F2516] font-extrabold"
-                                                    style={{
-                                                        fontSize: moderateScale(15.5),
-                                                        flexShrink: 1,
-                                                        marginLeft: scale(2)
-                                                    }}
-                                                >
-                                                    {locationTitle}
-                                                </Text>
-                                                
-                                                {showLoadingDots && (
-                                                    <LoadingDots />
-                                                )}
-                                                
-                                                {!locationLoading && (
-                                                    <View
-                                                        style={{
-                                                            flexShrink: 0,
-                                                            marginLeft: scale(1)
-                                                        }}
-                                                    >
-                                                        <ArrowDownIcon
-                                                            width={moderateScale(21)}
-                                                            height={moderateScale(21)}
-                                                            color="#3F2516"
-                                                            strokeWidth={2}
-                                                        />
-                                                    </View>
-                                                )}
-                                            </Animated.View>
-                                        </TouchableOpacity>
-                                    </View>
-        
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => 
-                                            preventDoublePress(() => {
-                                                router.push('/notification')
-                                            })
-                                        }
-                                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
-                                        style={{
-                                            width: moderateScale(44),
-                                            height: moderateScale(44),
-                                            flexShrink: 0
-                                        }}
-                                    >
-                                        <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
-                                    </TouchableOpacity>
-        
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => {
-                                            preventDoublePress(() => {
-                                                router.push('/cart')
-                                            })
-                                        }}
-                                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
-                                        style={{
-                                            width: moderateScale(44),
-                                            height: moderateScale(44),
-                                            flexShrink: 0
-                                        }}
-                                    >
-                                        <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-
-                            {location && !loadingHome && (
-                                <>
-                                    <View
-                                        className="items-start"
-                                        style={{ marginTop: verticalScale(5) }}
-                                    >
-                                        <VegNonVegToggle
-                                            value={foodType}
-                                            onChange={handleFoodTypeChange}
-                                        />
-                                    </View>
-            
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => 
-                                            preventDoublePress(() => {
-                                                router.push('/(tabs)/search')
-                                            })
-                                        }
-                                        className="flex-row gap-3 w-full items-center mt-3 bg-white border border-[#1F1F1F]/10"
-                                        style={{
-                                            borderRadius: moderateScale(22),
-                                            paddingHorizontal: scale(13),
-                                            height: verticalScale(46)
-                                        }}
-                                    >
-                                        <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
-            
-                                        <Text
-                                            className="font-medium text-[#1F1F1F]/65"
-                                            style={{ fontSize: moderateScale(14) }}
-                                        >
-                                            What are you craving today?
-                                        </Text>
-                                    </TouchableOpacity>
-            
-                                    {/* <FlatList
-                                        data={categories}
-                                        horizontal
-                                        nestedScrollEnabled
-                                        directionalLockEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                        keyExtractor={(item) => item.id}
-                                        className="mt-5 -mx-4"
-                                        contentContainerStyle={{
-                                            paddingHorizontal: scale(14),
-                                            gap: moderateScale(10)
-                                        }}
-                                        renderItem={({ item: category }) => {
-                                            const isActive = activeCategory === category.id
-            
-                                            return(
-                                                <View className="items-center">
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.95}
-                                                        onPress={() => setActiveCategory(category.id)}
-                                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
-                                                        style={{
-                                                            borderColor: isActive ? "rgba(92, 70, 57, 0.7)" : "#FFFFFF",
-                                                            borderWidth: moderateScale( isActive ? 2 : 1.5),
-                                                            width: moderateScale(65),
-                                                            height: moderateScale(65),
-            
-                                                            shadowColor: "#5C4639",
-                                                            shadowOffset: {
-                                                                width: 0,
-                                                                height: 0
-                                                            },
-                                                            shadowOpacity: isActive ? 0.75 : 0,
-                                                            shadowRadius: isActive ? 10 : 0,
-                                                            elevation: isActive ? 8 : 0
-                                                        }}
-                                                    >
-                                                        <Image
-                                                            source={{
-                                                                uri: category.imageUri
-                                                            }}
-                                                            contentFit="cover"
-                                                            cachePolicy={'memory-disk'}
-                                                            style={{
-                                                                width: "70%",
-                                                                height: "70%"
-                                                            }}
-                                                        />
-                                                    </TouchableOpacity>
-            
-                                                    <Text
-                                                        className="text-[#1F1F1F] font-semibold mt-1 mb-2"
-                                                        style={{ fontSize: moderateScale(12) }}
-                                                    >
-                                                        {category.title}
-                                                    </Text>
-                                                </View>
-                                            )
-                                        }}
-                                    /> */}
-            
-                                    <ScrollView
-                                        horizontal
-                                        nestedScrollEnabled
-                                        directionalLockEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                        className="-mx-5 mt-4 mb-0"
-                                        contentContainerStyle={{
-                                            paddingHorizontal: scale(14),
-                                            gap: scale(8)
-                                        }}
-                                    >
-                                        {categoriesWithAll.map((category) => {
-                                            const isSelected = selectedCategoryId === category.id
-            
-                                            return (
-                                                <TouchableOpacity
-                                                    key={category.id}
-                                                    activeOpacity={0.85}
-                                                    onPress={() => {
-                                                        setSelectedCategoryId(category.id)
-                                                    }}
-                                                    className={`items-center justify-center ${
-                                                        isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
-                                                    }`}
-                                                    style={{
-                                                        borderRadius: moderateScale(18),
-                                                        paddingHorizontal: scale(17),
-                                                        paddingVertical: verticalScale(7),
-                                                        borderWidth: 1,
-                                                        borderColor: "rgba(31, 31, 31, 0.10)"
-                                                    }}
-                                                >
-                                                    <Text
-                                                        className={`font-medium ${
-                                                            isSelected ? "text-white" : "text-[#1F1F1F]"
-                                                        }`}
-                                                        style={{ fontSize: moderateScale(13.5) }}
-                                                    >
-                                                        {category.name}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            )
-                                        })}
-                                    </ScrollView>
-            
-                                    <BannerCarousel
-                                        advertisements={advertisements}
-                                        loading={loadingAdvertisements}
-                                    />
-            
                                     <View
                                         className="flex-row items-center w-full"
-                                        style={{ marginTop: verticalScale(14) }}
+                                        style={{ marginTop: verticalScale(10),gap: scale(8) }}
                                     >
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold flex-1"
-                                            style={{ fontSize: moderateScale(16) }}
-                                        >
-                                            Popular Near You
-                                        </Text>
-            
-                                        {/* <TouchableOpacity
-                                            activeOpacity={0.95}
-                                            onPress={() => {}}
-                                            className="items-center"
-                                        >
+                                        <View className="flex-1 min-w-0">
                                             <Text
-                                                className="text-[#3F2516] font-bold"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                className="text-[#1F1F1F]/65 font-medium"
+                                                style={{ fontSize: moderateScale(13) }}
                                             >
-                                                View All
+                                                {getGreeting()}, {firstName}
                                             </Text>
-                                        </TouchableOpacity> */}
-                                    </View>
             
-                                    <View
-                                        style={{
-                                            marginTop: moderateScale(12),
-                                            gap: moderateScale(15)
-                                        }}
-                                    >
-                                        {popularRestaurants.map((restaurant) => {
-                                            const isFavourite = restaurantIds.includes(restaurant.id)
-
-                                            return (
-                                                <RestaurantCard
-                                                    key={restaurant.id}
-                                                    restaurant={restaurant}
-                                                    isFavourite={isFavourite}
-                                                    onPress={() =>
-                                                        handleRestaurantPress(restaurant.id, restaurant.isOpen)
-                                                    }
-                                                    onFavouritePress={() =>
-                                                        handleFavouritePress(restaurant.id)
-                                                    }
-                                                />
-                                            )
-                                        })}
-                                    </View>
-            
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{
-                                            fontSize: moderateScale(16),
-                                            marginTop: verticalScale(18)
-                                        }}
-                                    >
-                                        Today's Special Offers
-                                    </Text>
-            
-                                    <FlatList
-                                        data={offers}
-                                        horizontal
-                                        nestedScrollEnabled
-                                        directionalLockEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                        keyExtractor={(item) => item.id}
-                                        className="-mx-5"
-                                        contentContainerStyle={{
-                                            paddingHorizontal: moderateScale(15),
-                                            gap: moderateScale(12),
-                                            marginTop: moderateScale(12)
-                                        }}
-                                        renderItem={({ item }) => (
-                                            <OfferCard
-                                                offer={item}
-                                                onPress={() => {
-                                                    console.log("Selected offer:", item.id)
-                                                }}
-                                            />
-                                        )}
-                                    />
-            
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{
-                                            fontSize: moderateScale(16),
-                                            marginTop: verticalScale(18)
-                                        }}
-                                    >
-                                        Continue Ordering
-                                    </Text>
-            
-                                    <View
-                                        className="flex-row items-center gap-2 mt-3 bg-[#E5E4E2]/85"
-                                        style={{
-                                            borderRadius: moderateScale(18),
-                                            paddingHorizontal: moderateScale(9),
-                                            paddingVertical: moderateScale(9)
-                                        }}
-                                    >
-                                        <View
-                                            className="items-center justify-center overflow-hidden"
-                                            style={{
-                                                width: moderateScale(62),
-                                                height: moderateScale(62),
-                                                borderRadius: moderateScale(15)
-                                            }}
-                                        >
-                                            <Image
-                                                source={{
-                                                    uri: "https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
-                                                }}
-                                                contentFit="cover"
-                                                transition={100}
+                                            <TouchableOpacity
+                                                activeOpacity={0.95}
+                                                className="flex-row items-center"
                                                 style={{
-                                                    width: "100%",
-                                                    height: "100%",
+                                                    marginTop: verticalScale(2),
+                                                    marginLeft: -verticalScale(4),
+                                                    minWidth: 0
                                                 }}
-                                            />
-                                        </View>
-            
-                                        <View className="justify-center flex-1">
-                                            <Text
-                                                numberOfLines={1}
-                                                className="text-[#1F1F1F] font-bold"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                onPress={handleLocationPress}
                                             >
-                                                The Big Burger Theory
-                                            </Text>
+                                                <View style={{ flexShrink: 0 }}>
+                                                    <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
+                                                </View>
             
-                                            <Text
-                                                numberOfLines={2}
-                                                className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                style={{ fontSize: moderateScale(11.5) }}
-                                            >
-                                                Double Patty Cheese Burger + Fries
-                                            </Text>
-            
+                                                <Animated.View
+                                                    key={locationTitle}
+                                                    entering={
+                                                        FadeInDown
+                                                            .duration(400)
+                                                            .withInitialValues({
+                                                                opacity: 0,
+                                                                transform: [
+                                                                    { translateY: -4 }
+                                                                ]
+                                                            })
+                                                    }
+                                                    exiting={
+                                                        FadeOutUp.duration(250)
+                                                    }
+                                                    className="flex-row items-center"
+                                                    style={{
+                                                        flexShrink: 1,
+                                                        minWidth: 0
+                                                    }}
+                                                >
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        className="text-[#3F2516] font-extrabold"
+                                                        style={{
+                                                            fontSize: moderateScale(15.5),
+                                                            flexShrink: 1,
+                                                            marginLeft: scale(2)
+                                                        }}
+                                                    >
+                                                        {locationTitle}
+                                                    </Text>
+                                                    
+                                                    {showLoadingDots && (
+                                                        <LoadingDots />
+                                                    )}
+                                                    
+                                                    {!locationLoading && (
+                                                        <View
+                                                            style={{
+                                                                flexShrink: 0,
+                                                                marginLeft: scale(1)
+                                                            }}
+                                                        >
+                                                            <ArrowDownIcon
+                                                                width={moderateScale(21)}
+                                                                height={moderateScale(21)}
+                                                                color="#3F2516"
+                                                                strokeWidth={2}
+                                                            />
+                                                        </View>
+                                                    )}
+                                                </Animated.View>
+                                            </TouchableOpacity>
                                         </View>
             
                                         <TouchableOpacity
                                             activeOpacity={0.95}
-                                            onPress={() => {}}
-                                            className="items-center justify-center flex-row bg-[#3F2516]"
+                                            onPress={() => 
+                                                preventDoublePress(() => {
+                                                    router.push('/notification')
+                                                })
+                                            }
+                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
                                             style={{
-                                                gap: moderateScale(5),
-                                                borderRadius: moderateScale(10),
-                                                paddingHorizontal: moderateScale(9),
-                                                paddingVertical: moderateScale(7)
+                                                width: moderateScale(44),
+                                                height: moderateScale(44),
+                                                flexShrink: 0
                                             }}
                                         >
-                                            <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
+                                            <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
+                                        </TouchableOpacity>
             
-                                            <Text
-                                                className="text-[#FFFFFF] font-medium"
-                                                style={{ fontSize: moderateScale(13) }}
-                                            >
-                                                Reorder
-                                            </Text>
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => {
+                                                preventDoublePress(() => {
+                                                    router.push('/cart')
+                                                })
+                                            }}
+                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                            style={{
+                                                width: moderateScale(44),
+                                                height: moderateScale(44),
+                                                flexShrink: 0
+                                            }}
+                                        >
+                                            <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
                                         </TouchableOpacity>
                                     </View>
-            
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{
-                                            fontSize: moderateScale(16),
-                                            marginTop: verticalScale(18)
-                                        }}
-                                    >
-                                        Trending Foods
-                                    </Text>
-            
-                                    <FlatList
-                                        data={popularMenu}
-                                        horizontal
-                                        nestedScrollEnabled
-                                        directionalLockEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                        keyExtractor={(item) => item.id}
-                                        className="-mx-5 mt-3"
-                                        contentContainerStyle={{
-                                            paddingHorizontal: scale(14),
-                                            gap: moderateScale(12)
-                                        }}
-                                        renderItem={renderPopularFood}
-                                    />
-            
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{
-                                            fontSize: moderateScale(16),
-                                            marginTop: verticalScale(18)
-                                        }}
-                                    >
-                                        Nearby Restaurants
-                                    </Text>      
-                                </>
-                            )}
-                        </>
-                    }
-                    ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
-                        <View
-                            className="items-center justify-center"
-                            style={{ minHeight: screenHeight - headerHeight - verticalScale(88) }}
-                        >
-                            <LottieView
-                                source={require(
-                                    "../../../assets/animations/Food_Loading2.json"
+                                </View>
+    
+                                {location && !loadingHome && (
+                                    <>
+                                        <View
+                                            className="items-start"
+                                            style={{ marginTop: verticalScale(5) }}
+                                        >
+                                            <VegNonVegToggle
+                                                value={foodType}
+                                                onChange={handleFoodTypeChange}
+                                            />
+                                        </View>
+                
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => 
+                                                preventDoublePress(() => {
+                                                    router.push('/(tabs)/search')
+                                                })
+                                            }
+                                            className="flex-row gap-3 w-full items-center mt-3 bg-white border border-[#1F1F1F]/10"
+                                            style={{
+                                                borderRadius: moderateScale(22),
+                                                paddingHorizontal: scale(13),
+                                                height: verticalScale(46)
+                                            }}
+                                        >
+                                            <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
+                
+                                            <Text
+                                                className="font-medium text-[#1F1F1F]/65"
+                                                style={{ fontSize: moderateScale(14) }}
+                                            >
+                                                What are you craving today?
+                                            </Text>
+                                        </TouchableOpacity>
+                
+                                        {/* <FlatList
+                                            data={categories}
+                                            horizontal
+                                            nestedScrollEnabled
+                                            directionalLockEnabled
+                                            showsHorizontalScrollIndicator={false}
+                                            keyExtractor={(item) => item.id}
+                                            className="mt-5 -mx-4"
+                                            contentContainerStyle={{
+                                                paddingHorizontal: scale(14),
+                                                gap: moderateScale(10)
+                                            }}
+                                            renderItem={({ item: category }) => {
+                                                const isActive = activeCategory === category.id
+                
+                                                return(
+                                                    <View className="items-center">
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.95}
+                                                            onPress={() => setActiveCategory(category.id)}
+                                                            className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
+                                                            style={{
+                                                                borderColor: isActive ? "rgba(92, 70, 57, 0.7)" : "#FFFFFF",
+                                                                borderWidth: moderateScale( isActive ? 2 : 1.5),
+                                                                width: moderateScale(65),
+                                                                height: moderateScale(65),
+                
+                                                                shadowColor: "#5C4639",
+                                                                shadowOffset: {
+                                                                    width: 0,
+                                                                    height: 0
+                                                                },
+                                                                shadowOpacity: isActive ? 0.75 : 0,
+                                                                shadowRadius: isActive ? 10 : 0,
+                                                                elevation: isActive ? 8 : 0
+                                                            }}
+                                                        >
+                                                            <Image
+                                                                source={{
+                                                                    uri: category.imageUri
+                                                                }}
+                                                                contentFit="cover"
+                                                                cachePolicy={'memory-disk'}
+                                                                style={{
+                                                                    width: "70%",
+                                                                    height: "70%"
+                                                                }}
+                                                            />
+                                                        </TouchableOpacity>
+                
+                                                        <Text
+                                                            className="text-[#1F1F1F] font-semibold mt-1 mb-2"
+                                                            style={{ fontSize: moderateScale(12) }}
+                                                        >
+                                                            {category.title}
+                                                        </Text>
+                                                    </View>
+                                                )
+                                            }}
+                                        /> */}
+                
+                                        <ScrollView
+                                            horizontal
+                                            nestedScrollEnabled
+                                            directionalLockEnabled
+                                            showsHorizontalScrollIndicator={false}
+                                            className="-mx-5 mt-4 mb-0"
+                                            contentContainerStyle={{
+                                                paddingHorizontal: scale(14),
+                                                gap: scale(8)
+                                            }}
+                                        >
+                                            {categoriesWithAll.map((category) => {
+                                                const isSelected = selectedCategoryId === category.id
+                
+                                                return (
+                                                    <TouchableOpacity
+                                                        key={category.id}
+                                                        activeOpacity={0.85}
+                                                        onPress={() => {
+                                                            setSelectedCategoryId(category.id)
+                                                        }}
+                                                        className={`items-center justify-center ${
+                                                            isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                                        }`}
+                                                        style={{
+                                                            borderRadius: moderateScale(18),
+                                                            paddingHorizontal: scale(17),
+                                                            paddingVertical: verticalScale(7),
+                                                            borderWidth: 1,
+                                                            borderColor: "rgba(31, 31, 31, 0.10)"
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            className={`font-medium ${
+                                                                isSelected ? "text-white" : "text-[#1F1F1F]"
+                                                            }`}
+                                                            style={{ fontSize: moderateScale(13.5) }}
+                                                        >
+                                                            {category.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        </ScrollView>
+                
+                                        <BannerCarousel
+                                            advertisements={advertisements}
+                                            loading={loadingAdvertisements}
+                                        />
+                
+                                        <View
+                                            className="flex-row items-center w-full"
+                                            style={{ marginTop: verticalScale(14) }}
+                                        >
+                                            <Text
+                                                className="text-[#1F1F1F] font-bold flex-1"
+                                                style={{ fontSize: moderateScale(16) }}
+                                            >
+                                                Popular Near You
+                                            </Text>
+                
+                                            {/* <TouchableOpacity
+                                                activeOpacity={0.95}
+                                                onPress={() => {}}
+                                                className="items-center"
+                                            >
+                                                <Text
+                                                    className="text-[#3F2516] font-bold"
+                                                    style={{ fontSize: moderateScale(14) }}
+                                                >
+                                                    View All
+                                                </Text>
+                                            </TouchableOpacity> */}
+                                        </View>
+                
+                                        <View
+                                            style={{
+                                                marginTop: moderateScale(12),
+                                                gap: moderateScale(15)
+                                            }}
+                                        >
+                                            {popularRestaurants.map((restaurant) => {
+                                                const isFavourite = restaurantIds.includes(restaurant.id)
+    
+                                                return (
+                                                    <RestaurantCard
+                                                        key={restaurant.id}
+                                                        restaurant={restaurant}
+                                                        isFavourite={isFavourite}
+                                                        onPress={() =>
+                                                            handleRestaurantPress(restaurant.id, restaurant.isOpen)
+                                                        }
+                                                        onFavouritePress={() =>
+                                                            handleFavouritePress(restaurant.id)
+                                                        }
+                                                    />
+                                                )
+                                            })}
+                                        </View>
+                
+                                        <Text
+                                            className="text-[#1F1F1F] font-bold"
+                                            style={{
+                                                fontSize: moderateScale(16),
+                                                marginTop: verticalScale(18)
+                                            }}
+                                        >
+                                            Today's Special Offers
+                                        </Text>
+                
+                                        <FlatList
+                                            data={offers}
+                                            horizontal
+                                            nestedScrollEnabled
+                                            directionalLockEnabled
+                                            showsHorizontalScrollIndicator={false}
+                                            keyExtractor={(item) => item.id}
+                                            className="-mx-5"
+                                            contentContainerStyle={{
+                                                paddingHorizontal: moderateScale(15),
+                                                gap: moderateScale(12),
+                                                marginTop: moderateScale(12)
+                                            }}
+                                            renderItem={({ item }) => (
+                                                <OfferCard
+                                                    offer={item}
+                                                    onPress={() => {
+                                                        console.log("Selected offer:", item.id)
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                
+                                        <Text
+                                            className="text-[#1F1F1F] font-bold"
+                                            style={{
+                                                fontSize: moderateScale(16),
+                                                marginTop: verticalScale(18)
+                                            }}
+                                        >
+                                            Continue Ordering
+                                        </Text>
+                
+                                        <View
+                                            className="flex-row items-center gap-2 mt-3 bg-[#E5E4E2]/85"
+                                            style={{
+                                                borderRadius: moderateScale(18),
+                                                paddingHorizontal: moderateScale(9),
+                                                paddingVertical: moderateScale(9)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center overflow-hidden"
+                                                style={{
+                                                    width: moderateScale(62),
+                                                    height: moderateScale(62),
+                                                    borderRadius: moderateScale(15)
+                                                }}
+                                            >
+                                                <Image
+                                                    source={{
+                                                        uri: "https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
+                                                    }}
+                                                    contentFit="cover"
+                                                    transition={100}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                    }}
+                                                />
+                                            </View>
+                
+                                            <View className="justify-center flex-1">
+                                                <Text
+                                                    numberOfLines={1}
+                                                    className="text-[#1F1F1F] font-bold"
+                                                    style={{ fontSize: moderateScale(14) }}
+                                                >
+                                                    The Big Burger Theory
+                                                </Text>
+                
+                                                <Text
+                                                    numberOfLines={2}
+                                                    className="text-[#1F1F1F]/65 font-medium mt-1"
+                                                    style={{ fontSize: moderateScale(11.5) }}
+                                                >
+                                                    Double Patty Cheese Burger + Fries
+                                                </Text>
+                
+                                            </View>
+                
+                                            <TouchableOpacity
+                                                activeOpacity={0.95}
+                                                onPress={() => {}}
+                                                className="items-center justify-center flex-row bg-[#3F2516]"
+                                                style={{
+                                                    gap: moderateScale(5),
+                                                    borderRadius: moderateScale(10),
+                                                    paddingHorizontal: moderateScale(9),
+                                                    paddingVertical: moderateScale(7)
+                                                }}
+                                            >
+                                                <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
+                
+                                                <Text
+                                                    className="text-[#FFFFFF] font-medium"
+                                                    style={{ fontSize: moderateScale(13) }}
+                                                >
+                                                    Reorder
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                
+                                        <Text
+                                            className="text-[#1F1F1F] font-bold"
+                                            style={{
+                                                fontSize: moderateScale(16),
+                                                marginTop: verticalScale(18)
+                                            }}
+                                        >
+                                            Trending Foods
+                                        </Text>
+                
+                                        <FlatList
+                                            data={popularMenu}
+                                            horizontal
+                                            nestedScrollEnabled
+                                            directionalLockEnabled
+                                            showsHorizontalScrollIndicator={false}
+                                            keyExtractor={(item) => item.id}
+                                            className="-mx-5 mt-3"
+                                            contentContainerStyle={{
+                                                paddingHorizontal: scale(14),
+                                                gap: moderateScale(12)
+                                            }}
+                                            renderItem={renderPopularFood}
+                                        />
+                
+                                        <Text
+                                            className="text-[#1F1F1F] font-bold"
+                                            style={{
+                                                fontSize: moderateScale(16),
+                                                marginTop: verticalScale(18)
+                                            }}
+                                        >
+                                            Nearby Restaurants
+                                        </Text>      
+                                    </>
                                 )}
-                                autoPlay
-                                loop
-                                style={{
-                                    width: moderateScale(125),
-                                    height: moderateScale(125)
+                            </>
+                        }
+                        ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
+                            <View
+                                className="items-center justify-center"
+                                style={{ minHeight: screenHeight - headerHeight - verticalScale(88) }}
+                            >
+                                <LottieView
+                                    source={require(
+                                        "../../../assets/animations/Food_Loading2.json"
+                                    )}
+                                    autoPlay
+                                    loop
+                                    style={{
+                                        width: moderateScale(125),
+                                        height: moderateScale(125)
+                                    }}
+                                />
+                            </View>
+                        ) : null}
+                        renderItem={renderNearbyRestaurant}
+                    />
+    
+                    {showBackToTop && (
+                        <Animated.View
+                            entering={FadeInUp.duration(220)}
+                            exiting={FadeOutUp.duration(180)}
+                            pointerEvents="box-none"
+                            className="absolute left-0 right-0 items-center"
+                            style={{
+                                top: insets.top + verticalScale(8),
+                                zIndex: 100
+                            }}
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    setBackToTopVisible(false)
+
+                                    listRef.current
+                                        ?.scrollToOffset({
+                                            offset: 0,
+                                            animated: true
+                                        })
                                 }}
-                            />
-                        </View>
-                    ) : null}
-                    renderItem={renderNearbyRestaurant}
-                />
+                                className="flex-row items-center justify-center bg-[#3F2516]"
+                                style={{
+                                    paddingVertical: verticalScale(8),
+                                    paddingRight: scale(14),
+                                    paddingLeft: scale(10),
+                                    borderRadius: moderateScale(22),
+                                    gap: moderateScale(5),
+                                    shadowColor: "#000",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 3
+                                    },
+                                    shadowOpacity: 0.16,
+                                    shadowRadius: 5,
+    
+                                    elevation: 5
+                                }}
+                            >
+                                <ArrowUpIcon width={moderateScale(17)} height={moderateScale(17)} color="#FFFFFF" strokeWidth={2} />
+    
+                                <Text
+                                    className="text-white font-semibold"
+                                    style={{ fontSize: moderateScale(11.5) }}
+                                >
+                                    Back to Top
+                                </Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    )}
+                </>
             )}
 
         </SafeAreaView>

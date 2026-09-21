@@ -1,10 +1,9 @@
 import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import { default as ArrowRight, default as ArrowRightIcon } from '@/assets/icon/ArrowRight.svg'
+import { default as ArrowRight } from '@/assets/icon/ArrowRight.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
 import CouponIcon from '@/assets/icon/CouponIcon.svg'
-import CreditCardIcon from '@/assets/icon/DebitCardIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
@@ -12,13 +11,13 @@ import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MoneyBagIcon from '@/assets/icon/MoneyBagIcon.svg'
 import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
-import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
 import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import ClockIcon from '@/assets/icon/TimerIcon.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
+import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
 import { Image } from "expo-image"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -49,41 +48,6 @@ export type PaymentMethod = {
     isDefault?: boolean
 }
 
-const PAYMENT_METHODS: PaymentMethod[] = [
-    {
-        id: "gpay",
-        title: "Google Pay",
-        description: "harshsuthar@oksbi",
-        paymentType: "upi",
-        icon: GooglePayIcon,
-        size: 20
-    },
-    {
-        id: "phonepe",
-        title: "PhonePe",
-        description: "harshsuthar@ybl",
-        paymentType: "upi",
-        icon: PhonePeIcon,
-        size: 20
-    },
-    {
-        id: "paytm",
-        title: "Paytm",
-        description: "harshsuthar@paytm",
-        paymentType: "upi",
-        icon: PaytmIcon,
-        size: 28
-    },
-    {
-        id: "hdfc-card",
-        title: "HDFC Bank ****4567",
-        description: "Credit Card",
-        paymentType: "card",
-        icon: CreditCardIcon,
-        size: 22
-    }
-]
-
 export default function CheckoutScreen() {
     const { restaurantId } = useLocalSearchParams<{restaurantId: string}>()
     const insets = useSafeAreaInsets()
@@ -92,8 +56,10 @@ export default function CheckoutScreen() {
     const {showToast} = useToast()
 
     const hasFetchedAddresses = useRef(false)
+    const currentPaymentUpiRef = useRef<SavedPaymentMethod | null>(null)
     const addressesDirty = useAddressRefreshStore((state) => state.addressesDirty)
     const clearAddressesDirty = useAddressRefreshStore((state) => state.clearAddressesDirty)
+    const {savedPaymentMethods, addPaymentMethod, removePaymentMethod} = usePaymentMethodStore()
 
     const [addresses, setAddresses] = useState<UserAddress[]>([])
     const [loadingAddresses, setLoadingAddresses] = useState(true)
@@ -268,6 +234,7 @@ export default function CheckoutScreen() {
                 const payload: CartPreviewRequest = {
                     restaurant_id: selectedCart.id,
                     address_id: selectedAddress,
+                    coupon_id: "7f0ca9dd-74b2-46da-ba74-bb5eca9fb89b",
                     items: selectedCart.items.map(
                         (item) => ({
                             menu_id: item.id,
@@ -340,18 +307,13 @@ export default function CheckoutScreen() {
         !hasUnavailableItems &&
         !!selectedPayment
 
-    const isPaymentProcessing =
-        creatingOrder ||
-        verifyingPayment
+    const isPaymentProcessing = creatingOrder || verifyingPayment
 
     const paymentHandledRef = useRef(false)
     const paymentVerifyingRef = useRef(false)
 
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
-        if (
-            paymentHandledRef.current ||
-            paymentVerifyingRef.current
-        ) {
+        if (paymentHandledRef.current || paymentVerifyingRef.current) {
             return
         }
 
@@ -369,11 +331,17 @@ export default function CheckoutScreen() {
 
             const message = res.data.message?.trim().toLowerCase()
 
-            if (
-                res.data.success &&
-                message === "payment verified successfully"
-            ) {
+            if (res.data.success && message === "payment verified successfully") {
                 paymentHandledRef.current = true
+
+                if (currentPaymentUpiRef.current) {
+                    console.log("Saving payment method:", currentPaymentUpiRef.current)
+
+                    addPaymentMethod(currentPaymentUpiRef.current)
+
+                    currentPaymentUpiRef.current = null
+                }
+
                 setProcessingUpiApp(null)
 
                 showToast("Payment successful", "success")
@@ -401,6 +369,8 @@ export default function CheckoutScreen() {
             showToast(res.data.message || "Payment is being verified.", "warning")
         } catch (error: any) {
             console.log("Payment verification error:", error)
+
+            currentPaymentUpiRef.current = null
 
             setProcessingUpiApp(null)
 
@@ -445,6 +415,7 @@ export default function CheckoutScreen() {
                 return
             }
 
+            currentPaymentUpiRef.current = null
             setCreatingOrder(false)
             setVerifyingPayment(false)
             setProcessingUpiApp(null)
@@ -552,7 +523,6 @@ export default function CheckoutScreen() {
     const deviceUpiMethods = useMemo(() => {
         return upiApps.map((app) => ({
             id: `upi-${app.appPackage}`,
-
             title: app.appName || getUpiAppName(app.appPackage),
             description: "Pay securely using UPI",
             paymentType: "UPI" as const,
@@ -562,13 +532,85 @@ export default function CheckoutScreen() {
         }))
     }, [upiApps])
 
+    const defaultPaymentMethod = useMemo(() => {
+        return (
+            savedPaymentMethods.find((item) => item.isDefault) ?? null
+        )
+    }, [savedPaymentMethods])
+
+    useEffect(() => {
+        if (selectedPayment) {
+            return
+        }
+
+        if (!defaultPaymentMethod) {
+            return
+        }
+
+        if (defaultPaymentMethod.type === "UPI") {
+            const isAvailable = deviceUpiMethods.some((item) => item.id === defaultPaymentMethod.id)
+
+            if (!isAvailable) {
+                return
+            }
+        }
+
+        setSelectedPayment(defaultPaymentMethod.id)
+    }, [defaultPaymentMethod, deviceUpiMethods, selectedPayment])
+
+    const savedUpiMethods = useMemo(() => {
+        return savedPaymentMethods.filter(
+            (item) =>
+                item.type === "UPI" &&
+                !!item.packageName
+        )
+    }, [savedPaymentMethods])
+
+    const savedDeviceUpiMethods = useMemo(() => {
+        return savedUpiMethods
+            .map((savedMethod) => {
+                return (
+                    deviceUpiMethods.find((item) => item.packageName === savedMethod.packageName) ?? null
+                )
+            })
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+    }, [savedUpiMethods, deviceUpiMethods])
+
     const selectedUpiMethod = useMemo(() => {
-        return deviceUpiMethods.find(
-            (item) => item.id === selectedPayment
-        ) ?? null
+        return (
+            deviceUpiMethods.find((item) => item.id === selectedPayment) ?? null
+        )
+    }, [deviceUpiMethods, selectedPayment])
+
+    const otherUpiMethods = useMemo(() => {
+        const savedPackages = new Set(
+            savedUpiMethods
+                .map((item) => item.packageName)
+                .filter(Boolean)
+        )
+
+        return deviceUpiMethods.filter((item) => !savedPackages.has(item.packageName))
+    }, [deviceUpiMethods, savedUpiMethods])
+
+    useEffect(() => {
+        if (loadingApps || savedUpiMethods.length === 0) {
+            return
+        }
+
+        // savedUpiMethods.forEach(
+        //     (savedMethod) => {
+        //         const isStillInstalled = deviceUpiMethods.some((item) => item.packageName === savedMethod.packageName)
+
+        //         if (!isStillInstalled) {
+        //             removePaymentMethod(savedMethod.id)
+        //         }
+        //     }
+        // )
     }, [
+        loadingApps,
+        savedUpiMethods,
         deviceUpiMethods,
-        selectedPayment
+        removePaymentMethod
     ])
 
     const getOrderPaymentMethod = (): OrderPaymentMethod => {
@@ -728,6 +770,16 @@ export default function CheckoutScreen() {
             }
 
             if (selectedUpiMethod) {
+                paymentHandledRef.current = false
+                paymentVerifyingRef.current = false
+                
+                currentPaymentUpiRef.current = {
+                    id: selectedUpiMethod.id,
+                    type: "UPI",
+                    name: selectedUpiMethod.title,
+                    packageName: selectedUpiMethod.packageName
+                }
+                
                 setProcessingUpiApp(selectedUpiMethod.packageName)
 
                 const res = await createCheckoutOrder(payload)
@@ -743,9 +795,6 @@ export default function CheckoutScreen() {
                 if (!payment?.order_id || !payment?.payment_session_id) {
                     throw new Error("Invalid Cashfree payment session.")
                 }
-
-                paymentHandledRef.current = false
-                paymentVerifyingRef.current = false
 
                 await startUpiPayment({
                     orderId: payment.order_id,
@@ -788,25 +837,18 @@ export default function CheckoutScreen() {
 
         useEffect(() => {
             const interval = setInterval(() => {
-                setCount((prev) =>
-                    prev === 3 ? 0 : prev + 1
-                )
+                setCount((prev) => prev === 3 ? 0 : prev + 1)
             }, 450)
 
             return () => clearInterval(interval)
         }, [])
 
         return (
-            <View
-                style={{
-                    width: moderateScale(16)
-                }}
+            <View style={{ width: moderateScale(16) }}
             >
                 <Text
                     className="text-[#3F2516] font-extrabold"
-                    style={{
-                        fontSize: moderateScale(15.5)
-                    }}
+                    style={{ fontSize: moderateScale(15.5) }}
                 >
                     {".".repeat(count)}
                 </Text>
@@ -1304,23 +1346,142 @@ export default function CheckoutScreen() {
                                         selectionColor="#79685e"
                                     />
                                 </View>
-        
-                                {deviceUpiMethods.length > 0 && (
+
+                                {savedDeviceUpiMethods.length > 0 && (
                                     <>
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold mt-4 mb-2"
+                                            className="text-[#1F1F1F] font-semibold mt-8 mb-2"
                                             style={{ fontSize: moderateScale(14) }}
                                         >
-                                            UPI Apps
+                                            Saved Payment Method
+                                        </Text>
+                
+                                        <View
+                                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
+                                            style={{ borderRadius: moderateScale(20) }}
+                                        >
+                                            {savedDeviceUpiMethods.map((item, index) => {
+                                                const isSelected = selectedPayment === item.id
+                                                const isLast = index === savedDeviceUpiMethods.length - 1
+                                                const Icon = item.icon
+                
+                                                return (
+                                                    <React.Fragment key={item.id}>
+                                                        <TouchableOpacity
+                                                            activeOpacity={0.95}
+                                                            onPress={() => {
+                                                                setSelectedPayment(item.id)
+                                                            }}
+                                                            className="flex-row items-center"
+                                                            style={{
+                                                                paddingHorizontal: scale(14),
+                                                                paddingVertical: verticalScale(10)
+                                                            }}
+                                                        >
+                                                            <View
+                                                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                                style={{
+                                                                    width: moderateScale(42),
+                                                                    height: moderateScale(42)
+                                                                }}
+                                                            >
+                                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                            </View>
+                
+                                                            <View className="flex-1 ml-3">
+                                                                <Text
+                                                                    className="text-[#1F1F1F] font-semibold"
+                                                                    style={{ fontSize: moderateScale(14) }}
+                                                                >
+                                                                    {item.title}
+                                                                </Text>
+                
+                                                                {item.description && (
+                                                                    <Text
+                                                                        className="text-[#1F1F1F]/75 font-medium mt-1"
+                                                                        style={{ fontSize: moderateScale(11) }}
+                                                                    >
+                                                                        {item.description}
+                                                                    </Text>
+                                                                )}
+                                                            </View>
+                
+                                                            <View
+                                                                className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                                style={{
+                                                                    borderRadius: moderateScale(8),
+                                                                    paddingHorizontal: scale(8),
+                                                                    paddingVertical: verticalScale(3)
+                                                                }}
+                                                            >
+                                                                <Text 
+                                                                    className='text-[#1F1F1F] font-medium uppercase'
+                                                                    style={{ fontSize: moderateScale(10) }}
+                                                                >
+                                                                    {item.paymentType}
+                                                                </Text>
+                                                            </View>
+                
+                                                            <View
+                                                                className="items-center justify-center ml-3"
+                                                                style={{
+                                                                    width: moderateScale(22),
+                                                                    height: moderateScale(22),
+                                                                    borderRadius: "100%",
+                                                                    borderWidth: moderateScale(2),
+                                                                    borderColor: isSelected
+                                                                        ? "#5c4639"
+                                                                        : "#D6D0CA"
+                                                                }}
+                                                            >
+                                                                {isSelected && (
+                                                                    <View
+                                                                        style={{
+                                                                            width: moderateScale(14),
+                                                                            height: moderateScale(14),
+                                                                            borderRadius: "100%",
+                                                                            backgroundColor: "#5c4639"
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            </View>
+                                                        </TouchableOpacity>
+                
+                                                        {!isLast && (
+                                                            <View
+                                                                className="bg-[#1F1F1F]/10"
+                                                                style={{
+                                                                    height: 1,
+                                                                    marginHorizontal: scale(14)
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </React.Fragment>
+                                                )
+                                            })}
+                                        </View>
+                                    </>
+                                )}
+        
+                                {otherUpiMethods.length > 0 && (
+                                    <>
+                                        <Text
+                                            className="text-[#1F1F1F] font-semibold mb-2"
+                                            style={{
+                                                fontSize: moderateScale(14),
+                                                marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
+                                            }}
+                                        >
+                                            {savedPaymentMethods.length > 0 ? "Other UPI Apps" : "UPI Apps"}
                                         </Text>
         
                                         <View
                                             className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
                                             style={{ borderRadius: moderateScale(20) }}
                                         >
-                                            {deviceUpiMethods.map((item, index) => {
+                                            {otherUpiMethods.map((item, index) => {
                                                 const Icon = item.icon
-                                                const isLast = index === deviceUpiMethods.length - 1
+                                                const isLast = index === otherUpiMethods.length - 1
                                                 const isProcessing = processingUpiApp === item.packageName
                                                 const isSelected = selectedPayment === item.id
         
@@ -1339,11 +1500,8 @@ export default function CheckoutScreen() {
                                                                 paddingHorizontal: scale(14),
                                                                 paddingVertical: verticalScale(11),
                                                                 opacity: 
-                                                                    processingUpiApp !==
-                                                                        null &&
-                                                                    !isProcessing
-                                                                        ? 0.5
-                                                                        : 1
+                                                                    processingUpiApp !== null &&
+                                                                    !isProcessing ? 0.5 : 1
                                                             }}
                                                         >
                                                             <View
@@ -1397,7 +1555,7 @@ export default function CheckoutScreen() {
                                                                         }}
                                                                     />
                                                                 )}
-                                                    </View>
+                                                            </View>
                                                         </TouchableOpacity>
         
                                                         {!isLast && (
@@ -1416,120 +1574,7 @@ export default function CheckoutScreen() {
                                     </>
                                 )}
         
-                                {/* <Text
-                                    className="text-[#1F1F1F] font-semibold"
-                                    style={{
-                                        fontSize: moderateScale(15),
-                                        marginTop: verticalScale(18)
-                                    }}
-                                >
-                                    Saved Payment Method
-                                </Text>
-        
-                                <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden mt-3"
-                                    style={{ borderRadius: moderateScale(20) }}
-                                >
-                                    {PAYMENT_METHODS.map((item, index) => {
-                                        const isSelected = selectedPayment === item.id
-                                        const isLast = index === PAYMENT_METHODS.length - 1
-                                        const Icon = item.icon
-        
-                                        return (
-                                            <React.Fragment key={item.id}>
-                                                <TouchableOpacity
-                                                    activeOpacity={0.95}
-                                                    onPress={() => setSelectedPayment(item.id)}
-                                                    className="flex-row items-center"
-                                                    style={{
-                                                        paddingHorizontal: scale(14),
-                                                        paddingVertical: verticalScale(10)
-                                                    }}
-                                                >
-                                                    <View
-                                                        className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
-                                                        style={{
-                                                            width: moderateScale(42),
-                                                            height: moderateScale(42)
-                                                        }}
-                                                    >
-                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
-                                                    </View>
-        
-                                                    <View className="flex-1 ml-3">
-                                                        <Text
-                                                            className="text-[#1F1F1F] font-semibold"
-                                                            style={{ fontSize: moderateScale(13) }}
-                                                        >
-                                                            {item.title}
-                                                        </Text>
-        
-                                                        {item.description && (
-                                                            <Text
-                                                                className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                                style={{ fontSize: moderateScale(11) }}
-                                                            >
-                                                                {item.description}
-                                                            </Text>
-                                                        )}
-                                                    </View>
-        
-                                                    <View
-                                                        className='border border-[#1F1F1F]/10 items-center justify-center'
-                                                        style={{
-                                                            borderRadius: moderateScale(8),
-                                                            paddingHorizontal: scale(8),
-                                                            paddingVertical: verticalScale(3)
-                                                        }}
-                                                    >
-                                                        <Text 
-                                                            className='text-[#1F1F1F] font-medium uppercase'
-                                                            style={{ fontSize: moderateScale(10) }}
-                                                        >
-                                                            {item.paymentType}
-                                                        </Text>
-                                                    </View>
-        
-                                                    <View
-                                                        className="items-center justify-center ml-3"
-                                                        style={{
-                                                            width: moderateScale(22),
-                                                            height: moderateScale(22),
-                                                            borderRadius: "100%",
-                                                            borderWidth: moderateScale(2),
-                                                            borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA"
-                                                        }}
-                                                    >
-                                                        {isSelected && (
-                                                            <View
-                                                                style={{
-                                                                    width: moderateScale(14),
-                                                                    height: moderateScale(14),
-                                                                    borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639"
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </View>
-                                                </TouchableOpacity>
-        
-                                                {!isLast && (
-                                                    <View
-                                                        className="bg-[#1F1F1F]/10"
-                                                        style={{
-                                                            height: 1,
-                                                            marginHorizontal: scale(14)
-                                                        }}
-                                                    />
-                                                )}
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </View> */}
-        
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => {}}
                                     className="items-center flex-row mt-3 bg-[#FFFFFF] border border-[#1F1F1F]/10"
@@ -1550,20 +1595,17 @@ export default function CheckoutScreen() {
                                     </Text>
         
                                     <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.5} />
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
         
                                 <Text
-                                    className="text-[#1F1F1F] font-medium"
-                                    style={{
-                                        fontSize: moderateScale(15),
-                                        marginTop: verticalScale(18)
-                                    }}
+                                    className="text-[#1F1F1F] font-medium mt-4 mb-2"
+                                    style={{ fontSize: moderateScale(15) }}
                                 >
                                     Other Payment Options
                                 </Text>
         
                                 <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden mt-3"
+                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
                                     style={{ borderRadius: moderateScale(20) }}
                                 >
                                     {OTHER_PAYMENT_METHODS.map((item, index) => {

@@ -11,12 +11,20 @@ export const getMyWallet = () => {
 }
 
 export interface WalletTopupRequest {
-    amount: number,
+    amount: number
     description?: string
 }
 
 export const topupWallet = (payload: WalletTopupRequest) => {
-    return api.post("/wallet/topup", payload)
+    return api.post(
+        "/wallet/topup",
+        null,
+        {
+            params: {
+                amount: payload.amount
+            }
+        }
+    )
 }
 
 export interface WalletTransactionsParams {
