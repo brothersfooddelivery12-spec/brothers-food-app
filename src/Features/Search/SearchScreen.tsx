@@ -1,5 +1,4 @@
 import ClockIcon from '@/assets/icon/ClockIcon2.svg'
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import RestaurantCard from "@/components/RestaurantCard"
 import SearchBar from "@/components/SearchBar"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
@@ -135,41 +134,23 @@ export default function SearchScreen() {
         console.log("Favourite:", id)
     }, [])
 
-    const renderRestaurant = useCallback(
-        ({ item }: { item: any }) => (
-            <View
-                style={{ marginTop: moderateScale(12) }}
-            >
-                <RestaurantCard
-                    restaurant={item}
-                    onPress={() =>
-                        handleRestaurantPress(item.id)
-                    }
-                    onFavouritePress={() =>
-                        handleFavouritePress(item.id)
-                    }
-                />
-            </View>
-        ),
-        [
-            handleRestaurantPress,
-            handleFavouritePress,
-        ]
-    )
-
-    const renderRecommended = useCallback(
-        ({ item }: { item: any }) => (
-            <RecommendedCard
-                item={item}
-                onPress={() => handleRecommendedPress(item)}
-                onAddPress={() => {}}
+    const renderRestaurant = useCallback(({ item }: { item: any }) => (
+        <View style={{ marginTop: moderateScale(12) }} >
+            <RestaurantCard
+                restaurant={item}
+                onPress={() => handleRestaurantPress(item.id)}
+                onFavouritePress={() => handleFavouritePress(item.id)}
             />
-        ),
-        [
-            handleRecommendedPress,
-            handleRecommendedAdd,
-        ]
-    )
+        </View>
+    ),[handleRestaurantPress, handleFavouritePress])
+
+    const renderRecommended = useCallback(({ item }: { item: any }) => (
+        <RecommendedCard
+            item={item}
+            onPress={() => handleRecommendedPress(item)}
+            onAddPress={() => {}}
+        />
+    ),[handleRecommendedPress, handleRecommendedAdd])
 
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const [searchBarHeight, setSearchBarHeight] = useState(SEARCH_BAR_HEIGHT)
@@ -272,8 +253,6 @@ export default function SearchScreen() {
                         value={search}
                         onChangeText={setsearch}
                         placeholder="Search food, restaurants..."
-                        RightIcon={MicIcon}
-                        rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
                     />
                 </View>

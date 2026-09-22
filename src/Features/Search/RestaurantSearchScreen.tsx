@@ -1,6 +1,5 @@
 import BackArrowIcon from "@/assets/icon/ArrowLeft.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import RestaurantCard from "@/components/RestaurantCard"
 import SearchBar from "@/components/SearchBar"
 import { restaurants } from "@/constant/RestaurantData"
@@ -393,8 +392,6 @@ export default function RestaurantSearchScreen() {
                         value={search}
                         onChangeText={setsearch}
                         placeholder="Search restaurant"
-                        RightIcon={MicIcon}
-                        rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
                     />
                 </View>

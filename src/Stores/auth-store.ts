@@ -3,9 +3,11 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { api } from "../Services/http-client"
+import { useFavouriteStore } from "./favourite-store"
 import { useLocationStore } from "./locationStore"
 import { tokenStorage } from "./token-storage"
 import { useCartStore } from "./useCartStore"
+import { usePaymentMethodStore } from "./usePaymentMethodStore"
 
 export type Gender = "MALE" | "FEMALE" | "OTHER"
 
@@ -124,13 +126,16 @@ export const useAuthStore = create<AuthState>()(
                     } catch (error) {
                         console.log("Google sign out failed:", error)
                     }
-
                 } finally {
                     await tokenStorage.clearTokens()
 
                     useLocationStore.getState().clearLocation()
 
                     useCartStore.getState().clearCart()
+
+                    useFavouriteStore.getState().clearFavourites()
+
+                    usePaymentMethodStore.getState().clearPaymentMethods()
 
                     set({
                         user: null,
@@ -148,6 +153,10 @@ export const useAuthStore = create<AuthState>()(
                 useLocationStore.getState().clearLocation()
 
                 useCartStore.getState().clearCart()
+
+                useFavouriteStore.getState().clearFavourites()
+
+                usePaymentMethodStore.getState().clearPaymentMethods()
             }
         }),
         {

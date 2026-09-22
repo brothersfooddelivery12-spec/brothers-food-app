@@ -9,6 +9,7 @@ export type CartItem = {
     description?: string
     quantity: number
     price: number
+    preparationTime?: number
     isAvailable: boolean
 }
 
@@ -17,7 +18,6 @@ export type RestaurantCart = {
     restaurantName: string
     restaurantLogoUrl?: string | null
     deliveryFee?: number
-    deliveryTime?: number
     isOpen: boolean
     items: CartItem[]
 }
@@ -28,7 +28,6 @@ export type AddToCartPayload = {
         restaurantName: string
         restaurantLogoUrl?: string | null
         deliveryFee?: number
-        deliveryTime?: number
         isOpen: boolean
     }
 
@@ -38,6 +37,7 @@ export type AddToCartPayload = {
         name: string
         description?: string
         price: number
+        preparationTime?: number
         quantity?: number
         isAvailable: boolean
     }
@@ -103,7 +103,6 @@ export const useCartStore = create<CartStore>()(
                                         restaurantName: restaurant.restaurantName,
                                         restaurantLogoUrl: restaurant.restaurantLogoUrl,
                                         deliveryFee: restaurant.deliveryFee,
-                                        deliveryTime: restaurant.deliveryTime,
                                         isOpen: restaurant.isOpen,
                                         items: existingItem
                                             ? cart.items.map(

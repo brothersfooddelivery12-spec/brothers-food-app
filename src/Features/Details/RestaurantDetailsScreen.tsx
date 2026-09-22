@@ -190,11 +190,7 @@ export default function RestaurantDetailsScreen() {
             return
         }
 
-        const wasFavourite =
-            useFavouriteStore
-                .getState()
-                .restaurantIds
-                .includes(restaurantId)
+        const wasFavourite = useFavouriteStore.getState().restaurantIds.includes(restaurantId)
 
         // Optimistic UI update
         if (wasFavourite) {
@@ -204,10 +200,9 @@ export default function RestaurantDetailsScreen() {
         }
 
         try {
-            const res =
-                wasFavourite
-                    ? await removeRestaurantFromFavorites(restaurantId)
-                    : await addRestaurantToFavorites(restaurantId)
+            const res = wasFavourite
+                ? await removeRestaurantFromFavorites(restaurantId)
+                : await addRestaurantToFavorites(restaurantId)
 
             if (!res.data.success) {
                 // rollback
@@ -225,7 +220,8 @@ export default function RestaurantDetailsScreen() {
             showToast(wasFavourite
                     ? "Removed from favourites."
                     : "Added to favourites.",
-                "success")
+                "success"
+            )
         } catch (error: any) {
             // rollback
             if (wasFavourite) {
@@ -236,11 +232,7 @@ export default function RestaurantDetailsScreen() {
 
             showToast(error?.message || "Unable to update favourite.", "info")
         }
-    }, [
-        restaurantId,
-        addRestaurant,
-        removeRestaurant
-    ])
+    }, [restaurantId, addRestaurant, removeRestaurant])
 
     const [activeTab, setActiveTab] = useState("Popular")
 

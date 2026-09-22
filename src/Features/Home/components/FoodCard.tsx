@@ -22,7 +22,7 @@ export interface MenuItem {
     imageUrl?: string | null
     description: string
     price: number
-    deliveryTime?: number
+    preparationTime?: number
     deliveryFee?: string
     isHot?: boolean
     isAvailable: boolean

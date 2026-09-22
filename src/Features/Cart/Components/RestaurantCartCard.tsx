@@ -128,9 +128,9 @@ RestaurantCartContent.displayName = "RestaurantCartContent"
 type RestaurantCartCardProps = {
     restaurantId: string
     restaurantName: string
-    restaurantLogoUrl: string
-    deliveryFee: number
-    deliveryTime: string
+    restaurantLogoUrl?: string | null
+    deliveryFee?: number
+    deliveryTime: number
 
     isActiveCart: boolean
     isRestaurantOpen: boolean

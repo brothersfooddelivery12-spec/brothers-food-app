@@ -1,30 +1,20 @@
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
-import { MenuItemRestaurant } from "@/Features/Home/components/FoodCard"
+import { MenuItem } from "@/Features/Home/components/FoodCard"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
-export interface FavFoodMenuItem {
-    id: string
-    restaurant: MenuItemRestaurant
-    
-    name: string
-    imageUrl?: string | null
-    description: string
-    price: number
-    deliveryTime?: number
-    deliveryFee?: string
-    isHot?: boolean
-    isAvailable: boolean
-    isVeg: boolean
-    isFavourite?: boolean
+export interface FavFood extends MenuItem {
+    category?: string | null
+    isFavourite: boolean
 }
 
 interface FavFoodCardProps {
-    item: FavFoodMenuItem
+    item: FavFood
+    isFavourite?: boolean
     onPress?: () => void
     onAddPress?: () => void
     onFavouritePress?: () => void
@@ -78,7 +68,7 @@ const FoodTypeIndicator = ({ isVeg, isInactive }: {
     )
 }
 
-const FavFoodCard = ({ item, onPress, onAddPress, onFavouritePress }: FavFoodCardProps) => {
+const FavFoodCard = ({ item, isFavourite, onPress, onAddPress, onFavouritePress }: FavFoodCardProps) => {
     const isInactive = !item.isAvailable
         
     const [imageError, setImageError] = useState(false)
@@ -186,7 +176,7 @@ const FavFoodCard = ({ item, onPress, onAddPress, onFavouritePress }: FavFoodCar
                         borderColor: "rgba(31,31,31,0.10)"
                     }}
                 >
-                    {item.isFavourite ? (
+                    {isFavourite ? (
                         <FavouriteIconFilled
                             width={moderateScale(20)}
                             height={moderateScale(20)}

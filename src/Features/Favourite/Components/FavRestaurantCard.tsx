@@ -1,58 +1,126 @@
+import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
-import ClockIcon from "@/assets/icon/TimerIcon.svg"
+import TimerIcon from "@/assets/icon/TimerIcon.svg"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
+import { formatRestaurantTime } from "@/utils/time-utils"
 import { Image } from "expo-image"
 import { router } from "expo-router"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
-interface FavRestaurantCard {
+export interface FavRestaurant {
+    id: string
     name: string
-    imageUrl: string
+    description: string
+
+    imageUrl?: string | null
+
     rating: number
-    cuisines: string[]
-    deliveryFee: number
-    deliveryTime: string
-    priceForTwo: number
-    isFavourite?: boolean
+
+    deliveryFee: number | null
+    deliveryTime: number | null
+
+    openingTime?: string | null
+    closingTime?: string | null
+
+    isOpen: boolean
+    isFavourite: boolean
+
+    distance?: string | null
+    discount?: string | null
+    priceForTwo?: number | null
 }
 
 interface FavRestaurantCardProps {
-    item: FavRestaurantCard
+    restaurant: FavRestaurant
+    isFavourite: boolean
     onPress?: () => void
     onFavouritePress?: () => void
 }
 
-const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCardProps) => {
+const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite }: FavRestaurantCardProps) => {
     const preventDoublePress = usePreventDoublePress()
+
+    const isInactive = !restaurant.isOpen
+        
+    const [imageError, setImageError] = useState(false)
+
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Cover_Image.png")
+
+    useEffect(() => {
+        setImageError(true)
+    }, [restaurant.imageUrl])
+
+    const openingTime = formatRestaurantTime(restaurant.openingTime)
+    const closingTime = formatRestaurantTime(restaurant.closingTime)
+
+    const hasImage = !!restaurant.imageUrl && !imageError
+    const rating = restaurant.rating ?? 0
+    const distance = restaurant?.distance ?? "0.0"
+    const hasDiscount = !!restaurant.discount
+    const hasPriceForTwo =
+        restaurant.priceForTwo !== null &&
+        restaurant.priceForTwo !== undefined &&
+        restaurant.priceForTwo > 0
 
     return (
         <TouchableOpacity
             activeOpacity={0.95}
             onPress={onPress}
-            className="w-full overflow-hidden bg-white border border-[#1F1F1F]/10"
-            style={{ borderRadius: moderateScale(22) }}
+            className="w-full overflow-hidden border"
+            style={{
+                borderRadius: moderateScale(22),
+                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                borderColor: isInactive
+                    ? "rgba(31,31,31,0.08)"
+                    : "rgba(31,31,31,0.10)"
+            }}
         >
             <View
                 className="relative w-full p-2"
-                style={{ height: verticalScale(120) }}
+                style={{
+                    height: verticalScale(120)
+                }}
             >
-                <Image
-                    source={{
-                        uri: item.imageUrl
-                    }}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
+                <View
                     style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: moderateScale(18)
+                        borderRadius: moderateScale(18),
+                        overflow: "hidden",
+                        borderWidth: !hasImage && !isInactive ? 1 : 0,
+                        borderColor: "rgba(31,31,31,0.08)"
                     }}
-                />
+                >
+                    <Image
+                        source={
+                            hasImage
+                                ? {
+                                    uri: restaurant.imageUrl!
+                                }
+                                : DefaultRestaurantImage
+                        }
+                        contentFit="cover"
+                        cachePolicy="memory-disk"
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            opacity: isInactive ? 0.48 : 1
+                        }}
+                    />
+
+                    {isInactive && (
+                        <View
+                            pointerEvents="none"
+                            className="absolute inset-0"
+                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                        />
+                    )}
+                </View>
 
                 <TouchableOpacity
                     activeOpacity={0.9}
@@ -61,127 +129,251 @@ const FavRestaurantCard = ({ item, onPress, onFavouritePress }: FavRestaurantCar
                         onFavouritePress?.()
                     }}
                     hitSlop={8}
-                    className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
+                    className="absolute items-center justify-center rounded-full border"
                     style={{
                         right: moderateScale(14),
                         top: moderateScale(14),
                         width: moderateScale(34),
-                        height: moderateScale(34)
+                        height: moderateScale(34),
+                        backgroundColor: isInactive
+                            ? "rgba(255,255,255,0.75)"
+                            : "#FFFFFF",
+                        borderColor: "rgba(31,31,31,0.10)"
                     }}
                 >
-                    {item.isFavourite ? (
-                        <FavouriteIconFilled width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" style={{ marginTop: moderateScale(1.5) }} />
+                    {isFavourite ? (
+                        <FavouriteIconFilled
+                            width={moderateScale(20)}
+                            height={moderateScale(20)}
+                            color={isInactive ? "#777777" : "#3F2516"}
+                            style={{ marginTop: moderateScale(1.5) }}
+                        />
                     ) : (
-                        <FavouriteIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.5} style={{ marginTop: moderateScale(1.5) }} />
+                        <FavouriteIcon
+                            width={moderateScale(20)}
+                            height={moderateScale(20)}
+                            color={isInactive ? "#777777" : "#3F2516"}
+                            strokeWidth={1.5}
+                            style={{ marginTop: moderateScale(1.5) }}
+                        />
                     )}
                 </TouchableOpacity>
+
+                {isInactive && (
+                    <View
+                        className="absolute items-center justify-center"
+                        style={{
+                            left: moderateScale(16),
+                            bottom: moderateScale(14),
+                            paddingHorizontal: moderateScale(9),
+                            paddingVertical: verticalScale(5),
+                            borderRadius: moderateScale(10),
+                            backgroundColor: "rgba(31,31,31,0.85)"
+                        }}
+                    >
+                        <Text
+                            className="font-bold text-white uppercase"
+                            style={{ fontSize: moderateScale(9) }}
+                        >
+                            Currently Closed
+                        </Text>
+                    </View>
+                )}
             </View>
 
             <View className="px-3 py-3 -mt-2">
-                <View className="flex-row items-center gap-3">
-                    <Text
-                        numberOfLines={1}
-                        className="flex-1 font-bold text-[#1F1F1F]"
-                        style={{ fontSize: moderateScale(14) }}
-                    >
-                        {item.name}
-                    </Text>
-
+                <View className="flex-row items-start gap-3">
                     <View
-                        className="flex-row items-center justify-center gap-1 bg-[#E8B93F]/15"
-                        style={{
-                            paddingHorizontal: moderateScale(8),
-                            paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(12)
-                        }}
+                        className="flex-1"
+                        style={{ minWidth: 0 }}
                     >
-                        <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color="#5c4639" />
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className="font-extrabold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: isInactive
+                                    ? "rgba(31,31,31,0.52)"
+                                    : "#1F1F1F"
+                            }}
+                        >
+                            {restaurant.name}
+                        </Text>
 
                         <Text
-                            className="font-bold text-[#5c4639]"
-                            style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                            numberOfLines={2}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(11.5),
+                                marginTop: moderateScale(4),
+                                lineHeight: moderateScale(14),
+                                color: isInactive
+                                    ? "rgba(31,31,31,0.38)"
+                                    : "rgba(31,31,31,0.65)"
+                            }}
                         >
-                            {item.rating.toFixed(1)}
+                            {restaurant.description}
+                        </Text>
+
+                        {restaurant.openingTime && restaurant.closingTime && (
+                            <View
+                                className="flex-row items-center"
+                                style={{
+                                    gap: moderateScale(5),
+                                    marginTop: moderateScale(6)
+                                }}
+                            >
+                                <ClockIcon
+                                    width={moderateScale(16)}
+                                    height={moderateScale(16)}
+                                    color={isInactive ? "#858585" : "rgba(31,31,31,0.65)"}
+                                    strokeWidth={1.8}
+                                />
+
+                                <Text
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10.5),
+                                        color: isInactive
+                                            ? "rgba(31,31,31,0.45)"
+                                            : "rgba(31,31,31,0.65)"
+                                    }}
+                                >
+                                    {isInactive
+                                        ? openingTime
+                                            ? `Opens at ${openingTime}`
+                                            : "Currently closed"
+                                        : openingTime && closingTime
+                                            ? `${openingTime} – ${closingTime}`
+                                            : "Hours unavailable"
+                                    }
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+
+                    <View
+                        className="flex-row items-center justify-center gap-1"
+                        style={{
+                            flexShrink: 0,
+                            paddingHorizontal: moderateScale(8),
+                            paddingVertical: moderateScale(4),
+                            borderRadius: moderateScale(12),
+                            backgroundColor: isInactive
+                                ? "rgba(31,31,31,0.07)"
+                                : "rgba(232,185,63,0.15)"
+                        }}
+                    >
+                        <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color={isInactive ? "#858585" : "#5C4639"} />
+
+                        <Text
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(11),
+                                marginRight: moderateScale(2),
+                                color: isInactive ? "#858585" : "#5C4639"
+                            }}
+                        >
+                            {(rating ?? 0).toFixed(1)}
                         </Text>
                     </View>
                 </View>
 
-                <Text
-                    numberOfLines={1}
-                    className="font-medium text-[#1F1F1F]/75"
-                    style={{
-                        fontSize: moderateScale(11),
-                        marginTop: moderateScale(1)
-                    }}
-                >
-                    {item.cuisines}
-                </Text>
-
                 <View
-                    className="rounded-full bg-[#E8DDD3]/65"
                     style={{
                         height: verticalScale(0.7),
                         marginVertical: verticalScale(8),
-                        marginHorizontal: verticalScale(2)
+                        marginHorizontal: verticalScale(2),
+                        backgroundColor: isInactive
+                            ? "rgba(31,31,31,0.10)"
+                            : "rgba(232,221,211,0.65)"
                     }}
                 />
 
                 <View className="flex-row items-center gap-2">
                     <View
-                        className="flex-row items-center justify-center bg-[#E8B93F]/15"
+                        className="flex-row items-center justify-center"
                         style={{
                             gap: moderateScale(5),
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
-                            borderRadius: moderateScale(10)
+                            borderRadius: moderateScale(10),
+                            backgroundColor: isInactive
+                                ? "rgba(31,31,31,0.07)"
+                                : "rgba(232,185,63,0.15)"
                         }}
                     >
-                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
+                        <DeliveryIcon
+                            width={moderateScale(16)}
+                            height={moderateScale(16)}
+                            color={isInactive ? "#858585" : "#5C4639"}
+                        />
 
                         <Text
-                            className="font-semibold text-[#5c4639]"
-                            style={{ fontSize: moderateScale(11) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(11),
+                                color: isInactive ? "#858585" : "#5C4639"
+                            }}
                         >
-                            {item.deliveryFee === 0
-                                ? "FREE"
-                                : `₹${item.deliveryFee}`}
+                            {restaurant.deliveryFee === 0 ? "FREE" : `₹${restaurant.deliveryFee}`}
                         </Text>
                     </View>
 
                     <View className="flex-row items-center gap-1">
                         <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                            className="items-center justify-center rounded-full"
                             style={{
                                 width: moderateScale(22),
-                                height: moderateScale(22)
+                                height: moderateScale(22),
+                                backgroundColor: isInactive
+                                    ? "rgba(31,31,31,0.07)"
+                                    : "rgba(232,185,63,0.15)"
                             }}
                         >
-                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color ="#5c4639" strokeWidth={1.8} />
+                            <TimerIcon
+                                width={moderateScale(15)}
+                                height={moderateScale(15)}
+                                color={isInactive ? "#858585" : "#5C4639"} strokeWidth={1.8}
+                            />
                         </View>
 
                         <Text
-                            className="font-medium text-[#1F1F1F]/75"
-                            style={{ fontSize: moderateScale(11) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(11),
+                                color: isInactive
+                                    ? "rgba(31,31,31,0.45)"
+                                    : "rgba(31,31,31,0.75)"
+                            }}
                         >
-                            {item.deliveryTime} min
+                            {isInactive ? "Closed"
+                                : restaurant.deliveryTime
+                                    ? `${restaurant.deliveryTime} min`
+                                    : "-- min"
+                            }
                         </Text>
                     </View>
 
-                    <View
-                        className="ml-auto items-center justify-center bg-[#3F2516]"
-                        style={{
-                            paddingHorizontal: moderateScale(9),
-                            paddingVertical: moderateScale(5),
-                            borderRadius: moderateScale(10)
-                        }}
-                    >
-                        <Text
-                            className="font-medium text-white"
-                            style={{ fontSize: moderateScale(11) }}
+                    {hasPriceForTwo && (
+                        <View
+                            className="ml-auto items-center justify-center"
+                            style={{
+                                paddingHorizontal: moderateScale(9),
+                                paddingVertical: moderateScale(5),
+                                borderRadius: moderateScale(10),
+                                backgroundColor: isInactive ? "#B5B5B5" : "#3F2516"
+                            }}
                         >
-                            ₹{item.priceForTwo} for two
-                        </Text>
-                    </View>
+                            <Text
+                                className="font-medium text-white"
+                                style={{ fontSize: moderateScale(11) }}
+                            >
+                                ₹{restaurant.priceForTwo} for two
+                            </Text>
+                        </View>
+                    )}
                 </View>
 
                 <View className="flex-row items-center mt-4 gap-3">

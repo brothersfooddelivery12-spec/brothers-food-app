@@ -8,6 +8,7 @@ import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
 import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
+import { Image } from 'expo-image'
 import { router } from "expo-router"
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Dimensions, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -91,6 +92,8 @@ export default function PaymentMethodScreen(){
             }
         })
     }, [savedPaymentMethods])
+
+    const isEmpty = paymentMethods.length === 0
 
     const selectedMenuItem = paymentMethods.find((item) => item.id === openMenu)
     const [menuPosition, setMenuPosition] = useState({
@@ -192,8 +195,10 @@ export default function PaymentMethodScreen(){
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{
+                    flexGrow: 1,
                     paddingHorizontal: scale(14),
-                    paddingBottom: verticalScale(25)
+                    paddingBottom: verticalScale(25),
+                    justifyContent: isEmpty ? "center" : "flex-start"
                 }}
                 showsVerticalScrollIndicator={false}
             >
@@ -464,23 +469,37 @@ export default function PaymentMethodScreen(){
                     </>
                 ) : (
                     <View
-                        className="bg-white border border-[#1F1F1F]/10 items-center mt-3"
-                        style={{
-                            borderRadius:
-                                moderateScale(20),
-                            paddingVertical:
-                                verticalScale(24)
-                        }}
+                        className="items-center -mt-10"
+                        style={{ paddingHorizontal: scale(30) }}
                     >
-                        <Text
-                            className="text-[#1F1F1F]/60 font-medium"
+                        <Image
+                            source={require("@/assets/images/EmptyPaymentMethodIllustration.png")}
+                            contentFit="contain"
+                            cachePolicy="memory-disk"
                             style={{
-                                fontSize:
-                                    moderateScale(12)
+                                width: moderateScale(175),
+                                height: moderateScale(175)
                             }}
+                        />
+
+                        <Text
+                            className="text-[#1F1F1F] font-extrabold text-center"
+                            style={{ fontSize: moderateScale(15) }}
                         >
                             No saved payment methods yet
-                        </Text>
+                        </Text>  
+
+                        <Text
+                            className="text-[#1F1F1F]/75 font-medium text-center"
+                            style={{
+                                fontSize: moderateScale(11),
+                                marginTop: verticalScale(4),
+                                lineHeight: moderateScale(14),
+                                paddingHorizontal: scale(20)
+                            }}
+                        >
+                            Payment methods you use will be saved automatically for faster checkout.
+                        </Text>  
                     </View>
                 )}
             </ScrollView>

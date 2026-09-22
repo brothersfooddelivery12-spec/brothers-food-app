@@ -1,19 +1,22 @@
 import FilterIcon from '@/assets/icon/FIlterIcon.svg'
 import SearchBar from "@/components/SearchBar"
-import { recommendedItems } from "@/constant/RecommendedData"
-import { restaurants } from "@/constant/RestaurantData"
-import { RESTAURANTS } from '@/constant/RESTAURANTS'
-import { useLocalSearchParams } from 'expo-router'
-import { useCallback, useEffect, useState } from "react"
+import { FavoriteMenuItemResponse, FavoriteRestaurantResponse, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
+import { useFavouriteStore } from '@/Stores/favourite-store'
+import { useLocationStore } from '@/Stores/locationStore'
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
+import LottieView from 'lottie-react-native'
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useCartStore } from '../../Stores/useCartStore'
+import { MenuItem } from '../Home/components/FoodCard'
 import { useToast } from '../hook/ToastContext'
-import FavFoodCard from "./Components/FavFoodCard"
-import FavouriteTabs from "./Components/FavouriteTabs"
-import FavRestaurantCard from "./Components/FavRestaurantCard"
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
+import FavFoodCard, { FavFood } from "./Components/FavFoodCard"
+import FavouriteTabs from './Components/FavouriteTabs'
+import FavRestaurantCard, { FavRestaurant } from "./Components/FavRestaurantCard"
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46) 
@@ -21,29 +24,327 @@ const SEARCH_BAR_HEIGHT = verticalScale(46)
 export default function FavouritesScreen() {
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const insets = useSafeAreaInsets()
+    const preventDoublePress = usePreventDoublePress()
     const params = useLocalSearchParams<{tab?: "restaurants" | "food"}>()
     const {showToast} = useToast()
-
-    const addToCart = useCartStore((state) => state.addToCart)
-
-    const getRestaurantById = (restaurantId: string) => {
-        return RESTAURANTS.find(
-            (restaurant) => restaurant.id === restaurantId
-        )
-    }
+    const location = useLocationStore(state => state.location)
 
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [activeTab, setActiveTab] = useState<"restaurants" | "food">("restaurants")
-    const [favFoods, setFavFoods] = useState(
-        recommendedItems.map((item) => ({
-            ...item, isFavourite: true
-        }))
+    const [favRestaurants, setFavRestaurants] = useState<FavRestaurant[]>([])
+    const [loadingFavRestaurants, setLoadingFavRestaurants] = useState(false)
+    const [favFoods, setFavFoods] = useState<FavFood[]>([])
+    const [loadingFavFoods, setLoadingFavFoods] = useState(false)
+
+    type FavouriteItem = FavRestaurant | FavFood
+
+    const favouriteData = useMemo<FavouriteItem[]>(() => {
+        return activeTab === "restaurants" ? favRestaurants : favFoods
+    }, [activeTab, favRestaurants, favFoods])
+
+    const fetchFavoriteRestaurants = useCallback(async (latitude: number, longitude: number) => {
+        try {
+            setLoadingFavRestaurants(true)
+
+            const res = await getFavoriteRestaurants(latitude, longitude)
+
+            console.log("Favourite restaurants:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch favourite restaurants", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? []
+
+            const mapped = data.map((item: FavoriteRestaurantResponse) => mapFavoriteRestaurant(item))
+
+            setFavRestaurants(mapped)
+        } catch (error: any) {
+            console.log("Favourite restaurants error:", error)
+
+            showToast(error?.message || "Unable to fetch favourite restaurants", "warning")
+        } finally {
+            setLoadingFavRestaurants(false)
+        }
+    },[])
+
+    const mapFavoriteRestaurant = (item: FavoriteRestaurantResponse): FavRestaurant => ({
+        id: item.id,
+        name: item.name,
+        description: item.description ?? "",
+        imageUrl: item.cover_image_url ?? item.logo_url ?? null,
+        rating: Number(item.rating ?? 0),
+        deliveryFee: item.delivery_fee != null ? Number(item.delivery_fee) : null,
+        deliveryTime: item.estimated_time_minutes ?? null,
+        openingTime: item.opening_time,
+        closingTime: item.closing_time,
+        isOpen: item.is_open,
+        isFavourite: true
+    })
+
+    const fetchFavoriteMenuItems = useCallback(async (latitude: number, longitude: number) => {
+        try {
+            setLoadingFavFoods(true)
+
+            const res =await getFavoriteMenuItems(latitude, longitude)
+
+            console.log("Favourite menu items:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch favourite foods", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? []
+
+            const mappedFoods = data.map((item: FavoriteMenuItemResponse) => mapFavoriteMenuItem(item))
+
+            setFavFoods(mappedFoods)
+        } catch (error: any) {
+            console.log("Favourite food error:", error)
+
+            showToast(error?.message || "Unable to fetch favourite foods", "warning")
+        } finally {
+            setLoadingFavFoods(false)
+        }
+    },[])
+
+    const mapFavoriteMenuItem = (item: FavoriteMenuItemResponse): FavFood => {
+        return {
+            id: item.id,
+
+            restaurant: {
+                id: item.restaurant.id,
+                name: item.restaurant.name,
+                LogoUrl: item.restaurant.logo_url,
+                isOpen: item.restaurant.is_open
+            },
+            name: item.name,
+            imageUrl: item.image_url,
+            description: item.description ?? "",
+            category: item.category_name,
+            price: Number(item.price ?? 0),
+            preparationTime:
+                item.estimated_time_minutes ??
+                undefined,
+            deliveryFee: item.delivery_fee != null
+                ? String(item.delivery_fee)
+                : undefined,
+            isAvailable: item.is_available, 
+            isVeg: item.is_veg,
+            isFavourite: true
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!location) {
+                return
+            }
+
+            const fetchFavourites = async () => {
+                await Promise.allSettled([
+                    fetchFavoriteRestaurants(
+                        25.149131,
+                        73.083126
+                    ),
+
+                    fetchFavoriteMenuItems(
+                        25.149131,
+                        73.083126
+                    )
+                ])
+            }
+
+            fetchFavourites()
+        }, [
+            location,
+            fetchFavoriteRestaurants,
+            fetchFavoriteMenuItems
+        ])
     )
-    const [favRestaurants, setFavRestaurants] = useState(
-        restaurants.map((item) => ({
-            ...item, isFavourite: true
-        }))
+
+    const {restaurantIds, addRestaurant, removeRestaurant} = useFavouriteStore()
+
+    const handleFavRestaurantPress = useCallback(async (id: string) => {
+        const removedItem = favRestaurants.find(item => item.id === id)
+
+        // Optimistically remove from screen
+        setFavRestaurants(prev => prev.filter(item => item.id !== id))
+
+        // Keep Zustand in sync
+        removeRestaurant(id)
+
+        try {
+            const res = await removeRestaurantFromFavorites(id)
+
+            console.log("Remove restaurant favourite:", res.data)
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || "Unable to remove favourite.")
+            }
+
+            showToast("Removed from favourites.", "success")
+        } catch (error: any) {
+            console.log("Remove restaurant favourite error:", error)
+
+            // Rollback Zustand
+            addRestaurant(id)
+
+            // Rollback UI
+            if (removedItem) {
+                setFavRestaurants(
+                    prev => {
+                        const alreadyExists = prev.some(item => item.id === id)
+
+                        if (alreadyExists) {
+                            return prev
+                        }
+
+                        return [
+                            removedItem,
+                            ...prev
+                        ]
+                    }
+                )
+            }
+
+            showToast(error?.message || "Unable to remove favourite.","info")
+        }
+    },[
+        favRestaurants,
+        removeRestaurant,
+        addRestaurant
+    ])
+
+    const handleRestaurantPress = useCallback((restaurantId: string, isOpen: boolean) => {
+        // if (!isOpen) {
+        //     showToast("Restaurant is currently closed", "info")
+
+        //     return
+        // }
+
+        preventDoublePress(() => {
+            router.push({
+                pathname: "/restaurant-details",
+                params: {
+                    restaurantId: restaurantId
+                }
+            })
+        })
+    }, [preventDoublePress, router])
+
+    const addToCart = useCartStore((state) => state.addToCart)
+
+    const {menuItemIds, addMenuItem, removeMenuItem} = useFavouriteStore() 
+    
+    const handleMenuFavouritePress = useCallback(async (id: string) => {
+        const removedItem = favFoods.find(item => item.id === id)
+
+        // Optimistically remove from screen
+        setFavFoods(prev => prev.filter(item => item.id !== id))
+
+        // Keep global favourite store in sync
+        removeMenuItem(id)
+
+        try {
+            const res = await removeMenuItemFromFavorites(id)
+
+            console.log("Remove menu favourite:", res.data)
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || "Unable to remove favourite.")
+            }
+
+            showToast("Removed from favourites.", "success")
+        } catch (error: any) {
+            console.log("Remove menu favourite error:", error)
+
+            // Rollback Zustand
+            addMenuItem(id)
+
+            // Rollback UI
+            if (removedItem) {
+                setFavFoods(prev => {
+                    const alreadyExists = prev.some(item => item.id === id)
+
+                    if (alreadyExists) {
+                        return prev
+                    }
+
+                    return [
+                        removedItem,
+                        ...prev
+                    ]
+                })
+            }
+
+            showToast(error?.message || "Unable to remove favourite.", "info")
+        }
+    },[
+        favFoods,
+        removeMenuItem,
+        addMenuItem
+    ])
+
+    const handleAddToCart = useCallback((item: MenuItem) => {
+        if (!item.isAvailable) {
+            showToast("This menu is currently unavailable", "info")
+
+            return
+        }
+
+        if (!item.restaurant) {
+            showToast("Restaurant not found", "info")
+
+            return
+        }
+
+        if (!item.restaurant.isOpen) {
+            showToast("Restaurant is currently closed", "info")
+
+            return
+        }
+
+        addToCart({
+            restaurant: {
+                id: item.restaurant.id,
+                restaurantName: item.restaurant.name,
+                restaurantLogoUrl: item.restaurant.LogoUrl,
+                deliveryFee: Number(item.deliveryFee) || 0,
+                isOpen: item.restaurant.isOpen
+            },
+
+            item: {
+                id: item.id,
+                imageUrl: item.imageUrl,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                preparationTime: item.preparationTime,
+                isAvailable: item.isAvailable
+            }
+        })
+
+        showToast("Menu added to cart", "success")
+    },[addToCart])
+
+    const handleFoodPress = useCallback(
+        (menuId: string) => {
+            preventDoublePress(() => {
+                router.push({
+                    pathname: "/food-details",
+                    params: {
+                        menuId
+                    }
+                })
+            })
+        },
+        [preventDoublePress, router]
     )
 
     useEffect(() => {
@@ -59,7 +360,6 @@ export default function FavouritesScreen() {
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 2
 
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
-    const [headerHeight, setHeaderHeight] = useState(SEARCH_BAR_HEIGHT + verticalScale(68))
 
     const [titleHeight, setTitleHeight] = useState(TITLE_HEIGHT)
     const [searchBarHeight, setSearchBarHeight] = useState(SEARCH_BAR_HEIGHT)
@@ -105,112 +405,57 @@ export default function FavouritesScreen() {
         return () => clearTimeout(timer)
     }, [search])
 
-    const handleRestaurantPress = useCallback((id: string) => {
-        console.log("Restaurant:", id)
-    }, [])
+    const renderFavouriteItem = useCallback(({ item }: {item: FavouriteItem}) => {
+        if (activeTab === "restaurants") {
+            const restaurant = item as FavRestaurant
 
-    const handleFavRestaurantPress = useCallback((id: string) => {
-       setFavRestaurants(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? {
-                        ...item,
-                        isFavourite: !item.isFavourite,
-                    }
-                    : item
+            return (
+                <View style={{ marginTop: moderateScale(14) }} >
+                    <FavRestaurantCard
+                        restaurant={restaurant}
+                        isFavourite={true}
+                        onPress={() => handleRestaurantPress(restaurant.id, restaurant.isOpen)}
+                        onFavouritePress={() => handleFavRestaurantPress(restaurant.id)}
+                    />
+                </View>
             )
-        )
-    }, [])
+        }
 
-    const handleFoodPress = useCallback((id: string) => {
-        console.log("Restaurant:", id)
-    }, [])
+        const food = item as FavFood
 
-    const handleFavFoodPress = useCallback((id: string) => {
-        setFavFoods(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? {
-                        ...item,
-                        isFavourite: !item.isFavourite,
-                    }
-                    : item
-            )
-        )
-    }, [])
-
-    const handleFoodAdd = useCallback(
-        (item: any) => {
-            if (!item.isActive) {
-                showToast("This item is currently unavailable", "info")
-
-                return
-            }
-
-            const restaurant = getRestaurantById(item.restaurantId)
-
-            if (!restaurant) {
-                showToast("Restaurant not found", "info")
-
-                return
-            }
-
-            if (!restaurant.isActive) {
-                showToast("Restaurant is currently closed", "info")
-
-                return
-            }
-
-            // addToCart({
-            //     restaurant: {
-            //         id: restaurant.id,
-            //         restaurantName: restaurant.name,
-            //         restaurantLogoUrl: restaurant.imageUri,
-            //         deliveryTime: restaurant.deliveryTime,
-            //         deliveryFee: restaurant.deliveryFee,
-            //         isOpen: restaurant.isActive
-            //     },
-
-            //     item: {
-            //         id: item.id,
-            //         name: item.name,
-            //         imageUrl: item.imageUri,
-            //         price: item.price,
-            //         description: item.category,
-            //         isAvailable: item.isActive
-            //     }
-            // })
-
-            showToast("added to cart", "success")
-        },[addToCart]
-    )
-
-    const renderRestaurant = useCallback(
-        ({ item }: { item: any }) => (
-            <View style={{ marginTop: moderateScale(14) }}>
-                <FavRestaurantCard
-                    item={item}
-                    onPress={() => handleRestaurantPress(item.id)}
-                    onFavouritePress={() => handleFavRestaurantPress(item.id)}
-                />
-            </View>
-        ),
-        [handleRestaurantPress, handleFavRestaurantPress]
-    )
-
-    const renderFood = useCallback(
-        ({ item }: { item: any }) => (
+        return (
             <View style={{ marginTop: moderateScale(14), width: cardWidth }}>
                 <FavFoodCard
-                    item={item}
-                    onPress={() => handleFoodPress(item.id)}
-                    onAddPress={() => {}}
-                    onFavouritePress={() => handleFavFoodPress(item.id)}
+                    item={food}
+                    isFavourite={true}
+                    onPress={() => handleFoodPress(food.id)}
+                    onAddPress={() => handleAddToCart(food)}
+                    onFavouritePress={() => handleMenuFavouritePress(food.id)}
                 />
             </View>
-        ),
-        [handleFavFoodPress, handleFoodAdd, handleFoodPress]
-    )
+        )
+    },[
+        activeTab, cardWidth,
+        handleRestaurantPress,
+        handleFavRestaurantPress,
+        handleFoodPress,
+        handleAddToCart,
+        handleMenuFavouritePress
+    ])
+
+    const isLoading = activeTab === "restaurants"
+        ? loadingFavRestaurants
+        : loadingFavFoods
+
+    const showInitialLoading = isLoading && favouriteData.length === 0
+
+    const savedCount = activeTab === "restaurants"
+        ? favRestaurants.length
+        : favFoods.length
+
+    const availableCount = activeTab === "restaurants"
+        ? favRestaurants.filter(restaurant => restaurant.isOpen).length
+        : favFoods.filter(food => food.isAvailable && food.restaurant.isOpen).length
 
     return (
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -288,10 +533,10 @@ export default function FavouritesScreen() {
                 key={activeTab}
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}
-                data={activeTab === "restaurants" ? favRestaurants : favFoods}
+                data={favouriteData}
                 numColumns={activeTab === "restaurants" ? 1 : 2}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={activeTab === "restaurants" ? renderRestaurant : renderFood}
+                renderItem={renderFavouriteItem}
                 columnWrapperStyle={activeTab === "food" ? { gap } : undefined}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
@@ -299,10 +544,42 @@ export default function FavouritesScreen() {
                 contentContainerStyle={{
                     paddingHorizontal: scale(14),
                     paddingTop: titleHeight + searchBarHeight,
-                    paddingBottom: verticalScale(88)
+                    paddingBottom: verticalScale(88),
+                    flexGrow: favouriteData.length === 0 ? 1 : undefined
                 }}
+                ListEmptyComponent={
+                    showInitialLoading ? (
+                        <View className="flex-1 items-center justify-center">
+                            <LottieView
+                                source={require(
+                                    "../../../assets/animations/Food_Loading2.json"
+                                )}
+                                autoPlay
+                                loop
+                                style={{
+                                    width: moderateScale(125),
+                                    height: moderateScale(125)
+                                }}
+                            />
+                        </View>
+                    ) : (
+                        <View
+                            className="items-center justify-center flex-1"
+                            style={{ minHeight: verticalScale(300) }}
+                        >
+                            <Text
+                                className="text-[#1F1F1F]/75 font-medium"
+                                style={{ fontSize: moderateScale(12) }}
+                            >
+                                {activeTab === "restaurants"
+                                    ? "No favourite restaurants yet"
+                                    : "No favourite foods yet"}
+                            </Text>
+                        </View>
+                    )
+                }
                 ListHeaderComponent={
-                   <View style={{ marginTop: verticalScale(4) }}>
+                    <View style={{ marginTop: verticalScale(4) }}>
                         <View
                             style={{
                                 paddingHorizontal: scale(8),
@@ -335,11 +612,11 @@ export default function FavouritesScreen() {
                                     className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(18) }}
                                 >
-                                    18
+                                    {savedCount}
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-semibold"
+                                    className="text-[#1F1F1F]/75 font-medium"
                                     style={{ fontSize: moderateScale(13) }}
                                 >
                                     {activeTab == "food" ? "Foods" : "Restaurants"}
@@ -358,21 +635,21 @@ export default function FavouritesScreen() {
                                     className="text-[#FFFFFF]/95 font-medium"
                                     style={{ fontSize: moderateScale(14) }}
                                 >
-                                    Ordered
+                                    Available
                                 </Text>
 
                                 <Text
                                     className="text-[#FFFFFF] font-bold"
                                     style={{ fontSize: moderateScale(18) }}
                                 >
-                                    124
+                                    {availableCount}
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF]/75 font-semibold"
+                                    className="text-[#FFFFFF]/75 font-medium"
                                     style={{ fontSize: moderateScale(13) }}
                                 >
-                                    Times Again
+                                    {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
                                 </Text>
                             </View>
                         </View>

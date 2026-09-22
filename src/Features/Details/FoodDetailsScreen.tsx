@@ -91,11 +91,7 @@ export default function FoodDetailsScreen() {
             return
         }
 
-        const wasFavourite =
-            useFavouriteStore
-                .getState()
-                .menuItemIds
-                .includes(menuId)
+        const wasFavourite = useFavouriteStore.getState().menuItemIds.includes(menuId)
 
         // Optimistic UI update
         if (wasFavourite) {
@@ -105,10 +101,9 @@ export default function FoodDetailsScreen() {
         }
 
         try {
-            const res =
-                wasFavourite
-                    ? await removeMenuItemFromFavorites(menuId)
-                    : await addMenuItemToFavorites(menuId)
+            const res = wasFavourite
+                ? await removeMenuItemFromFavorites(menuId)
+                : await addMenuItemToFavorites(menuId)
 
             if (!res.data.success) {
                 // rollback
@@ -126,7 +121,8 @@ export default function FoodDetailsScreen() {
             showToast(wasFavourite
                     ? "Removed from favourites."
                     : "Added to favourites.",
-                "success")
+                "success"
+            )
         } catch (error: any) {
             // rollback
             if (wasFavourite) {
@@ -137,11 +133,7 @@ export default function FoodDetailsScreen() {
 
             showToast(error?.message || "Unable to update favourite.", "info")
         }
-    }, [
-        menuId,
-        addMenuItem,
-        removeMenuItem
-    ])
+    }, [menuId, addMenuItem, removeMenuItem])
 
     const [quantity, setQuantity] = useState(1)
     const [selectedAddons, setSelectedAddons] = useState<number[]>([])
@@ -241,12 +233,7 @@ export default function FoodDetailsScreen() {
         // )
 
         setQuantity(1)
-    }, [
-        menu,
-        quantity,
-        addToCart,
-        showToast
-    ])
+    }, [menu, quantity, addToCart])
 
     const isAvailable = menu?.is_available ?? false
 

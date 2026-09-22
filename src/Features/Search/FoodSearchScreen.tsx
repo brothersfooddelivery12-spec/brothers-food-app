@@ -1,5 +1,4 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import SearchBar from "@/components/SearchBar"
 import { cheesePizzaResults } from "@/constant/cheesePizzaResults"
 import { router } from "expo-router"
@@ -221,8 +220,6 @@ export default function FoodSearchScreen() {
                         value={search}
                         onChangeText={setSearch}
                         placeholder="Search food"
-                        RightIcon={MicIcon}
-                        rightIconColor="#1F1F1F"
                         onRightPress={() => {}}
                     />
                 </View>

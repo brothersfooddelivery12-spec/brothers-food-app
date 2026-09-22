@@ -35,27 +35,36 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const { height: screenHeight } = useWindowDimensions()
-    const [headerHeight, setHeaderHeight] = useState(0)
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
+    
+    const [headerHeight, setHeaderHeight] = useState(0)
+    const [showBackToTop, setShowBackToTop] = useState(false)
 
     const listRef = useRef<FlatList>(null)
-    const [showBackToTop, setShowBackToTop] = useState(false)
     const previousScrollY = useRef(0)
     const backToTopVisibleRef = useRef(false)
+    const hideBackToTopTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const setBackToTopVisible = useCallback(
-        (visible: boolean) => {
-            if (backToTopVisibleRef.current === visible) {
-                return
-            }
+    const setBackToTopVisible = useCallback((visible: boolean) => {
+        if (backToTopVisibleRef.current === visible) {
+            return
+        }
 
-            backToTopVisibleRef.current = visible
+        backToTopVisibleRef.current = visible
 
-            setShowBackToTop(visible)
-        },
-        []
-    )
+        setShowBackToTop(visible)
+    },[])
+
+    const scheduleBackToTopHide = useCallback(() => {
+        if (hideBackToTopTimer.current) {
+            clearTimeout(hideBackToTopTimer.current)
+        }
+
+        hideBackToTopTimer.current = setTimeout(() => {
+            setBackToTopVisible(false)
+        }, 1200)
+    }, [setBackToTopVisible])
 
     const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const currentY = Math.max(event.nativeEvent.contentOffset.y, 0)
@@ -67,8 +76,12 @@ export default function HomeScreen() {
         const SHOW_AFTER = 400
         const DIRECTION_THRESHOLD = 2
 
-        // Near the top → always hide
+        // Near top → always hide
         if (currentY < SHOW_AFTER) {
+            if (hideBackToTopTimer.current) {
+                clearTimeout(hideBackToTopTimer.current)
+            }
+
             setBackToTopVisible(false)
 
             previousScrollY.current = currentY
@@ -76,18 +89,33 @@ export default function HomeScreen() {
             return
         }
 
-        // User scrolling DOWN
+        // Scrolling DOWN → show
         if (difference > DIRECTION_THRESHOLD) {
             setBackToTopVisible(true)
+
+            // Keep resetting while scrolling
+            scheduleBackToTopHide()
         }
 
-        // User scrolling UP
+        // Scrolling UP → hide immediately
         if (difference < -DIRECTION_THRESHOLD) {
+            if (hideBackToTopTimer.current) {
+                clearTimeout(hideBackToTopTimer.current)
+            }
+
             setBackToTopVisible(false)
         }
 
         previousScrollY.current = currentY
-    },[setBackToTopVisible])
+    },[scheduleBackToTopHide, setBackToTopVisible])
+
+    useEffect(() => {
+        return () => {
+            if (hideBackToTopTimer.current) {
+                clearTimeout(hideBackToTopTimer.current)
+            }
+        }
+    }, [])
 
     const fetchUserProfile = useCallback(async () => {
         try {
@@ -127,14 +155,11 @@ export default function HomeScreen() {
     const syncFavourites = async () => {
         try {
             const [restaurantRes, menuItemRes] = await Promise.allSettled([
-                getFavoriteRestaurants(),
-                getFavoriteMenuItems()
+                getFavoriteRestaurants(25.149131,73.083126), 
+                getFavoriteMenuItems(25.149131,73.083126)
             ])
 
-            const {
-                setRestaurantIds,
-                setMenuItemIds
-            } = useFavouriteStore.getState()
+            const {setRestaurantIds, setMenuItemIds} = useFavouriteStore.getState()
 
             if (
                 restaurantRes.status === "fulfilled" &&
@@ -142,7 +167,7 @@ export default function HomeScreen() {
             ) {
                 console.log("Favorite restaurants response:", restaurantRes.value.data)
 
-                const ids = restaurantRes.value.data.data.map((item: any) => item.restaurant_id)
+                const ids = restaurantRes.value.data.data.map((item: any) => item.id)
 
                 console.log("Favorite restaurant IDs:", ids)
 
@@ -155,7 +180,7 @@ export default function HomeScreen() {
             ) {
                 console.log("Favorite menus response:", menuItemRes.value.data)
 
-                const ids = menuItemRes.value.data.data.map((item: any) => item.menu_item_id)
+                const ids = menuItemRes.value.data.data.map((item: any) => item.id)
                 
                 console.log("Favorite menu IDs:", ids)
 
@@ -170,7 +195,7 @@ export default function HomeScreen() {
         syncFavourites()
     },[])
 
-    type LocationPermissionState =
+    type LocationPermissionState = 
         | "checking"
         | "granted"
         | "denied"
@@ -183,62 +208,55 @@ export default function HomeScreen() {
     const setLocation = useLocationStore(state => state.setLocation)
     const hasHydrated = useLocationStore(state => state.hasHydrated)
 
-    const handleUseCurrentLocation = useCallback(
-        async (showSuccessToast = true) => {
-            if (locationLoading) return
+    const handleUseCurrentLocation = useCallback(async (showSuccessToast = true) => {
+        if (locationLoading) return
 
-            try {
-                setLocationLoading(true)
+        try {
+            setLocationLoading(true)
 
-                const currentLocation = await getCurrentLocationDetails()
+            const currentLocation = await getCurrentLocationDetails()
 
-                console.log("Location Details:", currentLocation)
+            console.log("Location Details:", currentLocation)
 
-                setLocation({
-                    latitude: currentLocation.latitude, 
-                    longitude: currentLocation.longitude,
-                    name:
-                        currentLocation.addressLine ||
-                        currentLocation.area ||
-                        currentLocation.city,
-                    source: "CURRENT"
-                })
+            setLocation({
+                latitude: currentLocation.latitude, 
+                longitude: currentLocation.longitude,
+                name:
+                    currentLocation.addressLine ||
+                    currentLocation.area ||
+                    currentLocation.city,
+                source: "CURRENT"
+            })
 
-                setLocationPermission("granted")
+            setLocationPermission("granted")
 
-                if (showSuccessToast) {
-                    //showToast("Current location detected successfully.", "success")
-                }
-            } catch (error) {
-                console.log("Location Error:", error)
-
-                const servicesEnabled = await Location.hasServicesEnabledAsync()
-
-                if (!servicesEnabled) {
-                    setLocationPermission("services-disabled")
-
-                    return
-                }
-
-                const permission = await Location.getForegroundPermissionsAsync()
-
-                if (permission.status !== "granted") {
-                    setLocationPermission("denied")
-
-                    return
-                }
-
-                showToast(error instanceof Error ? error.message : "Unable to get your location.", "info")
-            } finally {
-                setLocationLoading(false)
+            if (showSuccessToast) {
+                //showToast("Current location detected successfully.", "success")
             }
-        },
-        [
-            locationLoading,
-            setLocation,
-            showToast
-        ]
-    )
+        } catch (error) {
+            console.log("Location Error:", error)
+
+            const servicesEnabled = await Location.hasServicesEnabledAsync()
+
+            if (!servicesEnabled) {
+                setLocationPermission("services-disabled")
+
+                return
+            }
+
+            const permission = await Location.getForegroundPermissionsAsync()
+
+            if (permission.status !== "granted") {
+                setLocationPermission("denied")
+
+                return
+            }
+
+            showToast(error instanceof Error ? error.message : "Unable to get your location.", "info")
+        } finally {
+            setLocationLoading(false)
+        }
+    },[locationLoading, setLocation])
 
     const handleLocationAccess = useCallback(async () => {
         try {
@@ -272,8 +290,7 @@ export default function HomeScreen() {
                             },
                             {
                                 text: "Open Settings",
-                                onPress: () =>
-                                    Linking.openSettings()
+                                onPress: () => Linking.openSettings()
                             }
                         ]
                     )
@@ -300,8 +317,7 @@ export default function HomeScreen() {
                             },
                             {
                                 text: "Open Settings",
-                                onPress: () =>
-                                    Linking.openSettings()
+                                onPress: () => Linking.openSettings()
                             }
                         ]
                     )
@@ -356,16 +372,11 @@ export default function HomeScreen() {
         }, [])
 
         return (
-            <View
-                style={{
-                    width: moderateScale(16)
-                }}
+            <View style={{ width: moderateScale(16) }}
             >
                 <Text
                     className="text-[#3F2516] font-extrabold"
-                    style={{
-                        fontSize: moderateScale(15.5)
-                    }}
+                    style={{ fontSize: moderateScale(15.5) }}
                 >
                     {".".repeat(count)}
                 </Text>
@@ -550,7 +561,7 @@ export default function HomeScreen() {
                     description: item.description ?? "",
                     imageUrl: item.image_url || null,
                     price: Number(item.price),
-                    deliveryTime: item.estimated_time_minutes,
+                    preparationTime: item.estimated_time_minutes,
                     deliveryFee: item.delivery_fee,
                     isAvailable: item.is_available,
                     isVeg: item.is_veg
@@ -718,17 +729,10 @@ export default function HomeScreen() {
         })
     }, [preventDoublePress, router])
 
-    const {
-        restaurantIds,
-        addRestaurant,
-        removeRestaurant
-    } = useFavouriteStore()
+    const {restaurantIds, addRestaurant, removeRestaurant} = useFavouriteStore()
 
     const handleFavouritePress = useCallback(async (id: string) => {
-        const isFavourite = useFavouriteStore
-            .getState()
-            .restaurantIds
-            .includes(id)
+        const isFavourite = useFavouriteStore.getState().restaurantIds.includes(id)
 
         if (isFavourite) {
             removeRestaurant(id)
@@ -770,18 +774,11 @@ export default function HomeScreen() {
             showToast(error?.message || "Unable to update favourite.", "info")
         }
     }, [addRestaurant, removeRestaurant])
-
-    const {
-        menuItemIds,
-        addMenuItem,
-        removeMenuItem
-    } = useFavouriteStore()
+ 
+    const {menuItemIds, addMenuItem, removeMenuItem} = useFavouriteStore() 
 
     const handleMenuFavouritePress = useCallback(async (id: string) => {
-        const isFavourite = useFavouriteStore
-            .getState()
-            .menuItemIds
-            .includes(id)
+        const isFavourite = useFavouriteStore.getState().menuItemIds.includes(id)
 
         if (isFavourite) {
             removeMenuItem(id)
@@ -824,49 +821,50 @@ export default function HomeScreen() {
         }
     }, [addMenuItem, removeMenuItem])
 
-    const handleAddToCart = useCallback(
-        (item: MenuItem) => {
-           if (!item.isAvailable) {
-                showToast("This menu is currently unavailable", "info")
+    const handleAddToCart = useCallback((item: MenuItem) => {
+        console.log("Menu item:", item)
+        console.log("Preparation time:", item.preparationTime)
 
-                return
+        if (!item.isAvailable) {
+            showToast("This menu is currently unavailable", "info")
+
+            return
+        }
+
+        if (!item.restaurant) {
+            showToast("Restaurant not found", "info")
+
+            return
+        }
+
+        if (!item.restaurant.isOpen) {
+            showToast("Restaurant is currently closed", "info")
+
+            return
+        }
+
+        addToCart({
+            restaurant: {
+                id: item.restaurant.id,
+                restaurantName: item.restaurant.name,
+                restaurantLogoUrl: item.restaurant.LogoUrl,
+                deliveryFee: Number(item.deliveryFee) || 0,
+                isOpen: item.restaurant.isOpen
+            },
+
+            item: {
+                id: item.id,
+                imageUrl: item.imageUrl,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                preparationTime: item.preparationTime,
+                isAvailable: item.isAvailable
             }
+        })
 
-            if (!item.restaurant) {
-                showToast("Restaurant not found", "info")
-
-                return
-            }
-
-            if (!item.restaurant.isOpen) {
-                showToast("Restaurant is currently closed", "info")
-
-                return
-            }
-
-            addToCart({
-                restaurant: {
-                    id: item.restaurant.id,
-                    restaurantName: item.restaurant.name,
-                    restaurantLogoUrl: item.restaurant.LogoUrl,
-                    deliveryFee: Number(item.deliveryFee) || 0,
-                    deliveryTime: item.deliveryTime,
-                    isOpen: item.restaurant.isOpen
-                },
-
-                item: {
-                    id: item.id,
-                    imageUrl: item.imageUrl,
-                    name: item.name,
-                    description: item.description,
-                    price: item.price,
-                    isAvailable: item.isAvailable
-                }
-            })
-
-            showToast("Menu added to cart", "success")
-        },[addToCart]
-    )
+        showToast("Menu added to cart", "success")
+    },[addToCart])
 
     const handleFoodPress = useCallback(
         (menuId: string) => {
@@ -882,47 +880,35 @@ export default function HomeScreen() {
         [preventDoublePress, router]
     )
 
-    const renderPopularFood = useCallback(
-        ({ item }: { item: MenuItem }) => {
-            const isFavourite = menuItemIds.includes(item.id)
+    const renderPopularFood = useCallback(({ item }: { item: MenuItem }) => {
+        const isFavourite = menuItemIds.includes(item.id)
 
-            return (
-                <FoodCard
-                    item={item}
-                    isFavourite={isFavourite}
-                    onPress={() =>
-                        handleFoodPress(item.id)
-                    }
-                    onAddPress={() =>
-                        handleAddToCart(item)
-                    }
-                    onFavouritePress={() =>
-                        handleMenuFavouritePress(item.id)
-                    }
-                />
-            )
-        },
-        [
-            menuItemIds,
-            handleFoodPress,
-            handleAddToCart,
-            handleMenuFavouritePress
-        ]
-    )
+        return (
+            <FoodCard
+                item={item}
+                isFavourite={isFavourite}
+                onPress={() => handleFoodPress(item.id)}
+                onAddPress={() => handleAddToCart(item)}
+                onFavouritePress={() => handleMenuFavouritePress(item.id)}
+            />
+        )
+    },[
+        menuItemIds,
+        handleFoodPress,
+        handleAddToCart,
+        handleMenuFavouritePress
+    ])
 
-    const renderNearbyRestaurant = useCallback(
-        ({ item }: { item: NearByRestaurants }) => {
-            return (
-                <NearByRestaurantsList
-                    restaurant={item}
-                    onPress={() => {
-                        handleRestaurantPress(item.id, item.isOpen)
-                    }}
-                />
-            )
-        },
-        [handleRestaurantPress]
-    )
+    const renderNearbyRestaurant = useCallback(({ item }: { item: NearByRestaurants }) => {
+        return (
+            <NearByRestaurantsList
+                restaurant={item}
+                onPress={() => {
+                    handleRestaurantPress(item.id, item.isOpen)
+                }}
+            />
+        )
+    },[handleRestaurantPress])
 
     const renderLocationRequired = () => (
         <View
@@ -1357,7 +1343,7 @@ export default function HomeScreen() {
                                                 return (
                                                     <RestaurantCard
                                                         key={restaurant.id}
-                                                        restaurant={restaurant}
+                                                        restaurant={restaurant} 
                                                         isFavourite={isFavourite}
                                                         onPress={() =>
                                                             handleRestaurantPress(restaurant.id, restaurant.isOpen)

@@ -32,7 +32,7 @@ import { CartPreview, CartPreviewRequest, createCheckoutOrder, CreateOrderReques
 import { hideLoader, showLoader } from '../../Services/loader-service'
 import { getMyWallet, Wallet } from '../../Services/wallet-service'
 import { useAddressRefreshStore } from '../../Stores/address-refresh-store'
-import { useCartStore } from '../../Stores/useCartStore'
+import { CartItem, useCartStore } from '../../Stores/useCartStore'
 import CartItemRow from '../Cart/Components/CartItemRow'
 import { useToast } from '../hook/ToastContext'
 import { CashfreePaymentError, useCashfreeUpi } from '../hook/useCashfreeUpi'
@@ -205,6 +205,32 @@ export default function CheckoutScreen() {
         )
     }, [carts, restaurantId])
 
+    const getAveragePreparationTime = (items: CartItem[]) => {
+        const preparationTimes = items
+            .map(item => item.preparationTime)
+            .filter(
+                (time): time is number =>
+                    time != null &&
+                    time > 0
+            )
+
+        if (preparationTimes.length === 0) {
+            return 0
+        }
+
+        const total = preparationTimes.reduce((sum, time) => sum + time, 0)
+
+        return Math.round(total / preparationTimes.length)
+    }
+
+    const averagePreparationTime = useMemo(() => {
+        if (!selectedCart) {
+            return 0
+        }
+
+        return getAveragePreparationTime(selectedCart.items)
+    }, [selectedCart])
+
     const [imageError, setImageError] = useState(false)
     
     const DefaultRestaurantLogo = require("../../../assets/images/Default_Restaurant_Logo.png")
@@ -234,7 +260,7 @@ export default function CheckoutScreen() {
                 const payload: CartPreviewRequest = {
                     restaurant_id: selectedCart.id,
                     address_id: selectedAddress,
-                    coupon_id: "7f0ca9dd-74b2-46da-ba74-bb5eca9fb89b",
+                    //coupon_id: "7f0ca9dd-74b2-46da-ba74-bb5eca9fb89b",
                     items: selectedCart.items.map(
                         (item) => ({
                             menu_id: item.id,
@@ -334,10 +360,12 @@ export default function CheckoutScreen() {
             if (res.data.success && message === "payment verified successfully") {
                 paymentHandledRef.current = true
 
-                if (currentPaymentUpiRef.current) {
+                const paymentMethod = currentPaymentUpiRef.current
+
+                if (paymentMethod) {
                     console.log("Saving payment method:", currentPaymentUpiRef.current)
 
-                    addPaymentMethod(currentPaymentUpiRef.current)
+                    addPaymentMethod(paymentMethod)
 
                     currentPaymentUpiRef.current = null
                 }
@@ -349,9 +377,17 @@ export default function CheckoutScreen() {
                 router.replace({
                     pathname: "/order-success",
                     params: {
-                        orderId: cashfreeOrderId
+                        orderId: cashfreeOrderId,
+                        restaurantName: selectedCart?.restaurantName ?? "",
+                        restaurantId: selectedCart?.id ?? "",
+                        totalAmount: grandTotal.toString(),
+                        deliveryTime: averagePreparationTime.toString(),
+                        paymentMethod: paymentMethod?.type ?? "UPI",
+                        items: JSON.stringify(selectedCart?.items ?? [])
                     }
                 })
+
+                currentPaymentUpiRef.current = null
 
                 return
             }
@@ -381,7 +417,14 @@ export default function CheckoutScreen() {
             setVerifyingPayment(false)
             hideLoader()
         }
-    },[router])
+    },[
+        router,
+        grandTotal,
+        selectedCart,
+        addPaymentMethod,
+        showLoader,
+        hideLoader
+    ])
 
     const handlePaymentError = useCallback(
         async (error: CashfreePaymentError) => {
@@ -1099,7 +1142,7 @@ export default function CheckoutScreen() {
                                                                 color: "rgba(31,31,31,0.75)"
                                                             }}
                                                         >
-                                                            {selectedCart.deliveryTime} min
+                                                            {averagePreparationTime} min
                                                         </Text>
                                                     </View>
                                                 </View>

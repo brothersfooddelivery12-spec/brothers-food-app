@@ -2,8 +2,10 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import InvoiceIcon from '@/assets/icon/InvoiceIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
-import { router } from "expo-router"
+import { formatOrderId } from '@/utils/formatOrderID'
+import { router, useLocalSearchParams } from "expo-router"
 import LottieView from "lottie-react-native"
+import { useMemo } from 'react'
 import { ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -32,6 +34,32 @@ const ORDER_STATUSES = [
 ]
 
 export default function OrderSuccessScreen() {
+    const {
+        orderId,
+        restaurantId,
+        restaurantName,
+        totalAmount,
+        deliveryTime,
+        paymentMethod,
+        items
+    } = useLocalSearchParams<{
+        orderId?: string
+        restaurantId?: string
+        restaurantName?: string
+        totalAmount?: string
+        deliveryTime?: string
+        paymentMethod?: string
+        items?: string
+    }>()
+
+    const orderItems = useMemo(() => {
+        try {
+            return items ? JSON.parse(items) : []
+        } catch {
+            return []
+        }
+    }, [items])
+
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const insets = useSafeAreaInsets()
 
@@ -121,7 +149,7 @@ export default function OrderSuccessScreen() {
                         className="text-[#1F1F1F] font-extrabold"
                         style={{ fontSize: moderateScale(20) }}
                     >
-                        22-28{" "}
+                        {deliveryTime || "--"}{" "}
                         <Text
                             className="text-[#3F2516] font-bold"
                             style={{ fontSize: moderateScale(16) }}
@@ -177,52 +205,46 @@ export default function OrderSuccessScreen() {
                         className="text-[#1F1F1F] font-bold"
                         style={{ fontSize: moderateScale(14) }}
                     >
-                        The Buger King
+                        {restaurantName || "Restaurant"}
                     </Text>
 
                     <Text
                         className="text-[#1F1F1F]/75 font-normal mt-1"
                         style={{ fontSize: moderateScale(12) }}
                     >
-                        Order ID #BFD202600125
+                        Order ID {formatOrderId(orderId)}
                     </Text>
 
-                    <View className="flex-row justify-between items-center mt-5">
-                        <Text
-                            className="text-[#1F1F1F]/65 font-medium"
-                            style={{ fontSize: moderateScale(13) }}
+                    {orderItems.map((item: any) => (
+                        <View
+                            key={item.id}
+                            className="flex-row justify-between items-center mt-3"
                         >
-                            Chicken Burger x2
-                        </Text>
-                        
-                        <Text
-                            className="text-[#1F1F1F] font-semibold tracking-wide"
-                            style={{ fontSize: moderateScale(15) }}
-                        >
-                            ₹438
-                        </Text>
-                    </View>
+                            <Text
+                                numberOfLines={1}
+                                className="flex-1 text-[#1F1F1F]/65 font-medium"
+                                style={{ fontSize: moderateScale(13) }}
+                            >
+                                {item.name} x{item.quantity}
+                            </Text>
 
-                    <View className="flex-row justify-between items-center mt-3">
-                        <Text
-                            className="text-[#1F1F1F]/65 font-medium"
-                            style={{ fontSize: moderateScale(13) }}
-                        >
-                            Fries x1
-                        </Text>
-
-                        <Text
-                            className="text-[#1F1F1F] font-semibold tracking-wide"
-                            style={{ fontSize: moderateScale(15) }}
-                        >
-                            ₹169
-                        </Text>
-                    </View>
+                            <Text
+                                className="text-[#1F1F1F] font-semibold tracking-wide"
+                                style={{ fontSize: moderateScale(15) }}
+                            >
+                                ₹
+                                {(
+                                    Number(item.price) *
+                                    Number(item.quantity)
+                                ).toLocaleString("en-IN")}
+                            </Text>
+                        </View>
+                    ))}
 
                     <View
-                        className="rounded-full bg-[#E8DDD3]/65"
+                        className="rounded-full bg-[#E8DDD3]/55"
                         style={{
-                            height: verticalScale(0.7),
+                            height: verticalScale(0.6),
                             marginVertical: verticalScale(8),
                             marginHorizontal: verticalScale(2)
                         }}
@@ -233,14 +255,14 @@ export default function OrderSuccessScreen() {
                             className="text-[#1F1F1F]/85 font-semibold"
                             style={{ fontSize: moderateScale(14) }}
                         >
-                            Paid via UPI
+                            Paid via {paymentMethod || "UPI"}
                         </Text>
 
                         <Text
                             className="text-[#1F1F1F] font-bold tracking-wide"
                             style={{ fontSize: moderateScale(16) }}
                         >
-                            ₹607
+                            ₹{Number(totalAmount ?? 0).toLocaleString("en-IN")}
                         </Text>
                     </View>
                 </View>

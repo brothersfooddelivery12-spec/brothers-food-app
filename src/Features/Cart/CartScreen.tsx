@@ -13,7 +13,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { Address, getAllAddresses } from '../../Services/address-service'
 import { useAddressRefreshStore } from '../../Stores/address-refresh-store'
-import { useCartStore } from '../../Stores/useCartStore'
+import { CartItem, RestaurantCart, useCartStore } from '../../Stores/useCartStore'
 import FoodCard, { MenuItem } from "../Home/components/FoodCard"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
@@ -40,7 +40,7 @@ export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
 
         price: 99.00,
 
-        deliveryTime: 15,
+        preparationTime: 15,
         deliveryFee: "25"
     },
 
@@ -64,7 +64,7 @@ export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
 
         price: 59.00,
 
-        deliveryTime: 5,
+        preparationTime: 5,
         deliveryFee: "25"
     },
 
@@ -88,7 +88,7 @@ export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
 
         price: 129.00,
 
-        deliveryTime: 12,
+        preparationTime: 12,
         deliveryFee: "25"
     },
 
@@ -112,7 +112,7 @@ export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
 
         price: 99.00,
 
-        deliveryTime: 10,
+        preparationTime: 10,
         deliveryFee: "25"
     }
 ]
@@ -209,10 +209,25 @@ export default function CartScreen() {
                 (restaurant) => restaurant.id === activeRestaurantId
             ) ?? null
         )
-    }, [
-        carts,
-        activeRestaurantId
-    ])
+    }, [carts, activeRestaurantId])
+
+    const getAveragePreparationTime = (items: CartItem[]) => {
+        const preparationTimes = items
+            .map(item => item.preparationTime)
+            .filter(
+                (time): time is number =>
+                    time != null &&
+                    time > 0
+            )
+
+        if (preparationTimes.length === 0) {
+            return 0
+        }
+
+        const total = preparationTimes.reduce((sum, time) => sum + time, 0)
+
+        return Math.round(total / preparationTimes.length)
+    }
 
     const totalRestaurants = carts.length
 
@@ -255,26 +270,24 @@ export default function CartScreen() {
         },[selectRestaurant]
     )
 
-    const handleAddItem = useCallback(
-        (restaurantId: string) => {
-            const restaurant = carts.find((item) => item.id === restaurantId)
+    const handleAddItem = useCallback((restaurantId: string) => {
+        const restaurant = carts.find((item) => item.id === restaurantId)
 
-            if (!restaurant) {
-                return
+        if (!restaurant) {
+            return
+        }
+
+        if (!restaurant.isOpen) {
+            return
+        }
+
+        router.push({
+            pathname: "/restaurant-menu",
+            params: {
+                restaurantId
             }
-
-            if (!restaurant.isOpen) {
-                return
-            }
-
-            router.push({
-                pathname: "/restaurant-menu",
-                params: {
-                    restaurantId
-                }
-            })
-        },[carts]
-    )
+        })
+    },[carts])
 
     const handleIncrease = useCallback(
         (restaurantId: string, item: any) => {
@@ -320,7 +333,6 @@ export default function CartScreen() {
                     restaurantName: item.restaurant.name,
                     restaurantLogoUrl: item.restaurant.LogoUrl,
                     deliveryFee: Number(item.deliveryFee),
-                    deliveryTime: item.deliveryTime,
                     isOpen: item.restaurant.isOpen
                 },
 
@@ -330,6 +342,7 @@ export default function CartScreen() {
                     name: item.name,
                     description: item.description,
                     price: item.price,
+                    preparationTime: item.preparationTime,
                     isAvailable: item.isAvailable
                 }
             })
@@ -381,36 +394,37 @@ export default function CartScreen() {
         preventDoublePress
     ])
 
-    const renderRestaurantCart = useCallback(
-        ({ item }: { item: any }) => (
+    const renderRestaurantCart = useCallback(({ item }: { item: RestaurantCart }) => {
+        const averagePreparationTime = getAveragePreparationTime(item.items)
+
+        return(
             <RestaurantCartCard
                 restaurantId={item.id}
                 restaurantName={item.restaurantName}
-                restaurantLogoUrl={item.restaurantImage}
+                restaurantLogoUrl={item.restaurantLogoUrl}
                 deliveryFee={item.deliveryFee}
-                deliveryTime={item.deliveryTime}
-
+                deliveryTime={averagePreparationTime}
+    
                 isActiveCart={item.id === activeRestaurantId}
                 isRestaurantOpen={item.isOpen}
-
+    
                 items={item.items}
-
+    
                 onSelectRestaurant={handleSelectRestaurant}
                 onAddItem={handleAddItem}
                 onIncrease={handleIncrease}
                 onDecrease={handleDecrease}
                 onRemove={handleRemove}
             />
-        ),
-        [
-            activeRestaurantId,
-            handleSelectRestaurant,
-            handleAddItem,
-            handleIncrease,
-            handleDecrease,
-            handleRemove
-        ]
-    )
+        )
+    }, [
+        activeRestaurantId,
+        handleSelectRestaurant,
+        handleAddItem,
+        handleIncrease,
+        handleDecrease,
+        handleRemove
+    ])
 
     if (!hasHydrated) {
         return (
