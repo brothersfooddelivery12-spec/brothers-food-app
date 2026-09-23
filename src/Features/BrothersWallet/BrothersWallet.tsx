@@ -363,11 +363,24 @@ export default function BrothersWalletScreen(){
                                     >
                                         <TouchableOpacity
                                             activeOpacity={0.95}
-                                            onPress={() => 
+                                            onPress={() =>
                                                 preventDoublePress(() => {
-                                                    if (item.route) {
-                                                        router.push(item.route as any)
+                                                    if (!item.route) {
+                                                        return
                                                     }
+
+                                                    if (item.id === "history") {
+                                                        router.push({
+                                                            pathname: "/transaction-history",
+                                                            params: {
+                                                                walletId: wallet?.wallet_id ?? ""
+                                                            }
+                                                        })
+
+                                                        return
+                                                    }
+
+                                                    router.push(item.route as any)
                                                 })
                                             }
                                             className="rounded-full bg-white border border-[#1F1F1F]/10 items-center justify-center"

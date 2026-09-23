@@ -27,15 +27,32 @@ export const topupWallet = (payload: WalletTopupRequest) => {
     )
 }
 
+export interface WalletTransaction {
+    id: string
+    amount: number
+    description: string
+    transaction_type:
+        | "ADD_MONEY"
+        | "ORDER_PAYMENT"
+        | "REFUND"
+        | "WITHDRAW"
+        | "ADJUSTMENT"
+        | string
+
+    wallet_id: string
+    order_id: string | null
+    created_at: string
+}
+
 export interface WalletTransactionsParams {
     wallet_id: string
 }
 
-export const getMyWalletTransactions = (walletId: string) => {
+export const getMyWalletTransactions = ({wallet_id}: WalletTransactionsParams) => {
     return api.get("/wallet/transactions/me",
         {
             params: {
-                wallet_id: walletId
+                wallet_id
             }
         }
     )

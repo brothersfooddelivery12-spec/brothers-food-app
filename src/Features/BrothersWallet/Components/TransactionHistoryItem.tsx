@@ -14,7 +14,7 @@ export type TransactionHistory = {
     amount: number
     type: "debit" | "credit"
     status: "completed" | "processing" | "refunded"
-    category: "order" | "cashback" | "recharge" | "refund"
+    category: "order" | "cashback" | "addMoney" | "refund"
 }
 
 const CATEGORY_CONFIG = {
@@ -24,7 +24,7 @@ const CATEGORY_CONFIG = {
     cashback: {
         icon: TransactionHistoryIcon
     },
-    recharge: {
+    addMoney: {
         icon: BankIcon
     },
     refund: {
@@ -61,6 +61,26 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
         })
     }
 
+    // const formatTransactionDateTime = (createdAt: string) => {
+    //     const date = new Date(createdAt)
+
+    //     const formattedDate =
+    //         date.toLocaleDateString("en-IN", {
+    //             day: "2-digit",
+    //             month: "short",
+    //             year: "numeric"
+    //         })
+
+    //     const formattedTime =
+    //         date.toLocaleTimeString("en-IN", {
+    //             hour: "numeric",
+    //             minute: "2-digit",
+    //             hour12: true
+    //         })
+
+    //     return `${formattedDate} • ${formattedTime}`
+    // }
+
     return (
         <TouchableOpacity
             activeOpacity={0.9}
@@ -69,7 +89,7 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
             style={{
                 borderRadius: moderateScale(18),
                 paddingHorizontal: scale(12),
-                paddingVertical: verticalScale(10)
+                paddingVertical: verticalScale(9)
             }}
         >
             <View
@@ -98,7 +118,7 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
                     numberOfLines={1}
                     className="text-[#1F1F1F]/75 font-medium"
                     style={{
-                        fontSize: moderateScale(10),
+                        fontSize: moderateScale(10.5),
                         marginTop: verticalScale(2)
                     }}
                 >
@@ -109,8 +129,8 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
                     numberOfLines={1}
                     className="text-[#1F1F1F]/65 font-medium"
                     style={{
-                        fontSize: moderateScale(9),
-                        marginTop: verticalScale(2)
+                        fontSize: moderateScale(9.5),
+                        marginTop: verticalScale(3)
                     }}
                 >
                     {formatTransactionTime(item.createdAt)}
@@ -122,8 +142,8 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
                 style={{ marginLeft: scale(8),marginRight: scale(6) }}
             >
                 <Text
-                    className="text-[#1F1F1F] font-extrabold"
-                    style={{ fontSize: moderateScale(13.5) }}
+                    className="text-[#1F1F1F] font-extrabold tracking-wide"
+                    style={{ fontSize: moderateScale(14) }}
                 >
                     {isCredit ? "+" : "-"}₹{item.amount.toLocaleString("en-IN")}
                 </Text>
@@ -137,7 +157,7 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
                                 : "text-[#EF4444] font-semibold"
                     }
                     style={{
-                        fontSize: moderateScale(10),
+                        fontSize: moderateScale(10.5),
                         marginTop: verticalScale(2)
                     }}
                 >

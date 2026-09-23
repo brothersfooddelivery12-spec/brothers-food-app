@@ -3,21 +3,35 @@ import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
 import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
 import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
-import { PastOrderItem } from "@/constant/PastOrdersData"
+import { formatOrderId } from '@/utils/formatOrderID'
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
+type PastOrderItem = {
+    name: string
+    quantity: number
+}
+
 type PastOrderCardProps = {
     restaurantName: string
-    restaurantImage: string
+    restaurantImage?: string | null
     orderId: string
-    status?: "Delivered" | "Cancelled"
-    orderDate: string
-    orderTime: string
-    deliveryTime: string
+
+    status: 
+        | "PENDING_PAYMENT"
+        | "PLACED"
+        | "CONFIRMED"
+        | "PREPARING"
+        | "OUT_FOR_DELIVERY"
+        | "DELIVERED"
+        | "CANCELLED"
+
+    estimatedDeliveryAt?: string | null
+
     items: PastOrderItem[]
+
     onReorder?: () => void
     onInvoice?: () => void
 }
@@ -26,14 +40,61 @@ const PastOrdersCard = ({
     restaurantName,
     restaurantImage,
     orderId,
-    status = "Delivered",
-    orderDate,
-    orderTime,
-    deliveryTime,
+    status,
+    estimatedDeliveryAt,
     items,
     onReorder,
-    onInvoice,
+    onInvoice
 }: PastOrderCardProps) => {
+    const isDelivered = status === "DELIVERED"
+
+    const statusLabel = isDelivered
+        ? "Delivered"
+        : "Cancelled"
+
+    const [imageError, setImageError] = useState(false)
+    
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Logo.png")
+    
+    useEffect(() => {
+        setImageError(true)
+    }, [restaurantImage])
+
+    const hasImage = !!restaurantImage && !imageError
+
+    const formatOrderDateTime = (dateString?: string | null) => {
+        if (!dateString) {
+            return null
+        }
+
+        const date = new Date(dateString)
+
+        const formattedDate = date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        )
+
+        const formattedTime = date.toLocaleTimeString(
+            "en-IN",
+            {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            }
+        )
+
+        return {
+            date: formattedDate,
+            time: formattedTime
+        }
+    }
+
+    const estimatedDelivery = formatOrderDateTime(estimatedDeliveryAt)
+
     return (
         <View
             className="bg-white border border-[#1F1F1F]/10 p-3"
@@ -52,7 +113,13 @@ const PastOrdersCard = ({
                     }}
                 >
                     <Image
-                        source={{ uri: restaurantImage }}
+                        source={
+                            hasImage
+                                ? {
+                                    uri: restaurantImage!
+                                }
+                                : DefaultRestaurantImage
+                        }
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         transition={200}
@@ -77,7 +144,7 @@ const PastOrdersCard = ({
                         className="text-[#1F1F1F]/75 font-medium"
                         style={{ fontSize: moderateScale(11) }}
                     >
-                        Order #{orderId}
+                        OrderID {formatOrderId(orderId)}
                     </Text>
                 </View>
 
@@ -89,10 +156,10 @@ const PastOrdersCard = ({
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
-                            backgroundColor: status === "Delivered" ? "#E3F2E8" : "#FEE2E2"
+                            backgroundColor: isDelivered ? "#E3F2E8" : "#FEE2E2"
                         }}
                     >
-                        {status === "Delivered" ? (
+                        {isDelivered ? (
                             <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#20bb59" strokeWidth={1.5} />
                         ) : (
                             <CancelCircleIcon width={moderateScale(16)} height={moderateScale(16)} color="#DC2626" strokeWidth={1.5} />
@@ -102,50 +169,46 @@ const PastOrdersCard = ({
                             className="font-medium"
                             style={{
                                 fontSize: moderateScale(10),
-                                color: status === "Delivered" ? "#20bb59" : "#DC2626"
+                                color: isDelivered ? "#20bb59" : "#DC2626"
                             }}
                         >
-                            {status}
+                            {statusLabel}
                         </Text>
                     </View>
                 </View>
             </View>
 
-            <View
-                className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
-                style={{
-                    borderRadius: moderateScale(14),
-                    marginTop: verticalScale(12),
-                    marginHorizontal: scale(4)
-                }}
-            >
-                <Text
-                    numberOfLines={2}
-                    className="text-[#1F1F1F]/75 font-medium"
-                    style={{ fontSize: moderateScale(11) }}
+            {estimatedDelivery && (
+                <View
+                    className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
+                    style={{
+                        borderRadius: moderateScale(14),
+                        marginTop: verticalScale(12),
+                        marginHorizontal: scale(4)
+                    }}
                 >
-                    {status === "Delivered" ? (
-                        <>
-                            Delivered in{" "}
+                    <Text
+                        numberOfLines={2}
+                        className="text-[#1F1F1F]/75 font-medium"
+                        style={{ fontSize: moderateScale(11)}}
+                    >
+                        {isDelivered
+                            ? "Estimated delivery"
+                            : "Estimated delivery was"}
 
-                            <Text
-                                className="text-[#1F1F1F] font-semibold"
-                                style={{ fontSize: moderateScale(11) }}
-                            >
-                                {deliveryTime}
-                            </Text>
+                        {" • "}
 
-                            {" • "}
-                            {orderDate} at {orderTime}
-                        </>
-                    ) : (
-                        <>
-                            Cancelled{" • "}
-                            {orderDate} at {orderTime}
-                        </>
-                    )}
-                </Text>
-            </View>
+                        <Text
+                            className="text-[#1F1F1F] font-semibold"
+                            style={{ fontSize: moderateScale(11) }}
+                        >
+                            {estimatedDelivery.date}
+                            {" at "}
+                            {estimatedDelivery.time}
+                        </Text>
+                    </Text>
+                </View>
+            )}
 
             <View
                 className="items-start bg-[#F5F5F5] py-4 px-5"

@@ -1,12 +1,12 @@
 import SearchBar from "@/components/SearchBar"
-import { activeorders } from "@/constant/ActiveOrdersData"
-import { pastOrders } from "@/constant/PastOrdersData"
-import { router } from "expo-router"
+import { getUserOrders, OrderListItem } from "@/Services/api-service"
+import { router, useFocusEffect } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from "../hook/ToastContext"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
 import OrdersTabs from "./Components/OrdersTab"
@@ -17,12 +17,72 @@ const SEARCH_BAR_HEIGHT = verticalScale(46)
 
 export default function OrdersScreen() {
     const insets = useSafeAreaInsets()
+    const {showToast} = useToast()
     const preventDoublePress = usePreventDoublePress()
+    const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
+
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
-    const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
-    const { width: SCREEN_WIDTH } = useWindowDimensions()
+
+    type OrderListStatus = "ACTIVE" | "PAST"
+
+    const [activeOrders, setActiveOrders] = useState<OrderListItem[]>([])
+    const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
+    const [loadingActiveOrders, setLoadingActiveOrders] = useState(false)
+    const [loadingPastOrders, setLoadingPastOrders] = useState(false)
+
+    const fetchOrders = useCallback(async (status: OrderListStatus) => {
+        const setLoading = status === "ACTIVE"
+            ? setLoadingActiveOrders
+            : setLoadingPastOrders
+
+        try {
+            setLoading(true)
+
+            const res = await getUserOrders({
+                status,
+                offset: 0,
+                limit: 20
+            })
+
+            console.log(`${status} orders:`, res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch orders", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? []
+
+            if (status === "ACTIVE") {
+                setActiveOrders(data)
+            } else {
+                setPastOrders(data)
+            }
+        } catch (error: any) {
+            console.log(`Fetch ${status} orders error:`, error)
+
+            showToast(error?.message || "Unable to fetch orders", "warning")
+        } finally {
+            setLoading(false)
+        }
+    },[])
+
+    useFocusEffect(
+        useCallback(() => {
+            const loadOrders = async () => {
+                const results = await Promise.allSettled([
+                    fetchOrders("ACTIVE"),
+                    fetchOrders("PAST")
+                ])
+            }
+
+            loadOrders()
+        }, [fetchOrders])
+    )
 
     const horizontalPadding = scale(42)
     const gap = scale(12)
@@ -72,6 +132,14 @@ export default function OrdersScreen() {
         ),
     }))
 
+    const ordersData = activeTab === "active orders"
+        ? activeOrders
+        : pastOrders
+
+    const isLoadingOrders = activeTab === "active orders"
+        ? loadingActiveOrders
+        : loadingPastOrders
+
     const handleTrackOrder = useCallback((orderId: string) => {
         console.log("Track order:", orderId)
 
@@ -100,40 +168,65 @@ export default function OrdersScreen() {
         })
     }, [])
 
-    const renderActiveOrders = useCallback(
-        ({ item }: { item: any }) => (
-            <ActiveOrdersCard
-                restaurantName={item.restaurantName}
-                restaurantImage={item.restaurantImage}
-                orderId={item.orderId}
-                status={item.status}
-                eta={item.eta}
-                activeStep={item.activeStep}
-                items={item.items}
-                onTrackOrder={() => handleTrackOrder(item.id)}
-                onContactRider={() => handleContactRider(item.id)}
-            />
-        ),
-        [handleTrackOrder, handleContactRider]
-    )
+    const renderActiveOrders = useCallback(({ item }: { item: any }) => (
+        <ActiveOrdersCard
+            restaurantName={item.restaurantName}
+            restaurantImage={item.restaurantImage}
+            orderId={item.orderId}
+            status={item.status}
+            eta={item.eta}
+            activeStep={item.activeStep}
+            items={item.items}
+            onTrackOrder={() => handleTrackOrder(item.id)}
+            onContactRider={() => handleContactRider(item.id)}
+        />
+    ),[handleTrackOrder, handleContactRider])
 
-    const renderPastOrders = useCallback(
-        ({ item }: { item: any }) => (
-            <PastOrdersCard
-                restaurantName={item.restaurantName}
-                restaurantImage={item.restaurantImage}
-                orderId={item.orderId}
-                status={item.status}
-                orderDate={item.orderDate}
-                orderTime={item.orderTime}
-                deliveryTime={item.deliveryTime}
-                items={item.items}
-                onReorder={() => handleReorder(item.id)}
-                onInvoice={() => handleInvoice(item.id)}
-            />
-        ),
-        [handleReorder, handleInvoice]
-    )
+    const renderPastOrders = useCallback(({ item }: { item: OrderListItem }) => (
+        <PastOrdersCard
+            restaurantName={item.restaurant_name}
+            restaurantImage={item.restaurant_logo}
+            orderId={item.id}
+            status={item.status}
+            estimatedDeliveryAt={item.estimated_delivery_at}
+            items={item.items}
+            onReorder={() => handleReorder(item.id)}
+            onInvoice={() => handleInvoice(item.id)}
+        />
+    ),[handleReorder, handleInvoice])
+
+    // const renderOrder = useCallback(({ item }: { item: OrderListItem }) => {
+    //         if (
+    //             activeTab === "active orders"
+    //         ) {
+    //             return (
+    //                 <ActiveOrdersCard
+    //                     restaurantName={item.restaurantName}
+    //                     restaurantImage={item.restaurantImage}
+    //                     orderId={item.orderId}
+    //                     status={item.status}
+    //                     eta={item.eta}
+    //                     activeStep={item.activeStep}
+    //                     items={item.items}
+    //                     onTrackOrder={() => handleTrackOrder(item.id)}
+    //                     onContactRider={() => handleContactRider(item.id)}
+    //                 />
+    //             )
+    //         }
+
+    //         return (
+    //             <PastOrdersCard
+    //             restaurantName={item.restaurant_name}
+    //             restaurantImage={item.restaurant_logo}
+    //             orderId={item.id}
+    //             status={item.status}
+    //             estimatedDeliveryAt={item.estimated_delivery_at}
+    //             items={item.items}
+    //             onReorder={() => handleReorder(item.id)}
+    //             onInvoice={() => handleInvoice(item.id)}
+    //         />
+    //         )
+    //     }, [activeTab, handleReorder, handleInvoice])
 
     return(
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
@@ -207,7 +300,7 @@ export default function OrdersScreen() {
 
             <Animated.FlatList
                 ref={animatedRef}
-                data={activeTab === "active orders" ? activeorders : pastOrders}
+                data={ordersData}
                 renderItem={activeTab === "active orders" ? renderActiveOrders : renderPastOrders}
                 keyExtractor={(item) => item.id}
                 onScroll={scrollHandler}

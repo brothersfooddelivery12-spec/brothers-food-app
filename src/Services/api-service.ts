@@ -377,3 +377,44 @@ export type CartPreviewRequest = {
 export const getCartPreview = (payload: CartPreviewRequest) => {
     return api.post("/cart/preview",payload)
 }
+
+export type OrderStatus =
+    | "PENDING_PAYMENT"
+    | "PLACED"
+    | "CONFIRMED"
+    | "PREPARING"
+    | "OUT_FOR_DELIVERY"
+    | "DELIVERED"
+    | "CANCELLED"
+
+export interface OrderListItem {
+    id: string
+    status: OrderStatus
+    restaurant_name: string
+    restaurant_logo: string | null
+
+    items: {
+        name: string
+        quantity: number
+    }[]
+
+    estimated_delivery_at: string | null
+}
+
+export type OrderListStatus = "ACTIVE" | "PAST"
+
+export interface GetUserOrdersParams {
+    status: OrderListStatus
+    offset?: number
+    limit?: number
+}
+
+export const getUserOrders = ({ status, offset = 0, limit = 20 }: GetUserOrdersParams) => {
+    return api.get("/order/me", {
+        params: {
+            status,
+            offset,
+            limit
+        }
+    })
+}

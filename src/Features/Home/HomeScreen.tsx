@@ -37,6 +37,20 @@ export default function HomeScreen() {
     const { height: screenHeight } = useWindowDimensions()
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
+
+    // const checkAccessToken = async () => {
+    //     const token =
+    //         await tokenStorage.getAccessToken()
+
+    //     console.log("Token:", token)
+    // }
+
+    // checkAccessToken()
+
+    // const userId = useAuthStore(
+    //     state => state.user?.id
+    // )
+    // console.log("User ID:", userId)
     
     const [headerHeight, setHeaderHeight] = useState(0)
     const [showBackToTop, setShowBackToTop] = useState(false)
