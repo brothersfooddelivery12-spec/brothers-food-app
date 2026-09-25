@@ -87,7 +87,7 @@ export default function AddMoneyScreen(){
 
                 setProcessingUpiApp(null)
 
-                showToast("Payment successful", "success")
+                showToast("Money added to wallet", "success")
 
                 router.back()
 

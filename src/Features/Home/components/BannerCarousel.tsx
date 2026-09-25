@@ -1,8 +1,8 @@
-import { Advertisement } from "@/Features/Services/api-service"
+import { Advertisement } from "@/Services/api-service"
 import { Image } from "expo-image"
 import LottieView from "lottie-react-native"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, TouchableOpacity, useWindowDimensions, View } from "react-native"
+import { Linking, NativeScrollEvent, NativeSyntheticEvent, ScrollView, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 interface Banner {
@@ -229,15 +229,27 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
         ]
     )
 
-    const handleBannerPress = useCallback((banner: Banner) => {
-        if (!banner.navigateUrl) {
+    const handleBannerPress = useCallback(async (banner: Banner) => {
+        const navigateUrl = banner.navigateUrl?.trim()
+
+        if (!navigateUrl) {
             return
         }
 
-        console.log("Navigate URL:", banner.navigateUrl)
+        console.log("Navigate URL:", navigateUrl)
 
-        // Add navigation here
-
+        try {
+            // External link
+            if (
+                navigateUrl.startsWith("http://") ||
+                navigateUrl.startsWith("https://")
+            ) {
+                await Linking.openURL(navigateUrl)
+                return
+            }
+        } catch (error) {
+            console.log("Banner navigation error:", error)
+        }
     },[])
 
     if (loading) {

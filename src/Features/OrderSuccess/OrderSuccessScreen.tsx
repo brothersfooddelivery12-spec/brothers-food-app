@@ -255,7 +255,10 @@ export default function OrderSuccessScreen() {
                             className="text-[#1F1F1F]/85 font-semibold"
                             style={{ fontSize: moderateScale(14) }}
                         >
-                            Paid via {paymentMethod || "UPI"}
+                            {paymentMethod === "cod"
+                                ? "Cash on Delivery"
+                                : `Paid via ${paymentMethod || "UPI"}`
+                            }
                         </Text>
 
                         <Text

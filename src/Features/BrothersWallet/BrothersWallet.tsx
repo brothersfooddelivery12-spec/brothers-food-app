@@ -10,53 +10,14 @@ import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getMyWallet, Wallet } from '../../Services/wallet-service'
+import { getMyWallet, getMyWalletTransactions, Wallet, WalletTransaction } from '../../Services/wallet-service'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { TransactionItem, WalletTransaction } from './Components/TransactionItem'
-
-const WALLET_TRANSACTIONS: WalletTransaction[] = [
-    {
-        id: "1",
-        title: "Burger Point",
-        description: "Food Order • Today, 2:30 PM",
-        amount: 710,
-        type: "debit",
-        status: "completed",
-        category: "order"
-    },
-    {
-        id: "2",
-        title: "Order Cashback",
-        description: "Promotion • Yesterday",
-        amount: 100,
-        type: "credit",
-        status: "completed",
-        category: "cashback"
-    },
-    {
-        id: "3",
-        title: "Wallet Recharge",
-        description: "Bank Transfer • 2 days ago",
-        amount: 500,
-        type: "credit",
-        status: "completed",
-        category: "recharge"
-    },
-    {
-        id: "4",
-        title: "Refund: Pizza Hut",
-        description: "Order Cancellation • 3 days ago",
-        amount: 320,
-        type: "credit",
-        status: "processing",
-        category: "refund"
-    }
-]
+import { TransactionHistory, TransactionHistoryItem } from './Components/TransactionHistoryItem'
 
 const WALLET_ACTIONS = [
     {
@@ -158,6 +119,117 @@ export default function BrothersWalletScreen(){
 
     const displayWalletId = formatWalletId(wallet?.wallet_id)
 
+    const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([])
+    
+    const [loadingTransactions, setLoadingTransactions] =
+        useState(false)
+
+    const fetchWalletTransactions = useCallback(async (walletId: string) => {
+        if (!walletId) {
+            return
+        }
+
+        try {
+            setLoadingTransactions(true)
+
+            const res = await getMyWalletTransactions({wallet_id: walletId})
+
+            console.log("Wallet transactions response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch wallet transactions", "warning")
+
+                return
+            }
+
+            setWalletTransactions(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Wallet transactions error:", error?.response?.data ?? error)
+
+            showToast(error?.response?.data?.message || error?.message || "Unable to fetch wallet transactions", "warning")
+        } finally {
+            setLoadingTransactions(false)
+        }
+    },[])
+
+    useEffect(() => {
+        if (!wallet?.wallet_id) {
+            return
+        }
+
+        fetchWalletTransactions(wallet.wallet_id)
+    }, [wallet?.wallet_id, fetchWalletTransactions])
+
+    const mapWalletTransaction = (transaction: WalletTransaction): TransactionHistory => {
+        switch (transaction.transaction_type) {
+            case "ADD_MONEY":
+                return {
+                    id: transaction.id,
+                    title: "Money Added",
+                    description: transaction.description,
+                    createdAt: transaction.created_at,
+                    amount: Number(transaction.amount),
+                    type: "credit",
+                    status: "completed",
+                    category: "addMoney"
+                }
+
+            case "ORDER_PAYMENT":
+                return {
+                    id: transaction.id,
+                    title: "Order Payment",
+                    description: transaction.description,
+                    createdAt: transaction.created_at,
+                    amount: Number(transaction.amount),
+                    type: "debit",
+                    status: "completed",
+                    category: "order"
+                }
+
+            case "REFUND":
+                return {
+                    id: transaction.id,
+                    title: "Refund Received",
+                    description: transaction.description,
+                    createdAt: transaction.created_at,
+                    amount: Number(transaction.amount),
+                    type: "credit",
+                    status: "refunded",
+                    category: "refund"
+                }
+
+            case "CASHBACK":
+                return {
+                    id: transaction.id,
+                    title: "Cashback Received",
+                    description: transaction.description,
+                    createdAt: transaction.created_at,
+                    amount: Number(transaction.amount),
+                    type: "credit",
+                    status: "completed",
+                    category: "cashback"
+                }
+
+            default:
+                return {
+                    id: transaction.id,
+                    title: "Wallet Transaction",
+                    description: transaction.description,
+                    createdAt: transaction.created_at,
+                    amount: Number(transaction.amount),
+                    type: "debit",
+                    status: "completed",
+                    category: "addMoney"
+                }
+        }
+    }
+
+    const transactions = useMemo(() => {
+        return walletTransactions.map(
+            mapWalletTransaction
+        )
+    }, [walletTransactions])
+
     const currentPoints = 2450
     const currentTierPoints = 2000
     const nextTierPoints = 3000
@@ -175,22 +247,49 @@ export default function BrothersWalletScreen(){
     )
 
     const handleTransactionPress = useCallback(
-        (transaction: WalletTransaction) => {
+        (transaction: TransactionHistory) => {
             console.log("Transaction:", transaction)
         },
         []
     )
 
     const renderTransaction = useCallback(
-        ({ item }: { item: WalletTransaction }) => {
+        ({ item }: { item: TransactionHistory }) => {
             return (
-                <TransactionItem
+                <TransactionHistoryItem
                     item={item}
                     onPress={handleTransactionPress}
                 />
             )
-        },[handleTransactionPress]
+        },
+        [handleTransactionPress]
     )
+
+    const filteredTransactions = useMemo(() => {
+        switch (selectedCategory) {
+            case "2":
+                return transactions.filter(
+                    transaction =>
+                        transaction.category === "order"
+                )
+
+            case "3":
+                return transactions.filter(
+                    transaction =>
+                        transaction.category === "refund"
+                )
+
+            case "4":
+                return transactions.filter(
+                    transaction =>
+                        transaction.category === "cashback"
+                )
+
+            case "1":
+            default:
+                return transactions
+        }
+    }, [transactions, selectedCategory])
 
     return(
         <SafeAreaView className="flex-1 bg-[#F5F5F5]">
@@ -239,9 +338,9 @@ export default function BrothersWalletScreen(){
             </View>
 
             <FlatList
-                data={WALLET_TRANSACTIONS}
+                data={filteredTransactions}
                 renderItem={renderTransaction}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 nestedScrollEnabled
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"
@@ -251,6 +350,71 @@ export default function BrothersWalletScreen(){
                     paddingBottom: verticalScale(25),
                     gap: verticalScale(8)
                 }}
+                ListEmptyComponent={
+                    loadingTransactions ? (
+                        <View
+                            className="flex-1 items-center justify-center"
+                            style={{
+                                minHeight: verticalScale(250)
+                            }}
+                        >
+                            <LottieView
+                                source={require(
+                                    "../../../assets/animations/Food_Loading2.json"
+                                )}
+                                autoPlay
+                                loop
+                                style={{
+                                    width: moderateScale(125),
+                                    height: moderateScale(125)
+                                }}
+                            />
+                        </View>
+                    ) : (
+                        <View
+                            className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                            style={{
+                                marginTop: verticalScale(10),
+                                paddingHorizontal: scale(20),
+                                paddingVertical: verticalScale(22),
+                                borderRadius: moderateScale(20)
+                            }}
+                        >
+                            <View
+                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                style={{
+                                    width: moderateScale(44),
+                                    height: moderateScale(44)
+                                }}
+                            >
+                                <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                            </View>
+
+                            <Text
+                                className="text-[#1F1F1F] font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    marginTop: verticalScale(8)
+                                }}
+                            >
+                                No Transactions Found
+                            </Text>
+
+                            <Text
+                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    marginTop: verticalScale(3)
+                                }}
+                            >
+                                {selectedCategory === "1"
+                                    ? "Your wallet transactions will appear here."
+                                    : "No transactions found in this category."
+                                }
+                            </Text>
+                        </View>
+                    )
+                }
                 ListHeaderComponent={
                     <>
                         <View

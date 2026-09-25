@@ -327,41 +327,53 @@ export default function TransactionHistoryScreen(){
         const hasAnyTransactions = transactions.length > 0
 
         return (
-            <View className="flex-1 items-center justify-center px-8">
+            <View
+                className="flex-1 items-center justify-center"
+                style={{ paddingVertical: verticalScale(20)}}
+            >
                 <View
-                    className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                    className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
                     style={{
-                        width: moderateScale(62),
-                        height: moderateScale(62)
+                        paddingHorizontal: scale(20),
+                        paddingVertical: verticalScale(24),
+                        borderRadius: moderateScale(20)
                     }}
                 >
-                    <TransactionHistoryIcon width={moderateScale(30)} height={moderateScale(30)} color="#3F2516" strokeWidth={1.5} />
+                    <View
+                        className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                        style={{
+                            width: moderateScale(52),
+                            height: moderateScale(52)
+                        }}
+                    >
+                        <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                    </View>
+
+                    <Text
+                        className="text-[#1F1F1F] font-bold text-center"
+                        style={{
+                            fontSize: moderateScale(15),
+                            marginTop: verticalScale(12)
+                        }}
+                    >
+                        {hasAnyTransactions ? "No Transactions Found" : "No Transactions Yet"}
+                    </Text>
+
+                    <Text
+                        className="text-[#1F1F1F]/65 font-medium text-center"
+                        style={{
+                            fontSize: moderateScale(11),
+                            lineHeight: moderateScale(15),
+                            marginTop: verticalScale(4)
+                        }}
+                    >
+                        {hasAnyTransactions
+                            ? `No wallet transactions were found between ${formatDate(
+                                startDate
+                            )} and ${formatDate(endDate)}.`
+                            : "Your wallet transactions will appear here once you add money or make a payment."}
+                    </Text>
                 </View>
-
-                <Text
-                    className="text-[#1F1F1F] font-bold text-center"
-                    style={{
-                        fontSize: moderateScale(16),
-                        marginTop: verticalScale(12)
-                    }}
-                >
-                    {hasAnyTransactions ? "No Transactions Found" : "No Transactions Yet"}
-                </Text>
-
-                <Text
-                    className="text-[#1F1F1F]/65 font-medium text-center"
-                    style={{
-                        fontSize: moderateScale(11),
-                        lineHeight: moderateScale(15),
-                        marginTop: verticalScale(4)
-                    }}
-                >
-                    {hasAnyTransactions
-                        ? `No wallet transactions were found between ${formatDate(
-                            startDate
-                        )} and ${formatDate(endDate)}.`
-                        : "Your wallet transactions will appear here once you add money or make a payment."}
-                </Text>
             </View>
         )
     }, [transactions.length, startDate, endDate])
@@ -426,6 +438,9 @@ export default function TransactionHistoryScreen(){
                 </View>
             ) : (
                 <SectionList
+                    style={{
+                        flex: 1
+                    }}
                     sections={transactionSections}
                     renderItem={renderTransaction}
                     renderSectionHeader={renderSectionHeader}

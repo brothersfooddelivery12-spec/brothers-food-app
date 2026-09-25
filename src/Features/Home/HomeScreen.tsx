@@ -641,7 +641,7 @@ export default function HomeScreen() {
         }
     },[])
 
-    const [loadingHome, setLoadingHome] = useState(false)
+    const [loadingHome, setLoadingHome] = useState(true)
 
     const fetchHomeData = useCallback(
         async (latitude: number, longitude: number) => {

@@ -780,7 +780,13 @@ export default function CheckoutScreen() {
                 router.replace({
                     pathname: "/order-success",
                     params: {
-                        orderId
+                        orderId: orderId,
+                        restaurantName: selectedCart?.restaurantName ?? "",
+                        restaurantId: selectedCart?.id ?? "",
+                        totalAmount: grandTotal.toString(),
+                        deliveryTime: averagePreparationTime.toString(),
+                        paymentMethod: selectedPayment,
+                        items: JSON.stringify(selectedCart?.items ?? [])
                     }
                 })
 
@@ -805,7 +811,13 @@ export default function CheckoutScreen() {
                 router.replace({
                     pathname: "/order-success",
                     params: {
-                        orderId
+                        orderId: orderId,
+                        restaurantName: selectedCart?.restaurantName ?? "",
+                        restaurantId: selectedCart?.id ?? "",
+                        totalAmount: grandTotal.toString(),
+                        deliveryTime: averagePreparationTime.toString(),
+                        paymentMethod: selectedPayment,
+                        items: JSON.stringify(selectedCart?.items ?? [])
                     }
                 })
 
@@ -1774,40 +1786,40 @@ export default function CheckoutScreen() {
                                             height: moderateScale(40)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5} />
+                                        <CouponIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5}/>
                                     </View>
-        
+
                                     <View className="items-start gap-1 flex-1">
                                         <Text
                                             className="text-[#1F1F1F] font-bold"
                                             style={{ fontSize: moderateScale(14) }}
                                         >
-                                            SAVE50 Applied!
+                                            Apply Coupon
                                         </Text>
-        
+
                                         <Text
                                             className="text-[#1F1F1F]/65 font-medium"
                                             style={{ fontSize: moderateScale(11) }}
                                         >
-                                            You saved ₹100 on this order
+                                            Save more on your order with available offers
                                         </Text>
                                     </View>
-        
+
                                     <TouchableOpacity
                                         activeOpacity={0.95}
                                         onPress={() => {}}
                                         className="items-center justify-center bg-[#3F2516]"
                                         style={{
-                                            paddingHorizontal: moderateScale(10),
-                                            paddingVertical: moderateScale(6),
+                                            paddingHorizontal: moderateScale(16),
+                                            paddingVertical: moderateScale(7),
                                             borderRadius: moderateScale(18)
                                         }}
                                     >
                                         <Text
-                                            className="font-medium text-white"
+                                            className="font-semibold text-white"
                                             style={{ fontSize: moderateScale(12) }}
                                         >
-                                            Change
+                                            Apply
                                         </Text>
                                     </TouchableOpacity>
                                 </View>

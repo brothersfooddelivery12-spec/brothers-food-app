@@ -1,8 +1,11 @@
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
+import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
+import MoneyIcon from '@/assets/icon/MoneyIcon.svg'
 import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
+import { OrderStatusType } from '@/Services/api-service'
 import { formatOrderId } from '@/utils/formatOrderID'
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
@@ -18,22 +21,91 @@ type PastOrderCardProps = {
     restaurantName: string
     restaurantImage?: string | null
     orderId: string
-
-    status: 
-        | "PENDING_PAYMENT"
-        | "PLACED"
-        | "CONFIRMED"
-        | "PREPARING"
-        | "OUT_FOR_DELIVERY"
-        | "DELIVERED"
-        | "CANCELLED"
-
+    status: OrderStatusType
     estimatedDeliveryAt?: string | null
-
     items: PastOrderItem[]
 
+    onPayNow?: () => void
+    onCancelOrder?: () => void
     onReorder?: () => void
     onInvoice?: () => void
+}
+
+export const getOrderStatusLabel = (status: OrderStatusType) => {
+    switch (status) {
+        case "PENDING_PAYMENT":
+            return "Payment Pending"
+
+        case "PENDING":
+            return "Pending"
+
+        case "CONFIRMED":
+            return "Confirmed"
+
+        case "PREPARING":
+            return "Preparing"
+
+        case "READY_FOR_PICKUP":
+            return "Ready for Pickup"
+
+        case "RIDER_ASSIGNED":
+            return "Rider Assigned"
+
+        case "PICKED_UP":
+            return "Picked Up"
+
+        case "OUT_FOR_DELIVERY":
+            return "Out for Delivery"
+
+        case "DELIVERED":
+            return "Delivered"
+
+        case "CANCELLED_BY_CUSTOMER":
+            return "Cancelled by You"
+
+        case "CANCELLED_BY_RESTAURANT":
+            return "Cancelled by Restaurant"
+
+        case "REJECTED_BY_RESTAURANT":
+            return "Rejected by Restaurant"
+
+        case "CANCELLED_TIMEOUT":
+            return "Cancelled"
+
+        default:
+            return "Order"
+    }
+}
+
+const formatOrderDateTime = (dateString?: string | null) => {
+    if (!dateString) {
+        return null
+    }
+
+    const date = new Date(dateString)
+
+    const formattedDate = date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    )
+
+    const formattedTime = date.toLocaleTimeString(
+        "en-IN",
+        {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+        }
+    )
+
+    return {
+        date: formattedDate,
+        time: formattedTime
+    }
 }
 
 const PastOrdersCard = ({
@@ -43,14 +115,48 @@ const PastOrdersCard = ({
     status,
     estimatedDeliveryAt,
     items,
+    onPayNow,
+    onCancelOrder,
     onReorder,
     onInvoice
 }: PastOrderCardProps) => {
     const isDelivered = status === "DELIVERED"
 
-    const statusLabel = isDelivered
-        ? "Delivered"
-        : "Cancelled"
+    const isCancelled =
+        status === "CANCELLED_BY_CUSTOMER" ||
+        status === "CANCELLED_BY_RESTAURANT" ||
+        status === "REJECTED_BY_RESTAURANT" ||
+        status === "CANCELLED_TIMEOUT"
+
+    const isPendingPayment = status === "PENDING_PAYMENT"
+
+    const statusBadgeStyle = (() => {
+        if (isDelivered) {
+            return {
+                backgroundColor: "#E3F2E8",
+                color: "#20BB59"
+            }
+        }
+
+        if (isCancelled) {
+            return {
+                backgroundColor: "#FEE2E2",
+                color: "#DC2626"
+            }
+        }
+
+        if (isPendingPayment) {
+            return {
+                backgroundColor: "#FFF4D6",
+                color: "#C47B00"
+            }
+        }
+
+        return {
+            backgroundColor: "#E8B93F20",
+            color: "#3F2516"
+        }
+    })()
 
     const [imageError, setImageError] = useState(false)
     
@@ -62,48 +168,113 @@ const PastOrdersCard = ({
 
     const hasImage = !!restaurantImage && !imageError
 
-    const formatOrderDateTime = (dateString?: string | null) => {
-        if (!dateString) {
-            return null
-        }
-
-        const date = new Date(dateString)
-
-        const formattedDate = date.toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        )
-
-        const formattedTime = date.toLocaleTimeString(
-            "en-IN",
-            {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-            }
-        )
-
-        return {
-            date: formattedDate,
-            time: formattedTime
-        }
-    }
-
     const estimatedDelivery = formatOrderDateTime(estimatedDeliveryAt)
+
+    const statusMessage = (() => {switch (status) {
+        case "PENDING_PAYMENT":
+            return {
+                label: "Payment pending",
+                value: "Pay to confirm your order."
+            }
+
+        case "PENDING":
+            return {
+                label: "Order pending",
+                value: "Waiting for confirmation."
+            }
+
+        case "CONFIRMED":
+            return {
+                label: "Order confirmed",
+                value: estimatedDelivery
+                    ? `${estimatedDelivery.date} at ${estimatedDelivery.time}`
+                    : "Your order has been confirmed."
+            }
+
+        case "PREPARING":
+            return {
+                label: "Preparing order",
+                value: estimatedDelivery
+                    ? `${estimatedDelivery.date} at ${estimatedDelivery.time}`
+                    : "Your order is being prepared."
+            }
+
+        case "READY_FOR_PICKUP":
+            return {
+                label: "Ready for pickup",
+                value: "Waiting for a rider."
+            }
+
+        case "RIDER_ASSIGNED":
+            return {
+                label: "Rider assigned",
+                value: estimatedDelivery
+                    ? `${estimatedDelivery.date} at ${estimatedDelivery.time}`
+                    : "A rider has been assigned."
+            }
+
+        case "PICKED_UP":
+            return {
+                label: "Order picked up",
+                value: estimatedDelivery
+                    ? `${estimatedDelivery.date} at ${estimatedDelivery.time}`
+                    : "Your order is on the way."
+            }
+
+        case "OUT_FOR_DELIVERY":
+            return {
+                label: "Out for delivery",
+                value: estimatedDelivery
+                    ? `${estimatedDelivery.date} at ${estimatedDelivery.time}`
+                    : "Your order is on the way."
+            }
+
+        case "DELIVERED":
+            return {
+                label: "Order delivered",
+                value: "Delivered successfully."
+            }
+
+        case "CANCELLED_BY_CUSTOMER":
+            return {
+                label: "Order cancelled",
+                value: "Cancelled by you."
+            }
+
+        case "CANCELLED_BY_RESTAURANT":
+            return {
+                label: "Order cancelled",
+                value: "Cancelled by restaurant."
+            }
+
+        case "REJECTED_BY_RESTAURANT":
+            return {
+                label: "Order rejected",
+                value: "Restaurant couldn't accept it."
+            }
+
+        case "CANCELLED_TIMEOUT":
+            return {
+                label: "Order cancelled",
+                value: "Order confirmation timed out."
+            }
+
+        default:
+            return {
+                label: "Order update",
+                value: "Check the latest order status."
+            }
+    }})()
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 p-3"
+            className="bg-white border border-[#1F1F1F]/10 p-4"
             style={{
-                borderRadius: moderateScale(18),
+                borderRadius: moderateScale(20),
                 marginTop: verticalScale(14)
             }}
         >
-            <View className="flex-row gap-3">
+            <View className="flex-row">
                 <View
                     className="items-center justify-center overflow-hidden"
                     style={{
@@ -130,7 +301,7 @@ const PastOrdersCard = ({
                     />
                 </View>
 
-                <View className="justify-center gap-1 flex-1">
+                <View className="justify-center gap-1 flex-1 ml-2">
                     <Text
                         numberOfLines={2}
                         className="text-[#1F1F1F] font-extrabold"
@@ -152,63 +323,74 @@ const PastOrdersCard = ({
                     <View
                         className="flex-row items-center justify-center bg-[#E3F2E8]"
                         style={{
-                            gap: moderateScale(5),
+                            gap: moderateScale(3),
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
-                            backgroundColor: isDelivered ? "#E3F2E8" : "#FEE2E2"
+                            backgroundColor: statusBadgeStyle.backgroundColor
                         }}
                     >
                         {isDelivered ? (
-                            <SuccessIcon width={moderateScale(16)} height={moderateScale(16)} color="#20bb59" strokeWidth={1.5} />
-                        ) : (
-                            <CancelCircleIcon width={moderateScale(16)} height={moderateScale(16)} color="#DC2626" strokeWidth={1.5} />
-                        )}
+                            <SuccessIcon
+                                width={moderateScale(16)}
+                                height={moderateScale(16)}
+                                color={statusBadgeStyle.color}
+                                strokeWidth={1.5}
+                            />
+                        ) : isCancelled ? (
+                            <CancelCircleIcon
+                                width={moderateScale(16)}
+                                height={moderateScale(16)}
+                                color={statusBadgeStyle.color}
+                                strokeWidth={1.5}
+                            />
+                        ) : isPendingPayment ? (
+                            <ClockIcon
+                                width={moderateScale(16)}
+                                height={moderateScale(16)}
+                                color={statusBadgeStyle.color}
+                                strokeWidth={1.5}
+                            />
+                        ) : null}
 
                         <Text
                             className="font-medium"
                             style={{
                                 fontSize: moderateScale(10),
-                                color: isDelivered ? "#20bb59" : "#DC2626"
+                                color: statusBadgeStyle.color
                             }}
                         >
-                            {statusLabel}
+                            {getOrderStatusLabel(status)}
                         </Text>
                     </View>
                 </View>
             </View>
 
-            {estimatedDelivery && (
-                <View
-                    className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
-                    style={{
-                        borderRadius: moderateScale(14),
-                        marginTop: verticalScale(12),
-                        marginHorizontal: scale(4)
-                    }}
+            <View
+                className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
+                style={{
+                    borderRadius: moderateScale(12),
+                    marginTop: verticalScale(12),
+                    marginHorizontal: scale(4)
+                }}
+            >
+                <Text
+                    numberOfLines={2}
+                    className="text-[#1F1F1F]/75 font-medium"
+                    style={{ fontSize: moderateScale(11) }}
                 >
+                    {statusMessage.label}
+
+                    {" • "}
+
                     <Text
-                        numberOfLines={2}
-                        className="text-[#1F1F1F]/75 font-medium"
-                        style={{ fontSize: moderateScale(11)}}
+                        className="text-[#1F1F1F] font-semibold"
+                        style={{ fontSize: moderateScale(11) }}
                     >
-                        {isDelivered
-                            ? "Estimated delivery"
-                            : "Estimated delivery was"}
-
-                        {" • "}
-
-                        <Text
-                            className="text-[#1F1F1F] font-semibold"
-                            style={{ fontSize: moderateScale(11) }}
-                        >
-                            {estimatedDelivery.date}
-                            {" at "}
-                            {estimatedDelivery.time}
-                        </Text>
+                        {statusMessage.value}
                     </Text>
-                </View>
-            )}
+                </Text>
+            </View>
 
             <View
                 className="items-start bg-[#F5F5F5] py-4 px-5"
@@ -241,24 +423,28 @@ const PastOrdersCard = ({
                 ))}
             </View>
 
-            <View className="flex-row items-center justify-center gap-8 mt-5">
+            <View className="flex-row items-center justify-center gap-6 mt-5">
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={onReorder}
-                    className="flex-row gap-2 items-center justify-center bg-[#3F2516]"
+                    onPress={isPendingPayment ? onPayNow : onReorder}
+                    className="flex-row items-center justify-center bg-[#3F2516]"
                     style={{
-                        paddingHorizontal: scale(14),
+                        paddingHorizontal: scale(12),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    <ReorderIcon width={moderateScale(20)} height={moderateScale(20)} color="#FFFFFF" strokeWidth={1.8} />
+                    {isPendingPayment ? (
+                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                    ) : (
+                        <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                    )}
 
                     <Text
-                        className="text-[#FFFFFF] font-semibold"
+                        className="text-[#FFFFFF] font-medium ml-2 mr-1"
                         style={{ fontSize: moderateScale(13) }}
                     >
-                        Reorder
+                        {isPendingPayment ? "Pay now" : "Reorder"}
                     </Text>
 
                     <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
@@ -266,24 +452,40 @@ const PastOrdersCard = ({
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={onInvoice}
-                    className="flex-row gap-2 items-center justify-center bg-[#E5E4E2]/75"
+                    onPress={isPendingPayment ? onCancelOrder : onInvoice}
+                    className={`flex-row items-center justify-center ${
+                        isPendingPayment
+                            ? "bg-[#FEE2E2]/85"
+                            : "bg-[#E5E4E2]/75"
+                    }`}
                     style={{
-                        paddingHorizontal: scale(14),
+                        paddingHorizontal: scale(12),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    <InvoiceIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.8} />
+                    {isPendingPayment ? (
+                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220, 38, 38, 0.80)" strokeWidth={1.8} />
+                    ) : (
+                        <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
+                    )}
 
                     <Text
-                        className="text-[#3F2516] font-semibold"
-                        style={{ fontSize: moderateScale(13) }}
+                        className="font-medium ml-2 mr-1"
+                        style={{
+                            fontSize: moderateScale(13),
+                            color: isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
+                        }}
                     >
-                        Invoice
+                        {isPendingPayment ? "Cancel Order" : "Invoice"}
                     </Text>
 
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
+                    <ArrowRight
+                        width={moderateScale(16)}
+                        height={moderateScale(16)}
+                        color={isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
+                        strokeWidth={2}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

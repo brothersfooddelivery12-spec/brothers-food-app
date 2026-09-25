@@ -260,10 +260,7 @@ export interface RestaurantDetails {
     is_active: boolean
     accepts_cod: boolean
 
-    approval_status:
-        | "APPROVED"
-        | "PENDING"
-        | "REJECTED"
+    approval_status: "APPROVED" | "PENDING" | "REJECTED"
 
     created_at: string
     updated_at: string
@@ -378,18 +375,24 @@ export const getCartPreview = (payload: CartPreviewRequest) => {
     return api.post("/cart/preview",payload)
 }
 
-export type OrderStatus =
+export type OrderStatusType =
     | "PENDING_PAYMENT"
-    | "PLACED"
+    | "PENDING"
     | "CONFIRMED"
     | "PREPARING"
+    | "READY_FOR_PICKUP"
+    | "RIDER_ASSIGNED"
+    | "PICKED_UP"
     | "OUT_FOR_DELIVERY"
     | "DELIVERED"
-    | "CANCELLED"
+    | "CANCELLED_BY_CUSTOMER"
+    | "CANCELLED_BY_RESTAURANT"
+    | "REJECTED_BY_RESTAURANT"
+    | "CANCELLED_TIMEOUT"
 
 export interface OrderListItem {
     id: string
-    status: OrderStatus
+    status: OrderStatusType
     restaurant_name: string
     restaurant_logo: string | null
 

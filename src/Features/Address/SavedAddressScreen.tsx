@@ -717,7 +717,7 @@ export default function SavedAddressScreen(){
                                         <View
                                             className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
                                             style={{
-                                                marginTop: verticalScale(10),
+                                                marginTop: verticalScale(15),
                                                 paddingHorizontal: scale(20),
                                                 paddingVertical: verticalScale(20),
                                                 borderRadius: moderateScale(20)

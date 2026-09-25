@@ -1,4 +1,4 @@
-import FilterIcon from '@/assets/icon/FIlterIcon.svg'
+import HeartFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
 import SearchBar from "@/components/SearchBar"
 import { FavoriteMenuItemResponse, FavoriteRestaurantResponse, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
@@ -140,27 +140,45 @@ export default function FavouritesScreen() {
         }
     }
 
+    const [loadingFavourites, setLoadingFavourites] = useState(false)
+
     useFocusEffect(
         useCallback(() => {
             if (!location) {
                 return
             }
 
-            const fetchFavourites = async () => {
-                await Promise.allSettled([
-                    fetchFavoriteRestaurants(
-                        25.149131,
-                        73.083126
-                    ),
+            let isMounted = true
 
-                    fetchFavoriteMenuItems(
-                        25.149131,
-                        73.083126
-                    )
-                ])
+            const fetchFavourites = async () => {
+                try {
+                    if (isMounted) {
+                        setLoadingFavourites(true)
+                    }
+
+                    await Promise.allSettled([
+                        fetchFavoriteRestaurants(
+                            25.149131,
+                            73.083126
+                        ),
+
+                        fetchFavoriteMenuItems(
+                            25.149131,
+                            73.083126
+                        )
+                    ])
+                } finally {
+                    if (isMounted) {
+                        setLoadingFavourites(false)
+                    }
+                }
             }
 
             fetchFavourites()
+
+            return () => {
+                isMounted = false
+            }
         }, [
             location,
             fetchFavoriteRestaurants,
@@ -168,7 +186,7 @@ export default function FavouritesScreen() {
         ])
     )
 
-    const {restaurantIds, addRestaurant, removeRestaurant} = useFavouriteStore()
+    const {addRestaurant, removeRestaurant} = useFavouriteStore()
 
     const handleFavRestaurantPress = useCallback(async (id: string) => {
         const removedItem = favRestaurants.find(item => item.id === id)
@@ -240,7 +258,7 @@ export default function FavouritesScreen() {
 
     const addToCart = useCartStore((state) => state.addToCart)
 
-    const {menuItemIds, addMenuItem, removeMenuItem} = useFavouriteStore() 
+    const {addMenuItem, removeMenuItem} = useFavouriteStore() 
     
     const handleMenuFavouritePress = useCallback(async (id: string) => {
         const removedItem = favFoods.find(item => item.id === id)
@@ -443,12 +461,6 @@ export default function FavouritesScreen() {
         handleMenuFavouritePress
     ])
 
-    const isLoading = activeTab === "restaurants"
-        ? loadingFavRestaurants
-        : loadingFavFoods
-
-    const showInitialLoading = isLoading && favouriteData.length === 0
-
     const savedCount = activeTab === "restaurants"
         ? favRestaurants.length
         : favFoods.length
@@ -520,142 +532,173 @@ export default function FavouritesScreen() {
                     <SearchBar
                         value={search}
                         onChangeText={setsearch}
-                        placeholder="Search favourites"
-                        RightIcon={FilterIcon}
-                        rightIconColor="#1F1F1F"
-                        onRightPress={() => {}}
+                        placeholder="Search favourites..."
                     />
                 </View>
             </Animated.View>
 
-            <Animated.FlatList
-                ref={animatedRef}
-                key={activeTab}
-                onScroll={scrollHandler}
-                scrollEventThrottle={16}
-                data={favouriteData}
-                numColumns={activeTab === "restaurants" ? 1 : 2}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderFavouriteItem}
-                columnWrapperStyle={activeTab === "food" ? { gap } : undefined}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="none"
-                contentContainerStyle={{
-                    paddingHorizontal: scale(14),
-                    paddingTop: titleHeight + searchBarHeight,
-                    paddingBottom: verticalScale(88),
-                    flexGrow: favouriteData.length === 0 ? 1 : undefined
-                }}
-                ListEmptyComponent={
-                    showInitialLoading ? (
-                        <View className="flex-1 items-center justify-center">
-                            <LottieView
-                                source={require(
-                                    "../../../assets/animations/Food_Loading2.json"
-                                )}
-                                autoPlay
-                                loop
-                                style={{
-                                    width: moderateScale(125),
-                                    height: moderateScale(125)
-                                }}
-                            />
-                        </View>
-                    ) : (
+            {loadingFavourites ? (
+                <View className="flex-1 items-center justify-center">
+                    <LottieView
+                        source={require(
+                            "../../../assets/animations/Food_Loading2.json"
+                        )}
+                        autoPlay
+                        loop
+                        style={{
+                            width: moderateScale(125),
+                            height: moderateScale(125)
+                        }}
+                    />
+                </View>
+            ) : (
+                <Animated.FlatList
+                    ref={animatedRef}
+                    key={activeTab}
+                    onScroll={scrollHandler}
+                    scrollEventThrottle={16}
+                    data={favouriteData}
+                    numColumns={activeTab === "restaurants" ? 1 : 2}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderFavouriteItem}
+                    columnWrapperStyle={activeTab === "food" ? { gap } : undefined}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="none"
+                    contentContainerStyle={{
+                        paddingHorizontal: scale(14),
+                        paddingTop: titleHeight + searchBarHeight,
+                        paddingBottom: verticalScale(88),
+                        flexGrow: favouriteData.length === 0 ? 1 : undefined
+                    }}
+                    ListEmptyComponent={
                         <View
-                            className="items-center justify-center flex-1"
-                            style={{ minHeight: verticalScale(300) }}
+                            className="flex-1 w-full items-center justify-center"
+                            style={{ paddingVertical: verticalScale(20) }}
                         >
-                            <Text
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{ fontSize: moderateScale(12) }}
-                            >
-                                {activeTab === "restaurants"
-                                    ? "No favourite restaurants yet"
-                                    : "No favourite foods yet"}
-                            </Text>
-                        </View>
-                    )
-                }
-                ListHeaderComponent={
-                    <View style={{ marginTop: verticalScale(4) }}>
-                        <View
-                            style={{
-                                paddingHorizontal: scale(8),
-                                paddingBottom: verticalScale(12)
-                            }}
-                        >
-                            <FavouriteTabs
-                                activeTab={activeTab}
-                                onChange={setActiveTab}
-                            />
-                        </View>
-                
-                        <View className="flex-row items-center gap-3">
                             <View
-                                className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className=" w-full items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
                                 style={{
-                                    width: cardWidth,
-                                    height: moderateScale(95),
-                                    borderRadius: moderateScale(22)
+                                    paddingHorizontal: scale(20),
+                                    paddingVertical: verticalScale(24),
+                                    borderRadius: moderateScale(20)
                                 }}
                             >
-                                <Text
-                                    className="text-[#1F1F1F] font-medium"
-                                    style={{ fontSize: moderateScale(14) }}
+                                <View
+                                    className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                    style={{
+                                        width: moderateScale(46),
+                                        height: moderateScale(46)
+                                    }}
                                 >
-                                    Saved
+                                    <HeartFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" />
+                                </View>
+
+                                <Text
+                                    className="text-[#1F1F1F] font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        marginTop: verticalScale(8)
+                                    }}
+                                >
+                                    {activeTab === "restaurants"
+                                        ? "No Favourite Restaurants"
+                                        : "No Favourite Foods"}
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(18) }}
+                                    className="text-[#1F1F1F]/75 font-medium text-center"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        marginTop: verticalScale(3)
+                                    }}
                                 >
-                                    {savedCount}
-                                </Text>
-
-                                <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
-                                >
-                                    {activeTab == "food" ? "Foods" : "Restaurants"}
-                                </Text>
-                            </View>
-
-                            <View
-                                className="bg-[#3F2516] py-4 px-5 gap-1 justify-center"
-                                style={{
-                                    width: cardWidth,
-                                    height: moderateScale(95),
-                                    borderRadius: moderateScale(22)
-                                }}
-                            >
-                                <Text
-                                    className="text-[#FFFFFF]/95 font-medium"
-                                    style={{ fontSize: moderateScale(14) }}
-                                >
-                                    Available
-                                </Text>
-
-                                <Text
-                                    className="text-[#FFFFFF] font-bold"
-                                    style={{ fontSize: moderateScale(18) }}
-                                >
-                                    {availableCount}
-                                </Text>
-
-                                <Text
-                                    className="text-[#FFFFFF]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
-                                >
-                                    {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
+                                    {activeTab === "restaurants"
+                                        ? "Restaurants you save will appear here."
+                                        : "Food items you save will appear here."}
                                 </Text>
                             </View>
                         </View>
-                    </View>
-                }
-            />
+                    }
+                    ListHeaderComponent={
+                        <View style={{ marginTop: verticalScale(4) }}>
+                            <View
+                                style={{
+                                    paddingHorizontal: scale(8),
+                                    paddingBottom: verticalScale(12)
+                                }}
+                            >
+                                <FavouriteTabs
+                                    activeTab={activeTab}
+                                    onChange={setActiveTab}
+                                />
+                            </View>
+                    
+                            <View className="flex-row items-center gap-3">
+                                <View
+                                    className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                    style={{
+                                        width: cardWidth,
+                                        height: moderateScale(95),
+                                        borderRadius: moderateScale(22)
+                                    }}
+                                >
+                                    <Text
+                                        className="text-[#1F1F1F] font-medium"
+                                        style={{ fontSize: moderateScale(14) }}
+                                    >
+                                        Saved
+                                    </Text>
+    
+                                    <Text
+                                        className="text-[#1F1F1F] font-bold"
+                                        style={{ fontSize: moderateScale(18) }}
+                                    >
+                                        {savedCount}
+                                    </Text>
+    
+                                    <Text
+                                        className="text-[#1F1F1F]/75 font-medium"
+                                        style={{ fontSize: moderateScale(13) }}
+                                    >
+                                        {activeTab == "food" ? "Foods" : "Restaurants"}
+                                    </Text>
+                                </View>
+    
+                                <View
+                                    className="bg-[#3F2516] py-4 px-5 gap-1 justify-center"
+                                    style={{
+                                        width: cardWidth,
+                                        height: moderateScale(95),
+                                        borderRadius: moderateScale(22)
+                                    }}
+                                >
+                                    <Text
+                                        className="text-[#FFFFFF]/95 font-medium"
+                                        style={{ fontSize: moderateScale(14) }}
+                                    >
+                                        Available
+                                    </Text>
+    
+                                    <Text
+                                        className="text-[#FFFFFF] font-bold"
+                                        style={{ fontSize: moderateScale(18) }}
+                                    >
+                                        {availableCount}
+                                    </Text>
+    
+                                    <Text
+                                        className="text-[#FFFFFF]/75 font-medium"
+                                        style={{ fontSize: moderateScale(13) }}
+                                    >
+                                        {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                    }
+                />
+            )}
         </SafeAreaView>
     )
 }
