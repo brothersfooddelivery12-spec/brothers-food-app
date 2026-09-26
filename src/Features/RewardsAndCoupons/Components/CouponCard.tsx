@@ -74,7 +74,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     className="text-[#1F1F1F] font-black"
                     style={{
                         fontSize: moderateScale(19),
-                        marginTop: verticalScale(14)
+                        marginTop: verticalScale(12)
                     }}
                 >
                     {item.title}
@@ -95,14 +95,11 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     className="bg-[#E8DDD3]/75 mx-2"
                     style={{
                         height: 1,
-                        marginTop: verticalScale(14)
+                        marginVertical: verticalScale(8)
                     }}
                 />
 
-                <View
-                    className="flex-row items-center gap-2"
-                    style={{ marginTop: verticalScale(10) }}
-                >
+                <View className="flex-row items-center gap-2" >
                     <NoteIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}

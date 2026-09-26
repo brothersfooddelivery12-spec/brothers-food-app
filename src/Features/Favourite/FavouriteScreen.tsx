@@ -140,7 +140,7 @@ export default function FavouritesScreen() {
         }
     }
 
-    const [loadingFavourites, setLoadingFavourites] = useState(false)
+    const [loadingFavourites, setLoadingFavourites] = useState(true)
 
     useFocusEffect(
         useCallback(() => {

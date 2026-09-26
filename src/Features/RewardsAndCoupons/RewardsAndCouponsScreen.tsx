@@ -6,10 +6,12 @@ import CircleStarIcon from '@/assets/icon/CircleStarIcon.svg'
 import CompassIcon from '@/assets/icon/CompassIcon.svg'
 import CrownIcon from '@/assets/icon/CrownIcon.svg'
 import DateIcon from '@/assets/icon/DateIcon.svg'
+import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DiamondIcon from '@/assets/icon/DiamondIcon.svg'
 import GiftIcon from '@/assets/icon/GiftFilledIcon.svg'
 import LeafIcon from '@/assets/icon/LeafIcon.svg'
 import ChallengeIcon from '@/assets/icon/MedalFilledIcon.svg'
+import MoneyFilledIcon from '@/assets/icon/MoneyFilledIcon.svg'
 import RefreshIcon from '@/assets/icon/RefundIcon.svg'
 import RobotIcon from '@/assets/icon/RobotIcon.svg'
 import PremiumBadgeIcon from '@/assets/icon/StarBadgeFilledIcon.svg'
@@ -122,19 +124,23 @@ const brothersPlus = {
 const COUPONS_CATEGORIES = [
     {
         id: "1",
-        title: "All"
+        title: "All",
+        icon: null
     },
     {
         id: "2",
-        title: "Food"
+        title: "Food",
+        icon: FoodIcon
     },
     {
         id: "3",
-        title: "Delivery"
+        title: "Delivery",
+        icon: DeliveryIcon
     },
     {
         id: "4",
-        title: "Cashback"
+        title: "Cashback",
+        icon: MoneyFilledIcon
     }
 ]
 
@@ -197,7 +203,7 @@ export type RedeemItem = {
     image: any
 }
 
-const REDEEM_ITEMS: RedeemItem[] = [
+export const REDEEM_ITEMS: RedeemItem[] = [
     {
         id: "1",
         title: "Cashback Voucher",
@@ -697,7 +703,6 @@ export default function RewardsAndCouponsScreen(){
                                         value={search}
                                         onChangeText={setsearch}
                                         placeholder="Search coupon code"
-                                        onRightPress={() => {}}
                                     />
                                 </View>
 
@@ -714,25 +719,27 @@ export default function RewardsAndCouponsScreen(){
                                 >
                                     {COUPONS_CATEGORIES.map((category) => {
                                         const isSelected = selectedCategory === category.id
+                                        const Icon = category.icon
                                 
                                         return (
                                             <TouchableOpacity
                                                 key={category.id}
                                                 activeOpacity={0.85}
-                                                onPress={() => {
-                                                    setSelectedCategory(category.id)
-                                                }}
-                                                className={`items-center justify-center ${
+                                                onPress={() => setSelectedCategory(category.id)}
+                                                className={`flex-row gap-2 items-center justify-center ${
                                                     isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
                                                 }`}
                                                 style={{
                                                     borderRadius: moderateScale(18),
-                                                    paddingHorizontal: scale(16),
+                                                    paddingHorizontal: scale(14),
                                                     paddingVertical: verticalScale(7),
                                                     borderWidth: isSelected ? 1 : 1,
-                                                    borderColor: isSelected ? "3F2516" : "#E8DDD3"
+                                                    borderColor: isSelected ? "#3F2516" : "#E8DDD3"
                                                 }}
                                             >
+                                                {Icon && (
+                                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? "#FFFFFF" : "#5A3825"} />
+                                                )}
                                                 <Text
                                                     className={`font-semibold ${
                                                         isSelected ? "text-white" : "text-[#5A3825]"

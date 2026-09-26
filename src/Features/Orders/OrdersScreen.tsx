@@ -73,7 +73,7 @@ export default function OrdersScreen() {
         }
     },[])
 
-    const [loadingOrders, setLoadingOrders] = useState(false)
+    const [loadingOrders, setLoadingOrders] = useState(true)
     
     useFocusEffect(
         useCallback(() => {

@@ -50,10 +50,8 @@ export default function RootLayout() {
                                 <Stack.Screen
                                     name="add-address"
                                     options={{
-                                        presentation:
-                                            "modal",
-                                        animation:
-                                            "slide_from_bottom"
+                                        presentation: "modal",
+                                        animation: "slide_from_bottom"
                                     }}
                                 />
                             </Stack>

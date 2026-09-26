@@ -3,7 +3,7 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import { default as ArrowRight } from '@/assets/icon/ArrowRight.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
 import CartIcon from '@/assets/icon/CartIcon.svg'
-import CouponIcon from '@/assets/icon/CouponIcon.svg'
+import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
 import GooglePayIcon from '@/assets/icon/GooglePayIcon.svg'
@@ -1786,7 +1786,7 @@ export default function CheckoutScreen() {
                                             height: moderateScale(40)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5}/>
+                                        <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5}/>
                                     </View>
 
                                     <View className="items-start gap-1 flex-1">
@@ -1799,7 +1799,7 @@ export default function CheckoutScreen() {
 
                                         <Text
                                             className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(11) }}
+                                            style={{ fontSize: moderateScale(10.5) }}
                                         >
                                             Save more on your order with available offers
                                         </Text>
@@ -1807,7 +1807,9 @@ export default function CheckoutScreen() {
 
                                     <TouchableOpacity
                                         activeOpacity={0.95}
-                                        onPress={() => {}}
+                                        onPress={() => {
+                                            router.push('/apply-coupon')
+                                        }}
                                         className="items-center justify-center bg-[#3F2516]"
                                         style={{
                                             paddingHorizontal: moderateScale(16),

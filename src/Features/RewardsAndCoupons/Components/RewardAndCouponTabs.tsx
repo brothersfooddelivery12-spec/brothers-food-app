@@ -40,7 +40,7 @@ const RewardAndCouponTabs = memo(
                         color={
                             activeTab === "rewards"
                                 ? "#FFFFFF"
-                                : "#8B7A6E"
+                                : "rgba(31,31,31,0.65)"
                         }
                     />
 
@@ -73,7 +73,7 @@ const RewardAndCouponTabs = memo(
                         color={
                             activeTab === "coupons"
                                 ? "#FFFFFF"
-                                : "#8B7A6E"
+                                : "rgba(31,31,31,0.65)"
                         }
                     />
 

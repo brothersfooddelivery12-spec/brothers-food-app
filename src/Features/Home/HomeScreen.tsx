@@ -354,11 +354,11 @@ export default function HomeScreen() {
     },[handleUseCurrentLocation])
 
     const openLocationSelector = useCallback(() => {
-        // preventDoublePress(() => {
-        //     router.push(
-        //         "/select-location"
-        //     )
-        // })
+        preventDoublePress(() => {
+            router.push(
+                "/select-location"
+            )
+        })
     }, [preventDoublePress, router])
 
     const handleLocationPress = useCallback(() => {
