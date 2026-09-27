@@ -108,8 +108,9 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
             }}
         >
             <View
-                className="flex-1 flex-row items-center bg-white shadow-md"
+                className="flex-1 flex-row items-center bg-[#FFFFFF] border-[#1F1F1F]/10 shadow-md"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(22),
                     paddingHorizontal: moderateScale(8)
                 }}
@@ -142,7 +143,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                     shadowOffset: { width: 0, height: 7 },
                     shadowOpacity: 0.25,
                     shadowRadius: 12,
-                    elevation: 8,
+                    elevation: 4,
                     zIndex: 100
                 }}
             >

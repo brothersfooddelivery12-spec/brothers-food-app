@@ -419,10 +419,10 @@ export default function AddMoneyScreen(){
     ])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -438,8 +438,9 @@ export default function AddMoneyScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -480,9 +481,7 @@ export default function AddMoneyScreen(){
                     <>
                         <Text
                             className='text-[#1F1F1F] font-semibold'
-                            style={{
-                                fontSize: moderateScale(15)
-                            }}
+                            style={{ fontSize: moderateScale(15) }}
                         >
                             Select Amount
                         </Text>
@@ -509,8 +508,8 @@ export default function AddMoneyScreen(){
                                             width: cardWidth,
                                             height: verticalScale(38),
                                             borderRadius: moderateScale(14),
-                                            backgroundColor: isSelected ? "#3F2516" : "#FFFFFF",
-                                            borderWidth: isSelected ? 1 : 1,
+                                            backgroundColor: isSelected ? "#3F2516" : "#FAFAFA",
+                                            borderWidth: 0.5,
                                             borderColor: "rgba(31,31,31,0.10)"
                                         }}
                                     >
@@ -562,7 +561,7 @@ export default function AddMoneyScreen(){
                         <Text
                             className='text-[#1F1F1F]/85 font-semibold'
                             style={{
-                                fontSize: moderateScale(13),
+                                fontSize: moderateScale(14),
                                 marginTop: moderateScale(18)
                             }}
                         >
@@ -577,10 +576,11 @@ export default function AddMoneyScreen(){
                             }}
                             className={`flex-row items-center overflow-hidden ${
                                 amountError
-                                    ? "border border-red-400"
-                                    : "border border-[#1F1F1F]/10"
-                            } bg-white`}
+                                    ? "border-red-400"
+                                    : "border-[#1F1F1F]/10"
+                            } bg-[#FAFAFA]`}
                             style={{
+                                borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(10),
                                 paddingLeft: scale(9),
@@ -589,7 +589,7 @@ export default function AddMoneyScreen(){
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#F5F5F5]"
+                                className="items-center justify-center bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(36),
                                     height: moderateScale(36),
@@ -677,8 +677,8 @@ export default function AddMoneyScreen(){
                                 </Text>
         
                                 <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20) }}
+                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.7) }}
                                 >
                                     {savedDeviceUpiMethods.map((item, index) => {
                                         const isSelected = selectedPayment === item.id
@@ -749,9 +749,7 @@ export default function AddMoneyScreen(){
                                                             height: moderateScale(22),
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
-                                                            borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA"
+                                                            borderColor: isSelected ? "#5c4639" : "#D6D0CA"
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -796,8 +794,8 @@ export default function AddMoneyScreen(){
                                 </Text>
 
                                 <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20) }}
+                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
                                 >
                                     {otherUpiMethods.map((item, index) => {
                                         const Icon = item.icon
@@ -825,7 +823,7 @@ export default function AddMoneyScreen(){
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/55"
+                                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
                                                         style={{
                                                             width: moderateScale(42),
                                                             height: moderateScale(42)
@@ -882,7 +880,7 @@ export default function AddMoneyScreen(){
                                                     <View
                                                         className="bg-[#1F1F1F]/10"
                                                         style={{
-                                                            height: 1,
+                                                            height: 0.7,
                                                             marginHorizontal: scale(14)
                                                         }}
                                                     />

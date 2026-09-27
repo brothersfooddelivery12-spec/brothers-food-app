@@ -1,7 +1,6 @@
 import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
-import CartIcon from '@/assets/icon/CartIcon.svg'
 import InfoIcon from '@/assets/icon/InfoIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import { Image } from 'expo-image'
@@ -443,10 +442,10 @@ export default function CartScreen() {
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -462,8 +461,9 @@ export default function CartScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -487,16 +487,6 @@ export default function CartScreen() {
                         {totalRestaurants === 1 ? "restaurant" : "restaurants"}{" "}
                         •{" "}{totalCartItems}{" "}{totalCartItems === 1 ? "item" : "items"}
                     </Text>
-                </View>
-
-                <View
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
-                    style={{
-                        width: moderateScale(40),
-                        height: moderateScale(40)
-                    }}
-                >
-                    <CartIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={1.5} />
                 </View>
             </View>
 
@@ -553,7 +543,7 @@ export default function CartScreen() {
                         }}
                     >
                         <Text
-                            className="text-white font-semibold"
+                            className="text-[#FFFFFF] font-semibold"
                             style={{ fontSize: moderateScale(13) }}
                         >
                             Browse Food
@@ -649,8 +639,9 @@ export default function CartScreen() {
                                 {addresses.length === 0 && (
                                     <>
                                         <View
-                                            className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                            className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 marginTop: verticalScale(18),
                                                 paddingHorizontal: scale(20),
                                                 paddingVertical: verticalScale(20),
@@ -736,7 +727,7 @@ export default function CartScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-white font-extrabold"
+                                    className="text-[#FFFFFF] font-extrabold"
                                     style={{ fontSize: moderateScale(18) }}
                                 >
                                     ₹{itemsTotal.toLocaleString("en-IN")}

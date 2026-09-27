@@ -266,15 +266,15 @@ export default function OrdersScreen() {
     }, [activeTab, handleReorder, handleInvoice, handleTrackOrder, handleContactRider])
 
     return(
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
@@ -372,8 +372,9 @@ export default function OrdersScreen() {
                             style={{ paddingVertical: verticalScale(20) }}
                         >
                             <View
-                                className=" w-full items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                className=" w-full items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                 style={{
+                                    borderWidth: moderateScale(0.7),
                                     paddingHorizontal: scale(20),
                                     paddingVertical: verticalScale(24),
                                     borderRadius: moderateScale(20)
@@ -421,8 +422,9 @@ export default function OrdersScreen() {
                         <View style={{ marginTop: verticalScale(4) }}>
                             <View className="flex-row items-center justify-center gap-3 mb-5">
                                 <View
-                                    className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: cardWidth,
                                         height: moderateScale(75),
                                         borderRadius: moderateScale(22)
@@ -444,8 +446,9 @@ export default function OrdersScreen() {
                                 </View>
     
                                 <View
-                                    className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: cardWidth,
                                         height: moderateScale(75),
                                         borderRadius: moderateScale(22)
@@ -467,8 +470,9 @@ export default function OrdersScreen() {
                                 </View>
     
                                 <View
-                                    className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: cardWidth,
                                         height: moderateScale(75),
                                         borderRadius: moderateScale(22)

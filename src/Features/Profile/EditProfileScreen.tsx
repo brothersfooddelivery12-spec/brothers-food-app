@@ -306,10 +306,10 @@ export default function EditProfileScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -325,8 +325,9 @@ export default function EditProfileScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -392,8 +393,9 @@ export default function EditProfileScreen(){
                             }
                         }}
                         className={`flex-row items-center overflow-hidden
-                        ${nameError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${nameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -402,14 +404,14 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <UserIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -476,8 +478,9 @@ export default function EditProfileScreen(){
                             }
                         }}
                         className={`w-full flex-row items-center overflow-hidden
-                        ${emailError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${emailError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -486,14 +489,14 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <MailIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <MailIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -563,10 +566,11 @@ export default function EditProfileScreen(){
                     <View
                         className={`w-full flex-row overflow-hidden ${
                             numberError
-                                ? "border border-red-400"
-                                : "border border-[#1F1F1F]/10"
-                        } bg-white`}
+                                ? "border-red-400"
+                                : "border-[#1F1F1F]/10"
+                        } bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             height: verticalScale(46),
                             borderRadius: moderateScale(18)
@@ -593,7 +597,7 @@ export default function EditProfileScreen(){
 
                             <View
                                 className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10"
-                                style={{ width: scale(0.8) }}
+                                style={{ width: scale(0.6) }}
                             />
                         </View>
 
@@ -690,8 +694,9 @@ export default function EditProfileScreen(){
                                 setShowDatePicker(true)
                             }
                         }}
-                        className='bg-[#FFFFFF] border gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
+                        className='bg-[#FAFAFA] gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(15),
                             paddingLeft: scale(9),
@@ -700,14 +705,14 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <CakeIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.5} /> 
+                            <CakeIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.5} /> 
                         </View>
 
                         <Text
@@ -725,7 +730,7 @@ export default function EditProfileScreen(){
                                 : "Enter your Date of Birth"}
                         </Text>
 
-                        <CalendarIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F85"} strokeWidth={1.8} />
+                        <CalendarIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F95"} strokeWidth={1.8} />
                     </TouchableOpacity>
 
                     {showDatePicker && (
@@ -771,8 +776,9 @@ export default function EditProfileScreen(){
                                     handleOpenMenu("gender")
                                 }
                             }}
-                            className='bg-[#FFFFFF] border gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
+                            className='bg-[#FAFAFA] gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
                             style={{
+                                borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(15),
                                 paddingLeft: scale(9),
@@ -781,7 +787,7 @@ export default function EditProfileScreen(){
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#F5F5F5]"
+                                className="items-center justify-center bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(36),
                                     height: moderateScale(36),
@@ -809,7 +815,7 @@ export default function EditProfileScreen(){
                                 }
                             </Text>
 
-                            <ArrowDownIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F85"} strokeWidth={1.8} />
+                            <ArrowDownIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F95"} strokeWidth={1.8} />
                         </TouchableOpacity>
                     </View>
 
@@ -842,8 +848,9 @@ export default function EditProfileScreen(){
 
                     {openMenu === "gender" && (
                         <View
-                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            className="absolute bg-white border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.7),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,

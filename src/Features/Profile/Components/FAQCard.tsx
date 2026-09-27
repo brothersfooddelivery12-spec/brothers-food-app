@@ -50,8 +50,9 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 marginBottom: verticalScale(10)
             }}
@@ -84,7 +85,7 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                             height: moderateScale(28)
                         }
                     ]}
-                    className="items-center justify-center rounded-full bg-[#F5F5F5]"
+                    className="items-center justify-center rounded-full bg-[#E5E4E2]/55"
                 >
                     <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F" />
                 </Animated.View>

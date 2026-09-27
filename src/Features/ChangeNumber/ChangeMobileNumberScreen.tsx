@@ -48,10 +48,10 @@ export default function ChangeMobileNumberScreen(){
 
     
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -67,8 +67,9 @@ export default function ChangeMobileNumberScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -136,8 +137,8 @@ export default function ChangeMobileNumberScreen(){
                 </View>
 
                 <View
-                    className="bg-white border border-[#1F1F1F]/10 overflow-visible mt-5 mb-3 p-3"
-                    style={{ borderRadius: moderateScale(20) }}
+                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible mt-5 mb-3 p-3"
+                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
                 >
                     <View className='flex-row gap-3 items-center'>
                         <View
@@ -170,7 +171,7 @@ export default function ChangeMobileNumberScreen(){
                     <View
                         className="bg-[#1F1F1F]/10"
                         style={{
-                            height: 1,
+                            height: moderateScale(0.7),
                             marginHorizontal: scale(10),
                             marginVertical: verticalScale(8)
                         }}

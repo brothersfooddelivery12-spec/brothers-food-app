@@ -13,12 +13,11 @@ const OrdersTabs = memo(
     ({ activeTab, onChange }: OrdersTabsProps) => {
         return (
             <View
-                className="flex-row bg-[#E5E4E2]/65 mx-2"
+                className="flex-row bg-[#FAFAFA] mx-2 border-[#1F1F1F]/10"
                 style={{
                     padding: moderateScale(4),
                     borderRadius: moderateScale(28),
-                    borderWidth: moderateScale(1),
-                    borderColor: "#E8E0D9"
+                    borderWidth: moderateScale(0.5)
                 }}
             >
                 <Pressable
@@ -37,8 +36,8 @@ const OrdersTabs = memo(
                     <Text
                         className={
                             activeTab === "active orders"
-                                ? "text-white font-semibold"
-                                : "text-[#756A63] font-medium"
+                                ? "text-[#FFFFFF] font-semibold"
+                                : "text-[#1F1F1F]/75 font-medium"
                         }
                         style={{ fontSize: moderateScale(14) }}
                     >
@@ -62,8 +61,8 @@ const OrdersTabs = memo(
                     <Text
                         className={
                             activeTab === "past orders"
-                                ? "text-white font-semibold"
-                                : "text-[#756A63] font-medium"
+                                ? "text-[#FFFFFF] font-semibold"
+                                : "text-[#1F1F1F]/75 font-medium"
                         }
                         style={{ fontSize: moderateScale(14) }}
                     >

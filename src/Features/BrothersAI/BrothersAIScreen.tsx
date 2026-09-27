@@ -3,7 +3,6 @@ import SparkleIcon from '@/assets/icon/AiSparklesIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
 import DicesIcon from '@/assets/icon/DicesIcon.svg'
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
 import RobotIcon from '@/assets/icon/RobotIcon.svg'
 import SparkleIcon2 from '@/assets/icon/SparkleIcon.svg'
@@ -170,10 +169,10 @@ export default function BrothersAIScreen(){
     }, [search])
         
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -189,8 +188,9 @@ export default function BrothersAIScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -295,7 +295,7 @@ export default function BrothersAIScreen(){
                                 </View>
 
                                 <View
-                                    className="absolute items-center justify-center bg-white"
+                                    className="absolute items-center justify-center bg-[#FFFFFF]"
                                     style={{
                                         right: moderateScale(22),
                                         bottom: moderateScale(22),
@@ -320,8 +320,8 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className='items-center justify-center p-5 mx-2 bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(22) }}
+                            className='items-center justify-center p-5 mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(22), borderWidth: moderateScale(0.5) }}
                         >
                             <Text
                                 className='text-[#1F1F1F] text-center font-semibold'
@@ -348,9 +348,6 @@ export default function BrothersAIScreen(){
                                 value={search}
                                 onChangeText={setsearch}
                                 placeholder="Ask Anything..."
-                                RightIcon={MicIcon}
-                                rightIconColor="#1F1F1F"
-                                onRightPress={() => {}}
                             />
                         </View>
 
@@ -385,19 +382,19 @@ export default function BrothersAIScreen(){
                                             )
                                         }}
                                         className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(17),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: isSelected ? 1 : 1,
+                                            borderWidth: 0.7,
                                             borderColor: "rgba(31, 31, 31, 0.10)"
                                         }}
                                     >
                                         <Text
                                             className={`font-medium ${
-                                                isSelected ? "text-white" : "text-[#1F1F1F]"
+                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
                                             }`}
                                             style={{ fontSize: moderateScale(13) }}
                                         >
@@ -428,8 +425,9 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="w-full overflow-hidden bg-white border border-[#1F1F1F]/10"
+                            className="w-full overflow-hidden bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(12)
                             }}
@@ -506,8 +504,9 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-start py-4 pl-4 pr-2 bg-white border border-[#1F1F1F]/10"
+                            className="flex-row gap-3 items-start py-4 pl-4 pr-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderLeftColor: "#7052D8",
                                 borderLeftWidth: moderateScale(3),
                                 borderRadius: moderateScale(22),
@@ -552,8 +551,9 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="items-start p-4 bg-white border border-[#1F1F1F]/10"
+                            className="items-start p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(16)
                             }}
@@ -566,7 +566,7 @@ export default function BrothersAIScreen(){
                             </Text>
                             
                             <View
-                                className='bg-[#F5F5F5] w-full justify-center py-3 px-3'
+                                className='bg-[#E5E4E2]/45 w-full justify-center py-3 px-3'
                                 style={{
                                     marginTop: verticalScale(10),
                                     borderRadius: moderateScale(16)
@@ -595,8 +595,9 @@ export default function BrothersAIScreen(){
                                             key={item.id}
                                             activeOpacity={0.85}
                                             onPress={() => {}}
-                                            className="bg-white border border-[#1F1F1F]/10"
+                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(10),
                                                 paddingVertical: verticalScale(4)
@@ -615,8 +616,9 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="items-start py-4 px-5 bg-white border border-[#1F1F1F]/10"
+                            className="items-start py-4 px-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(16),
                             }}

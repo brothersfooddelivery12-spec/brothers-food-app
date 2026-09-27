@@ -47,10 +47,11 @@ const RestaurantSearchCard = ({
 
     return (
         <View
-            className="mt-5 w-full overflow-hidden border"
+            className="mt-5 w-full overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -88,8 +89,7 @@ const RestaurantSearchCard = ({
                         {isInactive && (
                             <View
                                 pointerEvents="none"
-                                className="absolute inset-0"
-                                style={{ backgroundColor: "rgba(31,31,31,0.38)" }}
+                                className="absolute inset-0 bg-black/25"
                             />
                         )}
                     </View>
@@ -171,7 +171,7 @@ const RestaurantSearchCard = ({
                             onFavouritePress?.()
                         }}
                         hitSlop={8}
-                        className="absolute items-center justify-center rounded-full border"
+                        className="absolute items-center justify-center rounded-full"
                         style={{
                             right: moderateScale(14),
                             top: moderateScale(14),
@@ -180,7 +180,8 @@ const RestaurantSearchCard = ({
                             backgroundColor: isInactive
                                 ? "rgba(255,255,255,0.80)"
                                 : "#FFFFFF",
-                            borderColor: "rgba(31,31,31,0.10)"
+                            borderColor: "rgba(31,31,31,0.10)",
+                            borderWidth: moderateScale(0.7)
                         }}
                     >
                         {isFavourite ? (
@@ -200,7 +201,7 @@ const RestaurantSearchCard = ({
                     </TouchableOpacity>
                 </View>
 
-                <View className="px-3 pt-3">
+                <View className="px-3">
                     <Text
                         numberOfLines={1}
                         className="font-bold"
@@ -318,9 +319,7 @@ const RestaurantSearchCard = ({
                         marginTop: verticalScale(14),
                         fontSize: moderateScale(12),
                         letterSpacing: moderateScale(1),
-                        color: isInactive
-                            ? "rgba(31,31,31,0.45)"
-                            : "#3F2516"
+                        color: isInactive ? "rgba(31,31,31,0.45)" : "#3F2516"
                     }}
                 >
                     Signature Selection

@@ -28,8 +28,9 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
 
         return (
             <View
-                className="bg-white border border-[#1F1F1F]/10 flex-row items-center flex-1"
+                className="bg-[#FAFAFA] border-[#1F1F1F]/10 flex-row items-center flex-1"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     minHeight: verticalScale(44),
                     borderRadius: moderateScale(20),
                     paddingHorizontal: scale(10),

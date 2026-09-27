@@ -78,10 +78,10 @@ export default function FAQsScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -97,8 +97,9 @@ export default function FAQsScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -210,14 +211,14 @@ export default function FAQsScreen(){
                                         className={`items-center justify-center ${
                                             isSelected
                                                 ? "bg-[#5C4639]/80"
-                                                : "bg-white"
+                                                : "bg-[#FAFAFA]"
                                         }`}
                                         style={{
                                             width: moderateScale(76),
                                             height: moderateScale(74),
                                             borderRadius: moderateScale(18),
 
-                                            borderWidth: 1,
+                                            borderWidth: 0.5,
                                             borderColor: isSelected
                                                 ? "rgba(63, 37, 22, 0.70)"
                                                 : "rgba(31,31,31,0.10)",

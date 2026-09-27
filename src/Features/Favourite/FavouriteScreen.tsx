@@ -470,15 +470,15 @@ export default function FavouritesScreen() {
         : favFoods.filter(food => food.isAvailable && food.restaurant.isOpen).length
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
@@ -577,8 +577,9 @@ export default function FavouritesScreen() {
                             style={{ paddingVertical: verticalScale(20) }}
                         >
                             <View
-                                className=" w-full items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                className=" w-full items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     paddingHorizontal: scale(20),
                                     paddingVertical: verticalScale(24),
                                     borderRadius: moderateScale(20)
@@ -636,8 +637,9 @@ export default function FavouritesScreen() {
                     
                             <View className="flex-row items-center gap-3">
                                 <View
-                                    className="bg-white justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: cardWidth,
                                         height: moderateScale(95),
                                         borderRadius: moderateScale(22)

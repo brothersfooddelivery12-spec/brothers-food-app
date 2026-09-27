@@ -88,15 +88,13 @@ export default function FoodSearchScreen() {
                                 activeOpacity={0.85}
                                 onPress={() => setSelectedCategory(category)}
                                 className={`items-center justify-center ${
-                                    isSelected
-                                        ? "bg-[#3F2516]"
-                                        : "bg-[#FAF5EF]"
+                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                 }`}
                                 style={{
                                     borderRadius: moderateScale(18),
                                     paddingHorizontal: scale(16),
                                     paddingVertical: verticalScale(7),
-                                    borderWidth: isSelected ? 0 : 1,
+                                    borderWidth: 0.7,
                                     borderColor: "#E8DDD3"
                                 }}
                             >
@@ -116,9 +114,9 @@ export default function FoodSearchScreen() {
                 </ScrollView>
 
                 <Text
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="text-[#1F1F1F] font-bold"
                     style={{
-                        fontSize: moderateScale(16),
+                        fontSize: moderateScale(15),
                         marginTop: verticalScale(18)
                     }}
                 >
@@ -128,9 +126,9 @@ export default function FoodSearchScreen() {
                 <Text
                     className="text-[#1F1F1F]/65 font-medium"
                     style={{
-                        fontSize: moderateScale(11.5),
+                        fontSize: moderateScale(11),
                         marginTop: verticalScale(4),
-                        marginBottom: verticalScale(4)
+                        marginBottom: verticalScale(2)
                     }}
                 >
                     24 dishes matching your search
@@ -144,9 +142,9 @@ export default function FoodSearchScreen() {
         () => (
             <>
                 <Text
-                    className="text-[#1F1F1F] font-semibold"
+                    className="text-[#1F1F1F] font-bold"
                     style={{
-                        fontSize: moderateScale(16),
+                        fontSize: moderateScale(15),
                         marginTop: verticalScale(22)
                     }}
                 >
@@ -165,8 +163,9 @@ export default function FoodSearchScreen() {
                             key={item.id}
                             activeOpacity={0.85}
                             onPress={() => setSearch(item.title)}
-                            className="flex-row items-center bg-white border border-[#1F1F1F]/10"
+                            className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(7)
@@ -187,10 +186,10 @@ export default function FoodSearchScreen() {
     )
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
             
@@ -206,8 +205,9 @@ export default function FoodSearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(46),
                         height: moderateScale(46)
                     }}

@@ -116,10 +116,10 @@ export default function RestaurantGalleryScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -135,8 +135,9 @@ export default function RestaurantGalleryScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -271,19 +272,19 @@ export default function RestaurantGalleryScreen(){
                                             setSelectedCategory(category)
                                         }}
                                         className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: isSelected ? 1 : 1,
+                                            borderWidth: 0.7,
                                             borderColor: isSelected ? "3F2516" : "#E8DDD3"
                                         }}
                                     >
                                         <Text
                                             className={`font-semibold ${
-                                                isSelected ? "text-white" : "text-[#5A3825]"
+                                                isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
                                             }`}
                                             style={{ fontSize: moderateScale(13) }}
                                         >
@@ -409,8 +410,9 @@ export default function RestaurantGalleryScreen(){
                         />
                         
                         <View 
-                            className='bg-[#FFFFFF] border border-[#1F1F1F]/10 items-center p-4'
+                            className='bg-[#FAFAFA] border-[#1F1F1F]/10 items-center p-4'
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 marginTop: verticalScale(18)
                             }}
@@ -448,7 +450,7 @@ export default function RestaurantGalleryScreen(){
 
                             <View className='flex-row items-center self-start mt-4 gap-2'>
                                 <View
-                                    className='rounded-full overflow-hidden bg-[#F5F5F5] items-center justify-center'
+                                    className='rounded-full overflow-hidden bg-[#E5E4E2]/55 items-center justify-center'
                                     style={{
                                         width: moderateScale(34),
                                         height: moderateScale(34)

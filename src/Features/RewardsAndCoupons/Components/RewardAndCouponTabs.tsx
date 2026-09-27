@@ -15,11 +15,11 @@ const RewardAndCouponTabs = memo(
     ({ activeTab, onChange }: RewardAndCouponTabsProps) => {
         return (
             <View
-                className="flex-row bg-[#E5E4E2]/65 mx-2"
+                className="flex-row bg-[#FAFAFA] mx-2"
                 style={{
                     padding: moderateScale(4),
                     borderRadius: moderateScale(28),
-                    borderWidth: moderateScale(1),
+                    borderWidth: moderateScale(0.5),
                     borderColor: "#E8E0D9"
                 }}
             >
@@ -40,15 +40,15 @@ const RewardAndCouponTabs = memo(
                         color={
                             activeTab === "rewards"
                                 ? "#FFFFFF"
-                                : "rgba(31,31,31,0.65)"
+                                : "rgba(31,31,31,0.75)"
                         }
                     />
 
                     <Text
                         className={
                             activeTab === "rewards"
-                                ? "text-white font-semibold"
-                                : "text-[#756A63] font-medium"
+                                ? "text-[#FFFFFF] font-semibold"
+                                : "text-[#1F1F1F]/75 font-medium"
                         }
                         style={{ fontSize: moderateScale(14) }}
                     >
@@ -73,15 +73,15 @@ const RewardAndCouponTabs = memo(
                         color={
                             activeTab === "coupons"
                                 ? "#FFFFFF"
-                                : "rgba(31,31,31,0.65)"
+                                : "rgba(31,31,31,0.75)"
                         }
                     />
 
                     <Text
                         className={
                             activeTab === "coupons"
-                                ? "text-white font-semibold"
-                                : "text-[#756A63] font-medium"
+                                ? "text-[#FFFFFF] font-semibold"
+                                : "text-[#1F1F1F]/75 font-medium"
                         }
                         style={{ fontSize: moderateScale(14) }}
                     >

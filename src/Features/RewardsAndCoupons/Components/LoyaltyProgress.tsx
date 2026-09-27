@@ -34,8 +34,9 @@ export default function LoyaltyProgress({
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 mx-2"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 mx-2"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 paddingHorizontal: scale(14),
                 paddingTop: verticalScale(14),

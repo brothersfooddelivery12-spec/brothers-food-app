@@ -272,15 +272,15 @@ export default function ProfileScreen() {
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
                 style={[
                     {
                         paddingHorizontal: scale(14),
@@ -400,7 +400,7 @@ export default function ProfileScreen() {
 
                                     <Pressable
                                         onPress={() => {}}
-                                        className="absolute bg-white items-center justify-center rounded-full"
+                                        className="absolute bg-[#FFFFFF] items-center justify-center rounded-full"
                                         style={{
                                             right: moderateScale(5),
                                             bottom: moderateScale(3),
@@ -418,7 +418,7 @@ export default function ProfileScreen() {
                                 >
                                     <Text
                                         numberOfLines={1}
-                                        className="text-white font-bold tracking-wide"
+                                        className="text-[#FFFFFF] font-bold tracking-wide"
                                         style={{
                                             fontSize: moderateScale(16),
                                             paddingRight: scale(70)
@@ -475,7 +475,7 @@ export default function ProfileScreen() {
                             >
                                 <Text
                                     numberOfLines={1}
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{
                                         fontSize: moderateScale(14),
                                         paddingRight: scale(70)
@@ -541,8 +541,9 @@ export default function ProfileScreen() {
                                         router.push('/brothers-wallet')
                                     })
                                 }
-                                className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
+                                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3 gap-2"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(60),
                                     borderRadius: moderateScale(18)
@@ -587,8 +588,9 @@ export default function ProfileScreen() {
                                         })
                                     })
                                 }
-                                className="flex-row items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3 gap-2"
+                                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3 gap-2"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(60),
                                     borderRadius: moderateScale(18)
@@ -630,8 +632,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row items-center gap-2'>
                                 <View
@@ -660,7 +662,7 @@ export default function ProfileScreen() {
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: 0.7,
                                     marginVertical: verticalScale(12),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -712,7 +714,7 @@ export default function ProfileScreen() {
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: 0.7,
                                     marginVertical: verticalScale(12),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -770,8 +772,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <ProfileMenuItem label="My orders" icon={OrderIcon} showDivider={true}
                                 onPress={()=> 
@@ -824,8 +826,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true}
                                 onPress={()=>
@@ -852,8 +854,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <TouchableOpacity
                                 activeOpacity={0.95}
@@ -921,8 +923,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <ProfileMenuItem label="Help Center" icon={HelpCircleIcon} showDivider={true}
                                 onPress={()=>
@@ -957,8 +959,8 @@ export default function ProfileScreen() {
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <ProfileMenuItem label="Privacy" icon={PrivacyIcon} showDivider={true} 
                                 onPress={()=>
@@ -1072,8 +1074,9 @@ export default function ProfileScreen() {
 
                     {openMenu && (
                         <View
-                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            className="absolute bg-white border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.7),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,

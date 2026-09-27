@@ -66,10 +66,10 @@ export default function ReferralScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -85,8 +85,9 @@ export default function ReferralScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -189,8 +190,9 @@ export default function ReferralScreen(){
 
                         <View className="flex-row items-center gap-3 mt-5">
                             <View
-                                className="items-center justify-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3"
+                                className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(125),
                                     borderRadius: moderateScale(18)
@@ -229,8 +231,9 @@ export default function ReferralScreen(){
                             </View>
 
                             <View
-                                className="items-center bg-[#FFFFFF] border border-[#1F1F1F]/10 py-4 px-3"
+                                className="items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(125),
                                     borderRadius: moderateScale(18)
@@ -270,7 +273,7 @@ export default function ReferralScreen(){
                         </View>
 
                         <View
-                            className="py-6 px-8 bg-[#E5E4E2]/60 mx-2 items-center justify-center"
+                            className="py-6 px-8 bg-[#E5E4E2]/45 mx-2 items-center justify-center"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(18)
@@ -318,7 +321,7 @@ export default function ReferralScreen(){
                                     <CopyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
 
                                     <Text
-                                        className="text-white font-semibold"
+                                        className="text-[#FFFFFF] font-semibold"
                                         style={{ fontSize: moderateScale(14) }}
                                     >
                                         Copy
@@ -380,7 +383,7 @@ export default function ReferralScreen(){
                                 style={{ marginTop: verticalScale(5) }}
                             >
                                 <Text
-                                    className="text-white font-black tracking-wider"
+                                    className="text-[#FFFFFF] font-black tracking-wider"
                                     style={{ fontSize: moderateScale(24) }}
                                 >
                                     ₹1,250
@@ -419,7 +422,7 @@ export default function ReferralScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-white font-bold tracking-wider"
+                                            className="text-[#FFFFFF] font-bold tracking-wider"
                                             style={{
                                                 fontSize: moderateScale(14),
                                                 marginTop: verticalScale(2)
@@ -457,8 +460,9 @@ export default function ReferralScreen(){
                         </View>
 
                         <View
-                            className="bg-white border border-[#1F1F1F]/10 mx-2"
+                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 mx-2"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 paddingHorizontal: scale(14),
                                 paddingVertical: verticalScale(16),

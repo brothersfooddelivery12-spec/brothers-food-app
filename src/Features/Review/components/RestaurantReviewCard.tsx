@@ -1,12 +1,12 @@
-import { View, Text, ScrollView, TouchableOpacity, Pressable } from "react-native"
-import { Image } from "expo-image"
-import RatingStars from "@/components/RatingStars"
-import QuoteIcon from '@/assets/icon/QuoteIcon.svg'
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import React, { useState } from "react"
-import ThumbsUpOutline from '@/assets/icon/ThumbsUpOutline.svg'
-import ThumbsUpFilled from '@/assets/icon/ThumbsUpFilled.svg'
 import CommentIcon from '@/assets/icon/CommentIcon.svg'
+import QuoteIcon from '@/assets/icon/QuoteIcon.svg'
+import ThumbsUpFilled from '@/assets/icon/ThumbsUpFilled.svg'
+import ThumbsUpOutline from '@/assets/icon/ThumbsUpOutline.svg'
+import RatingStars from "@/components/RatingStars"
+import { Image } from "expo-image"
+import React, { useState } from "react"
+import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 export interface RestaurantReview {
     id: string
@@ -28,8 +28,8 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
 
     return (
         <View
-            className="p-4 border border-[#D9C5B9] mb-5 mx-2"
-            style={{ borderRadius: moderateScale(18) }}
+            className="p-4 bg-[#FAFAFA] border-[#1F1F1F]/10 mb-5 mx-2"
+            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.7) }}
         >
             <View className="flex-row gap-3 items-center">
                 <View

@@ -45,7 +45,7 @@ function ProfileMenuItem({
                 <View
                     className="bg-[#1F1F1F]/10"
                     style={{
-                        height: 1,
+                        height: 0.7,
                         marginVertical: verticalScale(12),
                         marginHorizontal: moderateScale(6)
                     }}

@@ -85,8 +85,9 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => onPress?.(item)}
-            className="flex-row items-center bg-white border border-[#1F1F1F]/10"
+            className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 paddingHorizontal: scale(12),
                 paddingVertical: verticalScale(9)

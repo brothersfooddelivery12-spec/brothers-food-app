@@ -22,7 +22,7 @@ import { Image } from "expo-image"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useState } from "react"
-import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, Pressable, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -375,7 +375,13 @@ export default function RestaurantDetailsScreen() {
                 : "CLOSED"
 
     return(
-        <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+            <StatusBar
+                translucent
+                backgroundColor="#FFFFFF"
+                barStyle="dark-content"
+            />
+
             {loadingRestaurant ? (
                 <View className="flex-1 items-center justify-center">
                     <LottieView
@@ -390,7 +396,7 @@ export default function RestaurantDetailsScreen() {
                 </View>
             ) :(
                 <FlatList
-                    className="flex-1 bg-white"
+                    className="flex-1 bg-[#FFFFFF]"
                     data={popularitems}
                     keyExtractor={(item) => item.id}
                     nestedScrollEnabled
@@ -433,8 +439,9 @@ export default function RestaurantDetailsScreen() {
                                     <TouchableOpacity
                                         activeOpacity={0.95}
                                         onPress={handleBack}
-                                        className="items-center self-start justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                        className="items-center self-start justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                         style={{
+                                            borderWidth: moderateScale(0.5),
                                             width: moderateScale(38),
                                             height: moderateScale(38)
                                         }}
@@ -449,8 +456,9 @@ export default function RestaurantDetailsScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={handleFavouritePress}
-                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
@@ -465,8 +473,9 @@ export default function RestaurantDetailsScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={handleShare}
-                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
@@ -478,7 +487,7 @@ export default function RestaurantDetailsScreen() {
                             </View>
     
                             <View
-                                className="w-full bg-white"
+                                className="w-full bg-[#FFFFFF]"
                                 style={{
                                     marginTop: verticalScale(180),
                                     borderTopLeftRadius: moderateScale(22),

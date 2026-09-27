@@ -71,10 +71,11 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
         <TouchableOpacity
             activeOpacity={0.95}
             onPress={onPress}
-            className="w-full overflow-hidden border"
+            className="w-full overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -82,9 +83,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
         >
             <View
                 className="relative w-full p-2"
-                style={{
-                    height: verticalScale(120)
-                }}
+                style={{ height: verticalScale(120) }}
             >
                 <View
                     style={{
@@ -92,7 +91,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                         height: "100%",
                         borderRadius: moderateScale(18),
                         overflow: "hidden",
-                        borderWidth: !hasImage && !isInactive ? 1 : 0,
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
                         borderColor: "rgba(31,31,31,0.08)"
                     }}
                 >
@@ -115,10 +114,9 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
 
                     {isInactive && (
                         <View
-                            pointerEvents="none"
-                            className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
-                        />
+                        pointerEvents="none"
+                        className="absolute inset-0 bg-black/25"
+                    />
                     )}
                 </View>
 
@@ -129,8 +127,9 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                         onFavouritePress?.()
                     }}
                     hitSlop={8}
-                    className="absolute items-center justify-center rounded-full border"
+                    className="absolute items-center justify-center rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         right: moderateScale(14),
                         top: moderateScale(14),
                         width: moderateScale(34),
@@ -172,7 +171,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                         }}
                     >
                         <Text
-                            className="font-bold text-white uppercase"
+                            className="font-bold text-[#FFFFFF] uppercase"
                             style={{ fontSize: moderateScale(9) }}
                         >
                             Currently Closed
@@ -193,9 +192,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                             className="font-extrabold"
                             style={{
                                 fontSize: moderateScale(15),
-                                color: isInactive
-                                    ? "rgba(31,31,31,0.52)"
-                                    : "#1F1F1F"
+                                color: isInactive ? "rgba(31,31,31,0.52)" : "#1F1F1F"
                             }}
                         >
                             {restaurant.name}
@@ -367,7 +364,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                             }}
                         >
                             <Text
-                                className="font-medium text-white"
+                                className="font-medium text-[#FFFFFF]"
                                 style={{ fontSize: moderateScale(11) }}
                             >
                                 ₹{restaurant.priceForTwo} for two
@@ -406,7 +403,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                                 router.push('/restaurant-menu')
                             })
                         }}
-                        className="bg-[#E5E4E2]/75 items-center justify-center"
+                        className="bg-[#E5E4E2]/65 items-center justify-center"
                         style={{
                             paddingHorizontal: scale(18),
                             paddingVertical: verticalScale(8),

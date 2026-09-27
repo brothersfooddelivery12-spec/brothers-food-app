@@ -147,10 +147,10 @@ export default function VerifyNewMobileNumberScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -166,8 +166,9 @@ export default function VerifyNewMobileNumberScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -246,14 +247,15 @@ export default function VerifyNewMobileNumberScreen(){
                             return (
                                 <View
                                     key={index}
-                                    className={`items-center justify-center bg-white ${
+                                    className={`items-center justify-center bg-[#FAFAFA] ${
                                         hasError
-                                            ? "border border-red-400"
+                                            ? "border-red-400"
                                             : isActive
-                                                ? "border border-[#E8B93F]/75"
-                                                : "border border-[#1F1F1F]/10"
+                                                ? "border-[#E8B93F]/75"
+                                                : "border-[#1F1F1F]/10"
                                     }`}
                                     style={{
+                                        borderWidth: moderateScale(0.7),
                                         height: scale(50),
                                         width: scale(50),
                                         borderRadius: moderateScale(18)
@@ -278,8 +280,9 @@ export default function VerifyNewMobileNumberScreen(){
                 )}
 
                 <View
-                    className="flex-row items-center bg-white w-full border border-[#1F1F1F]/5"
+                    className="flex-row items-center bg-[#FAFAFA] w-full border-[#1F1F1F]/5"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         padding: scale(12),
                         marginTop: verticalScale(28),
                         gap: scale(10),

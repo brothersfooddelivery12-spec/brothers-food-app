@@ -90,8 +90,8 @@ export default function InvoiceItem({
                     }}
                 >
                     <View
-                        className="bg-[#E8DDD3]/55"
-                        style={{ height: 1 }}
+                        className="bg-[#E8DDD3]/65"
+                        style={{ height: moderateScale(0.7), }}
                     />
                 </View>
             )}

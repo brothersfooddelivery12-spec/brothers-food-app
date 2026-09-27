@@ -64,8 +64,9 @@ const VegNonVegToggle = memo(
 
         return (
             <View
-                className="flex-row items-center bg-white border border-[#1F1F1F]/10 overflow-hidden"
+                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     width: containerWidth,
                     height: containerHeight,
                     borderRadius: moderateScale(24),

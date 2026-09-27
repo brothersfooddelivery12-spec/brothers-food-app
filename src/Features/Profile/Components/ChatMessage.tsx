@@ -65,9 +65,10 @@ function ChatMessage({ item }: ChatMessageProps) {
                         className={
                             isUser
                                 ? "bg-[#3F2516]"
-                                : "bg-white border border-[#E8DDD3]"
+                                : "bg-[#FAFAFA] border-[#E8DDD3]"
                         }
                         style={{
+                            borderWidth: moderateScale(0.5),
                             paddingHorizontal: scale(16),
                             paddingVertical: verticalScale(14),
                             borderRadius: moderateScale(22),
@@ -85,7 +86,7 @@ function ChatMessage({ item }: ChatMessageProps) {
                         <Text
                             className={
                                 isUser
-                                    ? "text-white font-medium"
+                                    ? "text-[#FFFFFF] font-medium"
                                     : "text-[#1F1F1F] font-medium"
                             }
                             style={{

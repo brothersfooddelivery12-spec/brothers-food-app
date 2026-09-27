@@ -34,11 +34,12 @@ const SimilarRestaurantCard = ({
 
                 onPress?.(id)
             }}
-            className="overflow-hidden border"
+            className="overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 width: moderateScale(165),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"

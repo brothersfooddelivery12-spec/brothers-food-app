@@ -1,6 +1,6 @@
 import CallIcon from '@/assets/icon/CallOutlineIcon.svg'
 import EllipsisVerticalIcon from "@/assets/icon/EllipsisVerticalIcon.svg"
-import { Address } from "@/Features/Services/address-service"
+import { Address } from '@/Services/address-service'
 import React, { memo } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -36,8 +36,9 @@ function SavedAddressCard({
         <TouchableOpacity
             activeOpacity={0.95}
             onPress={() => onPress?.(item)}
-            className="p-3 bg-white border border-[#1F1F1F]/10"
+            className="p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
                 position: "relative"
             }}

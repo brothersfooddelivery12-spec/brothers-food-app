@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
-import { moderateScale, verticalScale } from "react-native-size-matters"
 import LottieView from "lottie-react-native"
+import { Text, TouchableOpacity, View } from "react-native"
+import { moderateScale, verticalScale } from "react-native-size-matters"
 
 type GradientButtonProps = {
     title: string,
@@ -53,7 +53,7 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                         />
                     ) : (
                         <Text
-                            className="tracking-wide font-semibold text-[#F5F5F5]"
+                            className="tracking-wide font-semibold text-[#FFFFFF]"
                             style={{ fontSize: moderateScale(15) }}
                         >
                             {title}

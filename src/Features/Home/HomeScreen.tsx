@@ -982,7 +982,7 @@ export default function HomeScreen() {
                         <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color="#FFFFFF" strokeWidth={1.5} />
 
                         <Text
-                            className="tracking-wide font-semibold text-[#F5F5F5]"
+                            className="tracking-wide font-semibold text-[#FFFFFF]"
                             style={{ fontSize: moderateScale(14) }}
                         >
                             Use Current Location
@@ -994,8 +994,9 @@ export default function HomeScreen() {
             <TouchableOpacity
                 activeOpacity={0.95}
                 onPress={openLocationSelector}
-                className='w-full bg-[#FFFFFF] bprder border-[#1F1F1F]/10 items-center justify-center'
+                className='w-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center'
                 style={{
+                    borderWidth: moderateScale(0.5),
                     marginTop: verticalScale(14),
                     height: verticalScale(40),
                     borderRadius: moderateScale(22)
@@ -1012,10 +1013,10 @@ export default function HomeScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -1144,8 +1145,9 @@ export default function HomeScreen() {
                                                     router.push('/notification')
                                                 })
                                             }
-                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 width: moderateScale(44),
                                                 height: moderateScale(44),
                                                 flexShrink: 0
@@ -1161,8 +1163,9 @@ export default function HomeScreen() {
                                                     router.push('/cart')
                                                 })
                                             }}
-                                            className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 width: moderateScale(44),
                                                 height: moderateScale(44),
                                                 flexShrink: 0
@@ -1192,8 +1195,9 @@ export default function HomeScreen() {
                                                     router.push('/(tabs)/search')
                                                 })
                                             }
-                                            className="flex-row gap-3 w-full items-center mt-3 bg-white border border-[#1F1F1F]/10"
+                                            className="flex-row gap-3 w-full items-center mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(22),
                                                 paddingHorizontal: scale(13),
                                                 height: verticalScale(46)
@@ -1292,19 +1296,19 @@ export default function HomeScreen() {
                                                             setSelectedCategoryId(category.id)
                                                         }}
                                                         className={`items-center justify-center ${
-                                                            isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
                                                         }`}
                                                         style={{
                                                             borderRadius: moderateScale(18),
                                                             paddingHorizontal: scale(17),
                                                             paddingVertical: verticalScale(7),
-                                                            borderWidth: 1,
+                                                            borderWidth: moderateScale(0.7),
                                                             borderColor: "rgba(31, 31, 31, 0.10)"
                                                         }}
                                                     >
                                                         <Text
                                                             className={`font-medium ${
-                                                                isSelected ? "text-white" : "text-[#1F1F1F]"
+                                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
                                                             }`}
                                                             style={{ fontSize: moderateScale(13.5) }}
                                                         >
@@ -1414,8 +1418,9 @@ export default function HomeScreen() {
                                         </Text>
                 
                                         <View
-                                            className="flex-row items-center gap-2 mt-3 bg-[#E5E4E2]/85"
+                                            className="flex-row items-center gap-2 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.7),
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: moderateScale(9),
                                                 paddingVertical: moderateScale(9)

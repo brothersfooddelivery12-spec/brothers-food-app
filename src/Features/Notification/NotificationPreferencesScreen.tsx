@@ -257,10 +257,10 @@ export default function NotificationPreferencesScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -276,8 +276,9 @@ export default function NotificationPreferencesScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -414,8 +415,8 @@ export default function NotificationPreferencesScreen(){
                 )}
 
                 <View
-                    className="mt-6 p-4 bg-white border border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18) }}
+                    className="mt-6 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                 >
                     <View className='flex-row gap-3 items-center'>
                         <View
@@ -487,7 +488,7 @@ export default function NotificationPreferencesScreen(){
                         <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
 
                         <Text
-                            className="text-white font-semibold"
+                            className="text-[#FFFFFF] font-semibold"
                             style={{ fontSize: moderateScale(13) }}
                         >
                             Clear History

@@ -73,8 +73,9 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
         <TouchableOpacity
             activeOpacity={0.92}
             onPress={() => onPress?.(item)}
-            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderLeftColor: status.color,
                 borderLeftWidth: 3,
                 borderRadius: moderateScale(20),
@@ -169,7 +170,7 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
                     <View
                         className="bg-[#1F1F1F]/10"
                         style={{
-                            height: moderateScale(1),
+                            height: moderateScale(0.7),
                             marginTop: verticalScale(16),
                             marginBottom: verticalScale(13)
                         }}

@@ -34,13 +34,13 @@ const RewardActionCard = ({
                 paddingHorizontal: scale(12),
                 paddingVertical: verticalScale(8),
                 borderRadius: moderateScale(18),
-                borderWidth: 1,
+                borderWidth: 0.5,
                 borderColor: isBrothersPlus
                     ? "rgba(248, 213, 106, 0.80)"
-                    : "rgba(31,31,31,0.08)",
+                    : "rgba(31,31,31,0.10)",
                 backgroundColor: isBrothersPlus
                     ? "rgba(248, 213, 106, 0.25)"
-                    : "#FFFFFF"
+                    : "#FAFAFA"
             }}
         >
             <View

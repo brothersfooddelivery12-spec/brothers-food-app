@@ -282,10 +282,10 @@ export default function RewardsAndCouponsScreen(){
     }, [search])
     
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -301,8 +301,9 @@ export default function RewardsAndCouponsScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -532,8 +533,9 @@ export default function RewardsAndCouponsScreen(){
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={() => {}}
-                                            className="overflow-hidden bg-white border border-[#1F1F1F]/10"
+                                            className="overflow-hidden bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(22),
                                                 width: scale(250)
                                             }}
@@ -582,7 +584,7 @@ export default function RewardsAndCouponsScreen(){
                                                 </Text>
 
                                                 <View
-                                                    className="rounded-full bg-[#E8DDD3]/65"
+                                                    className="rounded-full bg-[#E8DDD3]/75"
                                                     style={{
                                                         height: verticalScale(0.7),
                                                         marginVertical: verticalScale(8)
@@ -727,13 +729,13 @@ export default function RewardsAndCouponsScreen(){
                                                 activeOpacity={0.85}
                                                 onPress={() => setSelectedCategory(category.id)}
                                                 className={`flex-row gap-2 items-center justify-center ${
-                                                    isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                                 }`}
                                                 style={{
                                                     borderRadius: moderateScale(18),
                                                     paddingHorizontal: scale(14),
                                                     paddingVertical: verticalScale(7),
-                                                    borderWidth: isSelected ? 1 : 1,
+                                                    borderWidth: 0.7,
                                                     borderColor: isSelected ? "#3F2516" : "#E8DDD3"
                                                 }}
                                             >

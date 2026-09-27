@@ -2,7 +2,6 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DessertIcon from '@/assets/icon/DessertIcon.svg'
-import MicIcon from '@/assets/icon/MicIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import SearchBar from '@/components/SearchBar'
 import { COMBO_OFFERS } from '@/constant/ComboData'
@@ -15,7 +14,7 @@ import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import PopularItemCard from '../Details/components/PopularItemCard'
-import FoodCard from '../Home/components/FoodCard'
+import FoodCard, { MenuItem } from '../Home/components/FoodCard'
 import ComboCard from './Components/ComboCard'
 
 const TABS = ["Popular", "Recommended", "Main Course"]
@@ -26,47 +25,102 @@ const TAB_TITLES = {
     "Main Course": "Main Course",
 }
 
-export const FREQUENTLY_ORDERED_TOGETHER = [
+export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
     {
-        id: "1",
-        restaurantId: "restaurant-1",
-        name: "Peri Peri Fries",
-        description: "Sides",
-        price: 119,
-        imageUri:
+        id: "restaurant-1-french-fries",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
+
+        name: "French Fries",
+        description: "Crispy golden french fries",
+        imageUrl:
             "https://i.pinimg.com/736x/73/7e/d9/737ed93987aae98a76fc2e5f12fc0ecc.jpg",
-        isAvailable: true
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 99.00,
+
+        preparationTime: 15,
+        deliveryFee: "25"
     },
+
     {
-        id: "2",
-        restaurantId: "restaurant-1",
-        name: "Cold Coffee",
-        description: "Beverages",
-        price: 89,
-        imageUri:
-            "https://i.pinimg.com/236x/23/b2/bc/23b2bcc80be05c9169a1333470d920e5.jpg",
-        isAvailable: false
+        id: "restaurant-1-coke",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
+
+        name: "Coke",
+        description: "Chilled soft drink",
+        imageUrl:
+            "https://i.pinimg.com/1200x/60/70/9b/60709bf9dee58b89448c04a6a518b45b.jpg",
+
+        isAvailable: false,
+        isVeg: true,
+
+        price: 59.00,
+
+        preparationTime: 5,
+        deliveryFee: "25"
     },
+
     {
-        id: "3",
-        restaurantId: "restaurant-1",
-        name: "Cheesy Garlic Bread",
-        description: "Sides",
-        price: 149,
-        imageUri:
+        id: "restaurant-1-garlic-bread",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
+
+        name: "Garlic Bread",
+        description: "Crispy garlic bread with herbs",
+        imageUrl:
             "https://i.pinimg.com/1200x/89/52/62/8952620f20999169e06c97f10a5eb24b.jpg",
-        isAvailable: true
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 129.00,
+
+        preparationTime: 12,
+        deliveryFee: "25"
     },
+
     {
-        id: "4",
-        restaurantId: "restaurant-1",
-        name: "Chocolate Brownie",
-        description: "Desserts",
-        price: 109,
-        imageUri:
+        id: "restaurant-1-brownie",
+
+        restaurant: {
+            id: "restaurant-1",
+            name: "Onebite",
+            LogoUrl: null,
+            isOpen: true
+        },
+
+        name: "Brownie",
+        description: "Rich chocolate brownie",
+        imageUrl:
             "https://i.pinimg.com/736x/18/39/b5/1839b51798c581c9219f3d7ccd62cbda.jpg",
-        isAvailable: true
-    },
+
+        isAvailable: true,
+        isVeg: true,
+
+        price: 99.00,
+
+        preparationTime: 10,
+        deliveryFee: "25"
+    }
 ]
 
 export default function RestaurantMenuScreen(){
@@ -151,10 +205,10 @@ export default function RestaurantMenuScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -170,8 +224,9 @@ export default function RestaurantMenuScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -245,8 +300,8 @@ export default function RestaurantMenuScreen(){
                 ListHeaderComponent={
                     <View>
                         <View
-                            className="items-center bg-[#FFFFFF] border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), padding: moderateScale(8) }}
+                            className="items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), padding: moderateScale(8), borderWidth: moderateScale(0.5) }}
                         >
                             <View className="flex-row gap-3 justify-center">
                                 <Image
@@ -282,7 +337,7 @@ export default function RestaurantMenuScreen(){
                                             }}
                                         >
                                             <Text
-                                                className="text-white font-bold"
+                                                className="text-[#FFFFFF] font-bold"
                                                 style={{ fontSize: moderateScale(8) }}
                                             >
                                                 {isOpen ? "OPEN NOW" : "CLOSE"}
@@ -394,9 +449,6 @@ export default function RestaurantMenuScreen(){
                                 value={search}
                                 onChangeText={setsearch}
                                 placeholder="Search in The Burfer King..."
-                                RightIcon={MicIcon}
-                                rightIconColor="#1F1F1F"
-                                onRightPress={() => {}}
                             />
                         </View>
 
@@ -522,7 +574,7 @@ export default function RestaurantMenuScreen(){
                         </Text>
 
                         <FlatList
-                            data={FREQUENTLY_ORDERED_TOGETHER}
+                            data={FREQUENTLY_ADDED_TOGETHER}
                             horizontal
                             nestedScrollEnabled
                             directionalLockEnabled

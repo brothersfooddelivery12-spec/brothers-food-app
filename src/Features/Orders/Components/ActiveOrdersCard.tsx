@@ -129,8 +129,9 @@ const ActiveOrderCard = ({
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 p-4"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 p-4"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 marginTop: verticalScale(14)
             }}
@@ -225,7 +226,7 @@ const ActiveOrderCard = ({
             <OrderStatus status={status} />
 
             <View
-                className="items-start bg-[#F5F5F5] py-4 px-5"
+                className="items-start bg-[#E5E4E2]/45 py-4 px-5"
                 style={{
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
@@ -288,7 +289,7 @@ const ActiveOrderCard = ({
                     className={`flex-row items-center justify-center ${
                         isPendingPayment
                             ? "bg-[#FEE2E2]/85"
-                            : "bg-[#E5E4E2]/75"
+                            : "bg-[#E5E4E2]/65"
                     }`}
                     style={{
                         paddingHorizontal: scale(12),
@@ -303,13 +304,21 @@ const ActiveOrderCard = ({
                     )}
 
                     <Text
-                        className="text-[#3F2516] font-medium ml-2 mr-1"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-medium ml-2 mr-1"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
+                        }}
                     >
                         {isPendingPayment ? "Cancel Order" : "Contact Rider"}
                     </Text>
 
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
+                    <ArrowRight
+                        width={moderateScale(16)}
+                        height={moderateScale(16)}
+                        color={isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
+                        strokeWidth={2}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

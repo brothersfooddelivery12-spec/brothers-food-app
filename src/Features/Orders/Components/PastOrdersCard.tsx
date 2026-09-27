@@ -268,8 +268,9 @@ const PastOrdersCard = ({
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 p-4"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 p-4"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 marginTop: verticalScale(14)
             }}
@@ -321,7 +322,7 @@ const PastOrdersCard = ({
 
                 <View className="items-end justify-between my-1">
                     <View
-                        className="flex-row items-center justify-center bg-[#E3F2E8]"
+                        className="flex-row items-center justify-center"
                         style={{
                             gap: moderateScale(3),
                             paddingHorizontal: moderateScale(8),
@@ -393,7 +394,7 @@ const PastOrdersCard = ({
             </View>
 
             <View
-                className="items-start bg-[#F5F5F5] py-4 px-5"
+                className="items-start bg-[#E5E4E2]/45 py-4 px-5"
                 style={{
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
@@ -456,7 +457,7 @@ const PastOrdersCard = ({
                     className={`flex-row items-center justify-center ${
                         isPendingPayment
                             ? "bg-[#FEE2E2]/85"
-                            : "bg-[#E5E4E2]/75"
+                            : "bg-[#E5E4E2]/65"
                     }`}
                     style={{
                         paddingHorizontal: scale(12),

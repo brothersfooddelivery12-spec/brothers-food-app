@@ -49,7 +49,7 @@ const CartItemRow = memo(
                             width: moderateScale(68),
                             height: moderateScale(68),
                             borderRadius: moderateScale(14),
-                            borderWidth: !hasImage && !isUnavailable ? 1 : 0,
+                            borderWidth: !hasImage && !isUnavailable ? 0.7 : 0,
                             borderColor: "rgba(31,31,31,0.08)"
                         }}
                     >
@@ -92,7 +92,7 @@ const CartItemRow = memo(
                                 }}
                             >
                                 <Text
-                                    className="text-white font-bold uppercase"
+                                    className="text-[#FFFFFF] font-bold uppercase"
                                     style={{ fontSize: moderateScale(6.5) }}
                                 >
                                     Unavailable
@@ -235,7 +235,7 @@ const CartItemRow = memo(
                             }}
                         >
                             <Text
-                                className="font-medium text-white"
+                                className="font-medium text-[#FFFFFF]"
                                 style={{ fontSize: moderateScale(11) }}
                             >
                                 ₹{item.price}

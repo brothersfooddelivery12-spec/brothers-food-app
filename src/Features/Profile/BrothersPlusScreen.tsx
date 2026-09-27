@@ -98,10 +98,10 @@ export default function BrothersPlusScreen(){
     const insets = useSafeAreaInsets()
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -117,8 +117,9 @@ export default function BrothersPlusScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -218,8 +219,9 @@ export default function BrothersPlusScreen(){
                         </View>
 
                         <View
-                            className="mt-5 p-4 bg-white border border-[#1F1F1F]/10"
+                            className="mt-5 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 position: "relative"
                             }}
@@ -296,8 +298,9 @@ export default function BrothersPlusScreen(){
                                     return (
                                         <View
                                             key={item.id}
-                                            className="flex-row items-center bg-white border border-[#1F1F1F]/10"
+                                            className="flex-row items-center bg-[#FFFFFF] border-[#1F1F1F]/10"
                                             style={{
+                                                borderWidth: moderateScale(0.7),
                                                 borderRadius: moderateScale(16),
                                                 paddingHorizontal: scale(10),
                                                 paddingVertical: verticalScale(10)
@@ -380,7 +383,7 @@ export default function BrothersPlusScreen(){
                         </Text>
 
                         <View
-                            className="py-6 px-5 bg-[#E5E4E2]/60 mx-2 items-center justify-center"
+                            className="py-6 px-5 bg-[#E5E4E2]/45 mx-2 items-center justify-center"
                             style={{
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(18)
@@ -480,8 +483,9 @@ export default function BrothersPlusScreen(){
                         </View>
 
                         <View
-                            className="relative py-6 px-5 bg-white border border-[#1F1F1F]/15 mx-2 items-center justify-center"
+                            className="relative py-6 px-5 bg-[#FAFAFA] border-[#1F1F1F]/15 mx-2 items-center justify-center"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(30)
                             }}
@@ -595,7 +599,7 @@ export default function BrothersPlusScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(14) }}
                                 >
                                     Select Plan
@@ -729,7 +733,7 @@ export default function BrothersPlusScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(14) }}
                                 >
                                     Select Plan

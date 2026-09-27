@@ -22,10 +22,10 @@ export default function PrivacyScreen(){
     const [phoneNumberHide, setPhoneNumberHide] = useState(false)
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -41,8 +41,9 @@ export default function PrivacyScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -127,12 +128,12 @@ export default function PrivacyScreen(){
                         </Text>
 
                         <View
-                            className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -164,7 +165,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -172,7 +173,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -204,7 +205,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -212,7 +213,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -244,7 +245,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -252,7 +253,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -290,12 +291,12 @@ export default function PrivacyScreen(){
                         </Text>
 
                         <View
-                            className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -327,7 +328,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -335,7 +336,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -367,7 +368,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -375,7 +376,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -407,7 +408,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -415,7 +416,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -453,12 +454,12 @@ export default function PrivacyScreen(){
                         </Text>
 
                         <View
-                            className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -490,7 +491,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -498,7 +499,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),
@@ -530,7 +531,7 @@ export default function PrivacyScreen(){
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}
@@ -538,7 +539,7 @@ export default function PrivacyScreen(){
 
                             <View className='flex-row gap-2 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#F5F5F5]"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         width: moderateScale(38),
                                         height: moderateScale(38),

@@ -49,7 +49,7 @@ const FavouriteTabs = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["#FFFFFF", "rgba(31,31,31,0.65)"]
+                    ["#FFFFFF", "rgba(31,31,31,0.75)"]
                 )
         }))
 
@@ -58,7 +58,7 @@ const FavouriteTabs = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["rgba(31,31,31,0.65)", "#FFFFFF"]
+                    ["rgba(31,31,31,0.75)", "#FFFFFF"]
                 )
         }))
 
@@ -88,12 +88,11 @@ const FavouriteTabs = memo(
                     const width =event.nativeEvent.layout.width
                     tabWidth.value = (width - tabPadding * 2) / 2
                 }}
-                className="flex-row bg-[#E5E4E2]/55 mx-2 overflow-hidden"
+                className="flex-row bg-[#FAFAFA] mx-2 overflow-hidden border-[#1F1F1F]/10"
                 style={{
                     padding: tabPadding,
                     borderRadius: moderateScale(28),
-                    borderWidth: moderateScale(1),
-                    borderColor: "rgba(31,31,31,0.05)"
+                    borderWidth: moderateScale(0.5)
                 }}
             >
                 <Animated.View
@@ -153,17 +152,13 @@ const FavouriteTabs = memo(
                                 restaurantInactiveIconStyle
                             ]}
                         >
-                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.65)" />
+                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.75)" />
                         </Animated.View>
                     </View>
 
                     <Animated.Text
                         numberOfLines={1}
-                        className={
-                            isRestaurant
-                                ? "font-semibold"
-                                : "font-medium"
-                        }
+                        className={isRestaurant ? "font-semibold" : "font-medium"}
                         style={[
                             {
                                 fontSize: moderateScale(14)
@@ -204,7 +199,7 @@ const FavouriteTabs = memo(
                                 foodInactiveIconStyle
                             ]}
                         >
-                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.65)" />
+                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.75)" />
                         </Animated.View>
 
                         <Animated.View
@@ -223,11 +218,7 @@ const FavouriteTabs = memo(
 
                     <Animated.Text
                         numberOfLines={1}
-                        className={
-                            !isRestaurant
-                                ? "font-semibold"
-                                : "font-medium"
-                        }
+                        className={!isRestaurant ? "font-semibold" : "font-medium"}
                         style={[
                             {
                                 fontSize: moderateScale(14)

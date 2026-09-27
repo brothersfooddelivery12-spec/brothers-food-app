@@ -34,8 +34,9 @@ const RestaurantCartContent = memo(
     }: RestaurantCartContentProps) => {
         return (
             <View
-                className="p-3 border"
+                className="p-3"
                 style={{
+                    borderWidth: moderateScale(0.7),
                     borderRadius: moderateScale(18),
                     backgroundColor: isRestaurantOpen ? "#FFFFFF" : "#F3F3F3",
                     borderColor: "rgba(31,31,31,0.10)"
@@ -70,9 +71,7 @@ const RestaurantCartContent = memo(
                     activeOpacity={0.95}
                     disabled={!isRestaurantOpen}
                     onPress={() => {
-                        if (
-                            !isRestaurantOpen
-                        ) {
+                        if (!isRestaurantOpen) {
                             return
                         }
 
@@ -84,10 +83,9 @@ const RestaurantCartContent = memo(
                         paddingHorizontal: moderateScale(8),
                         paddingVertical: moderateScale(6),
                         borderRadius: moderateScale(14),
-                        backgroundColor:
-                            isRestaurantOpen
-                                ? "rgba(232,185,63,0.15)"
-                                : "rgba(31,31,31,0.06)"
+                        backgroundColor: isRestaurantOpen
+                            ? "rgba(232,185,63,0.15)"
+                            : "rgba(31,31,31,0.06)"
                     }}
                 >
                     <PlusSignCircleIcon
@@ -220,15 +218,15 @@ const RestaurantCartCard = memo(
 
         return (
             <View
-                className="p-3 border"
+                className="p-3"
                 style={{
                     borderRadius: moderateScale(20),
                     marginTop: verticalScale(8),
-                    backgroundColor: isRestaurantOpen ? "#FFFFFF" : "#EFEFEF",
-                    borderColor:
-                        isRestaurantOpen
-                            ? "rgba(31,31,31,0.10)"
-                            : "rgba(31,31,31,0.08)"
+                    backgroundColor: isRestaurantOpen ? "#FAFAFA" : "#EFEFEF",
+                    borderColor: isRestaurantOpen
+                        ? "rgba(31,31,31,0.10)"
+                        : "rgba(31,31,31,0.08)",
+                    borderWidth: moderateScale(0.5)
                 }}
             >
                 <TouchableOpacity
@@ -241,7 +239,7 @@ const RestaurantCartCard = memo(
                         style={{
                             width: moderateScale(46),
                             height: moderateScale(46),
-                            borderWidth: !hasImage && !isRestaurantOpen ? 1 : 0,
+                            borderWidth: !hasImage && !isRestaurantOpen ? 0.7 : 0,
                             borderColor: "rgba(31,31,31,0.08)"
                         }}
                     >
@@ -295,10 +293,9 @@ const RestaurantCartCard = memo(
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(3),
                                     borderRadius: moderateScale(10),
-                                    backgroundColor:
-                                        isRestaurantOpen
-                                            ? "rgba(232,185,63,0.15)"
-                                            : "rgba(31,31,31,0.07)"
+                                    backgroundColor: isRestaurantOpen
+                                        ? "rgba(232,185,63,0.15)"
+                                        : "rgba(31,31,31,0.07)"
                                 }}
                             >
                                 <DeliveryIcon
@@ -324,10 +321,9 @@ const RestaurantCartCard = memo(
                                     style={{
                                         width: moderateScale(22),
                                         height: moderateScale(22),
-                                        backgroundColor:
-                                            isRestaurantOpen
-                                                ? "rgba(232,185,63,0.15)"
-                                                : "rgba(31,31,31,0.07)"
+                                        backgroundColor: isRestaurantOpen
+                                            ? "rgba(232,185,63,0.15)"
+                                            : "rgba(31,31,31,0.07)"
                                     }}
                                 >
                                     <ClockIcon
@@ -341,10 +337,9 @@ const RestaurantCartCard = memo(
                                     className="font-medium"
                                     style={{
                                         fontSize: moderateScale(10),
-                                        color:
-                                            isRestaurantOpen
-                                                ? "rgba(31,31,31,0.75)"
-                                                : "rgba(31,31,31,0.45)"
+                                        color: isRestaurantOpen
+                                            ? "rgba(31,31,31,0.75)"
+                                            : "rgba(31,31,31,0.45)"
                                     }}
                                 >
                                     {isRestaurantOpen ? `${deliveryTime} min` : "Currently Closed"}
@@ -413,10 +408,9 @@ const RestaurantCartCard = memo(
                             {
                                 width: moderateScale(26),
                                 height: moderateScale(26),
-                                backgroundColor:
-                                    isRestaurantOpen
-                                        ? "rgba(232,185,63,0.15)"
-                                        : "rgba(31,31,31,0.07)"
+                                backgroundColor: isRestaurantOpen
+                                    ? "rgba(232,185,63,0.15)"
+                                    : "rgba(31,31,31,0.07)"
                             }
                         ]}
                         className="items-center justify-center rounded-full"
@@ -441,10 +435,7 @@ const RestaurantCartCard = memo(
                     onLayout={(event) => {
                         const height = event.nativeEvent.layout.height
 
-                        if (
-                            height > 0 &&
-                            height !== contentHeight.value
-                        ) {
+                        if (height > 0 && height !== contentHeight.value) {
                             contentHeight.value = height
                         }
                     }}

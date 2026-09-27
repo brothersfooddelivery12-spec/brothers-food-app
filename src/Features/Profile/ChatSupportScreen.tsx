@@ -83,10 +83,10 @@ export default function ChatSupportScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -102,8 +102,9 @@ export default function ChatSupportScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -147,8 +148,9 @@ export default function ChatSupportScreen(){
                     ListHeaderComponent={
                         <>
                             <View
-                                className='bg-[#FFFFFF] border border-[#1F1F1F]/10 flex-row gap-3 p-3'
+                                className='bg-[#FAFAFA] border-[#1F1F1F]/10 flex-row gap-3 p-3'
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     marginTop: verticalScale(5),
                                     borderRadius: moderateScale(18)
                                 }}
@@ -228,7 +230,7 @@ export default function ChatSupportScreen(){
 
                             <View className='w-full items-center justify-center mt-6 mb-6'>
                                 <View
-                                    className='flex-row justify-center bg-[#e9e9e9]'
+                                    className='flex-row justify-center bg-[#E5E4E2]/55'
                                     style={{
                                         gap: moderateScale(4),
                                         borderRadius: moderateScale(18),
@@ -236,7 +238,7 @@ export default function ChatSupportScreen(){
                                         paddingVertical: moderateScale(4)
                                     }}
                                 >
-                                    <DateIcon width={moderateScale(16)} height={moderateScale(16)} color={"#1F1F1F85"} strokeWidth={1.5} />
+                                    <DateIcon width={moderateScale(16)} height={moderateScale(16)} color={"#1F1F1F95"} strokeWidth={1.5} />
 
                                     <Text
                                         className='text-[#1F1F1F]/85 font-normal'
@@ -273,7 +275,7 @@ export default function ChatSupportScreen(){
                 />
 
                 <View
-                    className="bg-[#F5F5F5]"
+                    className="bg-[#FFFFFF]"
                     style={{
                         paddingHorizontal: scale(14),
                         paddingBottom: verticalScale(8),
@@ -295,8 +297,9 @@ export default function ChatSupportScreen(){
                                 key={item.id}
                                 activeOpacity={0.85}
                                 onPress={() => {}}
-                                className="bg-white border border-[#1F1F1F]/10"
+                                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                                 style={{
+                                    borderWidth: moderateScale(0.7),
                                     borderRadius: moderateScale(18),
                                     paddingHorizontal: scale(12),
                                     paddingVertical: verticalScale(6)
@@ -314,14 +317,15 @@ export default function ChatSupportScreen(){
     
                     <View className="flex-row items-center gap-3 w-full">
                         <View
-                            className="flex-1 flex-row items-center bg-white border border-[#1F1F1F]/10"
+                            className="flex-1 flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 paddingHorizontal: scale(13),
                                 height: verticalScale(46)
                             }}    
                         >
-                            <AddCircleIcon height={moderateScale(24)} width={moderateScale(24)} color="#4a4a4a" strokeWidth={1.8} />
+                            <AddCircleIcon height={moderateScale(24)} width={moderateScale(24)} color="#1F1F1F95" strokeWidth={1.5} />
     
                             <TextInput
                                 placeholder="Type a message..."

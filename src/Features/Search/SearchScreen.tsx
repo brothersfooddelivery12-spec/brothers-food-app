@@ -189,15 +189,15 @@ export default function SearchScreen() {
     }))
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#F5F5F5] absolute left-0 right-0"
+                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
@@ -316,19 +316,19 @@ export default function SearchScreen() {
                                                 }
                                             }}
                                             className={`items-center justify-center ${
-                                                isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                                isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                             }`}
                                             style={{
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(16),
                                                 paddingVertical: verticalScale(7),
-                                                borderWidth: isSelected ? 0 : 1,
+                                                borderWidth: 0.7,
                                                 borderColor: "#E8DDD3"
                                             }}
                                         >
                                             <Text
                                                 className={`font-semibold ${
-                                                    isSelected ? "text-white" : "text-[#5A3825]"
+                                                    isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
                                                 }`}
                                                 style={{ fontSize: moderateScale(13) }}
                                             >
@@ -342,7 +342,7 @@ export default function SearchScreen() {
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(15) }}
+                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(15) }}
                         >
                             Trending Searches
                         </Text>
@@ -354,7 +354,7 @@ export default function SearchScreen() {
                             nestedScrollEnabled
                             directionalLockEnabled
                             showsHorizontalScrollIndicator={false}
-                            className="-mx-5 mt-3"
+                            className="-mx-5 mt-2"
                             contentContainerStyle={{
                                 paddingHorizontal: scale(14),
                                 gap: scale(10),
@@ -364,7 +364,7 @@ export default function SearchScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     onPress={() => setSelectedTrending(item.title)}
-                                    className="items-center justify-center bg-[#E5E4E2]/85"
+                                    className="items-center justify-center bg-[#E5E4E2]/65"
                                     style={{
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(16),
@@ -385,15 +385,15 @@ export default function SearchScreen() {
                             <View className="flex-row items-center">
                                 <Text
                                     className="text-[#1F1F1F] font-bold flex-1"
-                                    style={{ fontSize: moderateScale(16) }}
+                                    style={{ fontSize: moderateScale(15) }}
                                 >
                                     Recent Searches
                                 </Text>
 
                                 <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
                                     <Text
-                                        className="text-[#3F2516] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="text-[#3F2516] font-semibold"
+                                        style={{ fontSize: moderateScale(13) }}
                                     >
                                         Clear All
                                     </Text>
@@ -409,8 +409,9 @@ export default function SearchScreen() {
                                         key={item.id}
                                         activeOpacity={0.85}
                                         onPress={() => setSelectedTrending(item.title)}
-                                        className="flex-row items-center bg-white border border-[#1F1F1F]/10"
+                                        className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
+                                            borderWidth: moderateScale(0.5),
                                             gap: moderateScale(5),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(12),
@@ -433,7 +434,7 @@ export default function SearchScreen() {
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(20) }}
+                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(18) }}
                         >
                             Recommended For You
                         </Text>
@@ -455,7 +456,7 @@ export default function SearchScreen() {
 
                         <Text
                             className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(16), marginTop: verticalScale(20) }}
+                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(20) }}
                         >
                             Top Restaurants Near You
                         </Text>

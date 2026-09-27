@@ -80,8 +80,9 @@ export const AddressField = ({
                 onPress={handleFieldPress}
                 disabled={loading}
                 className={`flex-row items-center overflow-hidden
-                ${error ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                ${error ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                 style={{
+                    borderWidth: moderateScale(0.7),
                     height: verticalScale(46),
                     borderRadius: moderateScale(14),
                     paddingHorizontal: scale(8),
@@ -89,7 +90,7 @@ export const AddressField = ({
                 }}
             >
                 <View
-                    className="items-center justify-center bg-[#F5F5F5]"
+                    className="items-center justify-center bg-[#E5E4E2]/65"
                     style={{
                         width: moderateScale(34),
                         height: moderateScale(34),
@@ -99,7 +100,7 @@ export const AddressField = ({
                     <Icon
                         width={moderateScale(19)}
                         height={moderateScale(19)}
-                        color="#655145"
+                        color="#1F1F1F"
                         strokeWidth={1.6}
                     />
                 </View>

@@ -17,8 +17,8 @@ type NotificationPreferenceCardProps = {
 const NotificationPreferenceCard = ({ items, onToggle }: NotificationPreferenceCardProps) => {
     return (
         <View
-            className="mt-3 p-4 bg-white border border-[#1F1F1F]/10"
-            style={{ borderRadius: moderateScale(18) }}
+            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
         >
             {items.map((item, index) => {
                 const isLast = index === items.length - 1
@@ -43,7 +43,7 @@ const NotificationPreferenceCard = ({ items, onToggle }: NotificationPreferenceC
                             <View
                                 className="bg-[#1F1F1F]/10"
                                 style={{
-                                    height: 1,
+                                    height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)
                                 }}

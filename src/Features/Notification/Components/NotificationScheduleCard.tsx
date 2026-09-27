@@ -53,7 +53,7 @@ const NotificationScheduleCard = ({
                 style={{ marginTop: verticalScale(14) }}
             >
                 <Text
-                    className="flex-1 text-white font-semibold"
+                    className="flex-1 text-[#FFFFFF] font-semibold"
                     style={{ fontSize: moderateScale(15) }}
                 >
                     Do Not Disturb
@@ -89,7 +89,7 @@ const NotificationScheduleCard = ({
                         onPress={onEditStartTime}
                     >
                         <Text
-                            className="text-white font-black"
+                            className="text-[#FFFFFF] font-black"
                             style={{ fontSize: moderateScale(20) }}
                         >
                             {startTime}
@@ -97,7 +97,7 @@ const NotificationScheduleCard = ({
                     </TouchableOpacity>
 
                     <Text
-                        className="text-white font-black"
+                        className="text-[#FFFFFF] font-black"
                         style={{
                             fontSize: moderateScale(20),
                             marginHorizontal: scale(7)
@@ -111,7 +111,7 @@ const NotificationScheduleCard = ({
                         onPress={onEditEndTime}
                     >
                         <Text
-                            className="text-white font-black"
+                            className="text-[#FFFFFF] font-black"
                             style={{ fontSize: moderateScale(20) }}
                         >
                             {endTime}

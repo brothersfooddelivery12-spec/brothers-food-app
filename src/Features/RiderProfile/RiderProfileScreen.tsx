@@ -48,10 +48,10 @@ export default function RiderProfileScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -67,8 +67,9 @@ export default function RiderProfileScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -136,7 +137,7 @@ export default function RiderProfileScreen() {
                                     />
 
                                     <View
-                                        className={`absolute border border-white items-center justify-center ${
+                                        className={`absolute border border-[#FFFFFF] items-center justify-center ${
                                             isOnline ? "bg-[#22A06B]" : "bg-[#7A7D81]"
                                         }`}
                                         style={{
@@ -148,7 +149,7 @@ export default function RiderProfileScreen() {
                                         }}
                                     >
                                         <Text
-                                            className="text-white font-bold"
+                                            className="text-[#FFFFFF] font-bold"
                                             style={{ fontSize: moderateScale(7) }}
                                         >
                                             {isOnline ? "ONLINE" : "OFFLINE"}
@@ -343,8 +344,8 @@ export default function RiderProfileScreen() {
                         /> */}
 
                         <View
-                            className='p-3 bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16) }}
+                            className='p-3 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
@@ -405,7 +406,7 @@ export default function RiderProfileScreen() {
                                 {languages.map((language) => (
                                     <View
                                         key={language}
-                                        className="items-center justify-center bg-[#E5E4E2]/35"
+                                        className="items-center justify-center bg-[#E5E4E2]/55"
                                         style={{
                                             paddingHorizontal: scale(12),
                                             paddingVertical: verticalScale(4),
@@ -413,7 +414,7 @@ export default function RiderProfileScreen() {
                                         }}
                                     >
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold"
+                                            className="text-[#1F1F1F] font-medium"
                                             style={{
                                                 fontSize: moderateScale(12),
                                             }}
@@ -462,8 +463,9 @@ export default function RiderProfileScreen() {
                             }}
                         >
                             <View
-                                className='items-center justify-center px-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
                                     height: moderateScale(100)
@@ -491,8 +493,9 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className='items-center justify-center px-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
                                     height: moderateScale(100)
@@ -520,8 +523,9 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className='items-center justify-center px-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
                                     height: moderateScale(100)
@@ -550,8 +554,8 @@ export default function RiderProfileScreen() {
                         </ScrollView>
 
                         <View
-                            className='p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16) }}
+                            className='p-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-1 items-center'>
                                 <VerifyIcon width={moderateScale(18)} height={moderateScale(18)} color={"#5c4639"} />
@@ -664,8 +668,9 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-white items-center justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                            className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)
@@ -684,8 +689,9 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-white items-center justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                            className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)

@@ -34,8 +34,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
     return (
         <View
-            className="flex-row bg-white border border-[#1F1F1F]/10 overflow-visible"
+            className="flex-row bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 minHeight: verticalScale(120)
             }}
@@ -92,9 +93,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 </Text>
 
                 <View
-                    className="bg-[#E8DDD3]/75 mx-2"
+                    className="bg-[#E8DDD3]/65 mx-2"
                     style={{
-                        height: 1,
+                        height: 0.7,
                         marginVertical: verticalScale(8)
                     }}
                 />
@@ -143,7 +144,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                         <View
                             key={index}
                             style={{
-                                width: 1,
+                                width: 0.7,
                                 height: verticalScale(4),
                                 backgroundColor: "rgba(232,185,63,0.35)"
                             }}
@@ -153,7 +154,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#F5F5F5]"
+                    className="absolute bg-[#FFFFFF]"
                     style={{
                         top: -moderateScale(11),
                         left: -moderateScale(11),
@@ -168,7 +169,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#F5F5F5]"
+                    className="absolute bg-[#FFFFFF]"
                     style={{
                         bottom: -moderateScale(11),
                         left: -moderateScale(11),
@@ -191,7 +192,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     }}
                 >
                     <Text
-                        className="text-white font-bold"
+                        className="text-[#FFFFFF] font-bold"
                         style={{ fontSize: moderateScale(13) }}
                     >
                         Apply

@@ -20,8 +20,9 @@ function HelpCenterCard({ item }: HelpCenterCardProps) {
 
     return (
         <View
-            className="bg-white border border-[#1F1F1F]/10 items-center"
+            className="bg-[#FAFAFA] border-[#1F1F1F]/10 items-center"
             style={{
+                borderWidth: moderateScale(0.5),
                 width: "48%",
                 minHeight: moderateScale(160),
                 paddingHorizontal: scale(14),

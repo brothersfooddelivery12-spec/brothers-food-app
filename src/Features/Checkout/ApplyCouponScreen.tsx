@@ -59,10 +59,10 @@ export default function ApplyCouponScreen(){
     }, [couponCode])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -78,8 +78,9 @@ export default function ApplyCouponScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -129,8 +130,9 @@ export default function ApplyCouponScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="p-4 items-center bg-white border border-[#1F1F1F]/10"
+                            className="p-4 items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(6)
                             }}
@@ -165,8 +167,9 @@ export default function ApplyCouponScreen(){
 
                             <View className='flex-row gap-3 items-center mt-4'>
                                 <View
-                                    className="flex-1 items-start bg-white border border-[#1F1F1F]/10"
+                                    className="flex-1 items-start bg-[#FFFFFF] border-[#1F1F1F]/10"
                                     style={{
+                                        borderWidth: moderateScale(0.7),
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(10),
                                         height: verticalScale(38)
@@ -204,7 +207,7 @@ export default function ApplyCouponScreen(){
                                     }}
                                 >
                                     <Text
-                                        className="text-white font-semibold"
+                                        className="text-[#FFFFFF] font-semibold"
                                         style={{ fontSize: moderateScale(13) }}
                                     >
                                         Apply
@@ -243,13 +246,13 @@ export default function ApplyCouponScreen(){
                                         activeOpacity={0.85}
                                         onPress={() => setSelectedCategory(category.id)}
                                         className={`flex-row gap-2 items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(14),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: isSelected ? 1 : 1,
+                                            borderWidth: 0.7,
                                             borderColor: isSelected ? "#3F2516" : "#E8DDD3"
                                         }}
                                     >

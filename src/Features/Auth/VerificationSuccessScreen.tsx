@@ -154,10 +154,10 @@ export default function VerificationSuccessScreen() {
     }))
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -203,8 +203,9 @@ export default function VerificationSuccessScreen() {
                 </Text>
 
                 <View
-                    className="flex-row gap-3 bg-white border border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(22)
                     }}
@@ -238,8 +239,9 @@ export default function VerificationSuccessScreen() {
                 </View>
 
                 <View
-                    className="flex-row gap-3 bg-white border border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(8)
                     }}
@@ -273,8 +275,9 @@ export default function VerificationSuccessScreen() {
                 </View>
 
                 <View
-                    className="flex-row gap-3 bg-white border border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(8)
                     }}
@@ -336,8 +339,9 @@ export default function VerificationSuccessScreen() {
         
                         <View
                             className={`flex-row items-center overflow-hidden
-                            ${nameError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                            ${nameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                             style={{
+                                borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(10),
                                 paddingLeft: scale(9),
@@ -346,14 +350,14 @@ export default function VerificationSuccessScreen() {
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#F5F5F5]"
+                                className="items-center justify-center bg-[#E5E4E2]/65"
                                 style={{
                                     width: moderateScale(36),
                                     height: moderateScale(36),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
-                                <UserIcon width={scale(20)} height={scale(20)} color={"#655145"} /> 
+                                <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} /> 
                             </View>
         
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>

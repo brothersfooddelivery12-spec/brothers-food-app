@@ -70,10 +70,10 @@ export default function RestaurantReviewScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -89,8 +89,9 @@ export default function RestaurantReviewScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -180,8 +181,9 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row items-center gap-3 bg-white border border-[#1F1F1F]/10 p-3"
+                            className="flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(22)
                             }}
@@ -233,8 +235,9 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-center bg-white border border-[#1F1F1F]/10 p-3"
+                            className="flex-row gap-3 items-center bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(8)
                             }}
@@ -286,8 +289,9 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-center bg-white border border-[#1F1F1F]/10 p-3"
+                            className="flex-row gap-3 items-center bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(8)
                             }}
@@ -396,19 +400,19 @@ export default function RestaurantReviewScreen() {
                         
                                         }}
                                         className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: isSelected ? 0 : 1,
+                                            borderWidth: 0.7,
                                             borderColor: "rgba(31, 31, 31, 0.10)"
                                         }}
                                     >
                                         <Text
                                             className={`font-semibold ${
-                                                isSelected ? "text-white" : "text-[#1F1F1F]"
+                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
                                             }`}
                                             style={{ fontSize: moderateScale(13) }}
                                         >

@@ -4,7 +4,7 @@ import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
-import { Address } from "@/Features/Services/address-service"
+import { Address } from '@/Services/address-service'
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { FadeInLeft, FadeInRight, FadeOutLeft, FadeOutRight } from "react-native-reanimated"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -57,8 +57,9 @@ const AddressCard = ({
         <AnimatedTouchableOpacity
             activeOpacity={0.95}
             onPress={onPress}
-            className="p-4 flex-row gap-3 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+            className="p-4 flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
             style={{
+                borderWidth: moderateScale(0.5),
                 marginTop: verticalScale(8),
                 borderRadius: moderateScale(20)
             }}
@@ -177,7 +178,7 @@ const AddressCard = ({
                         <EditIcon width={moderateScale(12)} height={moderateScale(12)} color="#FFFFFF" strokeWidth={1.8} />
 
                         <Text
-                            className="text-white font-medium tracking-wider"
+                            className="text-[#FFFFFF] font-medium tracking-wider"
                             style={{ fontSize: moderateScale(10) }}
                         >
                             Edit

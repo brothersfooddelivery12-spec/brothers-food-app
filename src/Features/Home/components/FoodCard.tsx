@@ -113,7 +113,8 @@ const FoodCard = ({
             style={{
                 width: moderateScale(155),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
+                borderWidth: moderateScale(0.5),
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -129,7 +130,7 @@ const FoodCard = ({
                         height: "100%",
                         borderRadius: moderateScale(18),
                         overflow: "hidden",
-                        borderWidth: !hasImage && !isInactive ? 1 : 0,
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
                         borderColor: "rgba(31,31,31,0.08)"
                     }}
                 >
@@ -153,16 +154,16 @@ const FoodCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            className="absolute inset-0 bg-black/25"
                         />
                     )}
                 </View>
 
                 {item.isHot && !isInactive && (
                     <View
-                        className="absolute flex-row items-center justify-center gap-1 bg-white border border-[#1F1F1F]/10"
+                        className="absolute flex-row items-center justify-center gap-1 bg-[#FFFFFF] border-[#1F1F1F]/10"
                         style={{
+                            borderWidth: moderateScale(0.7),
                             right: moderateScale(13),
                             top: moderateScale(13),
                             paddingHorizontal: moderateScale(5),
@@ -193,7 +194,7 @@ const FoodCard = ({
                         onFavouritePress?.()
                     }}
                     hitSlop={8}
-                    className="absolute items-center justify-center rounded-full bg-white border border-[#1F1F1F]/10"
+                    className="absolute items-center justify-center rounded-full bg-[#FFFFFF] border-[#1F1F1F]/10"
                     style={{
                         right: moderateScale(12),
                         top: moderateScale(12),
@@ -202,7 +203,8 @@ const FoodCard = ({
                         backgroundColor: isInactive
                             ? "rgba(255,255,255,0.75)"
                             : "#FFFFFF",
-                        borderColor: "rgba(31,31,31,0.10)"
+                        borderColor: "rgba(31,31,31,0.10)",
+                        borderWidth: moderateScale(0.7),
                     }}
                 >
                     {isFavourite ? (
@@ -236,7 +238,7 @@ const FoodCard = ({
                         }}
                     >
                         <Text
-                            className="text-white font-bold uppercase"
+                            className="text-[#FFFFFF] font-bold uppercase"
                             style={{ fontSize: moderateScale(7.5) }}
                         >
                             Currently Unavailable

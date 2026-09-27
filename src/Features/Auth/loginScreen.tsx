@@ -174,7 +174,7 @@ export default function LoginScreen() {
     }, [])
 
     return(
-        <View className="flex-1">
+        <View className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
                 backgroundColor="transparent"
@@ -227,11 +227,11 @@ export default function LoginScreen() {
                     extraKeyboardSpace={20}
                 >
                     <View 
-                        className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
+                        className="w-full items-center rounded-t-[22px] bg-[#FFFFFF]"
                         style={{ paddingHorizontal: scale(14) }}
                     >
                         <Animated.View
-                            className="overflow-hidden rounded-[32px] border-[2px] border-white"
+                            className="overflow-hidden rounded-[32px] border-[2px] border-[#FFFFFF]"
                             style={{
                                 width: logoSize,
                                 height: logoSize,
@@ -349,8 +349,13 @@ export default function LoginScreen() {
                         </Text>
 
                         <View className={`w-full flex-row overflow-hidden
-                            ${mobileNumberError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
-                            style={{ marginTop: verticalScale(6), height: verticalScale(48), borderRadius: moderateScale(18) }}
+                            ${mobileNumberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                            style={{
+                                marginTop: verticalScale(6),
+                                height: verticalScale(48),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.7)
+                            }}
                         >
                             <View className="flex-row items-center justify-center relative" style={{ width: "22%" }}>
                                 <IndiaFlag width={scale(20)} height={verticalScale(22)} style={{ marginRight: scale(6) }} />
@@ -359,7 +364,7 @@ export default function LoginScreen() {
                                     +91
                                 </Text>
 
-                                <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.8) }} />
+                                <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.7) }} />
                             </View>
 
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -433,8 +438,13 @@ export default function LoginScreen() {
                             disabled={loading}
                             activeOpacity={0.95}
                             onPress={handleGoogleSignIn}
-                            className="w-full flex-row items-center justify-center rounded-[32px] bg-white border border-[#1F1F1F]/10"
-                            style={{ marginBottom: verticalScale(14), height: verticalScale(48), paddingVertical: verticalScale(12) }}
+                            className="w-full flex-row items-center justify-center rounded-[32px] bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{
+                                marginBottom: verticalScale(14),
+                                height: verticalScale(48),
+                                paddingVertical: verticalScale(12),
+                                borderWidth: moderateScale(0.7)
+                            }}
                         >
                             <GoogleIcon width={scale(20)} height={scale(20)} style={{ marginRight: scale(6) }} />
 

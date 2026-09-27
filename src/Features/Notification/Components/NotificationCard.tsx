@@ -56,8 +56,8 @@ function NotificationCard({
     if (item.type === "restaurant") {
         return (
             <View
-                className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                style={{ borderRadius: moderateScale(20) }}
+                className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
             >
                 <View
                     className="relative w-full p-2"
@@ -138,7 +138,7 @@ function NotificationCard({
                         }}
                     >
                         <Text
-                            className="text-white font-semibold"
+                            className="text-[#FFFFFF] font-semibold"
                             style={{ fontSize: moderateScale(12) }}
                         >
                             Explore Menu
@@ -213,7 +213,7 @@ function NotificationCard({
                         </View>
 
                         <Text
-                            className="text-white font-bold"
+                            className="text-[#FFFFFF] font-bold"
                             style={{
                                 fontSize: moderateScale(16),
                                 lineHeight: moderateScale(18),
@@ -264,8 +264,9 @@ function NotificationCard({
 
         return (
             <View
-                className="bg-white border border-[#1F1F1F]/10"
+                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(14),
                     overflow: "hidden",
@@ -278,7 +279,7 @@ function NotificationCard({
                         className={
                             isOrder
                                 ? "items-center justify-center bg-[#3F2516]"
-                                : "items-center justify-center bg-[#F5F5F5]"
+                                : "items-center justify-center bg-[#E5E4E2]/65"
                         }
                         style={{
                             width: moderateScale(46),
@@ -361,7 +362,7 @@ function NotificationCard({
                                     }}
                                 >
                                     <Text
-                                        className="text-white font-semibold"
+                                        className="text-[#FFFFFF] font-semibold"
                                         style={{ fontSize: moderateScale(12) }}
                                     >
                                         Track Order
@@ -405,7 +406,7 @@ function NotificationCard({
                                 }}
                             >
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(12) }}
                                 >
                                     View Invoice
@@ -423,8 +424,9 @@ function NotificationCard({
     if (item.type === "default") {
         return (
             <View
-                className="bg-white border border-[#1F1F1F]/10"
+                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(14)
                 }}

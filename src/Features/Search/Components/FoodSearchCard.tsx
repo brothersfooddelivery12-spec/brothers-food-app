@@ -46,10 +46,11 @@ const FoodSearchCard = ({
             activeOpacity={isActive ? 0.95 : 1}
             onPress={isActive ? onPress : undefined}
             disabled={isInactive}
-            className="w-full mt-4 overflow-hidden border"
+            className="w-full mt-4 overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -81,8 +82,7 @@ const FoodSearchCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            className="absolute inset-0 bg-black/25"
                         />
                     )}
                 </View>
@@ -116,8 +116,9 @@ const FoodSearchCard = ({
                         onFavouritePress?.()
                     }}
                     hitSlop={8}
-                    className="absolute items-center justify-center rounded-full border"
+                    className="absolute items-center justify-center rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         right: moderateScale(12),
                         top: moderateScale(12),
                         width: moderateScale(32),

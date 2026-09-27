@@ -36,8 +36,9 @@ const RestaurantFoodCard = ({
 
                 onPress?.()
             }}
-            className="overflow-hidden border"
+            className="overflow-hidden"
             style={{
+                borderWidth: moderateScale(0.5),
                 width: moderateScale(140),
                 borderRadius: moderateScale(22),
                 backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
@@ -74,8 +75,7 @@ const RestaurantFoodCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            className="absolute inset-0 bg-black/25"
                         />
                     )}
                 </View>
@@ -120,7 +120,7 @@ const RestaurantFoodCard = ({
                         }}
                     >
                         <Text
-                            className="text-white font-bold uppercase"
+                            className="text-[#FFFFFF] font-bold uppercase"
                             style={{ fontSize: moderateScale(7.5) }}
                         >
                             Currently Unavailable

@@ -117,7 +117,7 @@ export default function RestaurantSearchScreen() {
     const renderResultsHeader = useCallback(() => (
             <View>
                 <Text
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="text-[#1F1F1F] font-bold"
                     style={{
                         fontSize: moderateScale(16),
                         marginTop: verticalScale(2),
@@ -146,9 +146,9 @@ export default function RestaurantSearchScreen() {
     const renderFooter = useCallback(() => (
             <View>
                 <Text
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="text-[#1F1F1F] font-bold"
                     style={{
-                        fontSize: moderateScale(16),
+                        fontSize: moderateScale(15),
                         marginTop: verticalScale(14)
                     }}
                 >
@@ -158,7 +158,7 @@ export default function RestaurantSearchScreen() {
                 <Text
                     className="text-[#1F1F1F]/65 font-medium"
                     style={{
-                        fontSize: moderateScale(11.5),
+                        fontSize: moderateScale(11),
                         marginTop: verticalScale(4)
                     }}
                 >
@@ -185,10 +185,10 @@ export default function RestaurantSearchScreen() {
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="text-[#1F1F1F] font-bold"
                     style={{
-                        fontSize: moderateScale(16),
-                        marginTop: verticalScale(22)
+                        fontSize: moderateScale(15),
+                        marginTop: verticalScale(18)
                     }}
                 >
                     Recently Viewed
@@ -217,14 +217,15 @@ export default function RestaurantSearchScreen() {
 
                                     console.log("Recently viewed:", item.name)
                                 }}
-                                className="flex-row mt-3 items-center border"
+                                className="flex-row mt-3 items-center"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     gap: moderateScale(7),
                                     width: moderateScale(235),
                                     borderRadius: moderateScale(20),
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(7),
-                                    backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                                    backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                                     borderColor: isInactive
                                         ? "rgba(31,31,31,0.08)"
                                         : "rgba(31,31,31,0.10)"
@@ -355,10 +356,10 @@ export default function RestaurantSearchScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -374,8 +375,9 @@ export default function RestaurantSearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(46),
                         height: moderateScale(46),
                         flexShrink: 0

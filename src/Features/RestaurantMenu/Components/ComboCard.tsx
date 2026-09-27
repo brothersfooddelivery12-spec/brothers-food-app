@@ -26,12 +26,13 @@ function ComboCard({
 
                 onPress?.(item)
             }}
-            className="border p-2"
+            className="p-2"
             style={{
+                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 width: moderateScale(225),
                 height: moderateScale(135),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -81,7 +82,7 @@ function ComboCard({
                             }}
                         >
                             <Text
-                                className="text-white font-bold uppercase"
+                                className="text-[#FFFFFF] font-bold uppercase"
                                 style={{ fontSize: moderateScale(7.5) }}
                             >
                                 Unavailable

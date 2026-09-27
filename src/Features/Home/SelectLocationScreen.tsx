@@ -23,10 +23,10 @@ export default function SelectLocationScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -42,8 +42,9 @@ export default function SelectLocationScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -97,8 +98,8 @@ export default function SelectLocationScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="p-3 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View
                                 className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
@@ -132,8 +133,8 @@ export default function SelectLocationScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="p-4 items-center flex-row gap-3 mt-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="p-3 items-center flex-row gap-3 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5), }}
                         >
                             <View
                                 className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
@@ -179,8 +180,8 @@ export default function SelectLocationScreen(){
                             onPress={() => {
                                 // handle address press
                             }}
-                            className="p-4 flex-row items-center gap-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8) }}
+                            className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8), borderWidth: moderateScale(0.5) }}
                         >
                             <View className="items-center justify-center">
                                 <View
@@ -252,8 +253,8 @@ export default function SelectLocationScreen(){
                             onPress={() => {
                                 // handle address press
                             }}
-                            className="p-4 flex-row items-center gap-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8) }}
+                            className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8), borderWidth: moderateScale(0.5) }}
                         >
                             <View className="items-center justify-center">
                                 <View

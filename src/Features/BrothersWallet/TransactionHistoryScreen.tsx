@@ -332,8 +332,9 @@ export default function TransactionHistoryScreen(){
                 style={{ paddingVertical: verticalScale(20)}}
             >
                 <View
-                    className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                    className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         paddingHorizontal: scale(20),
                         paddingVertical: verticalScale(24),
                         borderRadius: moderateScale(20)
@@ -379,10 +380,10 @@ export default function TransactionHistoryScreen(){
     }, [transactions.length, startDate, endDate])
     
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -398,8 +399,9 @@ export default function TransactionHistoryScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -438,9 +440,7 @@ export default function TransactionHistoryScreen(){
                 </View>
             ) : (
                 <SectionList
-                    style={{
-                        flex: 1
-                    }}
+                    style={{ flex: 1 }}
                     sections={transactionSections}
                     renderItem={renderTransaction}
                     renderSectionHeader={renderSectionHeader}
@@ -480,19 +480,19 @@ export default function TransactionHistoryScreen(){
                                                 setSelectedCategory(category.id)
                                             }}
                                             className={`items-center justify-center ${
-                                                isSelected ? "bg-[#3F2516]" : "bg-[#FFFFFF]"
+                                                isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
                                             }`}
                                             style={{
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(16),
                                                 paddingVertical: verticalScale(7),
-                                                borderWidth: isSelected ? 1 : 1,
+                                                borderWidth: 0.7,
                                                 borderColor: isSelected ? "#3F2516" : "rgba(31, 31, 31, 0.10)"
                                             }}
                                         >
                                             <Text
                                                 className={`font-semibold ${
-                                                    isSelected ? "text-white" : "text-[#1F1F1F]"
+                                                    isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
                                                 }`}
                                                 style={{ fontSize: moderateScale(13) }}
                                             >
@@ -504,8 +504,9 @@ export default function TransactionHistoryScreen(){
                             </ScrollView>
     
                             <View
-                                className="bg-white border border-[#1F1F1F]/10 mt-2 mb-3"
+                                className="bg-[#FAFAFA] border-[#1F1F1F]/10 mt-2 mb-3"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(20),
                                     paddingHorizontal: scale(12),
                                     paddingTop: verticalScale(16),
@@ -540,7 +541,7 @@ export default function TransactionHistoryScreen(){
                                     <View
                                         className="bg-[#1F1F1F]/10 mx-2"
                                         style={{
-                                            width: 1,
+                                            width: 0.7,
                                             height: verticalScale(28)
                                         }}
                                     />
@@ -572,7 +573,7 @@ export default function TransactionHistoryScreen(){
                                     <View
                                         className="bg-[#1F1F1F]/10 mx-2"
                                         style={{
-                                            width: 1,
+                                            width: 0.7,
                                             height: verticalScale(28)
                                         }}
                                     />
@@ -610,7 +611,7 @@ export default function TransactionHistoryScreen(){
                                 <View
                                     className="bg-[#1F1F1F]/10"
                                     style={{
-                                        height: 1,
+                                        height: 0.7,
                                         marginTop: verticalScale(16),
                                         marginBottom: verticalScale(12),
                                         marginHorizontal: scale(12)
@@ -624,7 +625,7 @@ export default function TransactionHistoryScreen(){
                                     <TouchableOpacity
                                         activeOpacity={0.95}
                                         onPress={() => setDatePicker("start")}
-                                        className="flex-1 flex-row items-center bg-[#F5F5F5]"
+                                        className="flex-1 flex-row items-center bg-[#FFFFFF]"
                                         style={{
                                             borderRadius: moderateScale(14),
                                             paddingHorizontal: scale(10),
@@ -671,7 +672,7 @@ export default function TransactionHistoryScreen(){
                                     <TouchableOpacity
                                         activeOpacity={0.95}
                                         onPress={() => setDatePicker("end")}
-                                        className="flex-1 flex-row items-center bg-[#F5F5F5]"
+                                        className="flex-1 flex-row items-center bg-[#FFFFFF]"
                                         style={{
                                             borderRadius: moderateScale(14),
                                             paddingHorizontal: scale(10),

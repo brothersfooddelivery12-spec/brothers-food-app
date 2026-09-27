@@ -86,10 +86,10 @@ export default function OrderTrackingScreen() {
     }))
     
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -105,8 +105,9 @@ export default function OrderTrackingScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -139,7 +140,7 @@ export default function OrderTrackingScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <View
-                    className="w-full bg-white"
+                    className="w-full bg-[#FAFAFA]"
                     style={{
                         marginTop: verticalScale(180),
                         borderTopLeftRadius: moderateScale(22),
@@ -177,9 +178,10 @@ export default function OrderTrackingScreen() {
                     </View>
 
                     <View 
-                        className='flex-row gap-2 bg-[#F5F5F5] items-center p-3'
+                        className='flex-row gap-2 bg-[#FFFFFF] border-[#1F1F1F]/10 items-center p-3'
                         style={{
-                            borderRadius: moderateScale(18),
+                            borderWidth: moderateScale(0.5),
+                            borderRadius: moderateScale(20),
                             marginTop: verticalScale(14)
                         }}
                     >
@@ -198,7 +200,7 @@ export default function OrderTrackingScreen() {
                             />
                         
                             <View
-                                className={`absolute border-white items-center justify-center ${
+                                className={`absolute border-[#FFFFFF] items-center justify-center ${
                                     isOnline ? "bg-[#22A06B]" : "bg-[#7A7D81]"
                                 }`}
                                 style={{
@@ -274,8 +276,9 @@ export default function OrderTrackingScreen() {
                     <OrderTimeline steps={orderSteps} />
 
                     <View
-                        className="bg-[#F5F5F5] px-3 py-4"
+                        className="bg-[#FFFFFF] border-[#1F1F1F]/10 px-3 py-4"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(14)
                         }}
@@ -326,8 +329,8 @@ export default function OrderTrackingScreen() {
 
                         <Animated.View style={contentAnimatedStyle}>
                             <View
-                                className="p-5 bg-white border border-[#1F1F1F]/10 w-full"
-                                style={{ borderRadius: moderateScale(18) }}
+                                className="p-5 bg-[#FAFAFA] border-[#1F1F1F]/10 w-full"
+                                style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.7) }}
                             >
                                 <Text
                                     className="text-[#1F1F1F] font-bold"
@@ -434,17 +437,14 @@ export default function OrderTrackingScreen() {
                             onLayout={(event) => {
                                 const height = event.nativeEvent.layout.height
 
-                                if (
-                                    height > 0 &&
-                                    height !== contentHeight.value
-                                ) {
+                                if (height > 0 && height !== contentHeight.value) {
                                     contentHeight.value = height
                                 }
                             }}
                         >
                             <View
-                                className="p-5 bg-white border border-[#1F1F1F]/10 w-full"
-                                style={{ borderRadius: moderateScale(18) }}
+                                className="p-5 bg-[#FFFFFF] border-[#1F1F1F]/10 w-full"
+                                style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                             >
                                 <Text
                                     className="text-[#1F1F1F] font-bold"
@@ -536,8 +536,9 @@ export default function OrderTrackingScreen() {
                     </View>
 
                     <View 
-                        className='p-4 flex-row gap-3 bg-[#F5F5F5]'
+                        className='p-4 flex-row gap-3 bg-[#FFFFFF] border-[#1F1F1F]/10'
                         style={{
+                            borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(14)
                         }}

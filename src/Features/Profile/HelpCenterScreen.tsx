@@ -165,10 +165,10 @@ export default function HelpCenterScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -184,8 +184,9 @@ export default function HelpCenterScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -311,9 +312,10 @@ export default function HelpCenterScreen(){
                                         className={`border ${
                                             item.featured
                                                 ? "bg-[#4A2818] border-[#4A2818]"
-                                                : "bg-white border-[#1F1F1F]/10"
+                                                : "bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         }`}
                                         style={{
+                                            borderWidth: moderateScale(0.5),
                                             width: "48%",
                                             minHeight: moderateScale(140),
                                             borderRadius: moderateScale(20),
@@ -325,10 +327,10 @@ export default function HelpCenterScreen(){
                                             <View
                                                 className={`items-center justify-center ${
                                                     item.featured
-                                                        ? "bg-white/10"
+                                                        ? "bg-[#FFFFFF]/10"
                                                         : item.id === "2"
                                                         ? "bg-[#F8D56A]"
-                                                        : "bg-[#F5F5F5]"
+                                                        : "bg-[#E5E4E2]/65"
                                                 }`}
                                                 style={{
                                                     width: moderateScale(42),
@@ -369,7 +371,7 @@ export default function HelpCenterScreen(){
                                             <Text
                                                 className={`font-bold ${
                                                     item.featured
-                                                        ? "text-white"
+                                                        ? "text-[#FFFFFF]"
                                                         : "text-[#3F2516]"
                                                 }`}
                                                 style={{ fontSize: moderateScale(16) }}

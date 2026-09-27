@@ -912,10 +912,10 @@ export default function CheckoutScreen() {
     })
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -931,8 +931,9 @@ export default function CheckoutScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -974,9 +975,7 @@ export default function CheckoutScreen() {
                     className="flex-1 items-center justify-center"
                     style={{
                         paddingHorizontal: scale(30),
-                        paddingBottom:
-                            insets.bottom +
-                            verticalScale(40)
+                        paddingBottom: insets.bottom + verticalScale(40)
                     }}
                 >
                     <View
@@ -988,19 +987,12 @@ export default function CheckoutScreen() {
                             marginBottom: verticalScale(18)
                         }}
                     >
-                        <CartIcon
-                            width={moderateScale(38)}
-                            height={moderateScale(38)}
-                            color="#3F2516"
-                            strokeWidth={1.5}
-                        />
+                        <CartIcon width={moderateScale(38)} height={moderateScale(38)} color="#3F2516" strokeWidth={1.5} />
                     </View>
 
                     <Text
                         className="text-[#1F1F1F] font-extrabold text-center"
-                        style={{
-                            fontSize: moderateScale(19)
-                        }}
+                        style={{ fontSize: moderateScale(19) }}
                     >
                         Cart not found
                     </Text>
@@ -1031,20 +1023,13 @@ export default function CheckoutScreen() {
                         }}
                     >
                         <Text
-                            className="text-white font-semibold"
-                            style={{
-                                fontSize: moderateScale(13)
-                            }}
+                            className="text-[#FFFFFF] font-semibold"
+                            style={{ fontSize: moderateScale(13) }}
                         >
                             Back to Cart
                         </Text>
 
-                        <ArrowRight
-                            width={moderateScale(17)}
-                            height={moderateScale(17)}
-                            color="#FFFFFF"
-                            strokeWidth={1.8}
-                        />
+                        <ArrowRight width={moderateScale(17)} height={moderateScale(17)} color="#FFFFFF" strokeWidth={1.8} />
                     </TouchableOpacity>
                 </View>
             ) : (
@@ -1063,8 +1048,8 @@ export default function CheckoutScreen() {
                             <View className="mt-3">
                                 {selectedCart && (
                                     <View
-                                        className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                        style={{ borderRadius: moderateScale(20)}}
+                                        className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                        style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5)}}
                                     >
                                         <View className="p-3 flex-row items-center gap-2">
                                             <View
@@ -1114,11 +1099,7 @@ export default function CheckoutScreen() {
                                                             backgroundColor: "rgba(232,185,63,0.15)"
                                                         }}
                                                     >
-                                                        <DeliveryIcon
-                                                            width={moderateScale(16)}
-                                                            height={moderateScale(16)}
-                                                            color={"#5C4639"}
-                                                        />
+                                                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={"#5C4639"} />
                         
                                                         <Text
                                                             className="font-semibold"
@@ -1140,11 +1121,7 @@ export default function CheckoutScreen() {
                                                                 backgroundColor: "rgba(232,185,63,0.15)"
                                                             }}
                                                         >
-                                                            <ClockIcon
-                                                                width={moderateScale(14)}
-                                                                height={moderateScale(14)}
-                                                                color={"#5C4639"} strokeWidth={1.8}
-                                                            />
+                                                            <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color={"#5C4639"} strokeWidth={1.8} />
                                                         </View>
                         
                                                         <Text
@@ -1173,7 +1150,7 @@ export default function CheckoutScreen() {
                                                 }}
                                             >
                                                 <Text
-                                                    className="text-white font-semibold"
+                                                    className="text-[#FFFFFF] font-semibold"
                                                     style={{ fontSize: moderateScale(11) }}
                                                 >
                                                     View Cart
@@ -1229,8 +1206,9 @@ export default function CheckoutScreen() {
         
                                 {addresses.length === 0 ? (
                                     <View
-                                        className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                                        className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
+                                            borderWidth: moderateScale(0.5),
                                             marginTop: verticalScale(10),
                                             paddingHorizontal: scale(20),
                                             paddingVertical: verticalScale(20),
@@ -1294,8 +1272,9 @@ export default function CheckoutScreen() {
                                     onPress={() => preventDoublePress(() => {
                                         router.push("/add-address")
                                     })}
-                                    className="flex-row gap-2 items-center justify-center p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                                    className="flex-row gap-2 items-center justify-center p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(18),
                                         marginTop: verticalScale(8)
                                     }}
@@ -1379,8 +1358,8 @@ export default function CheckoutScreen() {
                                 </View> */}
         
                                 <View
-                                    className="p-4 bg-white border border-[#1F1F1F]/10 flex-row items-start mt-6"
-                                    style={{ borderRadius: moderateScale(18) }}
+                                    className="p-4 bg-[#FAFAFA] border-[#1F1F1F]/10 flex-row items-start mt-6"
+                                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                                 >
                                     <DescriptionIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
         
@@ -1412,8 +1391,8 @@ export default function CheckoutScreen() {
                                         </Text>
                 
                                         <View
-                                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                            style={{ borderRadius: moderateScale(20) }}
+                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                            style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
                                         >
                                             {savedDeviceUpiMethods.map((item, index) => {
                                                 const isSelected = selectedPayment === item.id
@@ -1531,8 +1510,8 @@ export default function CheckoutScreen() {
                                         </Text>
         
                                         <View
-                                            className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                            style={{ borderRadius: moderateScale(20) }}
+                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                            style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
                                         >
                                             {otherUpiMethods.map((item, index) => {
                                                 const Icon = item.icon
@@ -1560,16 +1539,13 @@ export default function CheckoutScreen() {
                                                             }}
                                                         >
                                                             <View
-                                                                className="items-center justify-center rounded-full bg-[#E5E4E2]/55"
+                                                                className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
                                                                 style={{
                                                                     width: moderateScale(42),
                                                                     height: moderateScale(42)
                                                                 }}
                                                             >
-                                                                <Icon
-                                                                    width={moderateScale(item.size)}
-                                                                    height={moderateScale(item.size)}
-                                                                />
+                                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} />
                                                             </View>
         
                                                             <View className="flex-1 ml-3">
@@ -1617,7 +1593,7 @@ export default function CheckoutScreen() {
                                                             <View
                                                                 className="bg-[#1F1F1F]/10"
                                                                 style={{
-                                                                    height: 1,
+                                                                    height: moderateScale(0.7),
                                                                     marginHorizontal: scale(14)
                                                                 }}
                                                             />
@@ -1660,8 +1636,8 @@ export default function CheckoutScreen() {
                                 </Text>
         
                                 <View
-                                    className="bg-white border border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20) }}
+                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
                                 >
                                     {OTHER_PAYMENT_METHODS.map((item, index) => {
                                         const Icon = item.icon
@@ -1762,7 +1738,7 @@ export default function CheckoutScreen() {
                                                     <View
                                                         className="bg-[#1F1F1F]/10"
                                                         style={{
-                                                            height: 1,
+                                                            height: moderateScale(0.7),
                                                             marginHorizontal: scale(14)
                                                         }}
                                                     />
@@ -1773,8 +1749,9 @@ export default function CheckoutScreen() {
                                 </View>
         
                                 <View
-                                    className="p-4 items-center flex-row gap-3 bg-white border border-[#1F1F1F]/10"
+                                    className="p-4 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(18),
                                         marginTop: verticalScale(18)
                                     }}
@@ -1828,8 +1805,9 @@ export default function CheckoutScreen() {
         
                                {selectedCart && (
                                     <View
-                                        className="p-5 bg-white border border-[#1F1F1F]/10"
+                                        className="p-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
+                                            borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             marginTop: verticalScale(14)
                                         }}

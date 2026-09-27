@@ -49,11 +49,12 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
         <TouchableOpacity
             activeOpacity={restaurant.isOpen ? 0.95 : 1}
             onPress={onPress}
-            className="w-full flex-row overflow-hidden border p-2"
+            className="w-full flex-row overflow-hidden p-2"
             style={{
                 borderRadius: moderateScale(22),
                 gap: moderateScale(8),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
+                borderWidth: moderateScale(0.5),
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -66,7 +67,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                     borderRadius: moderateScale(18),
                     overflow: "hidden",
                     position: "relative",
-                    borderWidth: !hasImage && !isInactive ? 1 : 0,
+                    borderWidth: !hasImage && !isInactive ? 0.7 : 0,
                     borderColor: "rgba(31,31,31,0.08)"
                 }}
             >
@@ -107,7 +108,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                         }}
                     >
                         <Text
-                            className="text-white font-bold uppercase text-center"
+                            className="text-[#FFFFFF] font-bold uppercase text-center"
                             style={{ fontSize: moderateScale(7.5) }}
                         >
                             Currently Closed

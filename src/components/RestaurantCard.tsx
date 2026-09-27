@@ -74,7 +74,8 @@ const RestaurantCard = ({
             className="w-full overflow-hidden border"
             style={{
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
+                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
+                borderWidth: moderateScale(0.5),
                 borderColor: isInactive
                     ? "rgba(31,31,31,0.08)"
                     : "rgba(31,31,31,0.10)"
@@ -90,7 +91,7 @@ const RestaurantCard = ({
                         height: "100%",
                         borderRadius: moderateScale(18),
                         overflow: "hidden",
-                        borderWidth: !hasImage && !isInactive ? 1 : 0,
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
                         borderColor: "rgba(31,31,31,0.08)"
                     }}
                 >
@@ -114,8 +115,7 @@ const RestaurantCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            className="absolute inset-0 bg-black/25"
                         />
                     )}
                 </View>
@@ -134,9 +134,8 @@ const RestaurantCard = ({
                         top: moderateScale(14),
                         width: moderateScale(34),
                         height: moderateScale(34),
-                        backgroundColor: isInactive
-                            ? "rgba(255,255,255,0.75)"
-                            : "#FFFFFF",
+                        backgroundColor: isInactive ? "rgba(255,255,255,0.75)" : "#FFFFFF",
+                        borderWidth: moderateScale(0.7),
                         borderColor: "rgba(31,31,31,0.10)"
                     }}
                 >
@@ -171,7 +170,7 @@ const RestaurantCard = ({
                         }}
                     >
                         <Text
-                            className="font-bold text-white uppercase"
+                            className="font-bold text-[#FFFFFF] uppercase"
                             style={{ fontSize: moderateScale(9) }}
                         >
                             Currently Closed
@@ -192,9 +191,7 @@ const RestaurantCard = ({
                             className="font-extrabold"
                             style={{
                                 fontSize: moderateScale(15),
-                                color: isInactive
-                                    ? "rgba(31,31,31,0.52)"
-                                    : "#1F1F1F"
+                                color: isInactive ? "rgba(31,31,31,0.52)" : "#1F1F1F"
                             }}
                         >
                             {restaurant.name}
@@ -286,7 +283,7 @@ const RestaurantCard = ({
                         marginHorizontal: verticalScale(2),
                         backgroundColor: isInactive
                             ? "rgba(31,31,31,0.10)"
-                            : "rgba(232,221,211,0.65)"
+                            : "rgba(232,221,211,0.60)"
                     }}
                 />
 
@@ -303,11 +300,7 @@ const RestaurantCard = ({
                                 : "rgba(232,185,63,0.15)"
                         }}
                     >
-                        <DeliveryIcon
-                            width={moderateScale(16)}
-                            height={moderateScale(16)}
-                            color={isInactive ? "#858585" : "#5C4639"}
-                        />
+                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={isInactive ? "#858585" : "#5C4639"} />
 
                         <Text
                             className="font-semibold"
@@ -366,7 +359,7 @@ const RestaurantCard = ({
                             }}
                         >
                             <Text
-                                className="font-medium text-white"
+                                className="font-medium text-[#FFFFFF]"
                                 style={{ fontSize: moderateScale(11) }}
                             >
                                 ₹{restaurant.priceForTwo} for two

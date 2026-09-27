@@ -103,10 +103,10 @@ export default function WriteReviewScreen() {
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -122,8 +122,9 @@ export default function WriteReviewScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -160,8 +161,9 @@ export default function WriteReviewScreen() {
                 extraKeyboardSpace={moderateScale(20)}
             >
                     <View
-                        className="items-center flex-row gap-2 p-2 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                        className="items-center flex-row gap-2 p-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(12)
                         }}
@@ -225,8 +227,9 @@ export default function WriteReviewScreen() {
                     </Text>
 
                     <View
-                        className="p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                        className="p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             marginTop: verticalScale(10),
                             borderRadius: moderateScale(18)
                         }}
@@ -352,12 +355,13 @@ export default function WriteReviewScreen() {
                                                 : [...prev, item.title]
                                         )
                                     }}
-                                    className={`flex-row items-center border ${
+                                    className={`flex-row items-center ${
                                         isSelected
                                             ? "bg-[#5C4639] border-[#5C4639]"
-                                            : "bg-white border-[#1F1F1F]/10"
+                                            : "bg-[#FAFAFA] border-[#1F1F1F]/10"
                                     }`}
                                     style={{
+                                        borderWidth: moderateScale(0.7),
                                         gap: moderateScale(5),
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(12),
@@ -373,7 +377,7 @@ export default function WriteReviewScreen() {
 
                                     <Text
                                         className={`font-medium ${
-                                            isSelected ? "text-white" : "text-[#1F1F1F]"
+                                            isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
                                         }`}
                                         style={{ fontSize: moderateScale(12) }}
                                         numberOfLines={1}
@@ -396,8 +400,9 @@ export default function WriteReviewScreen() {
                     </Text>
 
                     <View
-                        className="mt-3 mx-1 bg-[#F8F9FA] border"
+                        className="mt-3 mx-1 bg-[#F8F9FA]"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             height: verticalScale(120),
                             borderRadius: moderateScale(18),
                             borderColor: "#D9C5B9"

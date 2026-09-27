@@ -37,15 +37,16 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
                 height: "100%",
                 borderRadius: 100,
                 borderWidth: 3.5,
-                borderColor: "#FFFFFF"
+                borderColor: "#FAFAFA"
               }}
             />
         </View>
 
         <Pressable
           onPress={onPress}
-          className="bg-white items-center justify-center absolute rounded-full"
+          className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 absolute rounded-full"
           style={{
+            borderWidth: moderateScale(0.7),
             right: moderateScale(14),
             bottom: moderateScale(7),
             width: moderateScale(34),

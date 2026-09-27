@@ -73,10 +73,10 @@ export default function OrderSuccessScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
         
@@ -91,8 +91,9 @@ export default function OrderSuccessScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className=" absolute items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className=" absolute items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         top: moderateScale(14),
                         left: moderateScale(14),
                         width: moderateScale(40),
@@ -195,8 +196,9 @@ export default function OrderSuccessScreen() {
                 </View>
 
                 <View
-                    className="justify-center p-5 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                    className="justify-center p-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(18),
                         marginTop: verticalScale(18)
                     }}
@@ -244,7 +246,7 @@ export default function OrderSuccessScreen() {
                     <View
                         className="rounded-full bg-[#E8DDD3]/55"
                         style={{
-                            height: verticalScale(0.6),
+                            height: verticalScale(0.7),
                             marginVertical: verticalScale(8),
                             marginHorizontal: verticalScale(2)
                         }}
@@ -274,8 +276,9 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-white justify-center items-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                        className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22)
@@ -294,8 +297,9 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-white border items-center border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
+                        className="bg-[#FAFAFA] items-center border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22),
@@ -314,8 +318,9 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-white items-center border border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
+                        className="bg-[#FAFAFA] items-center border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22),

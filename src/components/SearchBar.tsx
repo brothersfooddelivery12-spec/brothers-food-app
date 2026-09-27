@@ -1,6 +1,6 @@
-import { View, TextInput, TouchableOpacity } from "react-native"
-import SearchIcon from "@/assets/icon/SearchOutline.svg"
-import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import SearchIcon from "@/assets/icon/SearchOutline.svg";
+import { TextInput, TouchableOpacity, View } from "react-native";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
 type SearchBarProps = {
     value: string
@@ -15,8 +15,9 @@ export default function SearchBar({ value, onChangeText, placeholder, RightIcon,
     return (
         <View className="flex-row items-center gap-3">
             <View
-                className="flex-1 flex-row items-center bg-white border border-[#1F1F1F]/10"
+                className="flex-1 flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(22),
                     paddingHorizontal: scale(13),
                     height: verticalScale(46)

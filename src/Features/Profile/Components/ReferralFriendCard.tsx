@@ -84,11 +84,8 @@ const ReferralStep = ({
                         width: moderateScale(34),
                         height: moderateScale(34),
                         borderRadius: moderateScale(17),
-                        backgroundColor: completed
-                            ? "#3F2516"
-                            : active
-                              ? "#EDE4DA"
-                              : "#e9e9e9",
+                        backgroundColor: completed ? "#3F2516" : active
+                            ? "#EDE4DA" : "#e9e9e9",
                     }}
                 >
                     {renderIcon()}
@@ -111,9 +108,7 @@ const ReferralStep = ({
                                     width: moderateScale(1.2),
                                     height: verticalScale(3),
                                     borderRadius: moderateScale(2),
-                                    backgroundColor: completed
-                                        ? "#CDBBAE"
-                                        : "#dddddd"
+                                    backgroundColor: completed ? "#CDBBAE" : "#dddddd"
                                 }}
                             />
                         ))}
@@ -125,9 +120,7 @@ const ReferralStep = ({
                 className="flex-1"
                 style={{
                     marginLeft: scale(10),
-                    paddingBottom: last
-                        ? 0
-                        : verticalScale(18)
+                    paddingBottom: last ? 0 : verticalScale(18)
                 }}
             >
                 <Text
@@ -195,8 +188,9 @@ const ReferralProgressContent = memo(
 
         return (
             <View
-                className="bg-[#F5F5F5]"
+                className="bg-[#FFFFFF] border-[#1F1F1F]/10"
                 style={{
+                    borderWidth: moderateScale(0.7),
                     borderRadius: moderateScale(16),
                     paddingHorizontal: scale(12),
                     paddingVertical: verticalScale(14)
@@ -332,8 +326,9 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
 
         return (
             <View
-                className="bg-white border border-[#1F1F1F]/10"
+                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(12),
                     marginBottom: verticalScale(10)

@@ -190,10 +190,10 @@ export default function NotificationScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -209,8 +209,9 @@ export default function NotificationScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -241,8 +242,9 @@ export default function NotificationScreen(){
                             router.push('/notification-preferences')
                         })
                     }
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -286,7 +288,7 @@ export default function NotificationScreen(){
                                         activeOpacity={0.9}
                                         onPress={() => setSelectedCategory(category.id)}
                                         className={`flex-row items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(22),
@@ -294,7 +296,7 @@ export default function NotificationScreen(){
                                             paddingVertical: verticalScale(5),
                                             gap: scale(5),
 
-                                            borderWidth: 1,
+                                            borderWidth: 0.7,
                                             borderColor: isSelected ? "#3F2516" : "#F1E7DC"
                                         }}
                                     >
@@ -346,8 +348,9 @@ export default function NotificationScreen(){
 
                         <View className="flex-row items-center justify-center gap-3 mt-4 mb-2">
                             <View
-                                className="bg-white justify-center items-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
                                     borderRadius: moderateScale(22)
@@ -369,8 +372,9 @@ export default function NotificationScreen(){
                             </View>
 
                             <View
-                                className="bg-white justify-center items-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
                                     borderRadius: moderateScale(22)
@@ -392,8 +396,9 @@ export default function NotificationScreen(){
                             </View>
 
                             <View
-                                className="bg-white justify-center items-center border border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
                                 style={{
+                                    borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
                                     borderRadius: moderateScale(22)

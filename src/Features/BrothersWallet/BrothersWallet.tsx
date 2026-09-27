@@ -292,10 +292,10 @@ export default function BrothersWalletScreen(){
     }, [transactions, selectedCategory])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -311,8 +311,9 @@ export default function BrothersWalletScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -372,8 +373,9 @@ export default function BrothersWalletScreen(){
                         </View>
                     ) : (
                         <View
-                            className="items-center justify-center mx-2 bg-white border border-[#1F1F1F]/10"
+                            className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 marginTop: verticalScale(10),
                                 paddingHorizontal: scale(20),
                                 paddingVertical: verticalScale(22),
@@ -432,7 +434,7 @@ export default function BrothersWalletScreen(){
                                 style={{ minWidth: 0 }}
                             >
                                 <Text
-                                    className="text-white/80 font-normal"
+                                    className="text-[#FFFFFF]/80 font-normal"
                                     style={{ fontSize: moderateScale(12.5) }}
                                 >
                                     Available Balance
@@ -465,7 +467,7 @@ export default function BrothersWalletScreen(){
                                         />
                                     ) : (
                                         <Text
-                                            className="text-white tracking-wider font-black"
+                                            className="text-[#FFFFFF] tracking-wider font-black"
                                             numberOfLines={1}
                                             style={{ fontSize: moderateScale(28.5) }}
                                         >
@@ -475,7 +477,7 @@ export default function BrothersWalletScreen(){
                                 </View>
 
                                 <Text
-                                    className="text-white/65 font-normal"
+                                    className="text-[#FFFFFF]/65 font-normal"
                                     style={{
                                         fontSize: moderateScale(11.5),
                                         marginTop: verticalScale(6)
@@ -547,8 +549,9 @@ export default function BrothersWalletScreen(){
                                                     router.push(item.route as any)
                                                 })
                                             }
-                                            className="rounded-full bg-white border border-[#1F1F1F]/10 items-center justify-center"
+                                            className="rounded-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center"
                                             style={{
+                                                borderWidth: moderateScale(0.5),
                                                 width: moderateScale(52),
                                                 height: moderateScale(52)
                                             }}
@@ -574,8 +577,8 @@ export default function BrothersWalletScreen(){
                         </View>
 
                         <View
-                            className="mt-6 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-6 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
@@ -610,8 +613,8 @@ export default function BrothersWalletScreen(){
                         </View>
 
                         <View
-                            className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
@@ -646,8 +649,8 @@ export default function BrothersWalletScreen(){
                         </View>
 
                         <View
-                            className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18) }}
+                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
@@ -879,19 +882,19 @@ export default function BrothersWalletScreen(){
                                             setSelectedCategory(category.id)
                                         }}
                                         className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                         }`}
                                         style={{
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: isSelected ? 1 : 1,
+                                            borderWidth: 0.7,
                                             borderColor: isSelected ? "3F2516" : "#E8DDD3"
                                         }}
                                     >
                                         <Text
                                             className={`font-semibold ${
-                                                isSelected ? "text-white" : "text-[#5A3825]"
+                                                isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
                                             }`}
                                             style={{ fontSize: moderateScale(13) }}
                                         >

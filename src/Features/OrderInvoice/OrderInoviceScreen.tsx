@@ -26,10 +26,10 @@ export default function OrderInvoiceScreen() {
     const insets = useSafeAreaInsets()
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -45,8 +45,9 @@ export default function OrderInvoiceScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -77,8 +78,9 @@ export default function OrderInvoiceScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                        className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             width: moderateScale(38),
                             height: moderateScale(38)
                         }}
@@ -89,8 +91,9 @@ export default function OrderInvoiceScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                        className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                         style={{
+                            borderWidth: moderateScale(0.5),
                             width: moderateScale(38),
                             height: moderateScale(38)
                         }}
@@ -134,8 +137,9 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className="p-4 items-center bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                            className="p-4 items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 marginTop: verticalScale(8)
                             }}
@@ -221,7 +225,7 @@ export default function OrderInvoiceScreen() {
                                 }}
                             >
                                 <View
-                                    className="rounded-full bg-[#E8DDD3]/55"
+                                    className="rounded-full bg-[#E8DDD3]/65"
                                     style={{ height: verticalScale(0.7) }}
                                 />
                             </View>
@@ -300,8 +304,8 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className='p-3 mt-4 items-center bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18) }}
+                            className='p-3 mt-4 items-center bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-2 justify-center items-center self-start'>
                                 <View
@@ -340,8 +344,8 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className='p-3 mt-4 items-center bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18) }}
+                            className='p-3 mt-4 items-center bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className='flex-row gap-2 justify-center items-center self-start'>
                                 <View
@@ -407,8 +411,8 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className='p-4 mt-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18) }}
+                            className='p-4 mt-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View className="flex-row items-center">
                                 <Text
@@ -462,8 +466,8 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className='p-3 mt-4 bg-[#FFFFFF] border border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18) }}
+                            className='p-3 mt-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                         >
                             <View
                                 className="self-start flex-row items-center bg-[#E8B93F]/20"
@@ -587,8 +591,9 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className="p-5 bg-white border border-[#1F1F1F]/10"
+                            className="p-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 marginTop: verticalScale(14)
                             }}
@@ -688,8 +693,9 @@ export default function OrderInvoiceScreen() {
                         </View>
 
                         <View
-                            className="p-4 bg-white flex-row gap-2 border border-[#1F1F1F]/10"
+                            className="p-4 bg-[#FAFAFA] flex-row gap-2 border-[#1F1F1F]/10"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 marginTop: verticalScale(14)
                             }}
@@ -757,8 +763,9 @@ export default function OrderInvoiceScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => {}}
-                                    className='bg-[#FFFFFF] flex-row gap-2 border border-[#1F1F1F]/15 items-center justify-center'
+                                    className='bg-[#FFFFFF] flex-row gap-2 border-[#1F1F1F]/15 items-center justify-center'
                                     style={{
+                                        borderWidth: moderateScale(0.7),
                                         paddingHorizontal: scale(8),
                                         paddingVertical: verticalScale(6),
                                         borderRadius: moderateScale(18)

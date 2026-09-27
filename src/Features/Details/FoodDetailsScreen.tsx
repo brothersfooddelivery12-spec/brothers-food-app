@@ -19,7 +19,7 @@ import { Image } from "expo-image"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useState } from "react"
-import { Text, TextInput, TouchableOpacity, View } from "react-native"
+import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -238,7 +238,13 @@ export default function FoodDetailsScreen() {
     const isAvailable = menu?.is_available ?? false
 
     return(
-        <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+            <StatusBar
+                translucent
+                backgroundColor="#FFFFFF"
+                barStyle="dark-content"
+            />
+
             {loadingMenu ? (
                 <View className="flex-1 items-center justify-center">
                     <LottieView
@@ -254,7 +260,7 @@ export default function FoodDetailsScreen() {
             ) : (
                 <>
                     <KeyboardAwareScrollView
-                        className="flex-1 bg-white"
+                        className="flex-1 bg-[#FFFFFF]"
                         contentContainerStyle={{
                             paddingBottom: verticalScale(85)
                         }}
@@ -295,8 +301,9 @@ export default function FoodDetailsScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => router.back()}
-                                    className="items-center self-start justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                    className="items-center self-start justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
@@ -307,8 +314,9 @@ export default function FoodDetailsScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={handleFavouritePress}
-                                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                                     style={{
+                                        borderWidth: moderateScale(0.5),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
@@ -323,7 +331,7 @@ export default function FoodDetailsScreen() {
                         </View>
 
                         <View
-                            className="w-full bg-white"
+                            className="w-full bg-[#FFFFFF]"
                             style={{
                                 marginTop: verticalScale(200),
                                 minHeight: verticalScale(600),
@@ -346,7 +354,7 @@ export default function FoodDetailsScreen() {
                                         }}
                                     >
                                         <Text
-                                            className="text-white font-bold uppercase"
+                                            className="text-[#FFFFFF] font-bold uppercase"
                                             style={{ fontSize: moderateScale(7.5) }}
                                         >
                                             Currently Unavailable

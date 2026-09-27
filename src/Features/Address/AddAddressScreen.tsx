@@ -285,10 +285,10 @@ export default function AddAddressScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -304,8 +304,9 @@ export default function AddAddressScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -404,14 +405,14 @@ export default function AddAddressScreen(){
 
                             <View className='justify-center mr-1'>
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(9) }}
                                 >
                                     Select
                                 </Text>
 
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(9) }}
                                 >
                                     Current Location
@@ -449,19 +450,19 @@ export default function AddAddressScreen(){
                                         setSelectedCategory(category)
                                     }}
                                     className={`items-center justify-center ${
-                                        isSelected ? "bg-[#3F2516]" : "bg-[#faf5ef]"
+                                        isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
                                     }`}
                                     style={{
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(16),
                                         paddingVertical: verticalScale(7),
-                                        borderWidth: isSelected ? 1 : 1,
+                                        borderWidth: 0.7,
                                         borderColor: isSelected ? "#3F2516" : "#E8DDD3"
                                     }}
                                 >
                                     <Text
                                         className={`font-semibold ${
-                                            isSelected ? "text-white" : "text-[#5A3825]"
+                                            isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
                                         }`}
                                         style={{ fontSize: moderateScale(13) }}
                                     >
@@ -501,8 +502,9 @@ export default function AddAddressScreen(){
                             }
                         }}
                         className={`flex-row items-center overflow-hidden
-                        ${receiverNameError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${receiverNameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -511,14 +513,14 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <UserIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -600,8 +602,9 @@ export default function AddAddressScreen(){
                             }
                         }}
                         className={`flex-row items-center overflow-hidden
-                        ${numberError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${numberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -610,14 +613,14 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <CallIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <CallIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -699,8 +702,9 @@ export default function AddAddressScreen(){
                             }
                         }}
                         className={`flex-row items-center overflow-hidden
-                        ${addressLineError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${addressLineError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -709,14 +713,14 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <HouseIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <HouseIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -882,8 +886,9 @@ export default function AddAddressScreen(){
                             }
                         }}
                         className={`flex-row items-center overflow-hidden
-                        ${pinCodeError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
+                        ${pinCodeError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
                         style={{
+                            borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
                             paddingLeft: scale(9),
@@ -892,7 +897,7 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#F5F5F5]"
+                            className="items-center justify-center bg-[#E5E4E2]/65"
                             style={{
                                 width: moderateScale(36),
                                 height: moderateScale(36),

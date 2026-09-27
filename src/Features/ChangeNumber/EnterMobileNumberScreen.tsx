@@ -100,10 +100,10 @@ export default function EnterMobileNumberScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -119,8 +119,9 @@ export default function EnterMobileNumberScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -183,8 +184,13 @@ export default function EnterMobileNumberScreen(){
                 </Text>
 
                 <View className={`w-full flex-row overflow-hidden
-                    ${mobileNumberError ? "border border-red-400" : "border border-[#1F1F1F]/10"} bg-white`}
-                    style={{ marginTop: verticalScale(6), height: verticalScale(48), borderRadius: moderateScale(18) }}
+                    ${mobileNumberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                    style={{
+                        marginTop: verticalScale(6), 
+                        height: verticalScale(48),
+                        borderRadius: moderateScale(18),
+                        borderWidth: moderateScale(0.7)
+                    }}
                 >
                     <View className="flex-row items-center justify-center relative" style={{ width: "22%" }}>
                         <IndiaFlag width={scale(20)} height={verticalScale(22)} style={{ marginRight: scale(6) }} />
@@ -193,7 +199,7 @@ export default function EnterMobileNumberScreen(){
                             +91
                         </Text>
 
-                        <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.8) }} />
+                        <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.7) }} />
                     </View>
 
                     <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>

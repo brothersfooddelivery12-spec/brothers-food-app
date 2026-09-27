@@ -189,7 +189,7 @@ export default function VerifyOtpScreen() {
     }, [])
 
     return(
-        <View className="flex-1">
+        <View className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
                 backgroundColor="transparent"
@@ -257,11 +257,11 @@ export default function VerifyOtpScreen() {
                     extraKeyboardSpace={20}
                 >
                     <View 
-                        className="w-full items-center rounded-t-[22px] bg-[#F5F5F5]"
+                        className="w-full items-center rounded-t-[22px] bg-[#FFFFFF]"
                         style={{ paddingHorizontal: scale(14) }}
                     >
                         <Animated.View
-                            className="overflow-hidden rounded-[32px] border-[2px] border-white"
+                            className="overflow-hidden rounded-[32px] border-[2px] border-[#FFFFFF]"
                             style={{
                                 width: logoSize,
                                 height: logoSize,
@@ -413,14 +413,15 @@ export default function VerifyOtpScreen() {
                                     return (
                                         <View
                                             key={index}
-                                            className={`items-center justify-center bg-white ${
+                                            className={`items-center justify-center bg-[#FAFAFA] ${
                                                 hasError
-                                                    ? "border border-red-400"
+                                                    ? "border-red-400"
                                                     : isActive
-                                                        ? "border border-[#E8B93F]/75"
-                                                        : "border border-[#1F1F1F]/10"
+                                                        ? "border-[#E8B93F]/75"
+                                                        : "border-[#1F1F1F]/10"
                                             }`}
                                             style={{
+                                                borderWidth: moderateScale(0.7),
                                                 height: scale(50),
                                                 width: scale(50),
                                                 borderRadius: moderateScale(18)
@@ -445,8 +446,9 @@ export default function VerifyOtpScreen() {
                         )}
 
                         <View
-                            className="flex-row items-center bg-white w-full border border-[#1F1F1F]/5"
+                            className="flex-row items-center bg-[#FAFAFA] w-full border-[#1F1F1F]/5"
                             style={{
+                                borderWidth: moderateScale(0.5),
                                 padding: scale(12),
                                 marginTop: verticalScale(24),
                                 gap: scale(10),

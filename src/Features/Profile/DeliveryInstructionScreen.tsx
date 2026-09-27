@@ -17,9 +17,8 @@ import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { AddressItem } from '../Address/Components/SavedAddressCard'
 
-export const SAVED_ADDRESSES: AddressItem[] = [
+export const SAVED_ADDRESSES = [
     {
         id: "1",
         title: "Home",
@@ -106,10 +105,10 @@ export default function DeliveryInstructionScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#F5F5F5]">
+        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
                 translucent
-                backgroundColor="#F5F5F5"
+                backgroundColor="#FFFFFF"
                 barStyle="dark-content"
             />
 
@@ -125,8 +124,9 @@ export default function DeliveryInstructionScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-white border border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
@@ -164,8 +164,8 @@ export default function DeliveryInstructionScreen(){
             >
 
                 <View
-                    className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18) }}
+                    className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
                 >
                     <View className='flex-row gap-2 items-center'>
                         <View
@@ -208,7 +208,7 @@ export default function DeliveryInstructionScreen(){
                                         backgroundColor: isSelected
                                             ? "rgba(232,185,63,0.07)"
                                             : "#FFFFFF",
-                                        borderWidth: moderateScale(1),
+                                        borderWidth: moderateScale(0.7),
                                         borderColor: isSelected
                                             ? "rgba(63, 37, 22, 0.45)"
                                             : "rgba(31,31,31,0.10)"
@@ -299,8 +299,9 @@ export default function DeliveryInstructionScreen(){
                 </View>
 
                 <View
-                    className="bg-white border border-[#1F1F1F]/10"
+                    className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                     style={{
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(18),
                         padding: moderateScale(12),
                         marginTop: verticalScale(14)
@@ -349,8 +350,9 @@ export default function DeliveryInstructionScreen(){
                     </View>
 
                     <View
-                        className="border border-[#1F1F1F]/10 bg-[#F8F9FA]"
+                        className="border-[#1F1F1F]/10 bg-[#E5E4E2]/35"
                         style={{
+                            borderWidth: moderateScale(0.7),
                             borderRadius: moderateScale(14),
                             marginTop: verticalScale(12),
                             minHeight: verticalScale(88),
@@ -393,8 +395,9 @@ export default function DeliveryInstructionScreen(){
                                     key={item.id}
                                     activeOpacity={0.95}
                                     onPress={() => handleInstructionPress(item.id)}
-                                    className="flex-row items-center border"
+                                    className="flex-row items-center"
                                     style={{
+                                        borderWidth: moderateScale(0.7),
                                         width: "47%",
                                         minHeight: verticalScale(30),
                                         borderRadius: moderateScale(18),
@@ -404,8 +407,6 @@ export default function DeliveryInstructionScreen(){
                                         backgroundColor: isSelected
                                             ? "rgba(63, 37, 22, 0.85)"
                                             : "#FFFFFF",
-
-                                        borderWidth: moderateScale(1),
                                         borderColor: isSelected
                                             ? "rgba(63, 37, 22, 0.45)"
                                             : "rgba(31,31,31,0.10)"
@@ -440,7 +441,7 @@ export default function DeliveryInstructionScreen(){
                         }}
                     >
                         <Text
-                            className="text-white font-semibold"
+                            className="text-[#FFFFFF] font-semibold"
                             style={{ fontSize: moderateScale(13) }}
                         >
                             Save Instructions
@@ -449,8 +450,8 @@ export default function DeliveryInstructionScreen(){
                 </View>
 
                 <View
-                    className="mt-3 p-3 bg-white border border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18), marginTop: verticalScale(14) }}
+                    className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                    style={{ borderRadius: moderateScale(18), marginTop: verticalScale(14), borderWidth: moderateScale(0.5) }}
                 >
                     <View className='flex-row gap-2 items-center'>
                         <View
@@ -473,8 +474,8 @@ export default function DeliveryInstructionScreen(){
                     </View>
 
                     <View
-                        className="px-3 py-4 border border-[#1F1F1F]/10 bg-[#F8F9FA] mt-4"
-                        style={{ borderRadius: moderateScale(14) }}
+                        className="px-3 py-4 border-[#1F1F1F]/10 bg-[#FFFFFF] mt-4"
+                        style={{ borderRadius: moderateScale(14), borderWidth: moderateScale(0.7) }}
                     >
                         <View className='flex-row gap-2 items-center mx-2'>
                             <View className='justify-center flex-1'>
@@ -499,7 +500,7 @@ export default function DeliveryInstructionScreen(){
                         <View
                             className="bg-[#1F1F1F]/10"
                             style={{
-                                height: 1,
+                                height: 0.7,
                                 marginVertical: verticalScale(10),
                                 marginHorizontal: moderateScale(6)
                             }}

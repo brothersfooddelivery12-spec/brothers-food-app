@@ -16,7 +16,7 @@ type DeliveryReviewCardProps = {
 export default function DeliveryReviewCard({ item }: DeliveryReviewCardProps) {
     return (
         <View
-            className="bg-[#E5E4E2]/65 p-4"
+            className="bg-[#E5E4E2]/35 p-4"
             style={{ borderRadius: moderateScale(18) }}
         >
             <View className="flex-row items-center">
