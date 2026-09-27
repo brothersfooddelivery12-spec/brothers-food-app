@@ -3,6 +3,7 @@ import SearchBar from "@/components/SearchBar"
 import { FavoriteMenuItemResponse, FavoriteRestaurantResponse, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
 import { useLocationStore } from '@/Stores/locationStore'
+import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -33,9 +34,8 @@ export default function FavouritesScreen() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [activeTab, setActiveTab] = useState<"restaurants" | "food">("restaurants")
     const [favRestaurants, setFavRestaurants] = useState<FavRestaurant[]>([])
-    const [loadingFavRestaurants, setLoadingFavRestaurants] = useState(false)
     const [favFoods, setFavFoods] = useState<FavFood[]>([])
-    const [loadingFavFoods, setLoadingFavFoods] = useState(false)
+    const [loadingFavourites, setLoadingFavourites] = useState(true)
 
     type FavouriteItem = FavRestaurant | FavFood
 
@@ -43,31 +43,59 @@ export default function FavouritesScreen() {
         return activeTab === "restaurants" ? favRestaurants : favFoods
     }, [activeTab, favRestaurants, favFoods])
 
-    const fetchFavoriteRestaurants = useCallback(async (latitude: number, longitude: number) => {
+    const fetchAllFavourites = useCallback(async (latitude: number, longitude: number) => {
         try {
-            setLoadingFavRestaurants(true)
+            setLoadingFavourites(true)
 
-            const res = await getFavoriteRestaurants(latitude, longitude)
+            const [restaurantResult, foodResult] = await Promise.allSettled([
+                measureApi(
+                    "Favourite Restaurants",
+                    () =>
+                        getFavoriteRestaurants(
+                            latitude,
+                            longitude
+                        )
+                ),
 
-            console.log("Favourite restaurants:", res.data)
+                measureApi(
+                    "Favourite Foods",
+                    () =>
+                        getFavoriteMenuItems(
+                            latitude,
+                            longitude
+                        )
+                )
+            ])
 
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch favourite restaurants", "warning")
+            if (restaurantResult.status === "fulfilled" && restaurantResult.value.data.success) {
+                const restaurantData = restaurantResult.value.data.data ?? []
 
-                return
+                console.log("FAVOURITE RESTAURANTS:", restaurantData)
+
+                const mappedRestaurants = restaurantData.map((item: FavoriteRestaurantResponse) => mapFavoriteRestaurant(item))
+
+                setFavRestaurants(mappedRestaurants)
             }
 
-            const data = res.data.data ?? []
+            if (foodResult.status === "fulfilled" && foodResult.value.data.success) {
+                const foodData = foodResult.value.data.data ?? []
 
-            const mapped = data.map((item: FavoriteRestaurantResponse) => mapFavoriteRestaurant(item))
+                console.log("FAVOURITE FOODS:", foodData)
 
-            setFavRestaurants(mapped)
-        } catch (error: any) {
-            console.log("Favourite restaurants error:", error)
+                const mappedFoods = foodData.map((item: FavoriteMenuItemResponse) => mapFavoriteMenuItem(item))
 
-            showToast(error?.message || "Unable to fetch favourite restaurants", "warning")
+                setFavFoods(mappedFoods)
+            }
+
+            if (restaurantResult.status === "rejected") {
+                console.log("Favourite restaurants error:", restaurantResult.reason)
+            }
+
+            if (foodResult.status === "rejected") {
+                console.log("Favourite foods error:", foodResult.reason)
+            }
         } finally {
-            setLoadingFavRestaurants(false)
+            setLoadingFavourites(false)
         }
     },[])
 
@@ -84,34 +112,6 @@ export default function FavouritesScreen() {
         isOpen: item.is_open,
         isFavourite: true
     })
-
-    const fetchFavoriteMenuItems = useCallback(async (latitude: number, longitude: number) => {
-        try {
-            setLoadingFavFoods(true)
-
-            const res =await getFavoriteMenuItems(latitude, longitude)
-
-            console.log("Favourite menu items:", res.data)
-
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch favourite foods", "warning")
-
-                return
-            }
-
-            const data = res.data.data ?? []
-
-            const mappedFoods = data.map((item: FavoriteMenuItemResponse) => mapFavoriteMenuItem(item))
-
-            setFavFoods(mappedFoods)
-        } catch (error: any) {
-            console.log("Favourite food error:", error)
-
-            showToast(error?.message || "Unable to fetch favourite foods", "warning")
-        } finally {
-            setLoadingFavFoods(false)
-        }
-    },[])
 
     const mapFavoriteMenuItem = (item: FavoriteMenuItemResponse): FavFood => {
         return {
@@ -140,50 +140,17 @@ export default function FavouritesScreen() {
         }
     }
 
-    const [loadingFavourites, setLoadingFavourites] = useState(true)
-
     useFocusEffect(
         useCallback(() => {
             if (!location) {
                 return
             }
 
-            let isMounted = true
-
-            const fetchFavourites = async () => {
-                try {
-                    if (isMounted) {
-                        setLoadingFavourites(true)
-                    }
-
-                    await Promise.allSettled([
-                        fetchFavoriteRestaurants(
-                            25.149131,
-                            73.083126
-                        ),
-
-                        fetchFavoriteMenuItems(
-                            25.149131,
-                            73.083126
-                        )
-                    ])
-                } finally {
-                    if (isMounted) {
-                        setLoadingFavourites(false)
-                    }
-                }
-            }
-
-            fetchFavourites()
-
-            return () => {
-                isMounted = false
-            }
-        }, [
-            location,
-            fetchFavoriteRestaurants,
-            fetchFavoriteMenuItems
-        ])
+            fetchAllFavourites(
+                25.149131,
+                73.083126
+            )
+        }, [location, fetchAllFavourites])
     )
 
     const {addRestaurant, removeRestaurant} = useFavouriteStore()

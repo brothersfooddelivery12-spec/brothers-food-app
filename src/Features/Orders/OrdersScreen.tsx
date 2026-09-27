@@ -1,9 +1,10 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SearchBar from "@/components/SearchBar"
 import { getUserOrders, OrderListItem } from "@/Services/api-service"
+import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from "lottie-react-native"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -28,80 +29,66 @@ export default function OrdersScreen() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
 
-    type OrderListStatus = "ACTIVE" | "PAST"
-
     const [activeOrders, setActiveOrders] = useState<OrderListItem[]>([])
     const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
-    const [loadingActiveOrders, setLoadingActiveOrders] = useState(false)
-    const [loadingPastOrders, setLoadingPastOrders] = useState(false)
-
-    const fetchOrders = useCallback(async (status: OrderListStatus) => {
-        const setLoading = status === "ACTIVE"
-            ? setLoadingActiveOrders
-            : setLoadingPastOrders
-
-        try {
-            setLoading(true)
-
-            const res = await getUserOrders({
-                status,
-                offset: 0,
-                limit: 20
-            })
-
-            console.log(`${status} orders:`, res.data)
-
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch orders", "warning")
-
-                return
-            }
-
-            const data = res.data.data ?? []
-
-            if (status === "ACTIVE") {
-                setActiveOrders(data)
-            } else {
-                setPastOrders(data)
-            }
-        } catch (error: any) {
-            console.log(`Fetch ${status} orders error:`, error)
-
-            showToast(error?.message || "Unable to fetch orders", "warning")
-        } finally {
-            setLoading(false)
-        }
-    },[])
-
     const [loadingOrders, setLoadingOrders] = useState(true)
+
+    const hasLoadedOrdersRef = useRef(false)
+
+    const fetchAllOrders = useCallback(async () => {
+        try {
+            if (!hasLoadedOrdersRef.current) {
+                setLoadingOrders(true)
+            }
+
+            const [activeResult, pastResult] =
+                await Promise.allSettled([
+                    measureApi(
+                        "Active Orders",
+                        () =>
+                            getUserOrders({
+                                status: "ACTIVE",
+                                offset: 0,
+                                limit: 20
+                            })
+                    ),
+                    measureApi(
+                        "Past Orders",
+                        () =>
+                            getUserOrders({
+                                status: "PAST",
+                                offset: 0,
+                                limit: 20
+                            })
+                    )
+                ])
+
+            if (activeResult.status === "fulfilled" && activeResult.value.data.success) {
+                const activeData = activeResult.value.data.data ?? []
+
+                console.log("ACTIVE ORDERS DATA:", activeData)
+
+                setActiveOrders(activeData)
+            }
+
+            if (pastResult.status === "fulfilled" && pastResult.value.data.success) {
+                const pastData = pastResult.value.data.data ?? []
+
+                console.log("PAST ORDERS DATA:", pastData)
+
+                setPastOrders(pastData)
+            }
+
+            hasLoadedOrdersRef.current = true
+        } finally {
+            setLoadingOrders(false)
+        }
+    }, [])
     
     useFocusEffect(
         useCallback(() => {
-            let isMounted = true
-
-            const loadOrders = async () => {
-                try {
-                    if (isMounted) {
-                        setLoadingOrders(true)
-                    }
-
-                    await Promise.allSettled([
-                        fetchOrders("ACTIVE"),
-                        fetchOrders("PAST")
-                    ])
-                } finally {
-                    if (isMounted) {
-                        setLoadingOrders(false)
-                    }
-                }
-            }
-
-            loadOrders()
-
-            return () => {
-                isMounted = false
-            }
-        }, [fetchOrders])
+            fetchAllOrders()
+        }, [fetchAllOrders])
     )
 
     const horizontalPadding = scale(42)
@@ -374,7 +361,7 @@ export default function OrdersScreen() {
                             <View
                                 className=" w-full items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                 style={{
-                                    borderWidth: moderateScale(0.7),
+                                    borderWidth: moderateScale(0.5),
                                     paddingHorizontal: scale(20),
                                     paddingVertical: verticalScale(24),
                                     borderRadius: moderateScale(20)

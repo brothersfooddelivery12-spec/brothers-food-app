@@ -14,6 +14,7 @@ import FoodCard, { MenuItem } from "@/Features/Home/components/FoodCard"
 import NearByRestaurantsList, { NearByRestaurants } from "@/Features/Home/components/NearByRestaurants"
 import OfferCard from "@/Features/Home/components/OffersCard"
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
+import { measureApi } from '@/utils/measureApiRes'
 import { Image } from "expo-image"
 import * as Location from "expo-location"
 import { router } from "expo-router"
@@ -643,32 +644,72 @@ export default function HomeScreen() {
 
     const [loadingHome, setLoadingHome] = useState(true)
 
-    const fetchHomeData = useCallback(
-        async (latitude: number, longitude: number) => {
-            try {
-                setLoadingHome(true)
+    const hasLoadedHomeRef = useRef(false)
 
-                await Promise.all([
-                    fetchAdvertisements(),
-                    fetchCategories(latitude, longitude),
-                    fetchPopularMenu(latitude, longitude),
-                    fetchPopularRestaurants(latitude, longitude),
-                    fetchNearbyRestaurants(latitude, longitude)
-                ])
-            } catch (error) {
-                console.log("Home data fetch error:", error)
-            } finally {
-                setLoadingHome(false)
+    const fetchHomeData = useCallback(async (latitude: number, longitude: number) => {
+        try {
+            if (!hasLoadedHomeRef.current) {
+                setLoadingHome(true)
             }
-        },
-        [
-            fetchAdvertisements,
-            fetchCategories,
-            fetchPopularMenu,
-            fetchPopularRestaurants,
-            fetchNearbyRestaurants
-        ]
-    )
+
+            await Promise.allSettled([
+                measureApi(
+                    "Categories",
+                    () =>
+                        fetchCategories(
+                            latitude,
+                            longitude
+                        )
+                ),
+                measureApi(
+                    "Advertisements",
+                    fetchAdvertisements
+                ),
+                measureApi(
+                    "Popular Restaurants",
+                    () =>
+                        fetchPopularRestaurants(
+                            latitude,
+                            longitude
+                        )
+                ),
+                measureApi(
+                    "Popular Menu",
+                    () =>
+                        fetchPopularMenu(
+                            latitude,
+                            longitude
+                        )
+                ),
+            ])
+
+            hasLoadedHomeRef.current = true
+
+            setLoadingHome(false)
+
+            Promise.allSettled([
+                measureApi(
+                    "Nearby Restaurants",
+                    () =>
+                        fetchNearbyRestaurants(
+                            latitude,
+                            longitude
+                        )
+                )
+            ])
+        } catch (error) {
+            console.log("Home fetch error:", error)
+
+            setLoadingHome(false)
+        }
+    },
+    [
+        fetchAdvertisements,
+        fetchCategories,
+        fetchNearbyRestaurants,
+        fetchPopularMenu,
+        fetchPopularRestaurants
+    ])
 
     useEffect(() => {
         if (!hasHydrated || !location) {
@@ -1513,15 +1554,17 @@ export default function HomeScreen() {
                                             renderItem={renderPopularFood}
                                         />
                 
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(18)
-                                            }}
-                                        >
-                                            Nearby Restaurants
-                                        </Text>      
+                                        {nearbyRestaurants.length > 0 && (
+                                            <Text
+                                                className="text-[#1F1F1F] font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    marginTop: verticalScale(18)
+                                                }}
+                                            >
+                                                Nearby Restaurants
+                                            </Text>      
+                                        )}
                                     </>
                                 )}
                             </>
