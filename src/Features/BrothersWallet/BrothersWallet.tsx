@@ -10,7 +10,7 @@ import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -121,8 +121,7 @@ export default function BrothersWalletScreen(){
 
     const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([])
     
-    const [loadingTransactions, setLoadingTransactions] =
-        useState(false)
+    const [loadingTransactions, setLoadingTransactions] = useState(false)
 
     const fetchWalletTransactions = useCallback(async (walletId: string) => {
         if (!walletId) {
@@ -150,15 +149,17 @@ export default function BrothersWalletScreen(){
         } finally {
             setLoadingTransactions(false)
         }
-    },[])
+    },[wallet?.wallet_id])
 
-    useEffect(() => {
-        if (!wallet?.wallet_id) {
-            return
-        }
+    useFocusEffect(
+        useCallback(() => {
+            if (!wallet?.wallet_id) {
+                return
+            }
 
-        fetchWalletTransactions(wallet.wallet_id)
-    }, [wallet?.wallet_id, fetchWalletTransactions])
+            fetchWalletTransactions(wallet.wallet_id)
+        }, [wallet?.wallet_id, fetchWalletTransactions])
+    )
 
     const mapWalletTransaction = (transaction: WalletTransaction): TransactionHistory => {
         switch (transaction.transaction_type) {

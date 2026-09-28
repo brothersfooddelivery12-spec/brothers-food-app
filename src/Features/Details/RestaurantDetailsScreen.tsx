@@ -165,11 +165,11 @@ export default function RestaurantDetailsScreen() {
     const DefaultRestaurantLogo = require("../../../assets/images/Default_Restaurant_Logo.png")
 
     useEffect(() => {
-        setCoverImageError(true)
+        setCoverImageError(false)
     }, [restaurant?.cover_image_url])
 
     useEffect(() => {
-        setLogoImageError(true)
+        setLogoImageError(false)
     }, [restaurant?.logo_url])
 
     const hasCoverImage = !!restaurant?.cover_image_url && !coverImageError
@@ -420,6 +420,9 @@ export default function RestaurantDetailsScreen() {
                                             }
                                             : DefaultRestaurantCoverImage
                                     }
+                                    onError={() => {
+                                        setCoverImageError(true)
+                                    }}
                                     contentFit="cover"
                                     style={{
                                         width: "100%",
@@ -520,6 +523,9 @@ export default function RestaurantDetailsScreen() {
                                                         }
                                                         : DefaultRestaurantLogo
                                                 }
+                                                onError={() => {
+                                                    setLogoImageError(true)
+                                                }}
                                                 contentFit="cover"
                                                 style={{
                                                     width: "100%",

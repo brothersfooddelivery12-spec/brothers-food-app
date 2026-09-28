@@ -92,7 +92,7 @@ const RecommendedCard = ({
     const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
     
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [item.imageUrl])
 
     const hasImage = !!item.imageUrl && !imageError
@@ -135,6 +135,9 @@ const RecommendedCard = ({
                                 }
                                 : DefaultFoodImage
                         }
+                        onError={() => {
+                            setImageError(true)
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         style={{

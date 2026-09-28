@@ -91,7 +91,10 @@ type ActiveOrderCardProps = {
     orderId: string
 
     status: OrderStatusType
-    eta?: string
+    remainingMinutes?: number | null
+    estimatedDeliveryAt?: string | null
+    canPay: boolean
+    iscancellable: boolean
 
     items: ActiveOrderItem[]
 
@@ -106,7 +109,10 @@ const ActiveOrderCard = ({
     restaurantImage,
     orderId,
     status,
-    eta,
+    remainingMinutes,
+    estimatedDeliveryAt,
+    canPay,
+    iscancellable,
     items,
     onPayNow,
     onCancelOrder,
@@ -115,14 +121,85 @@ const ActiveOrderCard = ({
 }: ActiveOrderCardProps) => {
     const StatusIcon = STATUS_ICONS[status]
     const statusLabel = getStatusLabel(status)
+
     const isPendingPayment = status === "PENDING_PAYMENT"
+
+    const isPending = status === "PENDING"
+
+    const isCancelled =
+        status === "CANCELLED_BY_CUSTOMER" ||
+        status === "CANCELLED_BY_RESTAURANT" ||
+        status === "REJECTED_BY_RESTAURANT" ||
+        status === "CANCELLED_TIMEOUT"
+
+    const isRiderAvailable =
+        status === "RIDER_ASSIGNED" ||
+        status === "PICKED_UP" ||
+        status === "OUT_FOR_DELIVERY"
+
+    const canTrack =
+        status === "CONFIRMED" ||
+        status === "PREPARING" ||
+        status === "READY_FOR_PICKUP" ||
+        status === "RIDER_ASSIGNED" ||
+        status === "PICKED_UP" ||
+        status === "OUT_FOR_DELIVERY"
+
+    const showPayNow = canPay && isPendingPayment
+
+    const showCancel = iscancellable
+
+    const showTrack = !showPayNow && canTrack
+
+    const showContactRider = isRiderAvailable
+
+    const getEtaText = () => {
+        if (status === "PENDING_PAYMENT") {
+            return null
+        }
+
+        if (status === "PENDING") {
+            return "Waiting for confirmation"
+        }
+
+        if (
+            status === "DELIVERED" ||
+            status === "CANCELLED_BY_CUSTOMER" ||
+            status === "CANCELLED_BY_RESTAURANT" ||
+            status === "REJECTED_BY_RESTAURANT" ||
+            status === "CANCELLED_TIMEOUT"
+        ) {
+            return null
+        }
+
+        if (remainingMinutes != null && remainingMinutes > 0) {
+            return `${remainingMinutes} mins`
+        }
+
+        // if (estimatedDeliveryAt) {
+        //     const date = new Date(estimatedDeliveryAt)
+
+        //     return date.toLocaleTimeString(
+        //         "en-IN",
+        //         {
+        //             hour: "numeric",
+        //             minute: "2-digit",
+        //             hour12: true
+        //         }
+        //     )
+        // }
+
+        return "Arriving soon"
+    }
+
+    const etaText = getEtaText()
 
     const [imageError, setImageError] = useState(false)
         
     const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Logo.png")
     
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [restaurantImage])
 
     const hasImage = !!restaurantImage && !imageError
@@ -153,6 +230,9 @@ const ActiveOrderCard = ({
                                 }
                                 : DefaultRestaurantImage
                         }
+                        onError={() => {
+                            setImageError(true)
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         transition={200}
@@ -185,6 +265,7 @@ const ActiveOrderCard = ({
                     <View
                         className="flex-row items-center justify-center bg-[#F8D56A]"
                         style={{
+                            backgroundColor: isCancelled ? "rgb(254 226 226 / 0.85)" : "#F8D56A",
                             gap: moderateScale(3),
                             paddingLeft: moderateScale(6),
                             paddingRight: moderateScale(8),
@@ -192,34 +273,39 @@ const ActiveOrderCard = ({
                             borderRadius: moderateScale(12)
                         }}
                     >   
-                        <StatusIcon width={moderateScale(15)} height={moderateScale(15)} color="#3F2516" strokeWidth={1.5} />
+                        <StatusIcon width={moderateScale(15)} height={moderateScale(15)} color={isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"} strokeWidth={1.5} />
 
                         <Text
-                            className="font-medium text-[#3F2516]"
-                            style={{ fontSize: moderateScale(10) }}
+                            className="font-medium"
+                            style={{ fontSize: moderateScale(10), color: isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516" }}
                         >
                             {statusLabel}
                         </Text>
                     </View>
 
-                    <View className="flex-row items-center gap-1 mr-1">
-                        <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
-                            style={{
-                                width: moderateScale(21),
-                                height: moderateScale(21)
-                            }}
-                        >
-                            <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" strokeWidth={1.8} />
-                        </View>
+                    {etaText && (
+                        <View className="flex-row items-center gap-1 mr-1">
+                            <View
+                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                style={{
+                                    width: moderateScale(21),
+                                    height: moderateScale(21)
+                                }}
+                            >
+                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+                            </View>
 
-                        <Text
-                            className="font-medium text-[#1F1F1F]/75"
-                            style={{ fontSize: moderateScale(10) }}
-                        >
-                            ETA: {eta}
-                        </Text>
-                    </View>
+                            <Text
+                                className="font-medium text-[#1F1F1F]/75"
+                                style={{ fontSize: moderateScale(10) }}
+                            >
+                                {status === "PENDING"
+                                    ? etaText
+                                    : `ETA: ${etaText}`
+                                }
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </View>
 
@@ -256,70 +342,104 @@ const ActiveOrderCard = ({
                 ))}
             </View>
 
-            <View className="flex-row items-center justify-center gap-6 mt-5">
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={isPendingPayment ? onPayNow : onTrackOrder}
-                    className="flex-row items-center justify-center bg-[#3F2516]"
-                    style={{
-                        paddingHorizontal: scale(12),
-                        paddingVertical: verticalScale(8),
-                        borderRadius: moderateScale(14)
-                    }}
-                >
-                    {isPendingPayment ? (
-                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
-                    ) : (
-                        <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
-                    )}
-
-                    <Text
-                        className="text-[#FFFFFF] font-medium ml-2 mr-1"
-                        style={{ fontSize: moderateScale(12) }}
-                    >
-                        {isPendingPayment ? "Pay now" : "Track Order"}
-                    </Text>
-
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={isPendingPayment ? onCancelOrder : onContactRider}
-                    className={`flex-row items-center justify-center ${
-                        isPendingPayment
-                            ? "bg-[#FEE2E2]/85"
-                            : "bg-[#E5E4E2]/65"
-                    }`}
-                    style={{
-                        paddingHorizontal: scale(12),
-                        paddingVertical: verticalScale(8),
-                        borderRadius: moderateScale(14)
-                    }}
-                >
-                    {isPendingPayment ? (
-                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220, 38, 38, 0.80)" strokeWidth={1.8} />
-                    ) : (
-                        <CustomerServiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
-                    )}
-
-                    <Text
-                        className="font-medium ml-2 mr-1"
+            <View
+                className="flex-row items-center justify-center gap-3"
+                style={{ marginTop: verticalScale(18) }}
+            >
+                {showPayNow && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onPayNow}
+                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
                         style={{
-                            fontSize: moderateScale(12),
-                            color: isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(9),
+                            borderRadius: moderateScale(14)
                         }}
                     >
-                        {isPendingPayment ? "Cancel Order" : "Contact Rider"}
-                    </Text>
+                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
 
-                    <ArrowRight
-                        width={moderateScale(16)}
-                        height={moderateScale(16)}
-                        color={isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
-                        strokeWidth={2}
-                    />
-                </TouchableOpacity>
+                        <Text
+                            className="text-[#FFFFFF] font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(12) }}
+                        >
+                            Pay Now
+                        </Text>
+
+                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                    </TouchableOpacity>
+                )}
+
+                {showTrack && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onTrackOrder}
+                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(9),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+
+                        <Text
+                            className="text-[#FFFFFF] font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(12) }}
+                        >
+                            Track Order
+                        </Text>
+
+                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                    </TouchableOpacity>
+                )}
+
+                {showCancel && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onCancelOrder}
+                        className="flex-row flex-1 items-center justify-center bg-[#FEE2E2]/85"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(9),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220,38,38,0.80)" strokeWidth={1.8} />
+
+                        <Text
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: "rgba(220,38,38,0.80)"
+                            }}
+                        >
+                            Cancel Order
+                        </Text>
+                    </TouchableOpacity>
+                )}
+
+                {!showCancel && showContactRider && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onContactRider}
+                        className="flex-row flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(9),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <CustomerServiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+
+                        <Text
+                            className="text-[#3F2516] font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(12) }}
+                        >
+                            Contact Rider
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     )

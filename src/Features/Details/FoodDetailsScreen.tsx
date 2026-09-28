@@ -74,7 +74,7 @@ export default function FoodDetailsScreen() {
     const DefaultFoodImage = require("../../../assets/images/Default_Food_Cover_Image.png")
     
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [menu?.image_url])
 
     const hasImage = !!menu?.image_url && !imageError
@@ -281,6 +281,9 @@ export default function FoodDetailsScreen() {
                                         }
                                         : DefaultFoodImage
                                 }
+                                onError={() => {
+                                    setImageError(true)
+                                }}
                                 contentFit="cover"
                                 cachePolicy="memory-disk"
                                 style={{

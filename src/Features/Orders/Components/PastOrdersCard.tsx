@@ -23,6 +23,9 @@ type PastOrderCardProps = {
     orderId: string
     status: OrderStatusType
     estimatedDeliveryAt?: string | null
+    canPay: boolean
+    iscancellable: boolean
+
     items: PastOrderItem[]
 
     onPayNow?: () => void
@@ -114,6 +117,8 @@ const PastOrdersCard = ({
     orderId,
     status,
     estimatedDeliveryAt,
+    canPay,
+    iscancellable,
     items,
     onPayNow,
     onCancelOrder,
@@ -163,7 +168,7 @@ const PastOrdersCard = ({
     const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Logo.png")
     
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [restaurantImage])
 
     const hasImage = !!restaurantImage && !imageError
@@ -292,6 +297,9 @@ const PastOrdersCard = ({
                                 }
                                 : DefaultRestaurantImage
                         }
+                        onError={() => {
+                            setImageError(true)
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         transition={200}
@@ -427,7 +435,7 @@ const PastOrdersCard = ({
             <View className="flex-row items-center justify-center gap-6 mt-5">
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={isPendingPayment ? onPayNow : onReorder}
+                    onPress={canPay ? onPayNow : onReorder}
                     className="flex-row items-center justify-center bg-[#3F2516]"
                     style={{
                         paddingHorizontal: scale(12),
@@ -435,7 +443,7 @@ const PastOrdersCard = ({
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    {isPendingPayment ? (
+                    {canPay ? (
                         <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
                     ) : (
                         <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
@@ -445,7 +453,7 @@ const PastOrdersCard = ({
                         className="text-[#FFFFFF] font-medium ml-2 mr-1"
                         style={{ fontSize: moderateScale(13) }}
                     >
-                        {isPendingPayment ? "Pay now" : "Reorder"}
+                        {canPay ? "Pay now" : "Reorder"}
                     </Text>
 
                     <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
@@ -453,9 +461,9 @@ const PastOrdersCard = ({
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={isPendingPayment ? onCancelOrder : onInvoice}
+                    onPress={isCancelled ? onCancelOrder : onInvoice}
                     className={`flex-row items-center justify-center ${
-                        isPendingPayment
+                        isCancelled
                             ? "bg-[#FEE2E2]/85"
                             : "bg-[#E5E4E2]/65"
                     }`}
@@ -465,7 +473,7 @@ const PastOrdersCard = ({
                         borderRadius: moderateScale(14)
                     }}
                 >
-                    {isPendingPayment ? (
+                    {isCancelled ? (
                         <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220, 38, 38, 0.80)" strokeWidth={1.8} />
                     ) : (
                         <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
@@ -475,16 +483,16 @@ const PastOrdersCard = ({
                         className="font-medium ml-2 mr-1"
                         style={{
                             fontSize: moderateScale(13),
-                            color: isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
+                            color: isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
                         }}
                     >
-                        {isPendingPayment ? "Cancel Order" : "Invoice"}
+                        {isCancelled ? "Cancel Order" : "Invoice"}
                     </Text>
 
                     <ArrowRight
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isPendingPayment ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
+                        color={isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
                         strokeWidth={2}
                     />
                 </TouchableOpacity>

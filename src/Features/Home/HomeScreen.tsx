@@ -6,6 +6,7 @@ import LocateFixedIcon from '@/assets/icon/LocateFixedIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
+import FloatingCartBar from '@/components/FloatingCartBar'
 import RestaurantCard, { Restaurants } from "@/components/RestaurantCard"
 import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
 import { offers } from "@/constant/OffersCardData"
@@ -33,6 +34,9 @@ import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 
+const DEFAULT_BOTTOM_PADDING = verticalScale(88)
+const FLOATING_CART_SPACE = verticalScale(75)
+
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const { height: screenHeight } = useWindowDimensions()
@@ -52,6 +56,12 @@ export default function HomeScreen() {
     //     state => state.user?.id
     // )
     // console.log("User ID:", userId)
+
+    const carts = useCartStore(state => state.carts)
+
+    const hasCartItems = useMemo(() => {
+        return carts.some(cart => cart.items.length > 0)
+    }, [carts])
     
     const [headerHeight, setHeaderHeight] = useState(0)
     const [showBackToTop, setShowBackToTop] = useState(false)
@@ -1087,7 +1097,7 @@ export default function HomeScreen() {
                         contentContainerStyle={{
                             flexGrow: 1,
                             paddingHorizontal: scale(14),
-                            paddingBottom: verticalScale(88),
+                            paddingBottom: DEFAULT_BOTTOM_PADDING + (hasCartItems ? FLOATING_CART_SPACE : 0),
                             gap: verticalScale(10)
                         }}
                         ListHeaderComponent={
@@ -1633,7 +1643,7 @@ export default function HomeScreen() {
                                 <ArrowUpIcon width={moderateScale(17)} height={moderateScale(17)} color="#FFFFFF" strokeWidth={2} />
     
                                 <Text
-                                    className="text-white font-semibold"
+                                    className="text-[#FFFFFF] font-semibold"
                                     style={{ fontSize: moderateScale(11.5) }}
                                 >
                                     Back to Top
@@ -1644,6 +1654,9 @@ export default function HomeScreen() {
                 </>
             )}
 
+            {hasCartItems && (
+                <FloatingCartBar />
+            )}
         </SafeAreaView>
     )
 }

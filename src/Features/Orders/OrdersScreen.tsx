@@ -184,42 +184,54 @@ export default function OrdersScreen() {
         }
     }, [activeOrders, pastOrders])
 
-    const getOrderEta = (estimatedDeliveryAt?: string | null) => {
-        if (!estimatedDeliveryAt) {
-            return "Not available"
-        }
+    // const getOrderEta = (estimatedDeliveryAt?: string | null) => {
+    //     if (!estimatedDeliveryAt) {
+    //         return "Not available"
+    //     }
 
-        const estimatedTime = new Date(estimatedDeliveryAt).getTime()
+    //     const estimatedTime = new Date(estimatedDeliveryAt).getTime()
 
-        const now = new Date().getTime()
+    //     const now = new Date().getTime()
 
-        const diffMinutes = Math.ceil((estimatedTime - now) / (1000 * 60))
+    //     const diffMinutes = Math.ceil((estimatedTime - now) / (1000 * 60))
 
-        if (diffMinutes <= 0) {
+    //     if (diffMinutes <= 0) {
+    //         return "Arriving soon"
+    //     }
+
+    //     if (diffMinutes < 60) {
+    //         return `${diffMinutes} mins`
+    //     }
+
+    //     const hours = Math.floor(diffMinutes / 60)
+
+    //     const minutes = diffMinutes % 60
+
+    //     if (hours < 24) {
+    //         return minutes > 0
+    //             ? `${hours}h ${minutes}m`
+    //             : `${hours}h`
+    //     }
+
+    //     return new Date(estimatedDeliveryAt).toLocaleDateString(
+    //         "en-IN",
+    //         {
+    //             day: "2-digit",
+    //             month: "short"
+    //         }
+    //     )
+    // }
+
+    const getRemainingTime = (remainingMinutes: number | null) => {
+        if (remainingMinutes == null) {
             return "Arriving soon"
         }
 
-        if (diffMinutes < 60) {
-            return `${diffMinutes} mins`
+        if (remainingMinutes <= 0) {
+            return "Arriving soon"
         }
 
-        const hours = Math.floor(diffMinutes / 60)
-
-        const minutes = diffMinutes % 60
-
-        if (hours < 24) {
-            return minutes > 0
-                ? `${hours}h ${minutes}m`
-                : `${hours}h`
-        }
-
-        return new Date(estimatedDeliveryAt).toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short"
-            }
-        )
+        return `${remainingMinutes} mins`
     }
 
     const renderOrder = useCallback(({ item }: { item: OrderListItem }) => {
@@ -230,8 +242,13 @@ export default function OrdersScreen() {
                     restaurantImage={item.restaurant_logo}
                     orderId={item.id}
                     status={item.status}
-                    eta={getOrderEta(item.estimated_delivery_at)}
+                    remainingMinutes={item.remaining_minutes}
+                    estimatedDeliveryAt={item.estimated_delivery_at}
+                    canPay={item.canpay}
+                    iscancellable={item.iscancellable}
                     items={item.items}
+                    onPayNow={() => {}}
+                    onCancelOrder={() => {}}
                     onTrackOrder={() => handleTrackOrder(item.id)}
                     onContactRider={() => handleContactRider(item.id)}
                 />
@@ -245,6 +262,8 @@ export default function OrdersScreen() {
                 orderId={item.id}
                 status={item.status}
                 estimatedDeliveryAt={item.estimated_delivery_at}
+                canPay={item.canpay}
+                iscancellable={item.iscancellable}
                 items={item.items}
                 onReorder={() => handleReorder(item.id)}
                 onInvoice={() => handleInvoice(item.id)}

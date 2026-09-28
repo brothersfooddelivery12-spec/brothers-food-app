@@ -390,18 +390,26 @@ export type OrderStatusType =
     | "REJECTED_BY_RESTAURANT"
     | "CANCELLED_TIMEOUT"
 
+export interface OrderPaymentRetry {
+    // Add exact fields here once backend sends them
+    [key: string]: any
+}
+
 export interface OrderListItem {
     id: string
-    status: OrderStatusType
     restaurant_name: string
     restaurant_logo: string | null
-
     items: {
         name: string
         quantity: number
     }[]
-
+    status: OrderStatusType
+    is_active: boolean
     estimated_delivery_at: string | null
+    remaining_minutes: number | null
+    payment_retry: string | null
+    canpay: boolean
+    iscancellable: boolean
 }
 
 export type OrderListStatus = "ACTIVE" | "PAST"

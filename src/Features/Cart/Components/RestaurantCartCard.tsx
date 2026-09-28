@@ -171,7 +171,7 @@ const RestaurantCartCard = memo(
         const DefaultRestaurantLogo = require("../../../../assets/images/Default_Restaurant_Logo.png")
         
         useEffect(() => {
-            setImageError(true)
+            setImageError(false)
         }, [restaurantLogoUrl])
 
         const hasImage = !!restaurantLogoUrl && !imageError
@@ -251,6 +251,9 @@ const RestaurantCartCard = memo(
                                     }
                                     : DefaultRestaurantLogo
                             }
+                            onError={() => {
+                                setImageError(true)
+                            }}
                             contentFit="cover"
                             cachePolicy="memory-disk"
                             transition={0}

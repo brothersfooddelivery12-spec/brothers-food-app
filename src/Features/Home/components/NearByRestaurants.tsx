@@ -34,7 +34,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
     const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Image.png")
 
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [restaurant.imageUrl])
 
     const hasImage = !!restaurant.imageUrl && !imageError
@@ -79,6 +79,9 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             }
                             : DefaultRestaurantImage
                     }
+                    onError={() => {
+                        setImageError(true)
+                    }}
                     contentFit="cover"
                     cachePolicy="memory-disk"
                     style={{

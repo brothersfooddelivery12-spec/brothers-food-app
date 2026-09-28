@@ -52,7 +52,7 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
     const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Cover_Image.png")
 
     useEffect(() => {
-        setImageError(true)
+        setImageError(false)
     }, [restaurant.imageUrl])
 
     const openingTime = formatRestaurantTime(restaurant.openingTime)
@@ -103,6 +103,9 @@ const FavRestaurantCard = ({ restaurant, onPress, onFavouritePress, isFavourite 
                                 }
                                 : DefaultRestaurantImage
                         }
+                        onError={() => {
+                            setImageError(true)
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         style={{

@@ -103,10 +103,7 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                 onLayout={event => {
                     const height = event.nativeEvent.layout.height
 
-                    if (
-                        height > 0 &&
-                        height !== contentHeight.value
-                    ) {
+                    if (height > 0 && height !== contentHeight.value) {
                         contentHeight.value = height
                     }
                 }}
