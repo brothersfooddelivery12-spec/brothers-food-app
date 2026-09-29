@@ -849,7 +849,16 @@ export default function BrothersWalletScreen(){
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                onPress={() => {}}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push({
+                                            pathname: "/transaction-history",
+                                            params: {
+                                                walletId: wallet?.wallet_id ?? ""
+                                            }
+                                        })
+                                    })
+                                }
                                 className="items-center"
                             >
                                 <Text

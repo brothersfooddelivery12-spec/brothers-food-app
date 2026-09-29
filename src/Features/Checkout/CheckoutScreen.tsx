@@ -2,7 +2,6 @@ import AddLocationIcon from '@/assets/icon/AddLocationIcon.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import { default as ArrowRight } from '@/assets/icon/ArrowRight.svg'
 import BHIMUpiIcon from '@/assets/icon/BHIMUpiIcon.svg'
-import CartIcon from '@/assets/icon/CartIcon.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DescriptionIcon from '@/assets/icon/DescriptionIcon.svg'
@@ -194,6 +193,7 @@ export default function CheckoutScreen() {
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 2
 
     const carts = useCartStore((state) => state.carts)
+    const removeRestaurantCart = useCartStore(state => state.removeRestaurantCart)
 
     const selectedCart = useMemo(() => {
         if (!restaurantId) {
@@ -355,16 +355,23 @@ export default function CheckoutScreen() {
 
             console.log("Verify response:", res.data)
 
-            const message = res.data.message?.trim().toLowerCase()
+            const message = res.data.message?.trim().toLowerCase() ?? ""
+            const paymentStatus = res.data.data?.status?.trim().toLowerCase() ?? ""
 
-            if (res.data.success && message === "payment verified successfully") {
+            if (res.data.success &&
+                (
+                    paymentStatus === "success" ||
+                    message === "payment is completed" ||
+                    message === "payment verified successfully"
+                )
+            ) {
                 paymentHandledRef.current = true
 
                 const paymentMethod = currentPaymentUpiRef.current
 
-                if (paymentMethod) {
-                    console.log("Saving payment method:", currentPaymentUpiRef.current)
+                const completedCart = selectedCart
 
+                if (paymentMethod) {
                     addPaymentMethod(paymentMethod)
 
                     currentPaymentUpiRef.current = null
@@ -372,27 +379,37 @@ export default function CheckoutScreen() {
 
                 setProcessingUpiApp(null)
 
+                if (!completedCart) {
+                    return
+                }
+
+                const successParams = {
+                    orderId: cashfreeOrderId,
+                    restaurantName: completedCart.restaurantName,
+                    restaurantId: completedCart.id,
+                    totalAmount: grandTotal.toString(),
+                    deliveryTime: averagePreparationTime.toString(),
+                    paymentMethod: paymentMethod?.type ?? "UPI",
+                    items: JSON.stringify(completedCart.items)
+                }
+
                 showToast("Payment successful", "success")
 
                 router.replace({
                     pathname: "/order-success",
-                    params: {
-                        orderId: cashfreeOrderId,
-                        restaurantName: selectedCart?.restaurantName ?? "",
-                        restaurantId: selectedCart?.id ?? "",
-                        totalAmount: grandTotal.toString(),
-                        deliveryTime: averagePreparationTime.toString(),
-                        paymentMethod: paymentMethod?.type ?? "UPI",
-                        items: JSON.stringify(selectedCart?.items ?? [])
-                    }
+                    params: successParams
                 })
 
-                currentPaymentUpiRef.current = null
+                removeRestaurantCart(completedCart.id)
 
                 return
             }
 
-            if (message === "payment is still incomplete") {
+            if (
+                paymentStatus === "pending" ||
+                paymentStatus === "incomplete" ||
+                message === "payment is still incomplete"
+            ) {
                 setProcessingUpiApp(null)
 
                 showToast("Payment is incomplete", "warning")
@@ -777,18 +794,28 @@ export default function CheckoutScreen() {
                     throw new Error("Order ID not found.")
                 }
 
+                const completedCart = selectedCart
+
+                if (!completedCart) {
+                    return
+                }
+
+                const successParams = {
+                    orderId,
+                    restaurantName: completedCart.restaurantName,
+                    restaurantId: completedCart.id,
+                    totalAmount: grandTotal.toString(),
+                    deliveryTime: averagePreparationTime.toString(),
+                    paymentMethod: "wallet",
+                    items: JSON.stringify(completedCart.items)
+                }
+
                 router.replace({
                     pathname: "/order-success",
-                    params: {
-                        orderId: orderId,
-                        restaurantName: selectedCart?.restaurantName ?? "",
-                        restaurantId: selectedCart?.id ?? "",
-                        totalAmount: grandTotal.toString(),
-                        deliveryTime: averagePreparationTime.toString(),
-                        paymentMethod: selectedPayment,
-                        items: JSON.stringify(selectedCart?.items ?? [])
-                    }
+                    params: successParams
                 })
+
+                removeRestaurantCart(completedCart.id)
 
                 return
             }
@@ -808,18 +835,28 @@ export default function CheckoutScreen() {
                     throw new Error("Order ID not found.")
                 }
 
+                const completedCart = selectedCart
+
+                if (!completedCart) {
+                    return
+                }
+
+                const successParams = {
+                    orderId,
+                    restaurantName: completedCart.restaurantName,
+                    restaurantId: completedCart.id,
+                    totalAmount: grandTotal.toString(),
+                    deliveryTime: averagePreparationTime.toString(),
+                    paymentMethod: "cod",
+                    items: JSON.stringify(completedCart.items)
+                }
+
                 router.replace({
                     pathname: "/order-success",
-                    params: {
-                        orderId: orderId,
-                        restaurantName: selectedCart?.restaurantName ?? "",
-                        restaurantId: selectedCart?.id ?? "",
-                        totalAmount: grandTotal.toString(),
-                        deliveryTime: averagePreparationTime.toString(),
-                        paymentMethod: selectedPayment,
-                        items: JSON.stringify(selectedCart?.items ?? [])
-                    }
+                    params: successParams
                 })
+
+                removeRestaurantCart(completedCart.id)
 
                 return
             }
@@ -852,7 +889,7 @@ export default function CheckoutScreen() {
                 }
 
                 await startUpiPayment({
-                    orderId: payment.order_id,
+                    orderId: payment.payment_id,
                     paymentSessionId: payment.payment_session_id,
                     appPackage: selectedUpiMethod.packageName
                 })
@@ -969,68 +1006,6 @@ export default function CheckoutScreen() {
                             height: moderateScale(125)
                         }}
                     />
-                </View>
-            ) : !selectedCart ? (
-                <View
-                    className="flex-1 items-center justify-center"
-                    style={{
-                        paddingHorizontal: scale(30),
-                        paddingBottom: insets.bottom + verticalScale(40)
-                    }}
-                >
-                    <View
-                        className="items-center justify-center bg-[#E8B93F]/15"
-                        style={{
-                            width: moderateScale(82),
-                            height: moderateScale(82),
-                            borderRadius: moderateScale(30),
-                            marginBottom: verticalScale(18)
-                        }}
-                    >
-                        <CartIcon width={moderateScale(38)} height={moderateScale(38)} color="#3F2516" strokeWidth={1.5} />
-                    </View>
-
-                    <Text
-                        className="text-[#1F1F1F] font-extrabold text-center"
-                        style={{ fontSize: moderateScale(19) }}
-                    >
-                        Cart not found
-                    </Text>
-
-                    <Text
-                        className="text-[#1F1F1F]/60 font-medium text-center"
-                        style={{
-                            fontSize: moderateScale(11),
-                            marginTop: verticalScale(6),
-                            lineHeight: moderateScale(17),
-                            paddingHorizontal: scale(20)
-                        }}
-                    >
-                        The selected restaurant cart is no longer available.
-                        Please return to your cart and select a restaurant.
-                    </Text>
-
-                    <TouchableOpacity
-                        activeOpacity={0.95}
-                        onPress={() => router.back()}
-                        className="flex-row items-center justify-center bg-[#3F2516]"
-                        style={{
-                            gap: moderateScale(6),
-                            marginTop: verticalScale(20),
-                            paddingHorizontal: scale(22),
-                            paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(22)
-                        }}
-                    >
-                        <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(13) }}
-                        >
-                            Back to Cart
-                        </Text>
-
-                        <ArrowRight width={moderateScale(17)} height={moderateScale(17)} color="#FFFFFF" strokeWidth={1.8} />
-                    </TouchableOpacity>
                 </View>
             ) : (
                 <>

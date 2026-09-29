@@ -23,7 +23,7 @@ const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46) 
 
 export default function FavouritesScreen() {
-    const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions()
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const params = useLocalSearchParams<{tab?: "restaurants" | "food"}>()
@@ -43,57 +43,67 @@ export default function FavouritesScreen() {
         return activeTab === "restaurants" ? favRestaurants : favFoods
     }, [activeTab, favRestaurants, favFoods])
 
-    const fetchAllFavourites = useCallback(async (latitude: number, longitude: number) => {
+    const fetchFavouritesByTab = useCallback(async (
+        tab: "restaurants" | "food",
+        latitude: number,
+        longitude: number
+    ) => {
         try {
             setLoadingFavourites(true)
 
-            const [restaurantResult, foodResult] = await Promise.allSettled([
-                measureApi(
+            if (tab === "restaurants") {
+                const res = await measureApi(
                     "Favourite Restaurants",
                     () =>
                         getFavoriteRestaurants(
                             latitude,
                             longitude
                         )
-                ),
-
-                measureApi(
-                    "Favourite Foods",
-                    () =>
-                        getFavoriteMenuItems(
-                            latitude,
-                            longitude
-                        )
                 )
-            ])
 
-            if (restaurantResult.status === "fulfilled" && restaurantResult.value.data.success) {
-                const restaurantData = restaurantResult.value.data.data ?? []
+                if (!res.data.success) {
+                    showToast(res.data.message || "Unable to fetch favourite restaurants", "warning")
 
-                console.log("FAVOURITE RESTAURANTS:", restaurantData)
+                    return
+                }
 
-                const mappedRestaurants = restaurantData.map((item: FavoriteRestaurantResponse) => mapFavoriteRestaurant(item))
+                const data = res.data.data ?? []
 
-                setFavRestaurants(mappedRestaurants)
+                console.log("FAVOURITE RESTAURANTS:", data)
+
+                const mapped = data.map((item: FavoriteRestaurantResponse) => mapFavoriteRestaurant(item))
+
+                setFavRestaurants(mapped)
+
+                return
             }
 
-            if (foodResult.status === "fulfilled" && foodResult.value.data.success) {
-                const foodData = foodResult.value.data.data ?? []
+            const res = await measureApi(
+                "Favourite Foods",
+                () =>
+                    getFavoriteMenuItems(
+                        latitude,
+                        longitude
+                    )
+            )
 
-                console.log("FAVOURITE FOODS:", foodData)
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch favourite foods", "warning")
 
-                const mappedFoods = foodData.map((item: FavoriteMenuItemResponse) => mapFavoriteMenuItem(item))
-
-                setFavFoods(mappedFoods)
+                return
             }
 
-            if (restaurantResult.status === "rejected") {
-                console.log("Favourite restaurants error:", restaurantResult.reason)
-            }
+            const data = res.data.data ?? []
 
-            if (foodResult.status === "rejected") {
-                console.log("Favourite foods error:", foodResult.reason)
-            }
+            console.log("FAVOURITE FOODS:", data)
+
+            const mapped = data.map((item: FavoriteMenuItemResponse) => mapFavoriteMenuItem(item))
+
+            setFavFoods(mapped)
+        } catch (error: any) {
+            console.log("Fetch favourites error:", error)
+
+            showToast(error?.response?.data ?.message || error?.message || "Unable to fetch favourites", "warning")
         } finally {
             setLoadingFavourites(false)
         }
@@ -146,11 +156,12 @@ export default function FavouritesScreen() {
                 return
             }
 
-            fetchAllFavourites(
+            fetchFavouritesByTab(
+                activeTab,
                 25.149131,
                 73.083126
             )
-        }, [location, fetchAllFavourites])
+        }, [activeTab, location, fetchFavouritesByTab])
     )
 
     const {addRestaurant, removeRestaurant} = useFavouriteStore()
@@ -436,6 +447,15 @@ export default function FavouritesScreen() {
         ? favRestaurants.filter(restaurant => restaurant.isOpen).length
         : favFoods.filter(food => food.isAvailable && food.restaurant.isOpen).length
 
+    const loaderHeight = Math.max(
+        verticalScale(250),
+        SCREEN_HEIGHT -
+            insets.top -
+            titleHeight -
+            searchBarHeight -
+            verticalScale(180)
+    )
+
     return (
         <SafeAreaView className="flex-1 bg-[#FFFFFF]">
             <StatusBar
@@ -504,41 +524,27 @@ export default function FavouritesScreen() {
                 </View>
             </Animated.View>
 
-            {loadingFavourites ? (
-                <View className="flex-1 items-center justify-center">
-                    <LottieView
-                        source={require(
-                            "../../../assets/animations/Food_Loading2.json"
-                        )}
-                        autoPlay
-                        loop
-                        style={{
-                            width: moderateScale(125),
-                            height: moderateScale(125)
-                        }}
-                    />
-                </View>
-            ) : (
-                <Animated.FlatList
-                    ref={animatedRef}
-                    key={activeTab}
-                    onScroll={scrollHandler}
-                    scrollEventThrottle={16}
-                    data={favouriteData}
-                    numColumns={activeTab === "restaurants" ? 1 : 2}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderFavouriteItem}
-                    columnWrapperStyle={activeTab === "food" ? { gap } : undefined}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="none"
-                    contentContainerStyle={{
-                        paddingHorizontal: scale(14),
-                        paddingTop: titleHeight + searchBarHeight,
-                        paddingBottom: verticalScale(88),
-                        flexGrow: favouriteData.length === 0 ? 1 : undefined
-                    }}
-                    ListEmptyComponent={
+            <Animated.FlatList
+                ref={animatedRef}
+                key={activeTab}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
+                data={loadingFavourites ? [] : favouriteData}
+                numColumns={activeTab === "restaurants" ? 1 : 2}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderFavouriteItem}
+                columnWrapperStyle={activeTab === "food" ? { gap } : undefined}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="none"
+                contentContainerStyle={{
+                    paddingHorizontal: scale(14),
+                    paddingTop: titleHeight + searchBarHeight,
+                    paddingBottom: verticalScale(88),
+                    flexGrow: favouriteData.length === 0 ? 1 : undefined
+                }}
+                ListEmptyComponent={
+                    !loadingFavourites ? (
                         <View
                             className="flex-1 w-full items-center justify-center"
                             style={{ paddingVertical: verticalScale(20) }}
@@ -587,21 +593,37 @@ export default function FavouritesScreen() {
                                 </Text>
                             </View>
                         </View>
-                    }
-                    ListHeaderComponent={
-                        <View style={{ marginTop: verticalScale(4) }}>
+                    ) : null
+                }
+                ListHeaderComponent={
+                    <View style={{ marginTop: verticalScale(4) }}>
+                        <View
+                            style={{
+                                paddingHorizontal: scale(8),
+                                paddingBottom: verticalScale(12)
+                            }}
+                        >
+                            <FavouriteTabs activeTab={activeTab} onChange={setActiveTab} />
+                        </View>
+
+                        {loadingFavourites ? (
                             <View
-                                style={{
-                                    paddingHorizontal: scale(8),
-                                    paddingBottom: verticalScale(12)
-                                }}
+                                className="items-center justify-center"
+                                style={{ height: loaderHeight }}
                             >
-                                <FavouriteTabs
-                                    activeTab={activeTab}
-                                    onChange={setActiveTab}
+                                <LottieView
+                                    source={require(
+                                        "../../../assets/animations/Food_Loading2.json"
+                                    )}
+                                    autoPlay
+                                    loop
+                                    style={{
+                                        width: moderateScale(125),
+                                        height: moderateScale(125)
+                                    }}
                                 />
                             </View>
-                    
+                        ) : (
                             <View className="flex-row items-center gap-3">
                                 <View
                                     className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
@@ -664,10 +686,10 @@ export default function FavouritesScreen() {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
-                    }
-                />
-            )}
+                        )}
+                    </View>
+                }
+            />
         </SafeAreaView>
     )
 }

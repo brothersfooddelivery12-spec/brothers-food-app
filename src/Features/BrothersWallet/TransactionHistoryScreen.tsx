@@ -2,8 +2,9 @@ import ArrowDownIcon from '@/assets/icon/ArrowDown.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import CalendarIcon from '@/assets/icon/DateIcon.svg'
 import TransactionHistoryIcon from '@/assets/icon/TransactionHistoryIcon.svg'
+import CalendarPicker from '@/components/CalenderSheet'
 import { getMyWalletTransactions, WalletTransaction } from '@/Services/wallet-service'
-import DateTimePicker, { DateTimePickerChangeEvent } from "@react-native-community/datetimepicker"
+import { DateTimePickerChangeEvent } from "@react-native-community/datetimepicker"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -160,6 +161,32 @@ export default function TransactionHistoryScreen(){
             year: "numeric"
         })
     }
+
+    const handleCalendarConfirm = useCallback((selectedDate: Date) => {
+        if (!datePicker) {
+            return
+        }
+
+        if (datePicker === "start") {
+            setStartDate(selectedDate)
+
+            if (selectedDate > endDate) {
+                setEndDate(selectedDate)
+            }
+        }
+
+        if (datePicker === "end") {
+            if (selectedDate < startDate) {
+                showToast("End date cannot be before start date", "info")
+
+                return
+            }
+
+            setEndDate(selectedDate)
+        }
+
+        setDatePicker(null)
+    },[datePicker, startDate, endDate])
 
     const handleDateChange = (_: DateTimePickerChangeEvent, selectedDate?: Date) => {
         if (!selectedDate || !datePicker) {
@@ -439,306 +466,307 @@ export default function TransactionHistoryScreen(){
                     />
                 </View>
             ) : (
-                <SectionList
-                    style={{ flex: 1 }}
-                    sections={transactionSections}
-                    renderItem={renderTransaction}
-                    renderSectionHeader={renderSectionHeader}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    stickySectionHeadersEnabled={false}
-                    ListEmptyComponent={
-                        renderEmptyTransactions
-                    }
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        paddingHorizontal: scale(14),
-                        paddingBottom: verticalScale(25),
-                        gap: verticalScale(8)
-                    }}
-                    ListHeaderComponent={
-                        <>
-                            <ScrollView
-                                horizontal
-                                nestedScrollEnabled
-                                directionalLockEnabled
-                                showsHorizontalScrollIndicator={false}
-                                className="-mx-5 mt-2 mb-2"
-                                contentContainerStyle={{
-                                    paddingHorizontal: scale(14),
-                                    gap: scale(10)
-                                }}
-                            >
-                                {TRANSACTIONS_CATEGORIES.map((category) => {
-                                    const isSelected = selectedCategory === category.id
-                            
-                                    return (
-                                        <TouchableOpacity
-                                            key={category.id}
-                                            activeOpacity={0.85}
-                                            onPress={() => {
-                                                setSelectedCategory(category.id)
-                                            }}
-                                            className={`items-center justify-center ${
-                                                isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                            }`}
-                                            style={{
-                                                borderRadius: moderateScale(18),
-                                                paddingHorizontal: scale(16),
-                                                paddingVertical: verticalScale(7),
-                                                borderWidth: 0.7,
-                                                borderColor: isSelected ? "#3F2516" : "rgba(31, 31, 31, 0.10)"
-                                            }}
-                                        >
-                                            <Text
-                                                className={`font-semibold ${
-                                                    isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                                }`}
-                                                style={{ fontSize: moderateScale(13) }}
-                                            >
-                                                {category.title}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )
-                                })}
-                            </ScrollView>
-    
-                            <View
-                                className="bg-[#FAFAFA] border-[#1F1F1F]/10 mt-2 mb-3"
-                                style={{
-                                    borderWidth: moderateScale(0.5),
-                                    borderRadius: moderateScale(20),
-                                    paddingHorizontal: scale(12),
-                                    paddingTop: verticalScale(16),
-                                    paddingBottom: verticalScale(12)
-                                }}
-                            >
-                                <View className="flex-row items-center">
-                                    <View className="flex-1 items-center">
-                                        <Text
-                                            className="text-[#1F1F1F]/75 font-medium"
-                                            style={{ fontSize: moderateScale(11) }}
-                                        >
-                                            Total Income
-                                        </Text>
-    
-                                        <Text
-                                            className="text-[#22863A] font-extrabold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(3)
-                                            }}
-                                        >
-                                            +₹{transactionSummary.income.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                    minimumFractionDigits: 2
-                                                }
-                                            )}
-                                        </Text>
-                                    </View>
-    
-                                    <View
-                                        className="bg-[#1F1F1F]/10 mx-2"
-                                        style={{
-                                            width: 0.7,
-                                            height: verticalScale(28)
-                                        }}
-                                    />
-    
-                                    <View className="flex-1 items-center">
-                                        <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(11) }}
-                                        >
-                                            Total Expense
-                                        </Text>
-    
-                                        <Text
-                                            className="text-[#E13B2F] font-extrabold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(3)
-                                            }}
-                                        >
-                                            -₹{transactionSummary.expense.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                    minimumFractionDigits: 2
-                                                }
-                                            )}
-                                        </Text>
-                                    </View>
-    
-                                    <View
-                                        className="bg-[#1F1F1F]/10 mx-2"
-                                        style={{
-                                            width: 0.7,
-                                            height: verticalScale(28)
-                                        }}
-                                    />
-    
-                                    <View className="flex-1 items-center">
-                                        <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(11) }}
-                                        >
-                                            Net Balance
-                                        </Text>
-    
-                                        <Text
-                                            className="text-[#1F1F1F] font-extrabold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(3)
-                                            }}
-                                        >
-                                            {transactionSummary.netBalance >= 0
-                                                ? "+"
-                                                : "-"}
-                                            ₹{Math.abs(
-                                                transactionSummary.netBalance
-                                            ).toLocaleString(
-                                                "en-IN",
-                                                {
-                                                    minimumFractionDigits: 2
-                                                }
-                                            )}
-                                        </Text>
-                                    </View>
-                                </View>
-    
-                                <View
-                                    className="bg-[#1F1F1F]/10"
-                                    style={{
-                                        height: 0.7,
-                                        marginTop: verticalScale(16),
-                                        marginBottom: verticalScale(12),
-                                        marginHorizontal: scale(12)
+                <>
+                    <SectionList
+                        style={{ flex: 1 }}
+                        sections={transactionSections}
+                        renderItem={renderTransaction}
+                        renderSectionHeader={renderSectionHeader}
+                        keyExtractor={(item) => item.id}
+                        showsVerticalScrollIndicator={false}
+                        stickySectionHeadersEnabled={false}
+                        ListEmptyComponent={
+                            renderEmptyTransactions
+                        }
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            paddingHorizontal: scale(14),
+                            paddingBottom: verticalScale(25),
+                            gap: verticalScale(8)
+                        }}
+                        ListHeaderComponent={
+                            <>
+                                <ScrollView
+                                    horizontal
+                                    nestedScrollEnabled
+                                    directionalLockEnabled
+                                    showsHorizontalScrollIndicator={false}
+                                    className="-mx-5 mt-2 mb-2"
+                                    contentContainerStyle={{
+                                        paddingHorizontal: scale(14),
+                                        gap: scale(10)
                                     }}
-                                />
-    
-                                <View
-                                    className="flex-row items-center"
-                                    style={{ gap: scale(10) }}
                                 >
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => setDatePicker("start")}
-                                        className="flex-1 flex-row items-center bg-[#FFFFFF]"
-                                        style={{
-                                            borderRadius: moderateScale(14),
-                                            paddingHorizontal: scale(10),
-                                            paddingVertical: verticalScale(9)
-                                        }}
-                                    >
-                                        <View
-                                            className="items-center justify-center bg-[#E8B93F]/15"
-                                            style={{
-                                                width: moderateScale(34),
-                                                height: moderateScale(34),
-                                                borderRadius: moderateScale(10)
-                                            }}
-                                        >
-                                            <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
-                                        </View>
-    
-                                        <View
-                                            className="flex-1"
-                                            style={{ marginLeft: scale(8) }}
-                                        >
-                                            <Text
-                                                className="text-[#1F1F1F]/75 font-medium"
-                                                style={{ fontSize: moderateScale(9.5) }}
-                                            >
-                                                From
-                                            </Text>
-    
-                                            <Text
-                                                numberOfLines={1}
-                                                className="text-[#1F1F1F] font-semibold"
+                                    {TRANSACTIONS_CATEGORIES.map((category) => {
+                                        const isSelected = selectedCategory === category.id
+                                
+                                        return (
+                                            <TouchableOpacity
+                                                key={category.id}
+                                                activeOpacity={0.85}
+                                                onPress={() => {
+                                                    setSelectedCategory(category.id)
+                                                }}
+                                                className={`items-center justify-center ${
+                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
+                                                }`}
                                                 style={{
-                                                    fontSize: moderateScale(11),
-                                                    marginTop: verticalScale(1)
+                                                    borderRadius: moderateScale(18),
+                                                    paddingHorizontal: scale(16),
+                                                    paddingVertical: verticalScale(7),
+                                                    borderWidth: 0.7,
+                                                    borderColor: isSelected ? "#3F2516" : "rgba(31, 31, 31, 0.10)"
                                                 }}
                                             >
-                                                {formatDate(startDate)}
-                                            </Text>
-                                        </View>
-    
-                                        <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
-                                    </TouchableOpacity>
-    
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => setDatePicker("end")}
-                                        className="flex-1 flex-row items-center bg-[#FFFFFF]"
-                                        style={{
-                                            borderRadius: moderateScale(14),
-                                            paddingHorizontal: scale(10),
-                                            paddingVertical: verticalScale(9)
-                                        }}
-                                    >
-                                        <View
-                                            className="items-center justify-center bg-[#E8B93F]/15"
-                                            style={{
-                                                width: moderateScale(34),
-                                                height: moderateScale(34),
-                                                borderRadius: moderateScale(10)
-                                            }}
-                                        >
-                                            <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
-                                        </View>
-    
-                                        <View
-                                            className="flex-1"
-                                            style={{ marginLeft: scale(8) }}
-                                        >
+                                                <Text
+                                                    className={`font-semibold ${
+                                                        isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
+                                                    }`}
+                                                    style={{ fontSize: moderateScale(13) }}
+                                                >
+                                                    {category.title}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )
+                                    })}
+                                </ScrollView>
+        
+                                <View
+                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 mt-2 mb-3"
+                                    style={{
+                                        borderWidth: moderateScale(0.5),
+                                        borderRadius: moderateScale(20),
+                                        paddingHorizontal: scale(12),
+                                        paddingTop: verticalScale(16),
+                                        paddingBottom: verticalScale(12)
+                                    }}
+                                >
+                                    <View className="flex-row items-center">
+                                        <View className="flex-1 items-center">
                                             <Text
                                                 className="text-[#1F1F1F]/75 font-medium"
-                                                style={{ fontSize: moderateScale(9.5) }}
+                                                style={{ fontSize: moderateScale(11) }}
                                             >
-                                                To
+                                                Total Income
                                             </Text>
-    
+        
                                             <Text
-                                                numberOfLines={1}
-                                                className="text-[#1F1F1F] font-semibold"
+                                                className="text-[#22863A] font-extrabold"
                                                 style={{
-                                                    fontSize: moderateScale(11),
-                                                    marginTop: verticalScale(1)
+                                                    fontSize: moderateScale(16),
+                                                    marginTop: verticalScale(3)
                                                 }}
                                             >
-                                                {formatDate(endDate)}
+                                                +₹{transactionSummary.income.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits: 2
+                                                    }
+                                                )}
                                             </Text>
                                         </View>
-    
-                                        <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
-                                    </TouchableOpacity>
-                                </View>
-    
-                                {datePicker && (
-                                    <DateTimePicker
-                                        value={
-                                            datePicker === "start"
-                                                ? startDate
-                                                : endDate
-                                        }
-                                        mode="date"
-                                        maximumDate={new Date()}
-                                        minimumDate={
-                                            datePicker === "end"
-                                                ? startDate
-                                                : undefined
-                                        }
-                                        onValueChange={handleDateChange}
-                                        onDismiss={() => setDatePicker(null)}
+        
+                                        <View
+                                            className="bg-[#1F1F1F]/10 mx-2"
+                                            style={{
+                                                width: 0.7,
+                                                height: verticalScale(28)
+                                            }}
+                                        />
+        
+                                        <View className="flex-1 items-center">
+                                            <Text
+                                                className="text-[#1F1F1F]/65 font-medium"
+                                                style={{ fontSize: moderateScale(11) }}
+                                            >
+                                                Total Expense
+                                            </Text>
+        
+                                            <Text
+                                                className="text-[#E13B2F] font-extrabold"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                -₹{transactionSummary.expense.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits: 2
+                                                    }
+                                                )}
+                                            </Text>
+                                        </View>
+        
+                                        <View
+                                            className="bg-[#1F1F1F]/10 mx-2"
+                                            style={{
+                                                width: 0.7,
+                                                height: verticalScale(28)
+                                            }}
+                                        />
+        
+                                        <View className="flex-1 items-center">
+                                            <Text
+                                                className="text-[#1F1F1F]/65 font-medium"
+                                                style={{ fontSize: moderateScale(11) }}
+                                            >
+                                                Net Balance
+                                            </Text>
+        
+                                            <Text
+                                                className="text-[#1F1F1F] font-extrabold"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                {transactionSummary.netBalance >= 0
+                                                    ? "+"
+                                                    : "-"}
+                                                ₹{Math.abs(
+                                                    transactionSummary.netBalance
+                                                ).toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits: 2
+                                                    }
+                                                )}
+                                            </Text>
+                                        </View>
+                                    </View>
+        
+                                    <View
+                                        className="bg-[#1F1F1F]/10"
+                                        style={{
+                                            height: 0.7,
+                                            marginTop: verticalScale(16),
+                                            marginBottom: verticalScale(12),
+                                            marginHorizontal: scale(12)
+                                        }}
                                     />
-                                )}
-                            </View>
-                        </>
-                    }
-                />
+        
+                                    <View
+                                        className="flex-row items-center"
+                                        style={{ gap: scale(10) }}
+                                    >
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setDatePicker("start")}
+                                            className="flex-1 flex-row items-center bg-[#FFFFFF]"
+                                            style={{
+                                                borderRadius: moderateScale(14),
+                                                paddingHorizontal: scale(10),
+                                                paddingVertical: verticalScale(9)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center bg-[#E8B93F]/15"
+                                                style={{
+                                                    width: moderateScale(34),
+                                                    height: moderateScale(34),
+                                                    borderRadius: moderateScale(10)
+                                                }}
+                                            >
+                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                                            </View>
+        
+                                            <View
+                                                className="flex-1"
+                                                style={{ marginLeft: scale(8) }}
+                                            >
+                                                <Text
+                                                    className="text-[#1F1F1F]/75 font-medium"
+                                                    style={{ fontSize: moderateScale(9.5) }}
+                                                >
+                                                    From
+                                                </Text>
+        
+                                                <Text
+                                                    numberOfLines={1}
+                                                    className="text-[#1F1F1F] font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(11),
+                                                        marginTop: verticalScale(1)
+                                                    }}
+                                                >
+                                                    {formatDate(startDate)}
+                                                </Text>
+                                            </View>
+        
+                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
+                                        </TouchableOpacity>
+        
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setDatePicker("end")}
+                                            className="flex-1 flex-row items-center bg-[#FFFFFF]"
+                                            style={{
+                                                borderRadius: moderateScale(14),
+                                                paddingHorizontal: scale(10),
+                                                paddingVertical: verticalScale(9)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center bg-[#E8B93F]/15"
+                                                style={{
+                                                    width: moderateScale(34),
+                                                    height: moderateScale(34),
+                                                    borderRadius: moderateScale(10)
+                                                }}
+                                            >
+                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                                            </View>
+        
+                                            <View
+                                                className="flex-1"
+                                                style={{ marginLeft: scale(8) }}
+                                            >
+                                                <Text
+                                                    className="text-[#1F1F1F]/75 font-medium"
+                                                    style={{ fontSize: moderateScale(9.5) }}
+                                                >
+                                                    To
+                                                </Text>
+        
+                                                <Text
+                                                    numberOfLines={1}
+                                                    className="text-[#1F1F1F] font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(11),
+                                                        marginTop: verticalScale(1)
+                                                    }}
+                                                >
+                                                    {formatDate(endDate)}
+                                                </Text>
+                                            </View>
+        
+                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </>
+                        }
+                    />
+
+                    <CalendarPicker
+                        visible={datePicker !== null}
+                        title={
+                            datePicker === "start"
+                                ? "Select Start Date"
+                                : "Select End Date"
+                        }
+                        selectedDate={
+                            datePicker === "start"
+                                ? startDate
+                                : endDate
+                        }
+                        futureDisable
+                        action="Apply"
+                        onConfirm={handleCalendarConfirm}
+                        onClose={() => setDatePicker(null)}
+                    />
+                </>
             )}
         </SafeAreaView>
     )

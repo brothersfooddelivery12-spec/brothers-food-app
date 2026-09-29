@@ -46,6 +46,7 @@ export type AddToCartPayload = {
 type CartStore = {
     carts: RestaurantCart[]
     activeRestaurantId: string | null
+    latestRestaurantId: string | null
     hasHydrated: boolean
 
     setHasHydrated: (value: boolean) => void
@@ -68,7 +69,9 @@ export const useCartStore = create<CartStore>()(
         (set, get) => ({
             carts: [],
             activeRestaurantId: null,
+            latestRestaurantId: null,
             hasHydrated: false,
+
             setHasHydrated: (value) => {
                 set({ hasHydrated: value })
             },
@@ -130,7 +133,8 @@ export const useCartStore = create<CartStore>()(
 
                         return {
                             carts: updatedCarts,
-                            activeRestaurantId: restaurant.id
+                            activeRestaurantId: restaurant.id,
+                            latestRestaurantId: restaurant.id
                         }
                     }
 
@@ -151,7 +155,8 @@ export const useCartStore = create<CartStore>()(
                             ...state.carts,
                             newRestaurantCart
                         ],
-                        activeRestaurantId: restaurant.id
+                        activeRestaurantId: restaurant.id,
+                        latestRestaurantId: restaurant.id
                     }
                 })
             },
@@ -345,7 +350,8 @@ export const useCartStore = create<CartStore>()(
 
             partialize: (state) => ({
                 carts: state.carts,
-                activeRestaurantId: state.activeRestaurantId
+                activeRestaurantId: state.activeRestaurantId,
+                latestRestaurantId: state.latestRestaurantId
             }),
 
             onRehydrateStorage:

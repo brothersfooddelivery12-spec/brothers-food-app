@@ -93,6 +93,7 @@ type ActiveOrderCardProps = {
     status: OrderStatusType
     remainingMinutes?: number | null
     estimatedDeliveryAt?: string | null
+    paymentRetry?: string | null
     canPay: boolean
     iscancellable: boolean
 
@@ -111,6 +112,7 @@ const ActiveOrderCard = ({
     status,
     remainingMinutes,
     estimatedDeliveryAt,
+    paymentRetry,
     canPay,
     iscancellable,
     items,
@@ -123,8 +125,6 @@ const ActiveOrderCard = ({
     const statusLabel = getStatusLabel(status)
 
     const isPendingPayment = status === "PENDING_PAYMENT"
-
-    const isPending = status === "PENDING"
 
     const isCancelled =
         status === "CANCELLED_BY_CUSTOMER" ||
@@ -152,6 +152,45 @@ const ActiveOrderCard = ({
     const showTrack = !showPayNow && canTrack
 
     const showContactRider = isRiderAvailable
+
+    const [paymentRetrySeconds, setPaymentRetrySeconds] = useState(0)
+
+    useEffect(() => {
+        if (status !== "PENDING_PAYMENT" || !paymentRetry) {
+            setPaymentRetrySeconds(0)
+            return
+        }
+
+        const updateTimer = () => {
+            const retryTime = new Date(paymentRetry).getTime()
+
+            const now = Date.now()
+
+            const remaining = Math.max(0, Math.ceil((retryTime - now) / 1000))
+
+            setPaymentRetrySeconds(remaining)
+        }
+
+        updateTimer()
+
+        const interval = setInterval(updateTimer, 1000)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [status, paymentRetry])
+
+    const formatRetryTime = (totalSeconds: number) => {
+        const minutes = Math.floor(totalSeconds / 60)
+
+        const seconds = totalSeconds % 60
+
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`
+    }
+
+    const paymentRetryText = status === "PENDING_PAYMENT" && paymentRetrySeconds > 0
+        ? `Retry payment in ${formatRetryTime(paymentRetrySeconds)}`
+        : null
 
     const getEtaText = () => {
         if (status === "PENDING_PAYMENT") {
@@ -283,6 +322,19 @@ const ActiveOrderCard = ({
                         </Text>
                     </View>
 
+                    {paymentRetryText && (
+                        <View className="flex-row items-center gap-1">
+                            <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+
+                            <Text
+                                className="text-[#1F1F1F]/75 font-medium"
+                                style={{ fontSize: moderateScale(10) }}
+                            >
+                                {paymentRetryText}
+                            </Text>
+                        </View>
+                    )}
+
                     {etaText && (
                         <View className="flex-row items-center gap-1 mr-1">
                             <View
@@ -353,7 +405,7 @@ const ActiveOrderCard = ({
                         className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(9),
+                            paddingVertical: verticalScale(10),
                             borderRadius: moderateScale(14)
                         }}
                     >
@@ -377,7 +429,7 @@ const ActiveOrderCard = ({
                         className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(9),
+                            paddingVertical: verticalScale(10),
                             borderRadius: moderateScale(14)
                         }}
                     >
@@ -401,7 +453,7 @@ const ActiveOrderCard = ({
                         className="flex-row flex-1 items-center justify-center bg-[#FEE2E2]/85"
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(9),
+                            paddingVertical: verticalScale(10),
                             borderRadius: moderateScale(14)
                         }}
                     >
@@ -426,7 +478,7 @@ const ActiveOrderCard = ({
                         className="flex-row flex-1 items-center justify-center bg-[#E5E4E2]/65"
                         style={{
                             paddingHorizontal: scale(12),
-                            paddingVertical: verticalScale(9),
+                            paddingVertical: verticalScale(10),
                             borderRadius: moderateScale(14)
                         }}
                     >

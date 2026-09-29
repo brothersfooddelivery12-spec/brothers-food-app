@@ -1,10 +1,11 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SearchBar from "@/components/SearchBar"
-import { getUserOrders, OrderListItem } from "@/Services/api-service"
+import { cancelOrder, getUserOrders, OrderListItem, OrderListStatus, retryOrderPayment } from "@/Services/api-service"
+import { hideLoader, showLoader } from '@/Services/loader-service'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from "lottie-react-native"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -22,7 +23,7 @@ export default function OrdersScreen() {
     const insets = useSafeAreaInsets()
     const {showToast} = useToast()
     const preventDoublePress = usePreventDoublePress()
-    const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions()
     const animatedRef = useAnimatedRef<Animated.FlatList<any>>()
 
     const [search, setsearch] = useState("")
@@ -33,62 +34,50 @@ export default function OrdersScreen() {
     const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
     const [loadingOrders, setLoadingOrders] = useState(true)
 
-    const hasLoadedOrdersRef = useRef(false)
-
-    const fetchAllOrders = useCallback(async () => {
+    const fetchOrdersByTab = useCallback(async (tab: "active orders" | "past orders") => {
         try {
-            if (!hasLoadedOrdersRef.current) {
-                setLoadingOrders(true)
+            setLoadingOrders(true)
+
+            const status: OrderListStatus = tab === "active orders" ? "ACTIVE" : "PAST"
+
+            const res = await measureApi(status === "ACTIVE" ? "Active Orders" : "Past Orders",
+                () => getUserOrders({
+                        status,
+                        offset: 0,
+                        limit: 20
+                    })
+            )
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch orders", "warning")
+
+                return
             }
 
-            const [activeResult, pastResult] =
-                await Promise.allSettled([
-                    measureApi(
-                        "Active Orders",
-                        () =>
-                            getUserOrders({
-                                status: "ACTIVE",
-                                offset: 0,
-                                limit: 20
-                            })
-                    ),
-                    measureApi(
-                        "Past Orders",
-                        () =>
-                            getUserOrders({
-                                status: "PAST",
-                                offset: 0,
-                                limit: 20
-                            })
-                    )
-                ])
+            const orders = res.data.data ?? []
 
-            if (activeResult.status === "fulfilled" && activeResult.value.data.success) {
-                const activeData = activeResult.value.data.data ?? []
+            if (status === "ACTIVE") {
+                console.log("ACTIVE ORDERS DATA:", orders)
 
-                console.log("ACTIVE ORDERS DATA:", activeData)
+                setActiveOrders(orders)
+            } else {
+                console.log("PAST ORDERS DATA:", orders)
 
-                setActiveOrders(activeData)
+                setPastOrders(orders)
             }
+        } catch (error: any) {
+            console.log("Fetch orders error:", error)
 
-            if (pastResult.status === "fulfilled" && pastResult.value.data.success) {
-                const pastData = pastResult.value.data.data ?? []
-
-                console.log("PAST ORDERS DATA:", pastData)
-
-                setPastOrders(pastData)
-            }
-
-            hasLoadedOrdersRef.current = true
+            showToast(error?.response?.data?.message || error?.message || "Unable to fetch orders", "warning")
         } finally {
             setLoadingOrders(false)
         }
-    }, [])
+    },[])
     
     useFocusEffect(
         useCallback(() => {
-            fetchAllOrders()
-        }, [fetchAllOrders])
+            fetchOrdersByTab(activeTab)
+        }, [activeTab, fetchOrdersByTab])
     )
 
     const horizontalPadding = scale(42)
@@ -142,6 +131,57 @@ export default function OrdersScreen() {
     const ordersData = activeTab === "active orders"
         ? activeOrders
         : pastOrders
+
+    const handleCancelOrder = useCallback(async (orderId: string) => {
+        try {
+            showLoader()
+
+            const res = await cancelOrder(orderId)
+
+            console.log("Cancel order response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to cancel order", "warning")
+
+                return
+            }
+
+            showToast(res.data.message || "Order cancelled successfully", "success")
+
+            await fetchOrdersByTab("active orders")
+        } catch (error: any) {
+            console.log("Cancel order error:", error)
+
+            showToast(error?.response?.data?.message || error?.message || "Unable to cancel order", "warning")
+        } finally{
+            hideLoader()
+        }
+    },[fetchOrdersByTab])
+
+    const handleRetryPayment = useCallback(async (orderId: string) => {
+        try {
+            showLoader()
+
+            const res = await retryOrderPayment(orderId)
+
+            console.log("Retry payment response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to retry payment", "warning")
+                return
+            }
+
+            // Use returned payment_session_id
+            // to start Cashfree payment again
+
+        } catch (error: any) {
+            console.log("Retry payment error:", error?.response?.data || error)
+
+            showToast(error?.response?.data ?.message || "Unable to retry payment", "warning")
+        } finally {
+            hideLoader()
+        }
+    },[])
 
     const handleTrackOrder = useCallback((orderId: string) => {
         console.log("Track order:", orderId)
@@ -222,17 +262,17 @@ export default function OrdersScreen() {
     //     )
     // }
 
-    const getRemainingTime = (remainingMinutes: number | null) => {
-        if (remainingMinutes == null) {
-            return "Arriving soon"
-        }
+    // const getRemainingTime = (remainingMinutes: number | null) => {
+    //     if (remainingMinutes == null) {
+    //         return "Arriving soon"
+    //     }
 
-        if (remainingMinutes <= 0) {
-            return "Arriving soon"
-        }
+    //     if (remainingMinutes <= 0) {
+    //         return "Arriving soon"
+    //     }
 
-        return `${remainingMinutes} mins`
-    }
+    //     return `${remainingMinutes} mins`
+    // }
 
     const renderOrder = useCallback(({ item }: { item: OrderListItem }) => {
         if (activeTab === "active orders") {
@@ -244,11 +284,12 @@ export default function OrdersScreen() {
                     status={item.status}
                     remainingMinutes={item.remaining_minutes}
                     estimatedDeliveryAt={item.estimated_delivery_at}
+                    paymentRetry={item.payment_retry}
                     canPay={item.canpay}
                     iscancellable={item.iscancellable}
                     items={item.items}
-                    onPayNow={() => {}}
-                    onCancelOrder={() => {}}
+                    onPayNow={() => handleRetryPayment(item.id)}
+                    onCancelOrder={() => handleCancelOrder(item.id)}
                     onTrackOrder={() => handleTrackOrder(item.id)}
                     onContactRider={() => handleContactRider(item.id)}
                 />
@@ -269,7 +310,16 @@ export default function OrdersScreen() {
                 onInvoice={() => handleInvoice(item.id)}
         />
         )
-    }, [activeTab, handleReorder, handleInvoice, handleTrackOrder, handleContactRider])
+    }, [activeTab, handleCancelOrder, handleRetryPayment,  handleReorder, handleInvoice, handleTrackOrder, handleContactRider])
+
+    const loaderHeight = Math.max(
+        verticalScale(250),
+        SCREEN_HEIGHT -
+            insets.top -
+            titleHeight -
+            searchBarHeight -
+            verticalScale(180)
+    )
 
     return(
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -340,39 +390,25 @@ export default function OrdersScreen() {
                 </View>
             </Animated.View>
 
-            {loadingOrders ? (
-                <View className="flex-1 items-center justify-center">
-                    <LottieView
-                        source={require(
-                            "../../../assets/animations/Food_Loading2.json"
-                        )}
-                        autoPlay
-                        loop
-                        style={{
-                            width: moderateScale(125),
-                            height: moderateScale(125)
-                        }}
-                    />
-                </View>
-            ) : (
-                <Animated.FlatList
-                    ref={animatedRef}
-                    data={ordersData}
-                    renderItem={renderOrder}
-                    keyExtractor={(item) => item.id}
-                    onScroll={scrollHandler}
-                    scrollEventThrottle={16}
-                    nestedScrollEnabled
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="none"
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingHorizontal: scale(14),
-                        paddingTop: titleHeight + searchBarHeight,
-                        paddingBottom: verticalScale(88),
-                        flexGrow: ordersData.length === 0 ? 1 : undefined
-                    }}
-                    ListEmptyComponent={
+            <Animated.FlatList
+                ref={animatedRef}
+                data={loadingOrders ? [] : ordersData}
+                renderItem={renderOrder}
+                keyExtractor={(item) => item.id}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
+                nestedScrollEnabled
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="none"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingHorizontal: scale(14),
+                    paddingTop: titleHeight + searchBarHeight,
+                    paddingBottom: verticalScale(88),
+                    flexGrow: ordersData.length === 0 ? 1 : undefined
+                }}
+                ListEmptyComponent={
+                    !loadingOrders ? (
                         <View
                             className="flex-1 w-full items-center justify-center"
                             style={{ paddingVertical: verticalScale(20) }}
@@ -423,88 +459,107 @@ export default function OrdersScreen() {
                                 </Text>
                             </View>
                         </View>
-                    }
-                    ListHeaderComponent={
-                        <View style={{ marginTop: verticalScale(4) }}>
-                            <View className="flex-row items-center justify-center gap-3 mb-5">
-                                <View
-                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
-                                    style={{
-                                        borderWidth: moderateScale(0.5),
-                                        width: cardWidth,
-                                        height: moderateScale(75),
-                                        borderRadius: moderateScale(22)
-                                    }}
+                    ) : null
+                }
+                ListHeaderComponent={
+                    <View style={{ marginTop: verticalScale(4) }}>
+                        <View className="flex-row items-center justify-center gap-3 mb-5">
+                            <View
+                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                style={{
+                                    borderWidth: moderateScale(0.5),
+                                    width: cardWidth,
+                                    height: moderateScale(75),
+                                    borderRadius: moderateScale(22)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#1F1F1F]/85 font-medium"
+                                    style={{ fontSize: moderateScale(12) }}
                                 >
-                                    <Text
-                                        className="text-[#1F1F1F]/85 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
-                                    >
-                                        Active
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(17) }}
-                                    >
-                                        {orderStats.active}
-                                    </Text>
-                                </View>
-    
-                                <View
-                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
-                                    style={{
-                                        borderWidth: moderateScale(0.5),
-                                        width: cardWidth,
-                                        height: moderateScale(75),
-                                        borderRadius: moderateScale(22)
-                                    }}
+                                    Active
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F] font-bold"
+                                    style={{ fontSize: moderateScale(17) }}
                                 >
-                                    <Text
-                                        className="text-[#1F1F1F]/85 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
-                                    >
-                                        Completed
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(17) }}
-                                    >
-                                        {orderStats.completed}
-                                    </Text>
-                                </View>
-    
-                                <View
-                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
-                                    style={{
-                                        borderWidth: moderateScale(0.5),
-                                        width: cardWidth,
-                                        height: moderateScale(75),
-                                        borderRadius: moderateScale(22)
-                                    }}
-                                >
-                                    <Text
-                                        className="text-[#1F1F1F]/85 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
-                                    >
-                                        Total Saved
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(17) }}
-                                    >
-                                        ₹0
-                                    </Text>
-                                </View>
+                                    {orderStats.active}
+                                </Text>
                             </View>
-    
-                            <OrdersTabs activeTab={activeTab} onChange={setActiveTab} />
+
+                            <View
+                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                style={{
+                                    borderWidth: moderateScale(0.5),
+                                    width: cardWidth,
+                                    height: moderateScale(75),
+                                    borderRadius: moderateScale(22)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#1F1F1F]/85 font-medium"
+                                    style={{ fontSize: moderateScale(12) }}
+                                >
+                                    Completed
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F] font-bold"
+                                    style={{ fontSize: moderateScale(17) }}
+                                >
+                                    {orderStats.completed}
+                                </Text>
+                            </View>
+
+                            <View
+                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                style={{
+                                    borderWidth: moderateScale(0.5),
+                                    width: cardWidth,
+                                    height: moderateScale(75),
+                                    borderRadius: moderateScale(22)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#1F1F1F]/85 font-medium"
+                                    style={{ fontSize: moderateScale(12) }}
+                                >
+                                    Total Saved
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F] font-bold"
+                                    style={{ fontSize: moderateScale(17) }}
+                                >
+                                    ₹0
+                                </Text>
+                            </View>
                         </View>
-                    }
-                />
-            )}
+
+                        <OrdersTabs activeTab={activeTab} onChange={setActiveTab} />
+
+                        {loadingOrders && (
+                            <View
+                                className="items-center justify-center"
+                                style={{ minHeight: loaderHeight }}
+                            >
+                                <LottieView
+                                    source={require(
+                                        "../../../assets/animations/Food_Loading2.json"
+                                    )}
+                                    autoPlay
+                                    loop
+                                    style={{
+                                        width: moderateScale(125),
+                                        height: moderateScale(125)
+                                    }}
+                                />
+                            </View>
+                        )}
+                    </View>
+                }
+            />
         </SafeAreaView>
     )
 }

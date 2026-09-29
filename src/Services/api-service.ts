@@ -429,3 +429,18 @@ export const getUserOrders = ({ status, offset = 0, limit = 20 }: GetUserOrdersP
         }
     })
 }
+
+export const cancelOrder = (orderId: string) => {
+    return api.post(`/order/${orderId}/cancel`)
+}
+
+export const retryOrderPayment = (orderId: string) => {
+    return api.post("/payments/retry",
+        null,
+        {
+            params: {
+                order_id: orderId
+            }
+        }
+    )
+}

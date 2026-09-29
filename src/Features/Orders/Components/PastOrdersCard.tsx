@@ -134,6 +134,10 @@ const PastOrdersCard = ({
         status === "CANCELLED_TIMEOUT"
 
     const isPendingPayment = status === "PENDING_PAYMENT"
+    const showPayNow = canPay && status === "PENDING_PAYMENT"
+    const showReorder = !showPayNow
+    const showInvoice = status === "DELIVERED"
+    const showCancel = iscancellable && !isDelivered && !isCancelled
 
     const statusBadgeStyle = (() => {
         if (isDelivered) {
@@ -432,70 +436,106 @@ const PastOrdersCard = ({
                 ))}
             </View>
 
-            <View className="flex-row items-center justify-center gap-6 mt-5">
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={canPay ? onPayNow : onReorder}
-                    className="flex-row items-center justify-center bg-[#3F2516]"
-                    style={{
-                        paddingHorizontal: scale(12),
-                        paddingVertical: verticalScale(8),
-                        borderRadius: moderateScale(14)
-                    }}
-                >
-                    {canPay ? (
-                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
-                    ) : (
-                        <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
-                    )}
-
-                    <Text
-                        className="text-[#FFFFFF] font-medium ml-2 mr-1"
-                        style={{ fontSize: moderateScale(13) }}
-                    >
-                        {canPay ? "Pay now" : "Reorder"}
-                    </Text>
-
-                    <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={isCancelled ? onCancelOrder : onInvoice}
-                    className={`flex-row items-center justify-center ${
-                        isCancelled
-                            ? "bg-[#FEE2E2]/85"
-                            : "bg-[#E5E4E2]/65"
-                    }`}
-                    style={{
-                        paddingHorizontal: scale(12),
-                        paddingVertical: verticalScale(8),
-                        borderRadius: moderateScale(14)
-                    }}
-                >
-                    {isCancelled ? (
-                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220, 38, 38, 0.80)" strokeWidth={1.8} />
-                    ) : (
-                        <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
-                    )}
-
-                    <Text
-                        className="font-medium ml-2 mr-1"
+            <View
+                className="flex-row items-center justify-center gap-3"
+                style={{ marginTop: verticalScale(18) }}
+            >
+                {showPayNow && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onPayNow}
+                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
                         style={{
-                            fontSize: moderateScale(13),
-                            color: isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(10),
+                            borderRadius: moderateScale(14)
                         }}
                     >
-                        {isCancelled ? "Cancel Order" : "Invoice"}
-                    </Text>
+                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
 
-                    <ArrowRight
-                        width={moderateScale(16)}
-                        height={moderateScale(16)}
-                        color={isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"}
-                        strokeWidth={2}
-                    />
-                </TouchableOpacity>
+                        <Text
+                            className="text-white font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(13) }}
+                        >
+                            Pay Now
+                        </Text>
+
+                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                    </TouchableOpacity>
+                )}
+
+                {showReorder && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onReorder}
+                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(10),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+
+                        <Text
+                            className="text-white font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(13) }}
+                        >
+                            Reorder
+                        </Text>
+
+                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                    </TouchableOpacity>
+                )}
+
+                {showInvoice && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onInvoice}
+                        className="flex-row flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(10),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
+
+                        <Text
+                            className="text-[#3F2516] font-medium ml-2 mr-1"
+                            style={{ fontSize: moderateScale(13) }}
+                        >
+                            Invoice
+                        </Text>
+
+                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
+                    </TouchableOpacity>
+                )}
+
+                {showCancel && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={onCancelOrder}
+                        className="flex-row flex-1 items-center justify-center bg-[#FEE2E2]/85"
+                        style={{
+                            paddingHorizontal: scale(12),
+                            paddingVertical: verticalScale(10),
+                            borderRadius: moderateScale(14)
+                        }}
+                    >
+                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220,38,38,0.80)" strokeWidth={1.8} />
+
+                        <Text
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: "rgba(220,38,38,0.80)"
+                            }}
+                        >
+                            Cancel Order
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     )

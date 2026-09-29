@@ -1,7 +1,7 @@
+import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { useCartStore } from "@/Stores/useCartStore"
 import ArrowDownIcon from "@/assets/icon/ArrowDown.svg"
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
-import CartIcon from '@/assets/icon/CartIcon.svg'
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
@@ -66,18 +66,38 @@ const CartFoodImage = memo(({ imageUrl }: CartFoodImageProps) => {
 CartFoodImage.displayName ="CartFoodImage"
 
 export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProps) {
+    const preventDoublePress = usePreventDoublePress()
     const insets = useSafeAreaInsets()
     const carts = useCartStore(state => state.carts)
+    const selectRestaurant = useCartStore((state) => state.selectRestaurant)
 
-    const latestCart = carts.at(-1) ?? null
+    const latestRestaurantId = useCartStore(state =>state.latestRestaurantId)
+
+    const latestCart = useMemo(() => {
+        if (!carts.length) {
+            return null
+        }
+
+        if (latestRestaurantId) {
+            const cart = carts.find(cart => cart.id === latestRestaurantId)
+
+            if (cart) {
+                return cart
+            }
+        }
+
+        return carts.at(-1) ?? null
+    }, [carts, latestRestaurantId])
 
     const otherCarts = useMemo(() => {
-        if (carts.length <= 1) {
+        if (!latestCart) {
             return []
         }
 
-        return carts.slice(0, -1).reverse()
-    }, [carts])
+        return carts
+            .filter(cart => cart.id !== latestCart.id)
+            .reverse()
+    }, [carts, latestCart])
 
     const {totalItems, restaurantName, itemImages} = useMemo(() => {
         if (!latestCart) {
@@ -155,7 +175,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
         <View
             className="bg-[#FFFFFF] border-[#1F1F1F]/10 mb-2"
             style={{
-                borderWidth: moderateScale(0.5),
+                borderWidth: moderateScale(0.7),
                 borderRadius: moderateScale(22),
                 paddingHorizontal: scale(10),
                 paddingTop: verticalScale(10),
@@ -165,7 +185,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
             <Text
                 className="text-[#1F1F1F]/75 font-semibold"
                 style={{
-                    fontSize: moderateScale(10),
+                    fontSize: moderateScale(12),
                     marginBottom: verticalScale(4),
                     marginLeft: scale(4)
                 }}
@@ -181,9 +201,12 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                     <TouchableOpacity
                         key={cart.id}
                         activeOpacity={0.95}
-                        onPress={() => {
-                            router.push("/cart")
-                        }}
+                        onPress={() => 
+                            preventDoublePress(() => {
+                                selectRestaurant(cart.id)
+                                router.push("/cart")
+                            })
+                        }
                         className="flex-row items-center"
                         style={{
                             paddingVertical: verticalScale(5),
@@ -298,11 +321,11 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={toggleExpanded}
-                        className="absolute self-center items-center justify-center rounded-full bg-[#3F2516]"
+                        className="rounded-full absolute self-center items-center justify-center bg-[#3F2516]"
                         style={{
                             top: -moderateScale(10),
                             left: "50%",
-                            width: moderateScale(32),
+                            width: moderateScale(34),
                             height: moderateScale(32),
                             zIndex: 20
                         }}
@@ -340,16 +363,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                             )
                         )
                     ) : (
-                        <View
-                            className="items-center justify-center bg-[#F8D56A]"
-                            style={{
-                                width: moderateScale(40),
-                                height: moderateScale(40),
-                                borderRadius: moderateScale(14)
-                            }}
-                        >
-                            <CartIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5} />
-                        </View>
+                        <CartFoodImage imageUrl={null} />
                     )}
                 </View>
 
@@ -383,7 +397,15 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() =>
-                        router.push("/cart")
+                        preventDoublePress(() => {
+                            if (!latestCart) {
+                                return
+                            }
+
+                            selectRestaurant(latestCart.id)
+
+                            router.push("/cart")
+                        })
                     }
                 >
                     <View

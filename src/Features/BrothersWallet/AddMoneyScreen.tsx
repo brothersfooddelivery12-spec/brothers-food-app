@@ -72,15 +72,27 @@ export default function AddMoneyScreen(){
 
             console.log("Verify response:", res.data)
 
-            const message = res.data.message?.trim().toLowerCase()
+            const message = res?.data.message?.trim().toLowerCase() ?? ""
+            const paymentStatus = res?.data?.status?.trim().toLowerCase() ?? ""
 
-            if (res.data.success && message === "payment verified successfully") {
+            if (res?.data.success &&
+                (
+                    paymentStatus === "success" ||
+                    message === "payment is completed" ||
+                    message === "payment verified successfully"
+                )
+            ) {
                 paymentHandledRef.current = true
 
                 if (currentPaymentUpiRef.current) {
-                    console.log("Saving payment method:", currentPaymentUpiRef.current)
+                    console.log(
+                        "Saving payment method:",
+                        currentPaymentUpiRef.current
+                    )
 
-                    addPaymentMethod(currentPaymentUpiRef.current)
+                    addPaymentMethod(
+                        currentPaymentUpiRef.current
+                    )
 
                     currentPaymentUpiRef.current = null
                 }
@@ -94,7 +106,11 @@ export default function AddMoneyScreen(){
                 return
             }
 
-            if (message === "payment is still incomplete") {
+            if (
+                paymentStatus === "pending" ||
+                paymentStatus === "incomplete" ||
+                message === "payment is still incomplete"
+            ) {
                 setProcessingUpiApp(null)
 
                 showToast("Payment is incomplete", "warning")

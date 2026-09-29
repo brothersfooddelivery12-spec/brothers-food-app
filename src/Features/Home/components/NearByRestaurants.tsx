@@ -62,6 +62,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
         >
             <View
                 style={{
+                    backgroundColor: "#EFEFEF",
                     width: moderateScale(78),
                     height: moderateScale(78),
                     borderRadius: moderateScale(18),

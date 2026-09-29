@@ -44,8 +44,7 @@ export default function HomeScreen() {
     const {showToast} = useToast()
 
     // const checkAccessToken = async () => {
-    //     const token =
-    //         await tokenStorage.getAccessToken()
+    //     const token = await tokenStorage.getAccessToken()
 
     //     console.log("Token:", token)
     // }
@@ -520,7 +519,7 @@ export default function HomeScreen() {
             const mappedRestaurants: Restaurants[] = restaurantData.map((item) => ({
                     id: item.id,
                     name: item.name,
-                    imageUri:
+                    imageUrl:
                         item.cover_image_url ||
                         item.logo_url ||
                         null,
@@ -625,8 +624,7 @@ export default function HomeScreen() {
             const mappedRestaurants: NearByRestaurants[] = restaurantData.map((item) => ({
                     id: item.id,
                     name: item.name,
-                    imageUri:
-                        item.cover_image_url ||
+                    imageUrl:
                         item.logo_url ||
                         null,
                     cuisines: item.description ?? "",
