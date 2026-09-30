@@ -27,6 +27,7 @@ import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { Image } from "expo-image"
 import { router, useFocusEffect } from 'expo-router'
+import LottieView from 'lottie-react-native'
 import React, { useCallback, useRef, useState } from "react"
 import { Dimensions, Modal, Pressable, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
@@ -87,17 +88,15 @@ export default function ProfileScreen() {
 
     const MENU_WIDTH = moderateScale(145)
 
-    const activeOptions =
-        openMenu === "appearance"
-            ? APPEARANCE_OPTIONS
-            : openMenu === "language"
-                ? LANGUAGE_OPTIONS
-                : []
+    const activeOptions = openMenu === "appearance"
+        ? APPEARANCE_OPTIONS
+        : openMenu === "language"
+            ? LANGUAGE_OPTIONS
+            : []
 
-    const selectedMenuValue =
-        openMenu === "appearance"
-            ? selectedAppearance
-            : selectedLanguage
+    const selectedMenuValue = openMenu === "appearance"
+        ? selectedAppearance
+        : selectedLanguage
 
     const horizontalPadding = scale(28)
     const gap = scale(12)
@@ -567,12 +566,32 @@ export default function ProfileScreen() {
                                         Brothers Wallet
                                     </Text>
 
-                                    <Text
-                                        className="text-[#1F1F1F] font-semibold self-start"
-                                        style={{ fontSize: moderateScale(14) }}
-                                    >
-                                        ₹{Number(wallet?.balance ?? 0).toFixed(2)}
-                                    </Text>
+                                    {loading ? (
+                                        <LottieView
+                                            source={require("../../../assets/animations/Loading4.json")}
+                                            autoPlay
+                                            loop
+                                            style={{
+                                                width: moderateScale(60),
+                                                height: verticalScale(15),
+                                                transform: [
+                                                    {
+                                                        translateX: -moderateScale(24)
+                                                    },
+                                                    {
+                                                        scale: 3.5
+                                                    }
+                                                ]
+                                            }}
+                                        />
+                                    ) : (
+                                        <Text
+                                            className="text-[#1F1F1F] font-semibold self-start"
+                                            style={{ fontSize: moderateScale(14) }}
+                                        >
+                                            ₹{Number(wallet?.balance ?? 0).toFixed(2)}
+                                        </Text>
+                                    )}
                                 </View>
                             </TouchableOpacity>
 

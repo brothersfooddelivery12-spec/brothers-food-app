@@ -8,6 +8,7 @@
     "@hugeicons/react": "^1.1.9",
     "@hugeicons/react-native": "^1.0.15",
     "@logicwind/react-native-exit-app": "^0.2.0",
+    "@maplibre/maplibre-react-native": "^11.4.0",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "9.1.0",
     "@react-native-google-signin/google-signin": "^16.1.4",

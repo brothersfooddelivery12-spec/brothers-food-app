@@ -37,6 +37,12 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 const DEFAULT_BOTTOM_PADDING = verticalScale(88)
 const FLOATING_CART_SPACE = verticalScale(75)
 
+export type LocationPermissionState = 
+    | "checking"
+    | "granted"
+    | "denied"
+    | "services-disabled"
+
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
     const { height: screenHeight } = useWindowDimensions()
@@ -218,12 +224,6 @@ export default function HomeScreen() {
     useEffect(() => {
         syncFavourites()
     },[])
-
-    type LocationPermissionState = 
-        | "checking"
-        | "granted"
-        | "denied"
-        | "services-disabled"
 
     const [locationLoading, setLocationLoading] = useState(false)
     const [locationPermission, setLocationPermission] = useState<LocationPermissionState>("checking")

@@ -47,7 +47,8 @@
         {
           "locationWhenInUsePermission": "Allow Brothers Food Delivery to access your location."
         }
-      ]
+      ],
+      "@maplibre/maplibre-react-native"
     ],
     "experiments": {
       "typedRoutes": true,

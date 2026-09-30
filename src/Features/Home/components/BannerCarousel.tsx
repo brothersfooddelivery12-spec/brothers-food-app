@@ -261,18 +261,18 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: moderateScale(24),
-                    backgroundColor: "rgb(229 228 226 / 0.75)"
+                    backgroundColor: "#FAFAFA"
                 }}
             >
                 <LottieView
                     source={require(
-                        "../../../../assets/animations/Loading.json"
+                        "../../../../assets/animations/Loading3.json"
                     )}
                     autoPlay
                     loop
                     style={{
-                        width: moderateScale(82),
-                        height: moderateScale(82)
+                        width: moderateScale(42),
+                        height: moderateScale(42)
                     }}
                 />
             </View>

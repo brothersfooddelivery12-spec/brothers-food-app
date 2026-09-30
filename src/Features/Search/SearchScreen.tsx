@@ -252,6 +252,7 @@ export default function SearchScreen() {
                     <SearchBar
                         value={search}
                         onChangeText={setsearch}
+                        showClear
                         placeholder="Search food, restaurants..."
                         onRightPress={() => {}}
                     />

@@ -1,4 +1,3 @@
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import BoxIcon from '@/assets/icon/BoxIcon.svg'
 import BoxTimeIcon from '@/assets/icon/BoxTimeIcon.svg'
 import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
@@ -93,7 +92,7 @@ type ActiveOrderCardProps = {
     status: OrderStatusType
     remainingMinutes?: number | null
     estimatedDeliveryAt?: string | null
-    paymentRetry?: string | null
+    paymentDeadline?: number | null
     canPay: boolean
     iscancellable: boolean
 
@@ -112,7 +111,7 @@ const ActiveOrderCard = ({
     status,
     remainingMinutes,
     estimatedDeliveryAt,
-    paymentRetry,
+    paymentDeadline,
     canPay,
     iscancellable,
     items,
@@ -152,45 +151,6 @@ const ActiveOrderCard = ({
     const showTrack = !showPayNow && canTrack
 
     const showContactRider = isRiderAvailable
-
-    const [paymentRetrySeconds, setPaymentRetrySeconds] = useState(0)
-
-    useEffect(() => {
-        if (status !== "PENDING_PAYMENT" || !paymentRetry) {
-            setPaymentRetrySeconds(0)
-            return
-        }
-
-        const updateTimer = () => {
-            const retryTime = new Date(paymentRetry).getTime()
-
-            const now = Date.now()
-
-            const remaining = Math.max(0, Math.ceil((retryTime - now) / 1000))
-
-            setPaymentRetrySeconds(remaining)
-        }
-
-        updateTimer()
-
-        const interval = setInterval(updateTimer, 1000)
-
-        return () => {
-            clearInterval(interval)
-        }
-    }, [status, paymentRetry])
-
-    const formatRetryTime = (totalSeconds: number) => {
-        const minutes = Math.floor(totalSeconds / 60)
-
-        const seconds = totalSeconds % 60
-
-        return `${minutes}:${seconds.toString().padStart(2, "0")}`
-    }
-
-    const paymentRetryText = status === "PENDING_PAYMENT" && paymentRetrySeconds > 0
-        ? `Retry payment in ${formatRetryTime(paymentRetrySeconds)}`
-        : null
 
     const getEtaText = () => {
         if (status === "PENDING_PAYMENT") {
@@ -322,15 +282,26 @@ const ActiveOrderCard = ({
                         </Text>
                     </View>
 
-                    {paymentRetryText && (
+                    {paymentDeadline != null && (
                         <View className="flex-row items-center gap-1">
-                            <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+                            <View
+                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                style={{
+                                    width: moderateScale(21),
+                                    height: moderateScale(21)
+                                }}
+                            >
+                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+                            </View>
 
                             <Text
                                 className="text-[#1F1F1F]/75 font-medium"
                                 style={{ fontSize: moderateScale(10) }}
                             >
-                                {paymentRetryText}
+                                {paymentDeadline > 0
+                                    ? `Retry payment in ${paymentDeadline} min`
+                                    : "Retry payment now"
+                                }
                             </Text>
                         </View>
                     )}
@@ -418,7 +389,7 @@ const ActiveOrderCard = ({
                             Pay Now
                         </Text>
 
-                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                        {/* <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} /> */}
                     </TouchableOpacity>
                 )}
 
@@ -442,7 +413,7 @@ const ActiveOrderCard = ({
                             Track Order
                         </Text>
 
-                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                        {/* <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} /> */}
                     </TouchableOpacity>
                 )}
 

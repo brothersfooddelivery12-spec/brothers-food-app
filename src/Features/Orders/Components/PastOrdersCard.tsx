@@ -1,4 +1,3 @@
-import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import CancelCircleIcon from '@/assets/icon/CancelCircleIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
@@ -460,7 +459,7 @@ const PastOrdersCard = ({
                             Pay Now
                         </Text>
 
-                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                        {/* <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} /> */}
                     </TouchableOpacity>
                 )}
 
@@ -484,7 +483,7 @@ const PastOrdersCard = ({
                             Reorder
                         </Text>
 
-                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                        {/* <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={2} /> */}
                     </TouchableOpacity>
                 )}
 
@@ -508,7 +507,7 @@ const PastOrdersCard = ({
                             Invoice
                         </Text>
 
-                        <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
+                        {/* <ArrowRight width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} /> */}
                     </TouchableOpacity>
                 )}
 

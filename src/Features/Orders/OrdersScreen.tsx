@@ -1,11 +1,11 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SearchBar from "@/components/SearchBar"
-import { cancelOrder, getUserOrders, OrderListItem, OrderListStatus, retryOrderPayment } from "@/Services/api-service"
+import { cancelOrder, getOrderById, getUserOrders, OrderListItem, OrderListStatus, retryOrderPayment } from "@/Services/api-service"
 import { hideLoader, showLoader } from '@/Services/loader-service'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from "lottie-react-native"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -18,6 +18,7 @@ import PastOrdersCard from "./Components/PastOrdersCard"
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46)
+const PAGE_SIZE = 10
 
 export default function OrdersScreen() {
     const insets = useSafeAreaInsets()
@@ -30,23 +31,82 @@ export default function OrdersScreen() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [activeTab, setActiveTab] = useState<"active orders" | "past orders">("active orders")
 
+    const activeOffsetRef = useRef(0)
+    const pastOffsetRef = useRef(0)
+
+    const activeHasMoreRef = useRef(true)
+    const pastHasMoreRef = useRef(true)
+
+    const requestInProgressRef = useRef({
+        ACTIVE: false,
+        PAST: false
+    })
+
     const [activeOrders, setActiveOrders] = useState<OrderListItem[]>([])
     const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
-    const [loadingOrders, setLoadingOrders] = useState(true)
+    const [loadingOrders, setLoadingOrders] = useState(false)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [hasMoreActive, setHasMoreActive] = useState(true)
+    const [hasMorePast, setHasMorePast] = useState(true)
 
-    const fetchOrdersByTab = useCallback(async (tab: "active orders" | "past orders") => {
+    const fetchOrdersByTab = useCallback(async (
+        tab: "active orders" | "past orders",
+        reset = false
+    ) => {
+        const status: OrderListStatus = tab === "active orders"
+            ? "ACTIVE"
+            : "PAST"
+
+        if (requestInProgressRef.current[status]) {
+            console.log(`${status} request already in progress`)
+            return
+        }
+
+        const hasMore = status === "ACTIVE"
+            ? activeHasMoreRef.current
+            : pastHasMoreRef.current
+
+        if (!reset && !hasMore) {
+            console.log(`No more ${status} orders to fetch`)
+            return
+        }
+
+        const offset = reset
+            ? 0
+            : status === "ACTIVE"
+                ? activeOffsetRef.current
+                : pastOffsetRef.current
+
+        console.log("Fetching orders:", {
+            tab,
+            status,
+            reset,
+            offset,
+            limit: PAGE_SIZE
+        })
+
         try {
-            setLoadingOrders(true)
+            requestInProgressRef.current[status] = true
 
-            const status: OrderListStatus = tab === "active orders" ? "ACTIVE" : "PAST"
+            if (reset) {
+                setLoadingOrders(true)
+            } else {
+                setLoadingMore(true)
+            }
 
-            const res = await measureApi(status === "ACTIVE" ? "Active Orders" : "Past Orders",
-                () => getUserOrders({
+            const res = await measureApi(
+                status === "ACTIVE"
+                    ? "Active Orders"
+                    : "Past Orders",
+                () =>
+                    getUserOrders({
                         status,
-                        offset: 0,
-                        limit: 20
+                        offset,
+                        limit: PAGE_SIZE
                     })
             )
+
+            console.log(`${status} API response:`, res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch orders", "warning")
@@ -54,31 +114,91 @@ export default function OrdersScreen() {
                 return
             }
 
-            const orders = res.data.data ?? []
+            const newOrders: OrderListItem[] = res.data.data ?? []
+
+            console.log(`${status} new orders:`, newOrders)
+
+            console.log(`${status} fetched count:`, newOrders.length)
+
+            const hasMore = newOrders.length === PAGE_SIZE
+
+            console.log(`${status} has more:`, hasMore)
 
             if (status === "ACTIVE") {
-                console.log("ACTIVE ORDERS DATA:", orders)
+                if (reset) {
+                    setActiveOrders(newOrders)
 
-                setActiveOrders(orders)
+                    console.log("ACTIVE orders reset:", newOrders)
+                } else {
+                    setActiveOrders(prev => {
+                        const updatedOrders = [
+                            ...prev,
+                            ...newOrders
+                        ]
+
+                        console.log("ACTIVE orders after append:", updatedOrders)
+
+                        return updatedOrders
+                    })
+                }
+
+                activeOffsetRef.current = offset + newOrders.length
+
+                activeHasMoreRef.current = hasMore
+
+                console.log("ACTIVE next offset:", activeOffsetRef.current)
             } else {
-                console.log("PAST ORDERS DATA:", orders)
+                if (reset) {
+                    setPastOrders(newOrders)
 
-                setPastOrders(orders)
+                    console.log("PAST orders reset:", newOrders)
+                } else {
+                    setPastOrders(prev => {
+                        const updatedOrders = [
+                            ...prev,
+                            ...newOrders
+                        ]
+
+                        console.log("PAST orders after append:", updatedOrders)
+
+                        return updatedOrders
+                    })
+                }
+
+                pastOffsetRef.current = offset + newOrders.length
+
+                pastHasMoreRef.current = hasMore
+
+                console.log("PAST next offset:", pastOffsetRef.current)
             }
         } catch (error: any) {
-            console.log("Fetch orders error:", error)
+            console.log("Fetch orders error:", error?.response?.data ?? error)
 
             showToast(error?.response?.data?.message || error?.message || "Unable to fetch orders", "warning")
         } finally {
-            setLoadingOrders(false)
+            requestInProgressRef.current[status] = false
+
+            if (reset) {
+                setLoadingOrders(false)
+            } else {
+                setLoadingMore(false)
+            }
         }
-    },[])
+    }, [])
     
     useFocusEffect(
         useCallback(() => {
-            fetchOrdersByTab(activeTab)
+            fetchOrdersByTab(activeTab, true)
         }, [activeTab, fetchOrdersByTab])
     )
+
+    const handleLoadMore = useCallback(() => {
+        if (loadingOrders || loadingMore) {
+            return
+        }
+
+        fetchOrdersByTab(activeTab, false)
+    }, [activeTab, loadingOrders, loadingMore, fetchOrdersByTab])
 
     const horizontalPadding = scale(42)
     const gap = scale(12)
@@ -128,9 +248,7 @@ export default function OrdersScreen() {
         ),
     }))
 
-    const ordersData = activeTab === "active orders"
-        ? activeOrders
-        : pastOrders
+    const ordersData = activeTab === "active orders" ? activeOrders : pastOrders
 
     const handleCancelOrder = useCallback(async (orderId: string) => {
         try {
@@ -147,8 +265,6 @@ export default function OrdersScreen() {
             }
 
             showToast(res.data.message || "Order cancelled successfully", "success")
-
-            await fetchOrdersByTab("active orders")
         } catch (error: any) {
             console.log("Cancel order error:", error)
 
@@ -156,6 +272,8 @@ export default function OrdersScreen() {
         } finally{
             hideLoader()
         }
+
+        await fetchOrdersByTab("active orders", true)
     },[fetchOrdersByTab])
 
     const handleRetryPayment = useCallback(async (orderId: string) => {
@@ -165,6 +283,10 @@ export default function OrdersScreen() {
             const res = await retryOrderPayment(orderId)
 
             console.log("Retry payment response:", res.data)
+
+            const orderRes = await getOrderById(orderId)
+
+            console.log("Order details response:", orderRes.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to retry payment", "warning")
@@ -284,7 +406,7 @@ export default function OrdersScreen() {
                     status={item.status}
                     remainingMinutes={item.remaining_minutes}
                     estimatedDeliveryAt={item.estimated_delivery_at}
-                    paymentRetry={item.payment_retry}
+                    paymentDeadline={item.payment_deadline}
                     canPay={item.canpay}
                     iscancellable={item.iscancellable}
                     items={item.items}
@@ -314,11 +436,8 @@ export default function OrdersScreen() {
 
     const loaderHeight = Math.max(
         verticalScale(250),
-        SCREEN_HEIGHT -
-            insets.top -
-            titleHeight -
-            searchBarHeight -
-            verticalScale(180)
+        SCREEN_HEIGHT - insets.top -
+        titleHeight - searchBarHeight - verticalScale(180)
     )
 
     return(
@@ -397,6 +516,8 @@ export default function OrdersScreen() {
                 keyExtractor={(item) => item.id}
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.3}
                 nestedScrollEnabled
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="none"
@@ -558,6 +679,26 @@ export default function OrdersScreen() {
                             </View>
                         )}
                     </View>
+                }
+                ListFooterComponent={
+                    loadingMore ? (
+                        <View
+                            className="items-center justify-center"
+                            style={{ paddingTop: verticalScale(16) }}
+                        >
+                            <LottieView
+                                source={require(
+                                    "../../../assets/animations/Loading3.json"
+                                )}
+                                autoPlay
+                                loop
+                                style={{
+                                    width: moderateScale(45),
+                                    height: moderateScale(45)
+                                }}
+                            />
+                        </View>
+                    ) : null
                 }
             />
         </SafeAreaView>

@@ -449,11 +449,8 @@ export default function FavouritesScreen() {
 
     const loaderHeight = Math.max(
         verticalScale(250),
-        SCREEN_HEIGHT -
-            insets.top -
-            titleHeight -
-            searchBarHeight -
-            verticalScale(180)
+        SCREEN_HEIGHT - insets.top -
+        titleHeight - searchBarHeight - verticalScale(180)
     )
 
     return (
@@ -597,16 +594,72 @@ export default function FavouritesScreen() {
                 }
                 ListHeaderComponent={
                     <View style={{ marginTop: verticalScale(4) }}>
-                        <View
-                            style={{
-                                paddingHorizontal: scale(8),
-                                paddingBottom: verticalScale(12)
-                            }}
-                        >
-                            <FavouriteTabs activeTab={activeTab} onChange={setActiveTab} />
+                         <View className="flex-row items-center gap-3 mb-5">
+                            <View
+                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                style={{
+                                    borderWidth: moderateScale(0.5),
+                                    width: cardWidth,
+                                    height: moderateScale(95),
+                                    borderRadius: moderateScale(22)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#1F1F1F] font-medium"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    Saved
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F] font-bold"
+                                    style={{ fontSize: moderateScale(18) }}
+                                >
+                                    {savedCount}
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F]/75 font-medium"
+                                    style={{ fontSize: moderateScale(13) }}
+                                >
+                                    {activeTab == "food" ? "Foods" : "Restaurants"}
+                                </Text>
+                            </View>
+
+                            <View
+                                className="bg-[#3F2516] py-4 px-5 gap-1 justify-center"
+                                style={{
+                                    width: cardWidth,
+                                    height: moderateScale(95),
+                                    borderRadius: moderateScale(22)
+                                }}
+                            >
+                                <Text
+                                    className="text-[#FFFFFF]/95 font-medium"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    Available
+                                </Text>
+
+                                <Text
+                                    className="text-[#FFFFFF] font-bold"
+                                    style={{ fontSize: moderateScale(18) }}
+                                >
+                                    {availableCount}
+                                </Text>
+
+                                <Text
+                                    className="text-[#FFFFFF]/75 font-medium"
+                                    style={{ fontSize: moderateScale(13) }}
+                                >
+                                    {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
+                                </Text>
+                            </View>
                         </View>
 
-                        {loadingFavourites ? (
+                        <FavouriteTabs activeTab={activeTab} onChange={setActiveTab} />
+
+                        {loadingFavourites && (
                             <View
                                 className="items-center justify-center"
                                 style={{ height: loaderHeight }}
@@ -622,69 +675,6 @@ export default function FavouritesScreen() {
                                         height: moderateScale(125)
                                     }}
                                 />
-                            </View>
-                        ) : (
-                            <View className="flex-row items-center gap-3">
-                                <View
-                                    className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
-                                    style={{
-                                        borderWidth: moderateScale(0.5),
-                                        width: cardWidth,
-                                        height: moderateScale(95),
-                                        borderRadius: moderateScale(22)
-                                    }}
-                                >
-                                    <Text
-                                        className="text-[#1F1F1F] font-medium"
-                                        style={{ fontSize: moderateScale(14) }}
-                                    >
-                                        Saved
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold"
-                                        style={{ fontSize: moderateScale(18) }}
-                                    >
-                                        {savedCount}
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#1F1F1F]/75 font-medium"
-                                        style={{ fontSize: moderateScale(13) }}
-                                    >
-                                        {activeTab == "food" ? "Foods" : "Restaurants"}
-                                    </Text>
-                                </View>
-    
-                                <View
-                                    className="bg-[#3F2516] py-4 px-5 gap-1 justify-center"
-                                    style={{
-                                        width: cardWidth,
-                                        height: moderateScale(95),
-                                        borderRadius: moderateScale(22)
-                                    }}
-                                >
-                                    <Text
-                                        className="text-[#FFFFFF]/95 font-medium"
-                                        style={{ fontSize: moderateScale(14) }}
-                                    >
-                                        Available
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#FFFFFF] font-bold"
-                                        style={{ fontSize: moderateScale(18) }}
-                                    >
-                                        {availableCount}
-                                    </Text>
-    
-                                    <Text
-                                        className="text-[#FFFFFF]/75 font-medium"
-                                        style={{ fontSize: moderateScale(13) }}
-                                    >
-                                        {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
-                                    </Text>
-                                </View>
                             </View>
                         )}
                     </View>

@@ -407,7 +407,7 @@ export interface OrderListItem {
     is_active: boolean
     estimated_delivery_at: string | null
     remaining_minutes: number | null
-    payment_retry: string | null
+    payment_deadline : number | null
     canpay: boolean
     iscancellable: boolean
 }
@@ -443,4 +443,8 @@ export const retryOrderPayment = (orderId: string) => {
             }
         }
     )
+}
+
+export const getOrderById = (orderId: string) => {
+    return api.get(`/order/${orderId}`)
 }
