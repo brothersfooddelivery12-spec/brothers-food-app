@@ -47,6 +47,50 @@ export type PaymentMethod = {
     isDefault?: boolean
 }
 
+export const getUpiAppIcon = (packageName: string) => {
+    switch (packageName) {
+        case "com.google.android.apps.nbu.paisa.user":
+            return GooglePayIcon
+
+        case "com.phonepe.app":
+            return PhonePeIcon
+
+        case "net.one97.paytm":
+            return PaytmIcon
+
+        case "in.org.npci.upiapp":
+            return BHIMUpiIcon
+
+        case "money.super.payments":
+            return SuperMoneyIcon
+
+        default:
+            return UpiIcon
+    }
+}
+
+export const getUpiAppName = (packageName: string) => {
+    switch (packageName) {
+        case "com.google.android.apps.nbu.paisa.user":
+            return "Google Pay"
+
+        case "com.phonepe.app":
+            return "PhonePe"
+
+        case "net.one97.paytm":
+            return "Paytm"
+
+        case "in.org.npci.upiapp":
+            return "BHIM"
+
+        case "money.super.payments":
+            return "super.money"
+
+        default:
+            return "UPI App"
+    }
+}
+
 export default function CheckoutScreen() {
     const { restaurantId } = useLocalSearchParams<{restaurantId: string}>()
     const insets = useSafeAreaInsets()
@@ -56,6 +100,8 @@ export default function CheckoutScreen() {
 
     const hasFetchedAddresses = useRef(false)
     const currentPaymentUpiRef = useRef<SavedPaymentMethod | null>(null)
+    const currentOrderIdRef = useRef<string | null>(null)
+
     const addressesDirty = useAddressRefreshStore((state) => state.addressesDirty)
     const clearAddressesDirty = useAddressRefreshStore((state) => state.clearAddressesDirty)
     const {savedPaymentMethods, addPaymentMethod, removePaymentMethod} = usePaymentMethodStore()
@@ -369,6 +415,8 @@ export default function CheckoutScreen() {
 
                 const paymentMethod = currentPaymentUpiRef.current
 
+                const backendOrderId = currentOrderIdRef.current
+
                 const completedCart = selectedCart
 
                 if (paymentMethod) {
@@ -384,7 +432,7 @@ export default function CheckoutScreen() {
                 }
 
                 const successParams = {
-                    orderId: cashfreeOrderId,
+                    orderId: backendOrderId ?? cashfreeOrderId,
                     restaurantName: completedCart.restaurantName,
                     restaurantId: completedCart.id,
                     totalAmount: grandTotal.toString(),
@@ -401,6 +449,7 @@ export default function CheckoutScreen() {
                 })
 
                 removeRestaurantCart(completedCart.id)
+                currentOrderIdRef.current = null
 
                 return
             }
@@ -535,50 +584,6 @@ export default function CheckoutScreen() {
             hideLoader()
         }
     }, [hideLoader])
-
-    const getUpiAppIcon = (packageName: string) => {
-        switch (packageName) {
-            case "com.google.android.apps.nbu.paisa.user":
-                return GooglePayIcon
-
-            case "com.phonepe.app":
-                return PhonePeIcon
-
-            case "net.one97.paytm":
-                return PaytmIcon
-
-            case "in.org.npci.upiapp":
-                return BHIMUpiIcon
-
-            case "money.super.payments":
-                return SuperMoneyIcon
-
-            default:
-                return UpiIcon
-        }
-    }
-
-    const getUpiAppName = (packageName: string) => {
-        switch (packageName) {
-            case "com.google.android.apps.nbu.paisa.user":
-                return "Google Pay"
-
-            case "com.phonepe.app":
-                return "PhonePe"
-
-            case "net.one97.paytm":
-                return "Paytm"
-
-            case "in.org.npci.upiapp":
-                return "BHIM"
-
-            case "money.super.payments":
-                return "super.money"
-
-            default:
-                return "UPI App"
-        }
-    }
 
     const deviceUpiMethods = useMemo(() => {
         return upiApps.map((app) => ({
@@ -887,6 +892,9 @@ export default function CheckoutScreen() {
                 if (!payment?.order_id || !payment?.payment_session_id) {
                     throw new Error("Invalid Cashfree payment session.")
                 }
+
+                currentOrderIdRef.current = payment.order_id
+                console.log("Backend order ID:", payment.order_id)
 
                 await startUpiPayment({
                     orderId: payment.payment_id,

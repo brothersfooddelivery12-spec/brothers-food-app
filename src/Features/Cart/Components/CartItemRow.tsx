@@ -165,6 +165,7 @@ const CartItemRow = memo(
                                                 ? "rgba(31,31,31,0.07)"
                                                 : "rgba(232,185,63,0.15)"
                                     }}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
                                     <MinusIcon
                                         width={moderateScale(12)}
@@ -199,6 +200,7 @@ const CartItemRow = memo(
                                                 ? "rgba(31,31,31,0.07)"
                                                 : "rgba(232,185,63,0.15)"
                                     }}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
                                     <PlusIcon
                                         width={moderateScale(12)}

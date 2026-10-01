@@ -367,8 +367,8 @@ export default function BrothersWalletScreen(){
                                 autoPlay
                                 loop
                                 style={{
-                                    width: moderateScale(125),
-                                    height: moderateScale(125)
+                                    width: moderateScale(115),
+                                    height: moderateScale(115)
                                 }}
                             />
                         </View>

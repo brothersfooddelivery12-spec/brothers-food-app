@@ -1,3 +1,4 @@
+import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import LocateFixedIcon from "@/assets/icon/LocateFixedIcon.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import SearchBar from "@/components/SearchBar"
@@ -7,7 +8,7 @@ import * as Location from "expo-location"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import LottieView from "lottie-react-native"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Alert, Keyboard, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Keyboard, Linking, Platform, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import { TextInput } from "react-native-gesture-handler"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -100,6 +101,7 @@ export default function MapLocationScreen() {
     const mapRef = useRef<MapRef>(null)
     const cameraRef = useRef<CameraRef>(null)
 
+    const [headerHeight, setHeaderHeight] = useState(0)
     const [locationSource, setLocationSource] = useState<"CURRENT" | "MANUAL">("MANUAL")
     const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null)
     const [loadingLocation, setLoadingLocation] = useState(true)
@@ -566,7 +568,7 @@ export default function MapLocationScreen() {
 
         setLocation(locationData)
 
-        router.back()
+        router.dismissTo('/(tabs)/home')
     }, [selectedLocation, locationSource, setLocation, router])
 
     if (!hasHydrated) {
@@ -589,6 +591,12 @@ export default function MapLocationScreen() {
 
     return (
         <View className="flex-1 bg-[#FFFFFF]">
+            <StatusBar
+                translucent
+                backgroundColor="#FFFFFF"
+                barStyle="dark-content"
+            />
+
             <View className="flex-1">
                 <Map
                     ref={mapRef}
@@ -613,16 +621,57 @@ export default function MapLocationScreen() {
                 </Map>
 
                 <View
-                    className="absolute left-0 right-0"
+                    onLayout={(event) => {
+                        setHeaderHeight(event.nativeEvent.layout.height)
+                    }}
+                    className="absolute left-0 right-0 bg-[#FFFFFF]"
                     style={{
-                        top: insets.top + verticalScale(10),
+                        top: 0,
+                        paddingTop: insets.top + verticalScale(10),
+                        paddingBottom: verticalScale(5),
                         paddingHorizontal: scale(14),
                         zIndex: 20
                     }}
                 >
+                    <View
+                        className="flex-row items-center -mx-1"
+                        style={{
+                            marginBottom: verticalScale(10),
+                            gap: scale(8)
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.95}
+                            onPress={() => router.back()}
+                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                            style={{
+                                borderWidth: moderateScale(0.5),
+                                width: moderateScale(40),
+                                height: moderateScale(40)
+                            }}
+                        >
+                            <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                        </TouchableOpacity>
+
+                        <View className="items-start gap-1 flex-1">
+                            <Text
+                                className="text-[#1F1F1F] font-extrabold"
+                                style={{ fontSize: moderateScale(16) }}
+                            >
+                                Choose delivery location
+                            </Text>
+                            
+                            <Text
+                                className="text-[#1F1F1F]/65 font-medium"
+                                style={{ fontSize: moderateScale(11) }}
+                            >
+                                Select where you want your order delivered.
+                            </Text>
+                        </View>
+                    </View>
+
                     <SearchBar
                         ref={searchInputRef}
-                        backgroundColor="#FFFFFF"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         placeholder="Search area, street or landmark"
@@ -639,151 +688,154 @@ export default function MapLocationScreen() {
                                 searchLocation(query)
                             }
                         }}
-                    />
-                    
-                    {searchQuery.trim().length >= 3 && (loadingSearch || hasSearched) && (
-                        <View
-                            className="bg-[#FFFFFF] overflow-hidden border-[#1F1F1F]/10"
-                            style={{
-                                borderWidth: moderateScale(0.5),
-                                marginTop: verticalScale(6),
-                                borderRadius: moderateScale(20),
-                                maxHeight: verticalScale(300)
-                            }}
-                        >
-                            {loadingSearch ? (
-                                <View
-                                    className="items-center justify-center"
-                                    style={{ height: verticalScale(100) }}
-                                >
-                                    <View
-                                        className="items-center justify-center self-center"
-                                        style={{
-                                            width: moderateScale(42),
-                                            height: moderateScale(42)
-                                        }}
-                                    >
-                                        <LottieView
-                                            source={require("../../../assets/animations/Loading3.json")}
-                                            autoPlay
-                                            loop
-                                            style={{
-                                                width: "100%",
-                                                height: "100%"
-                                            }}
-                                        />
-                                    </View>
-
-                                    <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
-                                        style={{
-                                            fontSize: moderateScale(11),
-                                            marginTop: verticalScale(8)
-                                        }}
-                                    >
-                                        Searching locations...
-                                    </Text>
-                                </View>
-                            ) : searchResults.length > 0 ? (
-                                <ScrollView
-                                    showsVerticalScrollIndicator={false}
-                                    keyboardShouldPersistTaps="handled"
-                                    nestedScrollEnabled
-                                >
-                                    {searchResults.map((item, index) => {
-                                        const address = formatSearchAddress(item)
-
-                                            return (
-                                                <TouchableOpacity
-                                                    key={`${item.properties.osm_key}-${item.properties.name}-${index}`}
-                                                    activeOpacity={0.95}
-                                                    onPress={() => handleSearchResultPress(item)}
-                                                    className="flex-row items-center px-4"
-                                                    style={{ minHeight: verticalScale(58) }}
-                                                >
-                                                    <View
-                                                        className="items-center justify-center"
-                                                        style={{
-                                                            backgroundColor: "rgba(232,185,63,0.15)",
-                                                            width: moderateScale(36),
-                                                            height: moderateScale(36),
-                                                            borderRadius: moderateScale(18)
-                                                        }}
-                                                    >
-                                                        <LocationIcon width={moderateScale(19)} height={moderateScale(19)}  color="#3F2516" />
-                                                    </View>
-
-                                                    <View className="flex-1 ml-3">
-                                                        <Text
-                                                            numberOfLines={1}
-                                                            className="text-[#1F1F1F] font-bold"
-                                                            style={{ fontSize: moderateScale(13) }}
-                                                        >
-                                                            {item.properties
-                                                                .name ||
-                                                                item.properties
-                                                                    .city ||
-                                                                "Location"
-                                                            }
-                                                        </Text>
-
-                                                        <Text
-                                                            numberOfLines={2}
-                                                            className="text-[#1F1F1F]/65 font-medium mt-0.5"
-                                                            style={{ fontSize: moderateScale(10.5) }}
-                                                        >
-                                                            {address}
-                                                        </Text>
-                                                    </View>
-
-                                                    {index < searchResults.length - 1 && (
-                                                        <View
-                                                            className="absolute bottom-0"
-                                                            style={{ 
-                                                                backgroundColor: "rgba(31,31,31,0.10)",
-                                                                height: moderateScale(0.5),
-                                                                left: scale(16),
-                                                                right: scale(16)
-                                                            }}
-                                                        />
-                                                    )}
-                                                </TouchableOpacity>
-                                            )
-                                        }
-                                    )}
-                                </ScrollView>
-                            ) : (
-                                <View
-                                    className="items-center justify-center px-5"
-                                    style={{ height: verticalScale(120) }}
-                                >
-                                    <LocationIcon width={moderateScale(30)} height={moderateScale(30)} color="#7A7D81" />
-
-                                    <Text
-                                        className="text-[#1F1F1F] font-bold text-center"
-                                        style={{
-                                            fontSize: moderateScale(13),
-                                            marginTop: verticalScale(8)
-                                        }}
-                                    >
-                                        No locations found
-                                    </Text>
-
-                                    <Text
-                                        className="text-[#1F1F1F]/55 font-medium text-center"
-                                        style={{
-                                            fontSize: moderateScale(10.5),
-                                            marginTop: verticalScale(3)
-                                        }}
-                                    >
-                                        Try searching with a different area,
-                                        street or landmark
-                                    </Text>
-                                </View>
-                            )}
-                        </View>
-                    )}
+                    />    
                 </View>
+
+                {searchQuery.trim().length >= 3 && (loadingSearch || hasSearched) && (
+                    <View
+                        className="absolute bg-[#FFFFFF] overflow-hidden border-[#1F1F1F]/10"
+                        style={{
+                            top: headerHeight + verticalScale(6),
+                            left: scale(12),
+                            right: scale(12),
+                            borderWidth: moderateScale(0.5),
+                            borderRadius: moderateScale(20),
+                            maxHeight: verticalScale(300),
+                            zIndex: 30
+                        }}
+                    >
+                        {loadingSearch ? (
+                            <View
+                                className="items-center justify-center"
+                                style={{ height: verticalScale(100) }}
+                            >
+                                <View
+                                    className="items-center justify-center self-center"
+                                    style={{
+                                        width: moderateScale(42),
+                                        height: moderateScale(42)
+                                    }}
+                                >
+                                    <LottieView
+                                        source={require("../../../assets/animations/Loading3.json")}
+                                        autoPlay
+                                        loop
+                                        style={{
+                                            width: "100%",
+                                            height: "100%"
+                                        }}
+                                    />
+                                </View>
+
+                                <Text
+                                    className="text-[#1F1F1F]/65 font-medium"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        marginTop: verticalScale(8)
+                                    }}
+                                >
+                                    Searching locations...
+                                </Text>
+                            </View>
+                        ) : searchResults.length > 0 ? (
+                            <ScrollView
+                                showsVerticalScrollIndicator={false}
+                                keyboardShouldPersistTaps="handled"
+                                nestedScrollEnabled
+                            >
+                                {searchResults.map((item, index) => {
+                                    const address = formatSearchAddress(item)
+
+                                        return (
+                                            <TouchableOpacity
+                                                key={`${item.properties.osm_key}-${item.properties.name}-${index}`}
+                                                activeOpacity={0.95}
+                                                onPress={() => handleSearchResultPress(item)}
+                                                className="flex-row items-center px-4"
+                                                style={{ minHeight: verticalScale(58) }}
+                                            >
+                                                <View
+                                                    className="items-center justify-center"
+                                                    style={{
+                                                        backgroundColor: "rgba(232,185,63,0.15)",
+                                                        width: moderateScale(36),
+                                                        height: moderateScale(36),
+                                                        borderRadius: moderateScale(18)
+                                                    }}
+                                                >
+                                                    <LocationIcon width={moderateScale(19)} height={moderateScale(19)}  color="#3F2516" />
+                                                </View>
+
+                                                <View className="flex-1 ml-3">
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        className="text-[#1F1F1F] font-bold"
+                                                        style={{ fontSize: moderateScale(13) }}
+                                                    >
+                                                        {item.properties
+                                                            .name ||
+                                                            item.properties
+                                                                .city ||
+                                                            "Location"
+                                                        }
+                                                    </Text>
+
+                                                    <Text
+                                                        numberOfLines={2}
+                                                        className="text-[#1F1F1F]/65 font-medium mt-0.5"
+                                                        style={{ fontSize: moderateScale(10.5) }}
+                                                    >
+                                                        {address}
+                                                    </Text>
+                                                </View>
+
+                                                {index < searchResults.length - 1 && (
+                                                    <View
+                                                        className="absolute bottom-0"
+                                                        style={{ 
+                                                            backgroundColor: "rgba(31,31,31,0.10)",
+                                                            height: moderateScale(0.5),
+                                                            left: scale(16),
+                                                            right: scale(16)
+                                                        }}
+                                                    />
+                                                )}
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                )}
+                            </ScrollView>
+                        ) : (
+                            <View
+                                className="items-center justify-center px-5"
+                                style={{ height: verticalScale(120) }}
+                            >
+                                <LocationIcon width={moderateScale(30)} height={moderateScale(30)} color="#7A7D81" />
+
+                                <Text
+                                    className="text-[#1F1F1F] font-bold text-center"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        marginTop: verticalScale(8)
+                                    }}
+                                >
+                                    No locations found
+                                </Text>
+
+                                <Text
+                                    className="text-[#1F1F1F]/55 font-medium text-center"
+                                    style={{
+                                        fontSize: moderateScale(10.5),
+                                        marginTop: verticalScale(3)
+                                    }}
+                                >
+                                    Try searching with a different area,
+                                    street or landmark
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                )}
 
                 <View
                     pointerEvents="none"
@@ -889,8 +941,7 @@ export default function MapLocationScreen() {
                     style={{
                         height: verticalScale(48),
                         borderRadius: moderateScale(18),
-                        marginTop: verticalScale(16),
-                        opacity: !selectedLocation || loadingAddress ? 0.8 : 1
+                        marginTop: verticalScale(16)
                     }}
                 >
                     <Text

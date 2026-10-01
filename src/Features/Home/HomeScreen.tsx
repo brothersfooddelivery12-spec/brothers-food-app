@@ -5,6 +5,7 @@ import ClockIcon from '@/assets/icon/ClockIcon2.svg'
 import LocateFixedIcon from '@/assets/icon/LocateFixedIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
+import RestaurantIcon from '@/assets/icon/RestaurantFilledIcon.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
 import FloatingCartBar from '@/components/FloatingCartBar'
 import RestaurantCard, { Restaurants } from "@/components/RestaurantCard"
@@ -37,11 +38,7 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 const DEFAULT_BOTTOM_PADDING = verticalScale(88)
 const FLOATING_CART_SPACE = verticalScale(75)
 
-export type LocationPermissionState = 
-    | "checking"
-    | "granted"
-    | "denied"
-    | "services-disabled"
+export type LocationPermissionState = "checking" | "granted" | "denied" | "services-disabled"
 
 export default function HomeScreen() {
     const insets = useSafeAreaInsets()
@@ -98,9 +95,7 @@ export default function HomeScreen() {
 
     const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const currentY = Math.max(event.nativeEvent.contentOffset.y, 0)
-
         const previousY = previousScrollY.current
-
         const difference = currentY - previousY
 
         const SHOW_AFTER = 400
@@ -156,7 +151,6 @@ export default function HomeScreen() {
             }
 
             const profile = res.data.data
-
             const currentUser = useAuthStore.getState().user
 
             useAuthStore
@@ -191,10 +185,7 @@ export default function HomeScreen() {
 
             const {setRestaurantIds, setMenuItemIds} = useFavouriteStore.getState()
 
-            if (
-                restaurantRes.status === "fulfilled" &&
-                restaurantRes.value.data.success
-            ) {
+            if (restaurantRes.status === "fulfilled" && restaurantRes.value.data.success) {
                 console.log("Favorite restaurants response:", restaurantRes.value.data)
 
                 const ids = restaurantRes.value.data.data.map((item: any) => item.id)
@@ -204,10 +195,7 @@ export default function HomeScreen() {
                 setRestaurantIds(ids)
             }
 
-            if (
-                menuItemRes.status === "fulfilled" &&
-                menuItemRes.value.data.success
-            ) {
+            if (menuItemRes.status === "fulfilled" && menuItemRes.value.data.success) {
                 console.log("Favorite menus response:", menuItemRes.value.data)
 
                 const ids = menuItemRes.value.data.data.map((item: any) => item.id)
@@ -245,8 +233,7 @@ export default function HomeScreen() {
             setLocation({
                 latitude: currentLocation.latitude, 
                 longitude: currentLocation.longitude,
-                name:
-                    currentLocation.addressLine ||
+                name: currentLocation.addressLine ||
                     currentLocation.area ||
                     currentLocation.city,
                 source: "CURRENT"
@@ -385,9 +372,7 @@ export default function HomeScreen() {
 
         useEffect(() => {
             const interval = setInterval(() => {
-                setCount(prev =>
-                    prev === 3 ? 0 : prev + 1
-                )
+                setCount(prev => prev === 3 ? 0 : prev + 1)
             }, 450)
 
             return () => {
@@ -413,12 +398,12 @@ export default function HomeScreen() {
             return "Loading location"
         }
 
-        if (location?.name) {
-            return location.name
-        }
-
         if (locationLoading) {
             return "Detecting location"
+        }
+
+        if (location?.name) {
+            return location.name
         }
 
         return "Select location"
@@ -519,23 +504,17 @@ export default function HomeScreen() {
             const mappedRestaurants: Restaurants[] = restaurantData.map((item) => ({
                     id: item.id,
                     name: item.name,
-                    imageUrl:
-                        item.cover_image_url ||
-                        item.logo_url ||
-                        null,
+                    imageUrl: item.cover_image_url ||
+                        item.logo_url || null,
                     cuisines: item.description ?? "",
                     rating: Number(item.rating) || 0,
-                    deliveryFee:
-                        item.delivery_fee != null
-                            ? Number(item.delivery_fee)
-                            : null,
-
+                    deliveryFee: item.delivery_fee != null
+                        ? Number(item.delivery_fee)
+                        : null,
                     deliveryTime: item.estimated_time_minutes ?? null,
-                    distance:
-                        item.distance !=
-                        null
-                            ? `${item.distance} km`
-                            : null,
+                    distance: item.distance != null
+                        ? `${item.distance} km`
+                        : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
                     openingTime: item.opening_time,
@@ -624,16 +603,12 @@ export default function HomeScreen() {
             const mappedRestaurants: NearByRestaurants[] = restaurantData.map((item) => ({
                     id: item.id,
                     name: item.name,
-                    imageUrl:
-                        item.logo_url ||
-                        null,
+                    imageUrl: item.logo_url || null,
                     cuisines: item.description ?? "",
                     rating: Number(item.rating) || 0,
-                    distance:
-                        item.distance !=
-                        null
-                            ? `${item.distance} km`
-                            : null,
+                    distance: item.distance != null
+                        ? `${item.distance} km`
+                        : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
                     isOpen: item.is_open
@@ -652,13 +627,15 @@ export default function HomeScreen() {
 
     const [loadingHome, setLoadingHome] = useState(true)
 
-    const hasLoadedHomeRef = useRef(false)
-
     const fetchHomeData = useCallback(async (latitude: number, longitude: number) => {
         try {
-            if (!hasLoadedHomeRef.current) {
-                setLoadingHome(true)
-            }
+            setLoadingHome(true)
+
+            setAdvertisements([])
+            setCategories([])
+            setPopularRestaurants([])
+            setPopularMenu([])
+            setNearbyRestaurants([])
 
             await Promise.allSettled([
                 measureApi(
@@ -690,8 +667,6 @@ export default function HomeScreen() {
                         )
                 ),
             ])
-
-            hasLoadedHomeRef.current = true
 
             setLoadingHome(false)
 
@@ -725,8 +700,8 @@ export default function HomeScreen() {
         }
 
         void fetchHomeData(
-            25.149131,
-            73.083126
+            location.latitude,
+            location.longitude
         )
     },[
         hasHydrated,
@@ -734,7 +709,14 @@ export default function HomeScreen() {
         location?.longitude,
         fetchHomeData
     ])
-    
+
+    const hasHomeData =
+        categories.length > 0 ||
+        popularRestaurants.length > 0 ||
+        popularMenu.length > 0
+
+    const showEmptyHome = !loadingHome && !hasHomeData
+        
     // useFocusEffect(
     //     useCallback(() => {
             
@@ -823,8 +805,9 @@ export default function HomeScreen() {
             }
 
             showToast(isFavourite
-                        ? "Removed from favourites."
-                        : "Added to favourites.", "success")
+                ? "Removed from favourites."
+                : "Added to favourites.", "success"
+            )
         } catch (error: any) {
             console.log("Favourite error:", error)
 
@@ -869,8 +852,9 @@ export default function HomeScreen() {
             }
 
             showToast(isFavourite
-                        ? "Removed from favourites."
-                        : "Added to favourites.", "success")
+                ? "Removed from favourites."
+                : "Added to favourites.", "success"
+            )
         } catch (error: any) {
             console.log("Menu favourite error:", error)
 
@@ -986,7 +970,7 @@ export default function HomeScreen() {
             <Text
                 className="font-extrabold text-[#1F1F1F] text-center"
                 style={{
-                    fontSize: moderateScale(18),
+                    fontSize: moderateScale(17),
                     marginTop: verticalScale(8)
                 }}
             >
@@ -994,9 +978,9 @@ export default function HomeScreen() {
             </Text>
 
             <Text
-                className="font-medium text-[#1F1F1F]/60 text-center"
+                className="font-medium text-[#1F1F1F]/65 text-center"
                 style={{
-                    fontSize: moderateScale(12),
+                    fontSize: moderateScale(11),
                     lineHeight: moderateScale(16),
                     marginTop: verticalScale(4)
                 }}
@@ -1135,7 +1119,7 @@ export default function HomeScreen() {
                                                     key={locationTitle}
                                                     entering={
                                                         FadeInDown
-                                                            .duration(400)
+                                                            .duration(200)
                                                             .withInitialValues({
                                                                 opacity: 0,
                                                                 transform: [
@@ -1224,354 +1208,443 @@ export default function HomeScreen() {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-    
-                                {location && !loadingHome && (
-                                    <>
-                                        <View
-                                            className="items-start"
-                                            style={{ marginTop: verticalScale(5) }}
+
+                                {showEmptyHome ? (
+                                    <View
+                                        className="items-center justify-center"
+                                        style={{
+                                            minHeight: screenHeight - headerHeight - verticalScale(100),
+                                            paddingHorizontal: scale(25)
+                                        }}
+                                    >
+                                        <RestaurantIcon width={moderateScale(46)} height={moderateScale(46)} color="#3F2516" />
+
+                                        <Text
+                                            className="font-extrabold text-[#1F1F1F] text-center"
+                                            style={{
+                                                fontSize: moderateScale(17),
+                                                marginTop: verticalScale(8)
+                                            }}
                                         >
-                                            <VegNonVegToggle
-                                                value={foodType}
-                                                onChange={handleFoodTypeChange}
-                                            />
-                                        </View>
-                
+                                            Nothing available nearby
+                                        </Text>
+
+                                        <Text
+                                            className="font-medium text-[#1F1F1F]/75 text-center"
+                                            style={{
+                                                fontSize: moderateScale(11),
+                                                lineHeight: moderateScale(16),
+                                                marginTop: verticalScale(4)
+                                            }}
+                                        >
+                                            There are currently no restaurants or food items available in this area.
+                                        </Text>
+
+                                        <TouchableOpacity
+                                            activeOpacity={0.95} 
+                                            onPress={handleLocationAccess}
+                                            disabled={locationLoading}
+                                            className="w-full flex-row gap-2 bg-[#3F2516] items-center justify-center"
+                                            style={{
+                                                marginTop: verticalScale(10),
+                                                height: verticalScale(40),
+                                                borderRadius: moderateScale(22)
+                                            }}
+                                        >
+                                            {locationLoading ? (
+                                                <LottieView
+                                                    source={require("../../../assets/animations/Loading.json")}
+                                                    autoPlay
+                                                    loop
+                                                    style={{
+                                                        width: moderateScale(52),
+                                                        height: moderateScale(52)
+                                                    }}
+                                                />
+                                            ) : (
+                                                <>
+                                                    <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color="#FFFFFF" strokeWidth={1.5} />
+
+                                                    <Text
+                                                        className="tracking-wide font-semibold text-[#FFFFFF]"
+                                                        style={{ fontSize: moderateScale(14) }}
+                                                    >
+                                                        Use Current Location
+                                                    </Text>
+                                                </>
+                                            )}
+                                        </TouchableOpacity>
+
                                         <TouchableOpacity
                                             activeOpacity={0.95}
-                                            onPress={() => 
-                                                preventDoublePress(() => {
-                                                    router.push('/(tabs)/search')
-                                                })
-                                            }
-                                            className="flex-row gap-3 w-full items-center mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                            onPress={openLocationSelector}
+                                            className='w-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center'
                                             style={{
                                                 borderWidth: moderateScale(0.5),
-                                                borderRadius: moderateScale(22),
-                                                paddingHorizontal: scale(13),
-                                                height: verticalScale(46)
+                                                marginTop: verticalScale(14),
+                                                height: verticalScale(40),
+                                                borderRadius: moderateScale(22)
                                             }}
                                         >
-                                            <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
-                
                                             <Text
-                                                className="font-medium text-[#1F1F1F]/65"
+                                                className="font-bold text-[#1F1F1F]"
                                                 style={{ fontSize: moderateScale(14) }}
                                             >
-                                                What are you craving today?
+                                                Choose Another Location
                                             </Text>
                                         </TouchableOpacity>
-                
-                                        {/* <FlatList
-                                            data={categories}
-                                            horizontal
-                                            nestedScrollEnabled
-                                            directionalLockEnabled
-                                            showsHorizontalScrollIndicator={false}
-                                            keyExtractor={(item) => item.id}
-                                            className="mt-5 -mx-4"
-                                            contentContainerStyle={{
-                                                paddingHorizontal: scale(14),
-                                                gap: moderateScale(10)
-                                            }}
-                                            renderItem={({ item: category }) => {
-                                                const isActive = activeCategory === category.id
-                
-                                                return(
-                                                    <View className="items-center">
-                                                        <TouchableOpacity
-                                                            activeOpacity={0.95}
-                                                            onPress={() => setActiveCategory(category.id)}
-                                                            className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
-                                                            style={{
-                                                                borderColor: isActive ? "rgba(92, 70, 57, 0.7)" : "#FFFFFF",
-                                                                borderWidth: moderateScale( isActive ? 2 : 1.5),
-                                                                width: moderateScale(65),
-                                                                height: moderateScale(65),
-                
-                                                                shadowColor: "#5C4639",
-                                                                shadowOffset: {
-                                                                    width: 0,
-                                                                    height: 0
-                                                                },
-                                                                shadowOpacity: isActive ? 0.75 : 0,
-                                                                shadowRadius: isActive ? 10 : 0,
-                                                                elevation: isActive ? 8 : 0
-                                                            }}
-                                                        >
-                                                            <Image
-                                                                source={{
-                                                                    uri: category.imageUri
+                                    </View>
+                                ) : (
+                                    <>
+                                        {location && !loadingHome && (
+                                            <>
+                                                <View
+                                                    className="items-start"
+                                                    style={{ marginTop: verticalScale(5) }}
+                                                >
+                                                    <VegNonVegToggle
+                                                        value={foodType}
+                                                        onChange={handleFoodTypeChange}
+                                                    />
+                                                </View>
+                        
+                                                <TouchableOpacity
+                                                    activeOpacity={0.95}
+                                                    onPress={() => 
+                                                        preventDoublePress(() => {
+                                                            router.push('/(tabs)/search')
+                                                        })
+                                                    }
+                                                    className="flex-row gap-3 w-full items-center mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                                    style={{
+                                                        borderWidth: moderateScale(0.5),
+                                                        borderRadius: moderateScale(22),
+                                                        paddingHorizontal: scale(13),
+                                                        height: verticalScale(46)
+                                                    }}
+                                                >
+                                                    <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
+                        
+                                                    <Text
+                                                        className="font-medium text-[#1F1F1F]/65"
+                                                        style={{ fontSize: moderateScale(14) }}
+                                                    >
+                                                        What are you craving today?
+                                                    </Text>
+                                                </TouchableOpacity>
+                        
+                                                {/* <FlatList
+                                                    data={categories}
+                                                    horizontal
+                                                    nestedScrollEnabled
+                                                    directionalLockEnabled
+                                                    showsHorizontalScrollIndicator={false}
+                                                    keyExtractor={(item) => item.id}
+                                                    className="mt-5 -mx-4"
+                                                    contentContainerStyle={{
+                                                        paddingHorizontal: scale(14),
+                                                        gap: moderateScale(10)
+                                                    }}
+                                                    renderItem={({ item: category }) => {
+                                                        const isActive = activeCategory === category.id
+                        
+                                                        return(
+                                                            <View className="items-center">
+                                                                <TouchableOpacity
+                                                                    activeOpacity={0.95}
+                                                                    onPress={() => setActiveCategory(category.id)}
+                                                                    className="items-center justify-center rounded-full bg-[#E5E4E2]/85"
+                                                                    style={{
+                                                                        borderColor: isActive ? "rgba(92, 70, 57, 0.7)" : "#FFFFFF",
+                                                                        borderWidth: moderateScale( isActive ? 2 : 1.5),
+                                                                        width: moderateScale(65),
+                                                                        height: moderateScale(65),
+                        
+                                                                        shadowColor: "#5C4639",
+                                                                        shadowOffset: {
+                                                                            width: 0,
+                                                                            height: 0
+                                                                        },
+                                                                        shadowOpacity: isActive ? 0.75 : 0,
+                                                                        shadowRadius: isActive ? 10 : 0,
+                                                                        elevation: isActive ? 8 : 0
+                                                                    }}
+                                                                >
+                                                                    <Image
+                                                                        source={{
+                                                                            uri: category.imageUri
+                                                                        }}
+                                                                        contentFit="cover"
+                                                                        cachePolicy={'memory-disk'}
+                                                                        style={{
+                                                                            width: "70%",
+                                                                            height: "70%"
+                                                                        }}
+                                                                    />
+                                                                </TouchableOpacity>
+                        
+                                                                <Text
+                                                                    className="text-[#1F1F1F] font-semibold mt-1 mb-2"
+                                                                    style={{ fontSize: moderateScale(12) }}
+                                                                >
+                                                                    {category.title}
+                                                                </Text>
+                                                            </View>
+                                                        )
+                                                    }}
+                                                /> */}
+                        
+                                                <ScrollView
+                                                    horizontal
+                                                    nestedScrollEnabled
+                                                    directionalLockEnabled
+                                                    showsHorizontalScrollIndicator={false}
+                                                    className="-mx-5 mt-4 mb-0"
+                                                    contentContainerStyle={{
+                                                        paddingHorizontal: scale(14),
+                                                        gap: scale(8)
+                                                    }}
+                                                >
+                                                    {categoriesWithAll.map((category) => {
+                                                        const isSelected = selectedCategoryId === category.id
+                        
+                                                        return (
+                                                            <TouchableOpacity
+                                                                key={category.id}
+                                                                activeOpacity={0.85}
+                                                                onPress={() => {
+                                                                    setSelectedCategoryId(category.id)
                                                                 }}
-                                                                contentFit="cover"
-                                                                cachePolicy={'memory-disk'}
+                                                                className={`items-center justify-center ${
+                                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
+                                                                }`}
                                                                 style={{
-                                                                    width: "70%",
-                                                                    height: "70%"
+                                                                    borderRadius: moderateScale(18),
+                                                                    paddingHorizontal: scale(17),
+                                                                    paddingVertical: verticalScale(7),
+                                                                    borderWidth: moderateScale(0.7),
+                                                                    borderColor: "rgba(31, 31, 31, 0.10)"
                                                                 }}
-                                                            />
-                                                        </TouchableOpacity>
-                
-                                                        <Text
-                                                            className="text-[#1F1F1F] font-semibold mt-1 mb-2"
-                                                            style={{ fontSize: moderateScale(12) }}
-                                                        >
-                                                            {category.title}
-                                                        </Text>
-                                                    </View>
-                                                )
-                                            }}
-                                        /> */}
-                
-                                        <ScrollView
-                                            horizontal
-                                            nestedScrollEnabled
-                                            directionalLockEnabled
-                                            showsHorizontalScrollIndicator={false}
-                                            className="-mx-5 mt-4 mb-0"
-                                            contentContainerStyle={{
-                                                paddingHorizontal: scale(14),
-                                                gap: scale(8)
-                                            }}
-                                        >
-                                            {categoriesWithAll.map((category) => {
-                                                const isSelected = selectedCategoryId === category.id
-                
-                                                return (
-                                                    <TouchableOpacity
-                                                        key={category.id}
-                                                        activeOpacity={0.85}
-                                                        onPress={() => {
-                                                            setSelectedCategoryId(category.id)
-                                                        }}
-                                                        className={`items-center justify-center ${
-                                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                                        }`}
-                                                        style={{
-                                                            borderRadius: moderateScale(18),
-                                                            paddingHorizontal: scale(17),
-                                                            paddingVertical: verticalScale(7),
-                                                            borderWidth: moderateScale(0.7),
-                                                            borderColor: "rgba(31, 31, 31, 0.10)"
-                                                        }}
+                                                            >
+                                                                <Text
+                                                                    className={`font-medium ${
+                                                                        isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
+                                                                    }`}
+                                                                    style={{ fontSize: moderateScale(13.5) }}
+                                                                >
+                                                                    {category.name}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        )
+                                                    })}
+                                                </ScrollView>
+                        
+                                                <BannerCarousel
+                                                    advertisements={advertisements}
+                                                    loading={loadingAdvertisements}
+                                                />
+                        
+                                                <View
+                                                    className="flex-row items-center w-full"
+                                                    style={{ marginTop: verticalScale(14) }}
+                                                >
+                                                    <Text
+                                                        className="text-[#1F1F1F] font-bold flex-1"
+                                                        style={{ fontSize: moderateScale(16) }}
+                                                    >
+                                                        Popular Near You
+                                                    </Text>
+                        
+                                                    {/* <TouchableOpacity
+                                                        activeOpacity={0.95}
+                                                        onPress={() => {}}
+                                                        className="items-center"
                                                     >
                                                         <Text
-                                                            className={`font-medium ${
-                                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                                            }`}
-                                                            style={{ fontSize: moderateScale(13.5) }}
+                                                            className="text-[#3F2516] font-bold"
+                                                            style={{ fontSize: moderateScale(14) }}
                                                         >
-                                                            {category.name}
+                                                            View All
+                                                        </Text>
+                                                    </TouchableOpacity> */}
+                                                </View>
+                        
+                                                <View
+                                                    style={{
+                                                        marginTop: moderateScale(12),
+                                                        gap: moderateScale(15)
+                                                    }}
+                                                >
+                                                    {popularRestaurants.map((restaurant) => {
+                                                        const isFavourite = restaurantIds.includes(restaurant.id)
+            
+                                                        return (
+                                                            <RestaurantCard
+                                                                key={restaurant.id}
+                                                                restaurant={restaurant} 
+                                                                isFavourite={isFavourite}
+                                                                onPress={() =>
+                                                                    handleRestaurantPress(restaurant.id, restaurant.isOpen)
+                                                                }
+                                                                onFavouritePress={() =>
+                                                                    handleFavouritePress(restaurant.id)
+                                                                }
+                                                            />
+                                                        )
+                                                    })}
+                                                </View>
+                        
+                                                <Text
+                                                    className="text-[#1F1F1F] font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(16),
+                                                        marginTop: verticalScale(18)
+                                                    }}
+                                                >
+                                                    Today's Special Offers
+                                                </Text>
+                        
+                                                <FlatList
+                                                    data={offers}
+                                                    horizontal
+                                                    nestedScrollEnabled
+                                                    directionalLockEnabled
+                                                    showsHorizontalScrollIndicator={false}
+                                                    keyExtractor={(item) => item.id}
+                                                    className="-mx-5"
+                                                    contentContainerStyle={{
+                                                        paddingHorizontal: moderateScale(15),
+                                                        gap: moderateScale(12),
+                                                        marginTop: moderateScale(12)
+                                                    }}
+                                                    renderItem={({ item }) => (
+                                                        <OfferCard
+                                                            offer={item}
+                                                            onPress={() => {
+                                                                console.log("Selected offer:", item.id)
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                        
+                                                <Text
+                                                    className="text-[#1F1F1F] font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(16),
+                                                        marginTop: verticalScale(18)
+                                                    }}
+                                                >
+                                                    Continue Ordering
+                                                </Text>
+                        
+                                                <View
+                                                    className="flex-row items-center gap-2 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                                    style={{
+                                                        borderWidth: moderateScale(0.7),
+                                                        borderRadius: moderateScale(18),
+                                                        paddingHorizontal: moderateScale(9),
+                                                        paddingVertical: moderateScale(9)
+                                                    }}
+                                                >
+                                                    <View
+                                                        className="items-center justify-center overflow-hidden"
+                                                        style={{
+                                                            width: moderateScale(62),
+                                                            height: moderateScale(62),
+                                                            borderRadius: moderateScale(15)
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            source={{
+                                                                uri: "https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
+                                                            }}
+                                                            contentFit="cover"
+                                                            transition={100}
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                            }}
+                                                        />
+                                                    </View>
+                        
+                                                    <View className="justify-center flex-1">
+                                                        <Text
+                                                            numberOfLines={1}
+                                                            className="text-[#1F1F1F] font-bold"
+                                                            style={{ fontSize: moderateScale(14) }}
+                                                        >
+                                                            The Big Burger Theory
+                                                        </Text>
+                        
+                                                        <Text
+                                                            numberOfLines={2}
+                                                            className="text-[#1F1F1F]/65 font-medium mt-1"
+                                                            style={{ fontSize: moderateScale(11.5) }}
+                                                        >
+                                                            Double Patty Cheese Burger + Fries
+                                                        </Text>
+                        
+                                                    </View>
+                        
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.95}
+                                                        onPress={() => {}}
+                                                        className="items-center justify-center flex-row bg-[#3F2516]"
+                                                        style={{
+                                                            gap: moderateScale(5),
+                                                            borderRadius: moderateScale(10),
+                                                            paddingHorizontal: moderateScale(9),
+                                                            paddingVertical: moderateScale(7)
+                                                        }}
+                                                    >
+                                                        <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
+                        
+                                                        <Text
+                                                            className="text-[#FFFFFF] font-medium"
+                                                            style={{ fontSize: moderateScale(13) }}
+                                                        >
+                                                            Reorder
                                                         </Text>
                                                     </TouchableOpacity>
-                                                )
-                                            })}
-                                        </ScrollView>
-                
-                                        <BannerCarousel
-                                            advertisements={advertisements}
-                                            loading={loadingAdvertisements}
-                                        />
-                
-                                        <View
-                                            className="flex-row items-center w-full"
-                                            style={{ marginTop: verticalScale(14) }}
-                                        >
-                                            <Text
-                                                className="text-[#1F1F1F] font-bold flex-1"
-                                                style={{ fontSize: moderateScale(16) }}
-                                            >
-                                                Popular Near You
-                                            </Text>
-                
-                                            {/* <TouchableOpacity
-                                                activeOpacity={0.95}
-                                                onPress={() => {}}
-                                                className="items-center"
-                                            >
+                                                </View>
+                        
                                                 <Text
-                                                    className="text-[#3F2516] font-bold"
-                                                    style={{ fontSize: moderateScale(14) }}
-                                                >
-                                                    View All
-                                                </Text>
-                                            </TouchableOpacity> */}
-                                        </View>
-                
-                                        <View
-                                            style={{
-                                                marginTop: moderateScale(12),
-                                                gap: moderateScale(15)
-                                            }}
-                                        >
-                                            {popularRestaurants.map((restaurant) => {
-                                                const isFavourite = restaurantIds.includes(restaurant.id)
-    
-                                                return (
-                                                    <RestaurantCard
-                                                        key={restaurant.id}
-                                                        restaurant={restaurant} 
-                                                        isFavourite={isFavourite}
-                                                        onPress={() =>
-                                                            handleRestaurantPress(restaurant.id, restaurant.isOpen)
-                                                        }
-                                                        onFavouritePress={() =>
-                                                            handleFavouritePress(restaurant.id)
-                                                        }
-                                                    />
-                                                )
-                                            })}
-                                        </View>
-                
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(18)
-                                            }}
-                                        >
-                                            Today's Special Offers
-                                        </Text>
-                
-                                        <FlatList
-                                            data={offers}
-                                            horizontal
-                                            nestedScrollEnabled
-                                            directionalLockEnabled
-                                            showsHorizontalScrollIndicator={false}
-                                            keyExtractor={(item) => item.id}
-                                            className="-mx-5"
-                                            contentContainerStyle={{
-                                                paddingHorizontal: moderateScale(15),
-                                                gap: moderateScale(12),
-                                                marginTop: moderateScale(12)
-                                            }}
-                                            renderItem={({ item }) => (
-                                                <OfferCard
-                                                    offer={item}
-                                                    onPress={() => {
-                                                        console.log("Selected offer:", item.id)
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(18)
-                                            }}
-                                        >
-                                            Continue Ordering
-                                        </Text>
-                
-                                        <View
-                                            className="flex-row items-center gap-2 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                                            style={{
-                                                borderWidth: moderateScale(0.7),
-                                                borderRadius: moderateScale(18),
-                                                paddingHorizontal: moderateScale(9),
-                                                paddingVertical: moderateScale(9)
-                                            }}
-                                        >
-                                            <View
-                                                className="items-center justify-center overflow-hidden"
-                                                style={{
-                                                    width: moderateScale(62),
-                                                    height: moderateScale(62),
-                                                    borderRadius: moderateScale(15)
-                                                }}
-                                            >
-                                                <Image
-                                                    source={{
-                                                        uri: "https://i.pinimg.com/736x/c9/c5/01/c9c5013a47c78dde12d22a8659cdb945.jpg"
-                                                    }}
-                                                    contentFit="cover"
-                                                    transition={100}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                    }}
-                                                />
-                                            </View>
-                
-                                            <View className="justify-center flex-1">
-                                                <Text
-                                                    numberOfLines={1}
                                                     className="text-[#1F1F1F] font-bold"
-                                                    style={{ fontSize: moderateScale(14) }}
+                                                    style={{
+                                                        fontSize: moderateScale(16),
+                                                        marginTop: verticalScale(18)
+                                                    }}
                                                 >
-                                                    The Big Burger Theory
+                                                    Trending Foods
                                                 </Text>
-                
-                                                <Text
-                                                    numberOfLines={2}
-                                                    className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                    style={{ fontSize: moderateScale(11.5) }}
-                                                >
-                                                    Double Patty Cheese Burger + Fries
-                                                </Text>
-                
-                                            </View>
-                
-                                            <TouchableOpacity
-                                                activeOpacity={0.95}
-                                                onPress={() => {}}
-                                                className="items-center justify-center flex-row bg-[#3F2516]"
-                                                style={{
-                                                    gap: moderateScale(5),
-                                                    borderRadius: moderateScale(10),
-                                                    paddingHorizontal: moderateScale(9),
-                                                    paddingVertical: moderateScale(7)
-                                                }}
-                                            >
-                                                <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
-                
-                                                <Text
-                                                    className="text-[#FFFFFF] font-medium"
-                                                    style={{ fontSize: moderateScale(13) }}
-                                                >
-                                                    Reorder
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{
-                                                fontSize: moderateScale(16),
-                                                marginTop: verticalScale(18)
-                                            }}
-                                        >
-                                            Trending Foods
-                                        </Text>
-                
-                                        <FlatList
-                                            data={popularMenu}
-                                            horizontal
-                                            nestedScrollEnabled
-                                            directionalLockEnabled
-                                            showsHorizontalScrollIndicator={false}
-                                            keyExtractor={(item) => item.id}
-                                            className="-mx-5 mt-3"
-                                            contentContainerStyle={{
-                                                paddingHorizontal: scale(14),
-                                                gap: moderateScale(12)
-                                            }}
-                                            renderItem={renderPopularFood}
-                                        />
-                
-                                        {nearbyRestaurants.length > 0 && (
-                                            <Text
-                                                className="text-[#1F1F1F] font-bold"
-                                                style={{
-                                                    fontSize: moderateScale(16),
-                                                    marginTop: verticalScale(18)
-                                                }}
-                                            >
-                                                Nearby Restaurants
-                                            </Text>      
+                        
+                                                <FlatList
+                                                    data={popularMenu}
+                                                    horizontal
+                                                    nestedScrollEnabled
+                                                    directionalLockEnabled
+                                                    showsHorizontalScrollIndicator={false}
+                                                    keyExtractor={(item) => item.id}
+                                                    className="-mx-5 mt-3"
+                                                    contentContainerStyle={{
+                                                        paddingHorizontal: scale(14),
+                                                        gap: moderateScale(12)
+                                                    }}
+                                                    renderItem={renderPopularFood}
+                                                />
+                        
+                                                {nearbyRestaurants.length > 0 && (
+                                                    <Text
+                                                        className="text-[#1F1F1F] font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(16),
+                                                            marginTop: verticalScale(18)
+                                                        }}
+                                                    >
+                                                        Nearby Restaurants
+                                                    </Text>      
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 )}
@@ -1652,7 +1725,7 @@ export default function HomeScreen() {
                 </>
             )}
 
-            {hasCartItems && (
+            {hasCartItems && !showEmptyHome && !loadingHome && (
                 <FloatingCartBar />
             )}
         </SafeAreaView>

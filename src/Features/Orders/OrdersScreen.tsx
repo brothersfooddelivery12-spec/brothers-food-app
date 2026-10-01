@@ -1,6 +1,6 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SearchBar from "@/components/SearchBar"
-import { cancelOrder, getOrderById, getUserOrders, OrderListItem, OrderListStatus, retryOrderPayment } from "@/Services/api-service"
+import { cancelOrder, getOrderById, getUserOrders, OrderListItem, OrderListStatus } from "@/Services/api-service"
 import { hideLoader, showLoader } from '@/Services/loader-service'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
@@ -15,6 +15,7 @@ import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
 import OrdersTabs from "./Components/OrdersTab"
 import PastOrdersCard from "./Components/PastOrdersCard"
+import RetryPaymentModal, { RetryPaymentOrder } from './Components/RetryPaymentModal'
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46)
@@ -276,30 +277,46 @@ export default function OrdersScreen() {
         await fetchOrdersByTab("active orders", true)
     },[fetchOrdersByTab])
 
-    const handleRetryPayment = useCallback(async (orderId: string) => {
+    const [retryPaymentOrder, setRetryPaymentOrder] = useState<RetryPaymentOrder | null>(null)
+
+    const handleCloseRetryPayment = useCallback(() => {
+        setRetryPaymentOrder(null)
+    }, [])
+
+    const handleCanPay = useCallback(async (orderId: string) => {
         try {
             showLoader()
-
-            const res = await retryOrderPayment(orderId)
-
-            console.log("Retry payment response:", res.data)
 
             const orderRes = await getOrderById(orderId)
 
             console.log("Order details response:", orderRes.data)
 
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to retry payment", "warning")
+            if (!orderRes.data.success) {
+                showToast(orderRes.data.message || "Unable to fetch order details", "info")
+
                 return
             }
 
-            // Use returned payment_session_id
-            // to start Cashfree payment again
+            const order = orderRes.data.data
 
+            if (order.status !== "PENDING_PAYMENT" || !order.canpay) {
+                showToast("Payment cannot be retried for this order.", "info")
+
+                return
+            }
+
+            setRetryPaymentOrder({
+                id: order.id,
+                restaurantId: order.restaurant_id,
+                restaurantName: order.restaurant_name,
+                amount: Number(order.final_total) || 0,
+                paymentRetry: order.payment_retry ?? null,
+                items: order.items ?? []
+            })
         } catch (error: any) {
-            console.log("Retry payment error:", error?.response?.data || error)
+            console.log("Order details error:", error?.response?.data || error)
 
-            showToast(error?.response?.data ?.message || "Unable to retry payment", "warning")
+            showToast(error?.response?.data?.message || "Unable to fetch order details", "warning")
         } finally {
             hideLoader()
         }
@@ -410,7 +427,7 @@ export default function OrdersScreen() {
                     canPay={item.canpay}
                     iscancellable={item.iscancellable}
                     items={item.items}
-                    onPayNow={() => handleRetryPayment(item.id)}
+                    onPayNow={() => handleCanPay(item.id)}
                     onCancelOrder={() => handleCancelOrder(item.id)}
                     onTrackOrder={() => handleTrackOrder(item.id)}
                     onContactRider={() => handleContactRider(item.id)}
@@ -432,7 +449,7 @@ export default function OrdersScreen() {
                 onInvoice={() => handleInvoice(item.id)}
         />
         )
-    }, [activeTab, handleCancelOrder, handleRetryPayment,  handleReorder, handleInvoice, handleTrackOrder, handleContactRider])
+    }, [activeTab, handleCancelOrder, handleCanPay,  handleReorder, handleInvoice, handleTrackOrder, handleContactRider])
 
     const loaderHeight = Math.max(
         verticalScale(250),
@@ -700,6 +717,17 @@ export default function OrdersScreen() {
                         </View>
                     ) : null
                 }
+            />
+
+            <RetryPaymentModal
+                visible={!!retryPaymentOrder}
+                orderId={retryPaymentOrder?.id ?? ""}
+                restaurantId={retryPaymentOrder?.restaurantId ?? ""}
+                restaurantName={retryPaymentOrder ?.restaurantName ?? ""}
+                amount={retryPaymentOrder?.amount ?? 0}
+                paymentRetry={retryPaymentOrder ?.paymentRetry ?? null}
+                items={retryPaymentOrder?.items ?? []}
+                onCancel={handleCloseRetryPayment}
             />
         </SafeAreaView>
     )
