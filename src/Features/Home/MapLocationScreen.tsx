@@ -1,6 +1,7 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import LocateFixedIcon from "@/assets/icon/LocateFixedIcon.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
+import { LoadingDots } from '@/components/LoadingDots'
 import SearchBar from "@/components/SearchBar"
 import { useLocationStore } from "@/Stores/locationStore"
 import { Camera, CameraRef, Map, MapRef, UserLocation } from "@maplibre/maplibre-react-native"
@@ -50,6 +51,8 @@ interface PhotonSearchResult {
         osm_value?: string
     }
 }
+
+ type SelectionMethod = "NONE" | "SEARCH" | "MAP" | "CURRENT"
 
 type LocationPermissionState = "idle" | "granted" | "denied" | "services-disabled"
 
@@ -104,7 +107,7 @@ export default function MapLocationScreen() {
     const [headerHeight, setHeaderHeight] = useState(0)
     const [locationSource, setLocationSource] = useState<"CURRENT" | "MANUAL">("MANUAL")
     const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null)
-    const [loadingLocation, setLoadingLocation] = useState(true)
+    const [loadingLocation, setLoadingLocation] = useState(false)
     const [loadingAddress, setLoadingAddress] = useState(false)
 
     const [searchQuery, setSearchQuery] = useState("")
@@ -113,6 +116,8 @@ export default function MapLocationScreen() {
     const [hasSearched, setHasSearched] = useState(false)
     const searchAbortRef = useRef<AbortController | null>(null)
     const searchRequestIdRef = useRef(0)
+
+    const [selectionMethod, setSelectionMethod] = useState<SelectionMethod>("NONE")
 
     useFocusEffect(
         useCallback(() => {
@@ -169,13 +174,11 @@ export default function MapLocationScreen() {
                 params.append("lon", longitude.toString())
             }
 
-            const response =
-                await fetch(
-                    `https://photon.komoot.io/api/?${params.toString()}`,
-                    {
-                        signal: controller.signal
-                    }
-                )
+            const response = await fetch(`https://photon.komoot.io/api/?${params.toString()}`,
+                {
+                    signal: controller.signal
+                }
+            )
 
             if (!response.ok) {
                 throw new Error("Unable to search location")
@@ -273,6 +276,7 @@ export default function MapLocationScreen() {
         setHasSearched(false)
 
         setLocationSource("MANUAL")
+        setSelectionMethod("SEARCH")
 
         setSelectedLocation({
             latitude,
@@ -323,6 +327,36 @@ export default function MapLocationScreen() {
         ].join(", ")
     }
 
+    const requestLocationPermissionOnOpen = useCallback(async () => {
+        try {
+            let permission = await Location.getForegroundPermissionsAsync()
+
+            if (permission.status === "granted") {
+                setLocationPermission("granted")
+
+                return
+            }
+
+            if (permission.canAskAgain) {
+                permission = await Location.requestForegroundPermissionsAsync()
+            }
+
+            if (permission.status === "granted") {
+                setLocationPermission("granted")
+            } else {
+                setLocationPermission("denied")
+            }
+        } catch (error) {
+            console.log("Location permission error:", error)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            void requestLocationPermissionOnOpen()
+        }, [requestLocationPermissionOnOpen])
+    )
+
     const getAddress = useCallback(async (latitude: number, longitude: number) => {
         try {
             setLoadingAddress(true)
@@ -366,7 +400,12 @@ export default function MapLocationScreen() {
 
     const suppressRegionChangeRef = useRef(false)
 
-    const moveToLocation = useCallback((latitude: number, longitude: number, animated = true) => {
+    const moveToLocation = useCallback((
+        latitude: number,
+        longitude: number,
+        animated = true,
+        fetchAddress = true
+    ) => {
         suppressRegionChangeRef.current = true
 
         cameraRef.current?.flyTo({
@@ -377,16 +416,16 @@ export default function MapLocationScreen() {
             duration: animated ? 400 : 0
         })
 
-        getAddress(latitude, longitude)
+        if (fetchAddress) {
+            void getAddress(latitude, longitude)
+        }
     },[getAddress])
 
     const moveToCurrentLocation = useCallback(async () => {
         try {
-            setLoadingLocation(true)
-
             setLocationSource("CURRENT")
+            setSelectionMethod("CURRENT")
 
-            // Show cached location first
             const lastKnown =
                 await Location.getLastKnownPositionAsync({
                     maxAge: 5 * 60 * 1000,
@@ -396,68 +435,34 @@ export default function MapLocationScreen() {
             if (lastKnown) {
                 const {latitude, longitude} = lastKnown.coords
 
-                moveToLocation(latitude, longitude, false)
-
-                setLoadingLocation(false)
+                // Move map immediately,
+                // but don't reverse geocode yet
+                moveToLocation(latitude, longitude, false, false)
             }
 
-            // Get fresh location
-            const current =
-                await Location.getCurrentPositionAsync({
-                    accuracy: Location.Accuracy.Balanced
-                })
+            const current = await Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Balanced
+            })
 
             const {latitude, longitude} = current.coords
 
-            moveToLocation(latitude, longitude, true)
+            // Fresh location:
+            // move + reverse geocode
+            moveToLocation(latitude, longitude, true, true)
         } catch (error) {
             console.log("Current location error:", error)
-        } finally {
-            setLoadingLocation(false)
+
+            throw error
         }
-    },[moveToLocation])
+    }, [moveToLocation])
 
     const handleLocationAccess = useCallback(async () => {
+        if (loadingLocation) {
+            return
+        }
+
         try {
-            let servicesEnabled = await Location.hasServicesEnabledAsync()
-
-            // Location/GPS is turned OFF
-            if (!servicesEnabled) {
-                setLocationPermission("services-disabled")
-
-                if (Platform.OS === "android") {
-                    try {
-                        await Location.enableNetworkProviderAsync()
-
-                        servicesEnabled = await Location.hasServicesEnabledAsync()
-
-                        if (!servicesEnabled) {
-                            return
-                        }
-                    } catch (error) {
-                        console.log("Location enable cancelled:", error)
-
-                        return
-                    }
-                } else {
-                    Alert.alert(
-                        "Turn On Location",
-                        "Please turn on Location Services to find restaurants near you.",
-                        [
-                            {
-                                text: "Cancel",
-                                style: "cancel"
-                            },
-                            {
-                                text: "Open Settings",
-                                onPress: () => Linking.openSettings()
-                            }
-                        ]
-                    )
-
-                    return
-                }
-            }
+            setLoadingLocation(true)
 
             let permission = await Location.getForegroundPermissionsAsync()
 
@@ -469,7 +474,7 @@ export default function MapLocationScreen() {
 
                     Alert.alert(
                         "Location Permission Required",
-                        "Allow location access from Settings to find restaurants near you.",
+                        "Allow location access from Settings to use your current location.",
                         [
                             {
                                 text: "Cancel",
@@ -492,37 +497,82 @@ export default function MapLocationScreen() {
                 return
             }
 
+            let servicesEnabled = await Location.hasServicesEnabledAsync()
+
+            if (!servicesEnabled) {
+                setLocationPermission("services-disabled")
+
+                if (Platform.OS === "android") {
+                    try {
+                        await Location.enableNetworkProviderAsync()
+
+                        // Allow Android location
+                        // provider to initialize
+                        await new Promise<void>(resolve => setTimeout(resolve, 700))
+
+                        servicesEnabled = await Location.hasServicesEnabledAsync()
+
+                        if (!servicesEnabled) {
+                            return
+                        }
+                    } catch (error) {
+                        console.log("Location enable cancelled:", error)
+
+                        return
+                    }
+                } else {
+                    Alert.alert(
+                        "Turn On Location",
+                        "Please turn on Location Services to use your current location.",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Open Settings",
+                                onPress: () => Linking.openSettings()
+                            }
+                        ]
+                    )
+
+                    return
+                }
+            }
+
             setLocationPermission("granted")
 
-            // Permission + services are ready
             await moveToCurrentLocation()
         } catch (error) {
             console.log("Location access error:", error)
+        } finally {
+            setLoadingLocation(false)
         }
-    },[moveToCurrentLocation])
+    }, [loadingLocation, moveToCurrentLocation])
+
+    const [mapReady, setMapReady] = useState(false)
 
     useEffect(() => {
         if (!hasHydrated) {
             return
         }
 
-        if (location) {
-            setSelectedLocation({
-                latitude: location.latitude,
-                longitude: location.longitude,
-                address: location.name
-            })
-
-            setLocationSource(location.source)
-
-            setLoadingLocation(false)
-
+        if (!location) {
             return
         }
 
-        // No saved location
-        handleLocationAccess()
-    }, [hasHydrated, location, handleLocationAccess])
+        setSelectedLocation({
+            latitude: location.latitude,
+            longitude: location.longitude,
+            address: location.name
+        })
+
+        setLocationSource(location.source)
+
+        setSelectionMethod("NONE")
+
+        setLoadingLocation(false)
+    }, [hasHydrated, location])
 
     const geocodeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -536,6 +586,7 @@ export default function MapLocationScreen() {
         const [longitude, latitude] = event.nativeEvent.center
         
         setLocationSource("MANUAL")
+        setSelectionMethod("MAP")
 
         if (geocodeTimerRef.current) {
             clearTimeout(geocodeTimerRef.current)
@@ -589,6 +640,16 @@ export default function MapLocationScreen() {
         )
     }
 
+    const isSearchSelected = selectionMethod === "SEARCH"
+
+    const needsLocationPermission =
+        locationPermission === "denied" &&
+        !isSearchSelected
+
+    const locationMessage = needsLocationPermission
+        ? "Allow location access to use your current location."
+        : null
+
     return (
         <View className="flex-1 bg-[#FFFFFF]">
             <StatusBar
@@ -605,6 +666,11 @@ export default function MapLocationScreen() {
                     compass
                     attribution
                     onRegionDidChange={handleRegionDidChange}
+                    onDidFinishLoadingMap={() => {
+                        console.log("Map ready")
+
+                        setMapReady(true)
+                    }}
                 >
                     <Camera
                         ref={cameraRef}
@@ -727,15 +793,19 @@ export default function MapLocationScreen() {
                                     />
                                 </View>
 
-                                <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{
-                                        fontSize: moderateScale(11),
-                                        marginTop: verticalScale(8)
-                                    }}
+                                <View
+                                    className="flex-row items-center justify-center"
+                                    style={{ marginTop: verticalScale(8) }}
                                 >
-                                    Searching locations...
-                                </Text>
+                                    <Text
+                                        className="text-[#1F1F1F]/65 font-medium"
+                                        style={{ fontSize: moderateScale(12) }}
+                                    >
+                                        Searching locations
+                                    </Text>
+
+                                    <LoadingDots color="rgba(31,31,31,0.65)" />
+                                </View>
                             </View>
                         ) : searchResults.length > 0 ? (
                             <ScrollView
@@ -886,57 +956,86 @@ export default function MapLocationScreen() {
                     Select delivery location
                 </Text>
 
-                <View
-                    className="flex-row items-start"
-                    style={{ marginTop: verticalScale(10) }}
-                >
-                    <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
-
+                {locationMessage ? (
                     <View
-                        className="flex-1"
-                        style={{ marginLeft: scale(6) }}
+                        className="flex-row items-center bg-[#E8B93F]/10 border border-[#E8B93F]/20"
+                        style={{
+                            borderRadius: moderateScale(14),
+                            paddingHorizontal: scale(10),
+                            paddingVertical: verticalScale(10),
+                            marginTop: verticalScale(14)
+                        }}
                     >
-                        {loadingAddress ? (
+                        <LocationIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" />
+
+                        <Text
+                            className="flex-1 text-[#3F2516] font-medium"
+                            style={{
+                                fontSize: moderateScale(11),
+                                lineHeight: moderateScale(16),
+                                marginLeft: scale(8)
+                            }}
+                        >
+                            {locationMessage}
+                        </Text>
+                    </View>
+                ) : (
+                    <View
+                        style={{ marginTop: verticalScale(10) }}
+                    >
+                        {loadingAddress || loadingLocation ? (
                             <View
-                                className="items-center justify-center self-center"
-                                style={{
-                                    width: moderateScale(42),
-                                    height: moderateScale(42)
-                                }}
+                                className="items-center justify-center"
+                                style={{ height: moderateScale(42) }}
                             >
                                 <LottieView
-                                    source={require("../../../assets/animations/Loading3.json")}
+                                    source={require(
+                                        "../../../assets/animations/Loading3.json"
+                                    )}
                                     autoPlay
                                     loop
                                     style={{
-                                        width: "100%",
-                                        height: "100%"
+                                        width: moderateScale(42),
+                                        height: moderateScale(42)
                                     }}
                                 />
                             </View>
                         ) : (
-                            <Text
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{
-                                    fontSize: moderateScale(12),
-                                    lineHeight: moderateScale(16)
-                                }}
-                            >
-                                {selectedLocation?.address ??
-                                    "Move the map to select a location"}
-                            </Text>
+                            <View className="flex-row items-start">
+                                <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
+
+                                <Text
+                                    className="flex-1 text-[#1F1F1F]/75 font-medium"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        lineHeight: moderateScale(16),
+                                        marginLeft: scale(6)
+                                    }}
+                                >
+                                    {selectedLocation?.address ??
+                                        "Move the map to select a location"
+                                    }
+                                </Text>
+                            </View>
                         )}
                     </View>
-                </View>
+                )}
 
                 <TouchableOpacity
                     activeOpacity={0.95}
                     disabled={
-                        !selectedLocation ||
+                        loadingLocation ||
                         loadingAddress ||
-                        loadingLocation
+                        (
+                            !needsLocationPermission &&
+                            !selectedLocation
+                        )
                     }
-                    onPress={handleConfirmLocation}
+                    onPress={
+                        needsLocationPermission
+                            ? handleLocationAccess
+                            : handleConfirmLocation
+                    }
                     className="items-center justify-center bg-[#3F2516]"
                     style={{
                         height: verticalScale(48),
@@ -944,12 +1043,27 @@ export default function MapLocationScreen() {
                         marginTop: verticalScale(16)
                     }}
                 >
-                    <Text
-                        className="text-[#FFFFFF] font-bold"
-                        style={{ fontSize: moderateScale(14) }}
-                    >
-                        Confirm Location
-                    </Text>
+                    {loadingLocation ? (
+                        <View className="flex-row items-center justify-center">
+                            <Text
+                                className="text-[#FFFFFF] font-bold"
+                                style={{ fontSize: moderateScale(14) }}
+                            >
+                                Getting Location
+                            </Text>
+
+                            <LoadingDots color="#FFFFFF" />
+                        </View>
+                    ) : (
+                        <Text
+                            className="text-[#FFFFFF] font-bold"
+                            style={{ fontSize: moderateScale(14) }}
+                        >
+                            {needsLocationPermission
+                                ? "Enable Location"
+                                : "Confirm Location"}
+                        </Text>
+                    )}
                 </TouchableOpacity>
             </View>
         </View>

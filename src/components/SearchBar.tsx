@@ -121,15 +121,6 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
                         {...textInputProps}
                     />
 
-                    {/* {loading && (
-                        <ActivityIndicator
-                            size="small"
-                            color="#3F2516"
-                        />
-                    )} */}
-
-
-                    {/* Clear */}
                     {!loading &&
                         showClear &&
                         value.length > 0 && (

@@ -4,9 +4,7 @@ import { getUpiAppIcon, getUpiAppName } from '@/Features/Checkout/CheckoutScreen
 import { useToast } from '@/Features/hook/ToastContext'
 import { CashfreePaymentError, useCashfreeUpi } from '@/Features/hook/useCashfreeUpi'
 import { retryOrderPayment, verifyCashfreePayment } from '@/Services/api-service'
-import { hideLoader, showLoader } from '@/Services/loader-service'
 import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
-import { router } from 'expo-router'
 import LottieView from "lottie-react-native"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
@@ -29,6 +27,16 @@ export type RetryPaymentOrder = {
     items: RetryPaymentItem[]
 }
 
+export interface OrderSuccessParams {
+    [key: string]: string | undefined
+    orderId: string
+    restaurantName: string
+    restaurantId: string
+    totalAmount: string
+    paymentMethod: string
+    items: string
+}
+
 interface RetryPaymentModalProps {
     visible: boolean
 
@@ -42,6 +50,7 @@ interface RetryPaymentModalProps {
     items: RetryPaymentItem[]
 
     onCancel: () => void
+    onPaymentSuccess: (params: OrderSuccessParams) => void
 }
 
 const RetryPaymentModal = memo(({
@@ -52,7 +61,8 @@ const RetryPaymentModal = memo(({
     amount,
     paymentRetry,
     items,
-    onCancel
+    onCancel,
+    onPaymentSuccess
 }: RetryPaymentModalProps) => {
     const {showToast} = useToast()
     const [creatingOrder, setCreatingOrder] = useState(false)
@@ -78,7 +88,6 @@ const RetryPaymentModal = memo(({
             paymentVerifyingRef.current = true
 
             setVerifyingPayment(true)
-            showLoader()
 
             console.log("Verifying payment:", cashfreeOrderId)
 
@@ -121,10 +130,7 @@ const RetryPaymentModal = memo(({
 
                 showToast("Payment successful", "success")
 
-                router.replace({
-                    pathname: "/order-success",
-                    params: successParams
-                })
+                onPaymentSuccess(successParams)
 
                 currentOrderIdRef.current = null
 
@@ -158,7 +164,6 @@ const RetryPaymentModal = memo(({
             paymentVerifyingRef.current = false
 
             setVerifyingPayment(false)
-            hideLoader()
         }
     }, [
         orderId,
@@ -167,8 +172,7 @@ const RetryPaymentModal = memo(({
         amount,
         items,
         addPaymentMethod,
-        onCancel,
-        router
+        onCancel
     ])
 
     const handlePaymentError = useCallback(
@@ -207,8 +211,6 @@ const RetryPaymentModal = memo(({
             setCreatingOrder(false)
             setVerifyingPayment(false)
             setProcessingUpiApp(null)
-
-            hideLoader()
 
             showToast(error.message || "Payment was not completed", "warning")
         },
@@ -308,7 +310,7 @@ const RetryPaymentModal = memo(({
         }
 
         if (!selectedUpiMethod) {
-            showToast("Please select a UPI app.", "info")
+            showToast("Please select a payment method", "info")
 
             return
         }
@@ -388,7 +390,7 @@ const RetryPaymentModal = memo(({
                 <View
                     className="bg-[#FFFFFF] border border-[#1F1F1F]/10 overflow-hidden"
                     style={{
-                        marginHorizontal: scale(12),
+                        marginHorizontal: scale(10),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
                         maxHeight: "88%"
@@ -826,8 +828,7 @@ const RetryPaymentModal = memo(({
                                 className="flex-1 items-center justify-center bg-[#E5E4E2]/65"
                                 style={{
                                     height: verticalScale(44),
-                                    borderRadius: moderateScale(20),
-                                    opacity: isPaymentProcessing ? 0.85 : 1
+                                    borderRadius: moderateScale(20)
                                 }}
                             >
                                 <Text
@@ -840,13 +841,12 @@ const RetryPaymentModal = memo(({
 
                             <TouchableOpacity
                                 activeOpacity={0.95}
-                                disabled={isPaymentProcessing || !selectedUpiMethod}
+                                disabled={isPaymentProcessing}
                                 onPress={handleRetryPayment}
                                 className="flex-1 items-center justify-center bg-[#3F2516]"
                                 style={{
                                     height: verticalScale(44),
-                                    borderRadius: moderateScale(20),
-                                    opacity:  isPaymentProcessing || !selectedUpiMethod ? 0.85 : 1
+                                    borderRadius: moderateScale(20)
                                 }}
                             >
                                 {isPaymentProcessing ? (
@@ -857,8 +857,8 @@ const RetryPaymentModal = memo(({
                                         autoPlay
                                         loop
                                         style={{
-                                            width: moderateScale(62),
-                                            height: moderateScale(62)
+                                            width: moderateScale(52),
+                                            height: moderateScale(52)
                                         }}
                                     />
                                 ) : (

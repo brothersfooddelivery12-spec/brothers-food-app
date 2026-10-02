@@ -15,7 +15,7 @@ import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
 import OrdersTabs from "./Components/OrdersTab"
 import PastOrdersCard from "./Components/PastOrdersCard"
-import RetryPaymentModal, { RetryPaymentOrder } from './Components/RetryPaymentModal'
+import RetryPaymentModal, { OrderSuccessParams, RetryPaymentOrder } from './Components/RetryPaymentModal'
 
 const TITLE_HEIGHT = verticalScale(48)
 const SEARCH_BAR_HEIGHT = verticalScale(46)
@@ -47,8 +47,6 @@ export default function OrdersScreen() {
     const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
     const [loadingOrders, setLoadingOrders] = useState(false)
     const [loadingMore, setLoadingMore] = useState(false)
-    const [hasMoreActive, setHasMoreActive] = useState(true)
-    const [hasMorePast, setHasMorePast] = useState(true)
 
     const fetchOrdersByTab = useCallback(async (
         tab: "active orders" | "past orders",
@@ -283,6 +281,16 @@ export default function OrdersScreen() {
         setRetryPaymentOrder(null)
     }, [])
 
+    const handleRetryPaymentSuccess = useCallback((params: OrderSuccessParams) => {
+        // Close modal first
+        setRetryPaymentOrder(null)
+
+        router.push({
+            pathname: "/order-success",
+            params
+        })
+    }, [router])
+
     const handleCanPay = useCallback(async (orderId: string) => {
         try {
             showLoader()
@@ -351,67 +359,11 @@ export default function OrdersScreen() {
     }, [])
 
     const orderStats = useMemo(() => {
-        const active = activeOrders.length
-
-        const completed = pastOrders.filter(
-            order => order.status === "DELIVERED"
-        ).length
-
         return {
-            active,
-            completed
+            active: activeOrders.length,
+            past: pastOrders.length
         }
     }, [activeOrders, pastOrders])
-
-    // const getOrderEta = (estimatedDeliveryAt?: string | null) => {
-    //     if (!estimatedDeliveryAt) {
-    //         return "Not available"
-    //     }
-
-    //     const estimatedTime = new Date(estimatedDeliveryAt).getTime()
-
-    //     const now = new Date().getTime()
-
-    //     const diffMinutes = Math.ceil((estimatedTime - now) / (1000 * 60))
-
-    //     if (diffMinutes <= 0) {
-    //         return "Arriving soon"
-    //     }
-
-    //     if (diffMinutes < 60) {
-    //         return `${diffMinutes} mins`
-    //     }
-
-    //     const hours = Math.floor(diffMinutes / 60)
-
-    //     const minutes = diffMinutes % 60
-
-    //     if (hours < 24) {
-    //         return minutes > 0
-    //             ? `${hours}h ${minutes}m`
-    //             : `${hours}h`
-    //     }
-
-    //     return new Date(estimatedDeliveryAt).toLocaleDateString(
-    //         "en-IN",
-    //         {
-    //             day: "2-digit",
-    //             month: "short"
-    //         }
-    //     )
-    // }
-
-    // const getRemainingTime = (remainingMinutes: number | null) => {
-    //     if (remainingMinutes == null) {
-    //         return "Arriving soon"
-    //     }
-
-    //     if (remainingMinutes <= 0) {
-    //         return "Arriving soon"
-    //     }
-
-    //     return `${remainingMinutes} mins`
-    // }
 
     const renderOrder = useCallback(({ item }: { item: OrderListItem }) => {
         if (activeTab === "active orders") {
@@ -603,7 +555,7 @@ export default function OrdersScreen() {
                     <View style={{ marginTop: verticalScale(4) }}>
                         <View className="flex-row items-center justify-center gap-3 mb-5">
                             <View
-                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-4 gap-2"
                                 style={{
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
@@ -615,7 +567,7 @@ export default function OrdersScreen() {
                                     className="text-[#1F1F1F]/85 font-medium"
                                     style={{ fontSize: moderateScale(12) }}
                                 >
-                                    Active
+                                    Active Orders
                                 </Text>
 
                                 <Text
@@ -639,14 +591,14 @@ export default function OrdersScreen() {
                                     className="text-[#1F1F1F]/85 font-medium"
                                     style={{ fontSize: moderateScale(12) }}
                                 >
-                                    Completed
+                                    Past Orders
                                 </Text>
 
                                 <Text
                                     className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(17) }}
                                 >
-                                    {orderStats.completed}
+                                    {orderStats.past}
                                 </Text>
                             </View>
 
@@ -663,14 +615,14 @@ export default function OrdersScreen() {
                                     className="text-[#1F1F1F]/85 font-medium"
                                     style={{ fontSize: moderateScale(12) }}
                                 >
-                                    Total Saved
+                                    Completed
                                 </Text>
 
                                 <Text
                                     className="text-[#1F1F1F] font-bold"
                                     style={{ fontSize: moderateScale(17) }}
                                 >
-                                    ₹0
+                                    0
                                 </Text>
                             </View>
                         </View>
@@ -719,16 +671,19 @@ export default function OrdersScreen() {
                 }
             />
 
-            <RetryPaymentModal
-                visible={!!retryPaymentOrder}
-                orderId={retryPaymentOrder?.id ?? ""}
-                restaurantId={retryPaymentOrder?.restaurantId ?? ""}
-                restaurantName={retryPaymentOrder ?.restaurantName ?? ""}
-                amount={retryPaymentOrder?.amount ?? 0}
-                paymentRetry={retryPaymentOrder ?.paymentRetry ?? null}
-                items={retryPaymentOrder?.items ?? []}
-                onCancel={handleCloseRetryPayment}
-            />
+            {retryPaymentOrder && (
+                <RetryPaymentModal
+                    visible={retryPaymentOrder !== null}
+                    orderId={retryPaymentOrder?.id ?? ""}
+                    restaurantId={retryPaymentOrder?.restaurantId ?? ""}
+                    restaurantName={retryPaymentOrder ?.restaurantName ?? ""}
+                    amount={retryPaymentOrder?.amount ?? 0}
+                    paymentRetry={retryPaymentOrder ?.paymentRetry ?? null}
+                    items={retryPaymentOrder?.items ?? []}
+                    onCancel={handleCloseRetryPayment}
+                    onPaymentSuccess={handleRetryPaymentSuccess}
+                />
+            )}
         </SafeAreaView>
     )
 }

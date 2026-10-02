@@ -4,7 +4,6 @@ import LocateFixedIcon from '@/assets/icon/LocateFixedIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import LocationFilledIcon from '@/assets/icon/LocationIcon3.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
-import { hideLoader, showLoader } from '@/Services/loader-service'
 import { useLocationStore } from '@/Stores/locationStore'
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
 import * as Location from "expo-location"
@@ -15,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
-import { LocationPermissionState } from './HomeScreen'
+import { LocationPermissionState, sleep } from './HomeScreen'
 
 export default function SelectLocationScreen(){
     const preventDoublePress = usePreventDoublePress()
@@ -26,12 +25,11 @@ export default function SelectLocationScreen(){
     
     const setLocation = useLocationStore(state => state.setLocation)
 
-    const handleUseCurrentLocation = useCallback(async (showSuccessToast = true) => {
+   const handleUseCurrentLocation = useCallback(async (showSuccessToast = true) => {
         if (locationLoading) return
 
         try {
             setLocationLoading(true)
-            showLoader()
 
             const currentLocation = await getCurrentLocationDetails()
 
@@ -40,8 +38,7 @@ export default function SelectLocationScreen(){
             setLocation({
                 latitude: currentLocation.latitude, 
                 longitude: currentLocation.longitude,
-                name:
-                    currentLocation.addressLine ||
+                name: currentLocation.addressLine ||
                     currentLocation.area ||
                     currentLocation.city,
                 source: "CURRENT"
@@ -49,10 +46,8 @@ export default function SelectLocationScreen(){
 
             setLocationPermission("granted")
 
-            router.back()
-
             if (showSuccessToast) {
-                showToast("Current location detected successfully.", "success")
+                //showToast("Current location detected successfully.", "success")
             }
         } catch (error) {
             console.log("Location Error:", error)
@@ -76,51 +71,11 @@ export default function SelectLocationScreen(){
             showToast(error instanceof Error ? error.message : "Unable to get your location.", "info")
         } finally {
             setLocationLoading(false)
-            hideLoader()
         }
     },[locationLoading, setLocation])
 
     const handleLocationAccess = useCallback(async () => {
         try {
-            let servicesEnabled = await Location.hasServicesEnabledAsync()
-
-            if (!servicesEnabled) {
-                setLocationPermission("services-disabled")
-
-                if (Platform.OS === "android") {
-                    try {
-                        await Location.enableNetworkProviderAsync()
-
-                        servicesEnabled = await Location.hasServicesEnabledAsync()
-
-                        if (!servicesEnabled) {
-                            return
-                        }
-                    } catch (error) {
-                        console.log("Location enable cancelled:", error)
-
-                        return
-                    }
-                } else {
-                    Alert.alert(
-                        "Turn On Location",
-                        "Please turn on Location Services to find restaurants near you.",
-                        [
-                            {
-                                text: "Cancel",
-                                style: "cancel"
-                            },
-                            {
-                                text: "Open Settings",
-                                onPress: () => Linking.openSettings()
-                            }
-                        ]
-                    )
-
-                    return
-                }
-            }
-
             let permission = await Location.getForegroundPermissionsAsync()
 
             if (permission.status !== "granted") {
@@ -150,16 +105,55 @@ export default function SelectLocationScreen(){
 
             if (permission.status !== "granted") {
                 setLocationPermission("denied")
+
                 return
             }
 
-            setLocationPermission("granted")
+            if (Platform.OS === "android") {
+                try {
+                    await Location.enableNetworkProviderAsync()
+
+                    // Important:
+                    // let Android location provider
+                    // start after user taps "Turn on"
+                    await sleep(400)
+                } catch (error) {
+                    console.log("Location enable cancelled:", error)
+
+                    return
+                }
+            }
+
+            const servicesEnabled = await Location.hasServicesEnabledAsync()
+
+            if (!servicesEnabled) {
+                setLocationPermission("services-disabled")
+
+                if (Platform.OS === "ios") {
+                    Alert.alert(
+                        "Turn On Location",
+                        "Please turn on Location Services to find restaurants near you.",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Open Settings",
+                                onPress: () => Linking.openSettings()
+                            }
+                        ]
+                    )
+                }
+
+                return
+            }
 
             await handleUseCurrentLocation()
         } catch (error) {
             console.log("Location access error:", error)
         }
-    },[handleUseCurrentLocation])
+    }, [handleUseCurrentLocation])
 
     return(
         <SafeAreaView className="flex-1 bg-[#FFFFFF]">

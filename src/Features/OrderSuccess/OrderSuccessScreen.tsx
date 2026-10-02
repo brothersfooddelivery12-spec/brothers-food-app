@@ -234,9 +234,9 @@ export default function OrderSuccessScreen() {
                                 className="text-[#1F1F1F] font-semibold tracking-wide"
                                 style={{ fontSize: moderateScale(15) }}
                             >
-                                ₹
+                               ₹
                                 {(
-                                    Number(item.price) *
+                                    Number(item.price ?? item.unit_price ??0) *
                                     Number(item.quantity)
                                 ).toLocaleString("en-IN")}
                             </Text>

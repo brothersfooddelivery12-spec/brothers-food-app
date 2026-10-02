@@ -8,6 +8,7 @@ import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
 import RestaurantIcon from '@/assets/icon/RestaurantFilledIcon.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
 import FloatingCartBar from '@/components/FloatingCartBar'
+import { LoadingDots } from '@/components/LoadingDots'
 import RestaurantCard, { Restaurants } from "@/components/RestaurantCard"
 import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
 import { offers } from "@/constant/OffersCardData"
@@ -21,7 +22,7 @@ import { Image } from "expo-image"
 import * as Location from "expo-location"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Alert, FlatList, Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -37,6 +38,8 @@ import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 
 const DEFAULT_BOTTOM_PADDING = verticalScale(88)
 const FLOATING_CART_SPACE = verticalScale(75)
+
+export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 export type LocationPermissionState = "checking" | "granted" | "denied" | "services-disabled"
 
@@ -271,45 +274,6 @@ export default function HomeScreen() {
 
     const handleLocationAccess = useCallback(async () => {
         try {
-            let servicesEnabled = await Location.hasServicesEnabledAsync()
-
-            if (!servicesEnabled) {
-                setLocationPermission("services-disabled")
-
-                if (Platform.OS === "android") {
-                    try {
-                        await Location.enableNetworkProviderAsync()
-
-                        servicesEnabled = await Location.hasServicesEnabledAsync()
-
-                        if (!servicesEnabled) {
-                            return
-                        }
-                    } catch (error) {
-                        console.log("Location enable cancelled:", error)
-
-                        return
-                    }
-                } else {
-                    Alert.alert(
-                        "Turn On Location",
-                        "Please turn on Location Services to find restaurants near you.",
-                        [
-                            {
-                                text: "Cancel",
-                                style: "cancel"
-                            },
-                            {
-                                text: "Open Settings",
-                                onPress: () => Linking.openSettings()
-                            }
-                        ]
-                    )
-
-                    return
-                }
-            }
-
             let permission = await Location.getForegroundPermissionsAsync()
 
             if (permission.status !== "granted") {
@@ -339,16 +303,55 @@ export default function HomeScreen() {
 
             if (permission.status !== "granted") {
                 setLocationPermission("denied")
+
                 return
             }
 
-            setLocationPermission("granted")
+            if (Platform.OS === "android") {
+                try {
+                    await Location.enableNetworkProviderAsync()
+
+                    // Important:
+                    // let Android location provider
+                    // start after user taps "Turn on"
+                    await sleep(400)
+                } catch (error) {
+                    console.log("Location enable cancelled:", error)
+
+                    return
+                }
+            }
+
+            const servicesEnabled = await Location.hasServicesEnabledAsync()
+
+            if (!servicesEnabled) {
+                setLocationPermission("services-disabled")
+
+                if (Platform.OS === "ios") {
+                    Alert.alert(
+                        "Turn On Location",
+                        "Please turn on Location Services to find restaurants near you.",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Open Settings",
+                                onPress: () => Linking.openSettings()
+                            }
+                        ]
+                    )
+                }
+
+                return
+            }
 
             await handleUseCurrentLocation()
         } catch (error) {
             console.log("Location access error:", error)
         }
-    },[handleUseCurrentLocation])
+    }, [handleUseCurrentLocation])
 
     const openLocationSelector = useCallback(() => {
         preventDoublePress(() => {
@@ -366,32 +369,6 @@ export default function HomeScreen() {
 
         handleLocationAccess()
     }, [location, openLocationSelector, handleLocationAccess])
-
-    const LoadingDots = React.memo(() => {
-        const [count, setCount] = useState(0)
-
-        useEffect(() => {
-            const interval = setInterval(() => {
-                setCount(prev => prev === 3 ? 0 : prev + 1)
-            }, 450)
-
-            return () => {
-                clearInterval(interval)
-            }
-        }, [])
-
-        return (
-            <View style={{ width: moderateScale(16) }}
-            >
-                <Text
-                    className="text-[#3F2516] font-extrabold"
-                    style={{ fontSize: moderateScale(15.5) }}
-                >
-                    {".".repeat(count)}
-                </Text>
-            </View>
-        )
-    })
 
     const getLocationTitle = () => {
         if (!hasHydrated) {

@@ -158,8 +158,8 @@ export default function FavouritesScreen() {
 
             fetchFavouritesByTab(
                 activeTab,
-                25.149131,
-                73.083126
+                location.latitude,
+                location.longitude
             )
         }, [activeTab, location, fetchFavouritesByTab])
     )
