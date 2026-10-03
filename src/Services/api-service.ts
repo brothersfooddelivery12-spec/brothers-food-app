@@ -449,6 +449,33 @@ export const getOrderById = (orderId: string) => {
     return api.get(`/order/${orderId}`)
 }
 
+export type Coupon = {
+    id: string
+    code: string
+    title: string
+    description: string
+
+    discount_type: "FLAT" | "PERCENTAGE"
+    discount_value: string
+    max_discount: string | null
+    min_order_amount: string
+
+    audience: string
+
+    purchase_method:
+        | "REWARD_POINTS"
+        | "MONEY"
+        | "FREE"
+
+    money_price: string
+    points_required: number | null
+
+    valid_from: string
+    valid_to: string
+
+    is_active: boolean
+}
+
 export const getCoupons = async (skip = 0, limit = 50) => {
     return api.get("/coupons", {
         params: {

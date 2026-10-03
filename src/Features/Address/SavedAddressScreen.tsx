@@ -219,8 +219,10 @@ export default function SavedAddressScreen(){
         return result
     }, [otherAddresses, selectedCategory, debouncedSearch])
 
-    const handleSetDefault = async (addressId: string) => {
-        if (actionLoading) return
+    const handleSetDefault = async (addressId: string): Promise<boolean> => {
+        if (actionLoading) {
+            return false
+        }
 
         try {
             setActionLoading(true)
@@ -230,29 +232,32 @@ export default function SavedAddressScreen(){
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to set default address", "warning")
 
-                return
+                return false
             }
 
-            setAddresses((prev) =>
-                prev.map(
-                    (address) => ({
-                        ...address,
-                        is_default: address.id === addressId
-                    })
-                )
+            setAddresses(prev =>
+                prev.map(address => ({
+                    ...address,
+                    is_default: address.id === addressId
+                }))
             )
 
             showToast(res.data.message || "Default address updated", "success")
+
+            return true
         } catch (error: any) {
             showToast(error?.message || "Unable to set default address", "warning")
 
+            return false
         } finally {
             setActionLoading(false)
         }
     }
 
-    const handleDeleteAddress = async (addressId: string) => {
-        if (actionLoading) return
+    const handleDeleteAddress = async (addressId: string): Promise<boolean> => {
+        if (actionLoading) {
+            return false
+        }
 
         try {
             setActionLoading(true)
@@ -262,14 +267,18 @@ export default function SavedAddressScreen(){
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to delete address", "warning")
 
-                return
+                return false
             }
 
-            setAddresses((prev) => prev.filter((address) => address.id !== addressId))
+            setAddresses(prev => prev.filter(address => address.id !== addressId))
 
             showToast(res.data.message || "Address deleted", "success")
+
+            return true
         } catch (error: any) {
             showToast(error?.message || "Unable to delete address", "warning")
+
+            return false
         } finally {
             setActionLoading(false)
         }
@@ -916,53 +925,63 @@ export default function SavedAddressScreen(){
                 </View>
             </Modal>
 
-            <AccountActionDialog
-                visible={deleteAddressDialogVisible}
-                type="address-delete"
-                loading={actionLoading}
-                addressLabel={addressToDelete?.label}
-                onCancel={() => {
-                    if (actionLoading) return
+            {deleteAddressDialogVisible && (
+                <AccountActionDialog
+                    visible={deleteAddressDialogVisible}
+                    type="address-delete"
+                    loading={actionLoading}
+                    addressLabel={addressToDelete?.label}
+                    onCancel={() => {
+                        if (actionLoading) return
 
-                    setDeleteAddressDialogVisible(false)
-                    setAddressToDelete(null)
-                }}
-                onConfirm={async () => {
-                    if (!addressToDelete) return
+                        setDeleteAddressDialogVisible(false)
+                        setAddressToDelete(null)
+                    }}
+                    onConfirm={async () => {
+                        if (!addressToDelete) {
+                            return
+                        }
 
-                    await handleDeleteAddress(
-                        addressToDelete.id
-                    )
+                        const success = await handleDeleteAddress(addressToDelete.id)
 
-                    setDeleteAddressDialogVisible(false)
-                    setAddressToDelete(null)
-                }}
-            />
+                        if (!success) {
+                            return
+                        }
 
-            <AccountActionDialog
-                visible={defaultDialogVisible}
-                type="set-default-address"
-                loading={actionLoading}
-                addressLabel={addressToSetDefault?.label}
-                onCancel={() => {
-                    if (actionLoading) return
+                        setDeleteAddressDialogVisible(false)
+                        setAddressToDelete(null)
+                    }}
+                />
+            )}
 
-                    setDefaultDialogVisible(false)
-                    setAddressToSetDefault(null)
-                }}
-                onConfirm={async () => {
-                    if (!addressToSetDefault) {
-                        return
-                    }
+            {defaultDialogVisible && (
+                <AccountActionDialog
+                    visible={defaultDialogVisible}
+                    type="set-default-address"
+                    loading={actionLoading}
+                    addressLabel={addressToSetDefault?.label}
+                    onCancel={() => {
+                        if (actionLoading) return
 
-                    await handleSetDefault(
-                        addressToSetDefault.id
-                    )
+                        setDefaultDialogVisible(false)
+                        setAddressToSetDefault(null)
+                    }}
+                    onConfirm={async () => {
+                        if (!addressToSetDefault || actionLoading) {
+                            return
+                        }
 
-                    setDefaultDialogVisible(false)
-                    setAddressToSetDefault(null)
-                }}
-            />
+                        const success = await handleSetDefault(addressToSetDefault.id)
+
+                        if (!success) {
+                            return
+                        }
+
+                        setDefaultDialogVisible(false)
+                        setAddressToSetDefault(null)
+                    }}
+                />
+            )}
         </SafeAreaView>
     )
 }

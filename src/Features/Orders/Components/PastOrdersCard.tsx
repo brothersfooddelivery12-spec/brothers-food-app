@@ -246,7 +246,7 @@ const PastOrdersCard = ({
         case "CANCELLED_BY_CUSTOMER":
             return {
                 label: "Order cancelled",
-                value: "Cancelled by you."
+                value: "You cancelled this order."
             }
 
         case "CANCELLED_BY_RESTAURANT":

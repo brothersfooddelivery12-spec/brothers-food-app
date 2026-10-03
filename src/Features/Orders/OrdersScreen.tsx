@@ -12,6 +12,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from "../hook/ToastContext"
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
+import AccountActionDialog from '../Profile/Components/AccountActionDialog'
 import ActiveOrdersCard from "./Components/ActiveOrdersCard"
 import OrdersTabs from "./Components/OrdersTab"
 import PastOrdersCard from "./Components/PastOrdersCard"
@@ -249,9 +250,17 @@ export default function OrdersScreen() {
 
     const ordersData = activeTab === "active orders" ? activeOrders : pastOrders
 
-    const handleCancelOrder = useCallback(async (orderId: string) => {
+    const [cancelDialogVisible, setCancelDialogVisible] = useState(false)
+    const [orderToCancel, setOrderToCancel] = useState<OrderListItem | null>(null)
+    const [cancelOrderLoading, setCancelOrderLoading] = useState(false)
+
+    const handleCancelOrder = useCallback(async (orderId: string): Promise<boolean> => {
+        if (cancelOrderLoading) {
+            return false
+        }
+
         try {
-            showLoader()
+            setCancelOrderLoading(true)
 
             const res = await cancelOrder(orderId)
 
@@ -260,20 +269,27 @@ export default function OrdersScreen() {
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to cancel order", "warning")
 
-                return
+                return false
             }
 
             showToast(res.data.message || "Order cancelled successfully", "success")
+
+            setCancelDialogVisible(false)
+            setOrderToCancel(null)
+
+            await fetchOrdersByTab("active orders", true)
+
+            return true
         } catch (error: any) {
             console.log("Cancel order error:", error)
 
             showToast(error?.response?.data?.message || error?.message || "Unable to cancel order", "warning")
-        } finally{
-            hideLoader()
-        }
 
-        await fetchOrdersByTab("active orders", true)
-    },[fetchOrdersByTab])
+            return false
+        } finally {
+            setCancelOrderLoading(false)
+        }
+    },[cancelOrderLoading, fetchOrdersByTab])
 
     const [retryPaymentOrder, setRetryPaymentOrder] = useState<RetryPaymentOrder | null>(null)
 
@@ -389,7 +405,10 @@ export default function OrdersScreen() {
                     iscancellable={item.iscancellable}
                     items={item.items}
                     onPayNow={() => handleCanPay(item.id)}
-                    onCancelOrder={() => handleCancelOrder(item.id)}
+                    onCancelOrder={() => {
+                        setOrderToCancel(item)
+                        setCancelDialogVisible(true)
+                    }}
                     onTrackOrder={() => handleTrackOrder(item.id)}
                     onContactRider={() => handleContactRider(item.id)}
                 />
@@ -699,6 +718,30 @@ export default function OrdersScreen() {
                     pincode={retryPaymentOrder.pincode}
                     onCancel={handleCloseRetryPayment}
                     onPaymentSuccess={handleRetryPaymentSuccess}
+                />
+            )}
+
+            {cancelDialogVisible && (
+                <AccountActionDialog
+                    visible={cancelDialogVisible}
+                    type="cancel-order"
+                    loading={cancelOrderLoading}
+                    restaurantName={orderToCancel?.restaurant_name}
+                    onCancel={() => {
+                        if (cancelOrderLoading) {
+                            return
+                        }
+
+                        setCancelDialogVisible(false)
+                        setOrderToCancel(null)
+                    }}
+                    onConfirm={async () => {
+                        if (!orderToCancel || cancelOrderLoading) {
+                            return
+                        }
+
+                        await handleCancelOrder(orderToCancel.id)
+                    }}
                 />
             )}
         </SafeAreaView>

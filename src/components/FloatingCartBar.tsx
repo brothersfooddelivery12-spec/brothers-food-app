@@ -31,7 +31,7 @@ const CartFoodImage = memo(({ imageUrl }: CartFoodImageProps) => {
 
     return (
         <View
-            className="overflow-hidden bg-[#EFEFEF]"
+            className="overflow-hidden bg-[#FFFFFF]/15"
             style={{
                 width: moderateScale(44),
                 height: moderateScale(44),
@@ -411,10 +411,10 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                     <View
                         className="flex-row items-center bg-white/15"
                         style={{
-                            borderRadius: moderateScale(14),
-                            paddingLeft: scale(10),
-                            paddingRight: scale(4),
-                            paddingVertical: verticalScale(6),
+                            borderRadius: moderateScale(18),
+                            paddingLeft: scale(12),
+                            paddingRight: scale(6),
+                            paddingVertical: verticalScale(8),
                             gap: scale(2)
                         }}
                     >

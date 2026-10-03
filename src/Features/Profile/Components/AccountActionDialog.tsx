@@ -7,10 +7,11 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 type AccountActionDialogProps = {
     visible: boolean
-    type: "logout" | "delete" | "address-delete" | "set-default-address"
+    type: "logout" | "delete" | "address-delete" | "set-default-address" | "cancel-order"
     loading?: boolean
 
     addressLabel?: string
+    restaurantName?: string
 
     onCancel: () => void
     onConfirm: () => void
@@ -21,6 +22,7 @@ export default function AccountActionDialog({
     type,
     loading = false,
     addressLabel,
+    restaurantName,
     onCancel,
     onConfirm
 }: AccountActionDialogProps) {
@@ -28,6 +30,7 @@ export default function AccountActionDialog({
     const isDeleteAccount = type === "delete"
     const isAddressDelete = type === "address-delete"
     const isSetDefault = type === "set-default-address"
+    const isCancelOrder = type === "cancel-order"
 
     const isDanger = isDeleteAccount
 
@@ -37,7 +40,9 @@ export default function AccountActionDialog({
             ? "Delete Address"
             : isSetDefault
                 ? "Set as Default"
-                : "Delete Account"
+                : isCancelOrder
+                    ? "Cancel Order"
+                    : "Delete Account"
 
     const description = isLogout
         ? "Are you sure you want to log out of your Brothers account?"
@@ -53,10 +58,21 @@ export default function AccountActionDialog({
                         ? `"${addressLabel}"`
                         : "this address"
                 } as your default delivery address? It will be automatically selected for future orders.`
-                : "Are you sure you want to delete your account? All your account data will be permanently removed and this action cannot be undone."
+                : isCancelOrder
+                    ? `Are you sure you want to cancel ${
+                        restaurantName
+                            ? `your order from "${restaurantName}"`
+                            : "this order"
+                    }? Once cancelled, this order cannot be restored.`
+                    : "Are you sure you want to delete your account? All your account data will be permanently removed and this action cannot be undone."
 
-    const confirmText = isLogout ? "Log Out" : isSetDefault
-        ? "Set Default" : "Delete"
+    const confirmText = isLogout
+        ? "Log Out"
+        : isSetDefault
+            ? "Set Default"
+            : isCancelOrder
+                ? "Cancel Order"
+                : "Delete"
 
     return (
         <Modal
@@ -106,28 +122,20 @@ export default function AccountActionDialog({
                                     width={moderateScale(18)}
                                     height={moderateScale(18)}
                                     color="#1F1F1F"
-                                    style={{ marginLeft: moderateScale(1) }}
                                     strokeWidth={1.8}
                                 />
-                            ) : isAddressDelete ? (
+                            ) : isAddressDelete || isSetDefault ? (
                                 <LocationIcon
                                     width={moderateScale(20)}
                                     height={moderateScale(20)}
-                                    color="#1F1F1F"
-                                    strokeWidth={1.8}
-                                />
-                            ) : isSetDefault ? (
-                                <LocationIcon
-                                    width={moderateScale(20)}
-                                    height={moderateScale(20)}
-                                    color="#3F2516"
+                                    color={isSetDefault ? "#3F2516" : "#1F1F1F"}
                                     strokeWidth={1.8}
                                 />
                             ) : (
                                 <DeleteIcon
                                     width={moderateScale(20)}
                                     height={moderateScale(20)}
-                                    color="rgba(220, 38, 38, 0.9)"
+                                    color= {isDanger ? "rgba(220, 38, 38, 0.9)" : "#3F2516"}
                                     strokeWidth={1.8}
                                 />
                             )}
@@ -168,13 +176,13 @@ export default function AccountActionDialog({
                             onPress={onCancel}
                             className="flex-1 items-center justify-center bg-[#E5E4E2]/65"
                             style={{
-                                height: verticalScale(46),
+                                height: verticalScale(44),
                                 borderRadius: moderateScale(20)
                             }}
                         >
                             <Text
                                 className="text-[#1F1F1F] font-medium"
-                                style={{ fontSize: moderateScale(15) }}
+                                style={{ fontSize: moderateScale(13) }}
                             >
                                 Cancel
                             </Text>
@@ -187,9 +195,8 @@ export default function AccountActionDialog({
                             className="flex-1 items-center justify-center"
                             style={{
                                 backgroundColor: isDanger ? "rgba(220, 38, 38, 0.80)" : "#3F2516",
-                                height: verticalScale(46),
-                                borderRadius: moderateScale(20),
-                                opacity: loading ? 0.85 : 1
+                                height: verticalScale(44),
+                                borderRadius: moderateScale(20)
                             }}
                         >
                             {loading ? (
@@ -204,8 +211,8 @@ export default function AccountActionDialog({
                                 />
                             ) : (
                                 <Text
-                                    className="text-white font-semibold"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="text-[#FFFFFF] font-medium"
+                                    style={{ fontSize: moderateScale(13) }}
                                 >
                                     {confirmText}
                                 </Text>
