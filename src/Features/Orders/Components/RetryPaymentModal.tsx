@@ -1,5 +1,6 @@
 import ClockFilledIcon from '@/assets/icon/ClockFilledIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
+import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import { getUpiAppIcon, getUpiAppName } from '@/Features/Checkout/CheckoutScreen'
 import { useToast } from '@/Features/hook/ToastContext'
 import { CashfreePaymentError, useCashfreeUpi } from '@/Features/hook/useCashfreeUpi'
@@ -25,6 +26,16 @@ export type RetryPaymentOrder = {
     amount: number
     paymentRetry: number | null
     items: RetryPaymentItem[]
+
+    receiverName: string
+    receiverPhone: string
+
+    addressLine: string
+    landmark?: string | null
+    area: string
+    city: string
+    state: string
+    pincode: string
 }
 
 export interface OrderSuccessParams {
@@ -49,18 +60,42 @@ interface RetryPaymentModalProps {
 
     items: RetryPaymentItem[]
 
+    receiverName: string
+    receiverPhone: string
+
+    addressLine: string
+    landmark?: string | null
+    area: string
+    city: string
+    state: string
+    pincode: string
+
     onCancel: () => void
     onPaymentSuccess: (params: OrderSuccessParams) => void
 }
 
 const RetryPaymentModal = memo(({
     visible,
+
     orderId,
     restaurantId,
     restaurantName,
+
     amount,
     paymentRetry,
+
     items,
+
+    receiverName,
+    receiverPhone,
+
+    addressLine,
+    landmark,
+    area,
+    city,
+    state,
+    pincode,
+
     onCancel,
     onPaymentSuccess
 }: RetryPaymentModalProps) => {
@@ -78,6 +113,26 @@ const RetryPaymentModal = memo(({
     const currentOrderIdRef = useRef<string | null>(null)
     const paymentHandledRef = useRef(false)
     const paymentVerifyingRef = useRef(false)
+
+    const formattedDeliveryAddress = useMemo(() => {
+        return [
+            addressLine,
+            landmark,
+            area,
+            city,
+            state,
+            pincode
+        ]
+            .filter(Boolean)
+            .join(", ")
+    }, [
+        addressLine,
+        landmark,
+        area,
+        city,
+        state,
+        pincode
+    ])
 
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
         if (paymentHandledRef.current || paymentVerifyingRef.current) {
@@ -390,7 +445,7 @@ const RetryPaymentModal = memo(({
                 <View
                     className="bg-[#FFFFFF] border border-[#1F1F1F]/10 overflow-hidden"
                     style={{
-                        marginHorizontal: scale(10),
+                        marginHorizontal: scale(8),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
                         maxHeight: "88%"
@@ -455,6 +510,68 @@ const RetryPaymentModal = memo(({
                             </Text>{" "}
                             is waiting for payment.
                         </Text>
+
+                        <View
+                            className="bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            style={{
+                                borderWidth: moderateScale(0.7),
+                                marginTop: verticalScale(14),
+                                borderRadius: moderateScale(16),
+                                paddingHorizontal: scale(10),
+                                paddingVertical: verticalScale(10)
+                            }}
+                        >
+                            <View className="flex-row items-start">
+                                <View
+                                    className="items-center justify-center"
+                                    style={{
+                                        width: moderateScale(34),
+                                        height: moderateScale(34),
+                                        borderRadius: moderateScale(11),
+                                        backgroundColor: "rgba(232,185,63,0.15)"
+                                    }}
+                                >
+                                    <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                                </View>
+
+                                <View
+                                    className="flex-1"
+                                    style={{ marginLeft: scale(10) }}
+                                >
+                                    <Text
+                                        className="text-[#1F1F1F] font-semibold"
+                                        style={{ fontSize: moderateScale(12.5) }}
+                                    >
+                                        Delivery Address
+                                    </Text>
+
+                                    <Text
+                                        className="text-[#1F1F1F]/75 font-medium"
+                                        style={{
+                                            fontSize: moderateScale(10.5),
+                                            lineHeight: moderateScale(15),
+                                            marginTop: verticalScale(3)
+                                        }}
+                                    >
+                                        {formattedDeliveryAddress}
+                                    </Text>
+
+                                    <Text
+                                        className="text-[#1F1F1F]/65 font-medium"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            marginTop: verticalScale(4)
+                                        }}
+                                    >
+                                        {receiverName}
+                                        {receiverPhone
+                                            ? ` • ${receiverPhone}`
+                                            : ""
+                                        }
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
 
                         {items.length > 0 && (
                             <View

@@ -18,12 +18,14 @@ import PremiumBadgeIcon from '@/assets/icon/StarBadgeFilledIcon.svg'
 import { default as FoodIcon, default as UtensilsIcon } from '@/assets/icon/UtensilIcon2.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import SearchBar from '@/components/SearchBar'
+import { getAvailableCoupons, getCoupons } from '@/Services/api-service'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
+import { useToast } from '../hook/ToastContext'
 import CouponCard, { CouponItem } from './Components/CouponCard'
 import LoyaltyProgress from './Components/LoyaltyProgress'
 import RewardActionsList from './Components/RewardActionsList'
@@ -258,6 +260,7 @@ export const COUPONS: CouponItem[] = [
 
 export default function RewardsAndCouponsScreen(){
     const insets = useSafeAreaInsets()
+    const {showToast} = useToast()
     const params = useLocalSearchParams<{tab?: "rewards" | "coupons"}>()
 
     const [activeTab, setActiveTab] = useState<"rewards" | "coupons">("rewards")
@@ -265,10 +268,69 @@ export default function RewardsAndCouponsScreen(){
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("1")
 
+    const [coupons, setCoupons] = useState<any[]>([])
+    const [loadingCoupons, setLoadingCoupons] = useState(false)
+
+    const fetchCoupons = useCallback(async () => {
+        try {
+            setLoadingCoupons(true)
+
+            const res = await getCoupons(0, 50)
+
+            console.log("Coupons response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch coupons", "warning")
+
+                return
+            }
+
+            setCoupons(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Coupons error:", error)
+
+            showToast(error?.message || "Unable to fetch coupons", "warning")
+        } finally {
+            setLoadingCoupons(false)
+        }
+    }, [])
+
     useEffect(() => {
-        if(
-            params.tab === "rewards" || params.tab === "coupons"
-        ) {
+        fetchCoupons()
+    }, [fetchCoupons])
+
+    const [availableCoupons, setAvailableCoupons] = useState<any[]>([])
+
+    const fetchAvailableCoupons = useCallback(async () => {
+        try {
+            setLoadingCoupons(true)
+
+            const res = await getAvailableCoupons()
+
+            console.log("Available coupons response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch available coupons", "warning")
+
+                return
+            }
+
+            setAvailableCoupons(res.data.data ?? [])
+        } catch (error: any) {
+            console.log("Available coupons error:", error)
+
+            showToast(error?.message || "Unable to fetch available coupons", "warning")
+        } finally {
+            setLoadingCoupons(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchAvailableCoupons()
+    }, [fetchAvailableCoupons])
+
+    useEffect(() => {
+        if(params.tab === "rewards" || params.tab === "coupons") {
             setActiveTab(params.tab)
         }
     },[params.tab])

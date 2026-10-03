@@ -317,9 +317,18 @@ export default function OrdersScreen() {
                 id: order.id,
                 restaurantId: order.restaurant_id,
                 restaurantName: order.restaurant_name,
-                amount: Number(order.final_total) || 0,
-                paymentRetry: order.payment_retry ?? null,
-                items: order.items ?? []
+                amount: order.final_total,
+                paymentRetry: order.payment_retry,
+                items: order.items,
+
+                receiverName: order.receiver_name,
+                receiverPhone: order.receiver_phone,
+                addressLine: order.address_line,
+                landmark: order.landmark,
+                area: order.area,
+                city: order.city,
+                state: order.state,
+                pincode: order.pincode
             })
         } catch (error: any) {
             console.log("Order details error:", error?.response?.data || error)
@@ -680,6 +689,14 @@ export default function OrdersScreen() {
                     amount={retryPaymentOrder?.amount ?? 0}
                     paymentRetry={retryPaymentOrder ?.paymentRetry ?? null}
                     items={retryPaymentOrder?.items ?? []}
+                    receiverName={retryPaymentOrder.receiverName}
+                    receiverPhone={retryPaymentOrder.receiverPhone}
+                    addressLine={retryPaymentOrder.addressLine}
+                    landmark={retryPaymentOrder.landmark}
+                    area={retryPaymentOrder.area}
+                    city={retryPaymentOrder.city}
+                    state={retryPaymentOrder.state}
+                    pincode={retryPaymentOrder.pincode}
                     onCancel={handleCloseRetryPayment}
                     onPaymentSuccess={handleRetryPaymentSuccess}
                 />

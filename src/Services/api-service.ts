@@ -448,3 +448,16 @@ export const retryOrderPayment = (orderId: string) => {
 export const getOrderById = (orderId: string) => {
     return api.get(`/order/${orderId}`)
 }
+
+export const getCoupons = async (skip = 0, limit = 50) => {
+    return api.get("/coupons", {
+        params: {
+            skip,
+            limit
+        }
+    })
+}
+
+export const getAvailableCoupons = async () => {
+    return api.get("/coupons/available")
+}

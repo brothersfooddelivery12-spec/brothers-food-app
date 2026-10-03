@@ -146,7 +146,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                             style={{
                                 width: 0.7,
                                 height: verticalScale(4),
-                                backgroundColor: "rgba(232,185,63,0.35)"
+                                backgroundColor: "rgba(232,185,63,0.55)"
                             }}
                         />
                     ))}
