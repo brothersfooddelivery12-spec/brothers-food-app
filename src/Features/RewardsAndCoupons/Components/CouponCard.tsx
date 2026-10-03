@@ -72,9 +72,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F] font-black"
+                    className="text-[#1F1F1F] font-extrabold"
                     style={{
-                        fontSize: moderateScale(19),
+                        fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
                 >
@@ -85,7 +85,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     className="text-[#1F1F1F]/75 font-medium"
                     style={{
                         fontSize: moderateScale(12),
-                        lineHeight: moderateScale(19),
+                        lineHeight: moderateScale(16),
                         marginTop: verticalScale(3)
                     }}
                 >
