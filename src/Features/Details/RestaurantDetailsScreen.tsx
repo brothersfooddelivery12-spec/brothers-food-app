@@ -26,7 +26,7 @@ import { FlatList, Pressable, StatusBar, Text, TouchableOpacity, View } from "re
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getRestaurantById, RestaurantDetails } from '../../Services/api-service'
+import { getCategory, getRestaurantById, getRestaurantCategories, getRestaurantMenu, RestaurantDetails } from '../../Services/api-service'
 import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
@@ -157,6 +157,112 @@ export default function RestaurantDetailsScreen() {
     useEffect(() => {
         fetchRestaurant()
     }, [fetchRestaurant])
+
+    const fetchRestaurantMenu = useCallback(async (restaurantId: string) => {
+        try {
+            const res = await getRestaurantMenu(restaurantId)
+
+            console.log("Restaurant menu response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch restaurant menu", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? []
+
+            console.log("RESTAURANT MENU:", data)
+
+        } catch (error: any) {
+            console.log("Restaurant menu error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to fetch restaurant menu",
+                "warning"
+            )
+        }
+    },[])
+
+    useEffect(() => {
+        if (!restaurantId) return
+
+        fetchRestaurantMenu(restaurantId)
+    }, [restaurantId, fetchRestaurantMenu])
+
+    const [categories, setCategories] = useState<any[]>([])
+
+    const fetchRestaurantCategories = useCallback(async (restaurantId: string) => {
+        try {
+            const res = await getRestaurantCategories(restaurantId)
+
+            console.log("Restaurant categories response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch restaurant categories", "warning")
+
+                return
+            }
+
+            const data = res.data.data ?? []
+
+            console.log("RESTAURANT CATEGORIES:", data)
+
+            setCategories(data)
+        } catch (error: any) {
+            console.log("Restaurant categories error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to fetch restaurant categories",
+                "warning"
+            )
+        }
+    },[])
+
+    useEffect(() => {
+        if (!restaurantId) return
+
+        fetchRestaurantCategories(
+            restaurantId
+        )
+    }, [restaurantId, fetchRestaurantCategories])
+
+    const [category, setCategory] = useState<any | null>(null)
+
+    const fetchCategory = useCallback(async (categoryId: string) => {
+        try {
+            const res = await getCategory(categoryId)
+
+            console.log("Category response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch category", "warning")
+
+                return
+            }
+
+            const data = res.data.data
+
+            console.log("CATEGORY:", data)
+
+            setCategory(data)
+        } catch (error: any) {
+            console.log("Get category error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to fetch category",
+                "warning"
+            )
+        }
+    },[])
+
+    const categoryId = "bd0f0dfa-f34e-4cec-999c-ccd1b8f18371"
+
+    useEffect(() => {
+        if (!categoryId) return
+
+        fetchCategory(categoryId)
+    }, [categoryId, fetchCategory])
 
     const [coverImageError, setCoverImageError] = useState(false)
     const [logoImageError, setLogoImageError] = useState(false)

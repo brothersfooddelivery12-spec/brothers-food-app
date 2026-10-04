@@ -23,7 +23,7 @@ import { Coupon, getAvailableCoupons, getCoupons } from '@/Services/api-service'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -32,6 +32,7 @@ import CouponCard, { CouponItem } from './Components/CouponCard'
 import LoyaltyProgress from './Components/LoyaltyProgress'
 import RewardActionsList from './Components/RewardActionsList'
 import RewardAndCouponTabs from './Components/RewardAndCouponTabs'
+import RewardCouponCard from './Components/RewardCouponCard'
 import RewardStatsGrid from './Components/RewardStatsGrid'
 
 const UPCOMING_EVENTS = [
@@ -275,19 +276,28 @@ export default function RewardsAndCouponsScreen(){
             : "rewards"
     )
     const [rewardCoupons, setRewardCoupons] = useState<Coupon[]>([])
+    const [moneyCoupons, setMoneyCoupons] = useState<Coupon[]>([])
     const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([])
+
     const [loadingRewardCoupons, setLoadingRewardCoupons] = useState(false)
     const [loadingAvailableCoupons, setLoadingAvailableCoupons] = useState(false)
+
     const [rewardCouponsLoaded, setRewardCouponsLoaded] = useState(false)
     const [availableCouponsLoaded, setAvailableCouponsLoaded] = useState(false)
 
-    const fetchCouponsByTab = useCallback(async (tab: "rewards" | "coupons", force = false) => {
-        try {
-            if (tab === "rewards") {
-                if (rewardCouponsLoaded && !force) {
-                    return
-                }
+    const fetchingRewardsRef = useRef(false)
+    const fetchingAvailableRef = useRef(false)
 
+    const fetchCouponsByTab = useCallback(async (
+        tab: "rewards" | "coupons"
+    ) => {
+        if (tab === "rewards") {
+            if (fetchingRewardsRef.current) {
+                return
+            }
+
+            try {
+                fetchingRewardsRef.current = true
                 setLoadingRewardCoupons(true)
 
                 const res = await getCoupons(0, 50)
@@ -300,20 +310,37 @@ export default function RewardsAndCouponsScreen(){
                     return
                 }
 
-                const data = res.data.data ?? []
+                const data: Coupon[] = res.data.data ?? []
 
-                const rewards = data.filter((item: Coupon) => item.purchase_method === "REWARD_POINTS")
+                const rewards = data.filter(item => item.purchase_method === "REWARD_POINTS")
+
+                const money = data.filter(item => item.purchase_method === "MONEY")
 
                 setRewardCoupons(rewards)
+                setMoneyCoupons(money)
+
                 setRewardCouponsLoaded(true)
+            } catch (error: any) {
+                console.log("Reward coupons error:", error)
 
-                return
+                showToast(error?.response?.data?.message || error?.message ||
+                    "Unable to fetch reward coupons",
+                    "warning"
+                )
+            } finally {
+                fetchingRewardsRef.current = false
+                setLoadingRewardCoupons(false)
             }
 
-            if (availableCouponsLoaded && !force) {
-                return
-            }
+            return
+        }
 
+        if (fetchingAvailableRef.current) {
+            return
+        }
+
+        try {
+            fetchingAvailableRef.current = true
             setLoadingAvailableCoupons(true)
 
             const res = await getAvailableCoupons()
@@ -330,19 +357,17 @@ export default function RewardsAndCouponsScreen(){
 
             setAvailableCouponsLoaded(true)
         } catch (error: any) {
-            console.log("Fetch coupons error:", error)
+            console.log("Available coupons error:", error)
 
             showToast(error?.response?.data?.message || error?.message ||
-                "Unable to fetch coupons", "warning"
+                "Unable to fetch available coupons",
+                "warning"
             )
         } finally {
-            if (tab === "rewards") {
-                setLoadingRewardCoupons(false)
-            } else {
-                setLoadingAvailableCoupons(false)
-            }
+            fetchingAvailableRef.current = false
+            setLoadingAvailableCoupons(false)
         }
-    },[rewardCouponsLoaded, availableCouponsLoaded])
+    },[])
 
     const mapAvailableCoupon = (coupon: Coupon): CouponItem => {
         const validTo = new Date(coupon.valid_to)
@@ -618,24 +643,21 @@ export default function RewardsAndCouponsScreen(){
                                 {loadingRewardCoupons ? (
                                     <View
                                         className="items-center justify-center"
-                                        style={{
-                                            height: verticalScale(180)
-                                        }}
+                                        style={{ height: verticalScale(150) }}
                                     >
                                         <LottieView
                                             source={require(
-                                                "../../../assets/animations/Food_Loading2.json"
+                                                "../../../assets/animations/Loading3.json"
                                             )}
                                             autoPlay
                                             loop
                                             style={{
-                                                width: moderateScale(110),
-                                                height: moderateScale(110)
+                                                width: moderateScale(50),
+                                                height: moderateScale(50)
                                             }}
                                         />
                                     </View>
-                                ) : rewardCouponsLoaded &&
-                                    rewardCoupons.length === 0 ? (
+                                ) : rewardCouponsLoaded && rewardCoupons.length === 0 ? (
                                     <View
                                         className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
@@ -646,7 +668,15 @@ export default function RewardsAndCouponsScreen(){
                                             marginTop: verticalScale(12)
                                         }}
                                     >
-                                        <CircleStarIcon width={moderateScale(32)} height={moderateScale(32)} color="#5A3825"/>
+                                        <View
+                                            className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                            style={{
+                                                width: moderateScale(46),
+                                                height: moderateScale(46)
+                                            }}
+                                        >
+                                            <CircleStarIcon width={moderateScale(30)} height={moderateScale(30)} color="#5A3825"/>
+                                        </View>
 
                                         <Text
                                             className="text-[#1F1F1F] font-semibold"
@@ -659,7 +689,7 @@ export default function RewardsAndCouponsScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium text-center"
+                                            className="text-[#1F1F1F]/75 font-medium text-center"
                                             style={{
                                                 fontSize: moderateScale(11),
                                                 marginTop: verticalScale(3)
@@ -682,100 +712,55 @@ export default function RewardsAndCouponsScreen(){
                                             gap: scale(10),
                                             paddingVertical: verticalScale(4)
                                         }}
-                                        renderItem={({ item }) => {
-                                            const discountText = item.discount_type === "PERCENTAGE"
-                                                ? `${Number(item.discount_value)}% OFF`
-                                                : `₹${Number(item.discount_value)} OFF`
-
-                                            return (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.95}
-                                                    className="overflow-hidden bg-[#FAFAFA] border-[#1F1F1F]/10"
-                                                    style={{
-                                                        borderWidth: moderateScale(0.5),
-                                                        borderRadius: moderateScale(22),
-                                                        width: scale(250)
-                                                    }}
-                                                >
-                                                    <View
-                                                        className="bg-[#3F2516] m-2 overflow-hidden items-center justify-center"
-                                                        style={{
-                                                            height: verticalScale(100),
-                                                            borderRadius: moderateScale(18)
-                                                        }}
-                                                    >
-                                                        <Image
-                                                            source={require('@/assets/images/ReedeemPointsIllustration.png')}
-                                                            contentFit="contain"
-                                                            cachePolicy="memory-disk"
-                                                            style={{
-                                                                width: "100%",
-                                                                height: verticalScale(90)
-                                                            }}
-                                                        />
-                                                    </View>
-
-                                                    <View className="px-3 pb-3">
-                                                        <Text
-                                                            numberOfLines={1}
-                                                            className="text-[#1F1F1F] font-bold"
-                                                            style={{ fontSize: moderateScale(14) }}
-                                                        >
-                                                            {item.title}
-                                                        </Text>
-
-                                                        <Text
-                                                            numberOfLines={2}
-                                                            className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                            style={{
-                                                                fontSize: moderateScale(11),
-                                                                lineHeight: moderateScale(17)
-                                                            }}
-                                                        >
-                                                            {item.description}
-                                                        </Text>
-
-                                                        <View
-                                                            className="bg-[#E8DDD3]/75"
-                                                            style={{
-                                                                height: moderateScale(0.7),
-                                                                marginVertical: verticalScale(8)
-                                                            }}
-                                                        />
-
-                                                        <View className="flex-row items-center">
-                                                            <Text
-                                                                className="text-[#5C4639] font-black flex-1"
-                                                                style={{ fontSize: moderateScale(18) }}
-                                                            >
-                                                                {item.points_required} pts
-                                                            </Text>
-
-                                                            <TouchableOpacity
-                                                                activeOpacity={0.95}
-                                                                onPress={() => {
-                                                                    console.log("Redeem:", item)
-                                                                }}
-                                                                className="bg-[#3F2516]"
-                                                                style={{
-                                                                    paddingHorizontal: scale(13),
-                                                                    paddingVertical: verticalScale(6),
-                                                                    borderRadius: moderateScale(18)
-                                                                }}
-                                                            >
-                                                                <Text
-                                                                    className="text-[#FFFFFF] font-bold"
-                                                                    style={{ fontSize: moderateScale(12) }}
-                                                                >
-                                                                    Redeem
-                                                                </Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            )
-                                        }}
+                                        renderItem={({ item }) => (
+                                            <RewardCouponCard
+                                                item={item}
+                                                onRedeem={(coupon) => {
+                                                    console.log(
+                                                        "Redeem coupon:",
+                                                        coupon
+                                                    )
+                                                }}
+                                            />
+                                        )}
                                     />
+                                )}
+
+                                {!loadingRewardCoupons && moneyCoupons.length > 0 && (
+                                    <>
+                                        <Text
+                                            className="text-[#1F1F1F] font-bold mt-6"
+                                            style={{ fontSize: moderateScale(15) }}
+                                        >
+                                            Purchase Coupons
+                                        </Text>
+
+                                        <FlatList
+                                            data={moneyCoupons}
+                                            keyExtractor={item => item.id}
+                                            horizontal
+                                            nestedScrollEnabled
+                                            directionalLockEnabled
+                                            showsHorizontalScrollIndicator={false}
+                                            className="-mx-5 mt-1"
+                                            contentContainerStyle={{
+                                                paddingHorizontal: scale(14),
+                                                gap: scale(10),
+                                                paddingVertical: verticalScale(4)
+                                            }}
+                                            renderItem={({ item }) => (
+                                                <RewardCouponCard
+                                                    item={item}
+                                                    onPurchase={(coupon) => {
+                                                        console.log(
+                                                            "Purchase coupon:",
+                                                            coupon
+                                                        )
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </>
                                 )}
 
                                 <Text
@@ -918,24 +903,21 @@ export default function RewardsAndCouponsScreen(){
                                 {loadingAvailableCoupons ? (
                                     <View
                                         className="items-center justify-center"
-                                        style={{
-                                            height: verticalScale(180)
-                                        }}
+                                        style={{ height: verticalScale(150) }}
                                     >
                                         <LottieView
                                             source={require(
-                                                "../../../assets/animations/Food_Loading2.json"
+                                                "../../../assets/animations/Loading3.json"
                                             )}
                                             autoPlay
                                             loop
                                             style={{
-                                                width: moderateScale(110),
-                                                height: moderateScale(110)
+                                                width: moderateScale(55),
+                                                height: moderateScale(55)
                                             }}
                                         />
                                     </View>
-                                ) : availableCouponsLoaded &&
-                                    availableCoupons.length === 0 ? (
+                                ) : availableCouponsLoaded && availableCoupons.length === 0 ? (
                                     <View
                                         className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
@@ -945,7 +927,15 @@ export default function RewardsAndCouponsScreen(){
                                             paddingVertical: verticalScale(24)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(32)} height={moderateScale(32)} color="#5A3825"/>
+                                        <View
+                                            className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                            style={{
+                                                width: moderateScale(46),
+                                                height: moderateScale(46)
+                                            }}
+                                        >
+                                            <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color="#5A3825"/>
+                                        </View>
 
                                         <Text
                                             className="text-[#1F1F1F] font-semibold"
@@ -958,7 +948,7 @@ export default function RewardsAndCouponsScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium text-center"
+                                            className="text-[#1F1F1F]/75 font-medium text-center"
                                             style={{
                                                 fontSize: moderateScale(11),
                                                 marginTop: verticalScale(3)

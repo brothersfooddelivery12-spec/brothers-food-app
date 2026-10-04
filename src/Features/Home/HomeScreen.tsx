@@ -583,9 +583,12 @@ export default function HomeScreen() {
                     imageUrl: item.logo_url || null,
                     cuisines: item.description ?? "",
                     rating: Number(item.rating) || 0,
-                    distance: item.distance != null
-                        ? `${item.distance} km`
-                        : null,
+                    distance:
+                        item.distance != null
+                            ? Number(item.distance) < 1
+                                ? `${Math.round(Number(item.distance) * 1000)} m`
+                                : `${Number(item.distance).toFixed(1)} km`
+                            : null,
                     discount: item.discount ?? null,
                     priceForTwo: item.price_for_two ?? null,
                     isOpen: item.is_open

@@ -184,7 +184,7 @@ export interface NearbyRestaurant {
     is_open: boolean
 
     rating?: string | null
-    distance?: number | null
+    distance?: string | null
     discount?: string | null
     price_for_two?: number | null
 }
@@ -274,6 +274,18 @@ export interface RestaurantDetails {
 
 export const getRestaurantById = (restaurantId: string) => {
     return api.get(`/restaurants/${restaurantId}`)
+}
+
+export const getRestaurantMenu = async (restaurantId: string) => {
+    return api.get(`/menu/restaurant/${restaurantId}`)
+}
+
+export const getRestaurantCategories = async (restaurantId: string) => {
+    return api.get(`/categories/restaurant/${restaurantId}`)
+}
+
+export const getCategory = async (categoryId: string) => {
+    return api.get(`/categories/${categoryId}`)
 }
 
 export interface MenuDetails {

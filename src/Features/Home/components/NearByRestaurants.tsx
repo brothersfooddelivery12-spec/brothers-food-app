@@ -203,12 +203,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                                 color: isInactive ? "#8A8A8A" : "#5C4639"
                             }}
                         >
-                            {restaurant.distance != null
-                                ? `${Number(
-                                    restaurant.distance
-                                ).toFixed(1)} km`
-                                : "-- km"
-                            }
+                            {restaurant.distance ?? "-- km"}
                         </Text>
                     </View>
                 </View>

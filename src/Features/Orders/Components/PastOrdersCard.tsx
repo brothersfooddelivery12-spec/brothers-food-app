@@ -63,14 +63,8 @@ export const getOrderStatusLabel = (status: OrderStatusType) => {
             return "Delivered"
 
         case "CANCELLED_BY_CUSTOMER":
-            return "Cancelled by You"
-
         case "CANCELLED_BY_RESTAURANT":
-            return "Cancelled by Restaurant"
-
         case "REJECTED_BY_RESTAURANT":
-            return "Rejected by Restaurant"
-
         case "CANCELLED_TIMEOUT":
             return "Cancelled"
 

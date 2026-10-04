@@ -694,7 +694,7 @@ const RetryPaymentModal = memo(({
                                         <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color="#B7791F" strokeWidth={1.8} />
 
                                         <Text
-                                            className="text-[#B7791F] font-semibold flex-1"
+                                            className="text-[#B7791F] font-medium flex-1"
                                             style={{ fontSize: moderateScale(11.5) }}
                                         >
                                             {paymentRetry > 0
