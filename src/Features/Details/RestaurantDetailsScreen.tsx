@@ -16,6 +16,7 @@ import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
+import { useLocationStore } from '@/Stores/locationStore'
 import { getRatingStars } from "@/utils/rating"
 import { formatRestaurantTime } from '@/utils/time-utils'
 import { Image } from "expo-image"
@@ -124,6 +125,7 @@ export default function RestaurantDetailsScreen() {
     const { restaurantId } = useLocalSearchParams<{restaurantId: string}>()
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
+    const location = useLocationStore(state => state.location)
 
     const [restaurant, setRestaurant] = useState<RestaurantDetails | null>(null)
     const [loadingRestaurant, setLoadingRestaurant] = useState(false)
@@ -131,15 +133,23 @@ export default function RestaurantDetailsScreen() {
     const fetchRestaurant = useCallback(async () => {
         if (!restaurantId) return
 
+        if (location?.latitude == null || location?.longitude == null) {
+            return
+        }
+
         try {
             setLoadingRestaurant(true)
 
-            const res = await getRestaurantById(restaurantId)
+            const res = await getRestaurantById(
+                restaurantId,
+                location.latitude,
+                location.longitude
+            )
 
             console.log("Restaurant response:", res.data)
 
             if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch restaurant details","warning")
+                showToast(res.data.message || "Unable to fetch restaurant details", "warning")
 
                 return
             }
@@ -148,11 +158,14 @@ export default function RestaurantDetailsScreen() {
         } catch (error: any) {
             console.log("Restaurant error:", error)
 
-            showToast("Unable to fetch restaurant details", "warning")
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to fetch restaurant details",
+                "warning"
+            )
         } finally {
             setLoadingRestaurant(false)
         }
-    }, [restaurantId])
+    }, [restaurantId, location?.latitude, location?.longitude])
 
     useEffect(() => {
         fetchRestaurant()
@@ -822,11 +835,11 @@ export default function RestaurantDetailsScreen() {
                                                         className="text-[#1F1F1F] font-bold"
                                                         style={{ fontSize: moderateScale(12) }}
                                                     >
-                                                         {restaurant?.distance != null
-                                                            ? `${Number(
-                                                                restaurant.distance
-                                                            ).toFixed(1)} km`
-                                                            : "-- km"
+                                                        {restaurant?.distance != null
+                                                            ? Number(restaurant?.distance) < 1
+                                                                ? `${Math.round(Number(restaurant?.distance) * 1000)} m`
+                                                                : `${Number(restaurant?.distance).toFixed(1)} km`
+                                                            : null
                                                         }
                                                     </Text>
                                                 </View>

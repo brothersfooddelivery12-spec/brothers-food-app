@@ -272,8 +272,15 @@ export interface RestaurantDetails {
     price_for_two?: number | null
 }
 
-export const getRestaurantById = (restaurantId: string) => {
-    return api.get(`/restaurants/${restaurantId}`)
+export const getRestaurantById = (restaurantId: string, latitude: number, longitude: number) => {
+    return api.get(`/restaurants/${restaurantId}`,
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
 export const getRestaurantMenu = async (restaurantId: string) => {
@@ -432,7 +439,7 @@ export interface GetUserOrdersParams {
     limit?: number
 }
 
-export const getUserOrders = ({ status, offset = 0, limit = 20 }: GetUserOrdersParams) => {
+export const getUserOrders = ({ status, offset = 0, limit = 10 }: GetUserOrdersParams) => {
     return api.get("/order/me", {
         params: {
             status,

@@ -1588,30 +1588,33 @@ export default function HomeScreen() {
                                                     </TouchableOpacity>
                                                 </View>
                         
-                                                <Text
-                                                    className="text-[#1F1F1F] font-bold"
-                                                    style={{
-                                                        fontSize: moderateScale(16),
-                                                        marginTop: verticalScale(18)
-                                                    }}
-                                                >
-                                                    Trending Foods
-                                                </Text>
-                        
-                                                <FlatList
-                                                    data={popularMenu}
-                                                    horizontal
-                                                    nestedScrollEnabled
-                                                    directionalLockEnabled
-                                                    showsHorizontalScrollIndicator={false}
-                                                    keyExtractor={(item) => item.id}
-                                                    className="-mx-5 mt-3"
-                                                    contentContainerStyle={{
-                                                        paddingHorizontal: scale(14),
-                                                        gap: moderateScale(12)
-                                                    }}
-                                                    renderItem={renderPopularFood}
-                                                />
+                                                {popularMenu.length > 0 && (
+                                                    <>
+                                                        <Text
+                                                            className="text-[#1F1F1F] font-bold"
+                                                            style={{
+                                                                fontSize: moderateScale(16),
+                                                                marginTop: verticalScale(18)
+                                                            }}
+                                                        >
+                                                            Trending Foods
+                                                        </Text>
+                                                        <FlatList
+                                                            data={popularMenu}
+                                                            horizontal
+                                                            nestedScrollEnabled
+                                                            directionalLockEnabled
+                                                            showsHorizontalScrollIndicator={false}
+                                                            keyExtractor={(item) => item.id}
+                                                            className="-mx-5 mt-3"
+                                                            contentContainerStyle={{
+                                                                paddingHorizontal: scale(14),
+                                                                gap: moderateScale(12)
+                                                            }}
+                                                            renderItem={renderPopularFood}
+                                                        />
+                                                    </>
+                                                )}
                         
                                                 {nearbyRestaurants.length > 0 && (
                                                     <Text

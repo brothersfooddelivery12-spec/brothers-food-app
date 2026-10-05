@@ -198,54 +198,63 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                 const firstImage = cart.items.find(item => !!item.imageUrl)?.imageUrl
 
                 return (
-                    <TouchableOpacity
-                        key={cart.id}
-                        activeOpacity={0.95}
-                        onPress={() => 
-                            preventDoublePress(() => {
-                                selectRestaurant(cart.id)
-                                router.push("/cart")
-                            })
-                        }
-                        className="flex-row items-center"
-                        style={{
-                            paddingVertical: verticalScale(5),
-                            paddingHorizontal: scale(4),
-                            gap: scale(8),
-                            borderBottomWidth: index < otherCarts.length - 1
-                                ? moderateScale(0.5)
-                                : 0,
-                            borderBottomColor: "rgba(31,31,31,0.08)"
-                        }}
-                    >
-                        <CartFoodImage imageUrl={firstImage} />
+                    <View key={cart.id}>
+                        <TouchableOpacity
+                            key={cart.id}
+                            activeOpacity={0.95}
+                            onPress={() =>
+                                preventDoublePress(() => {
+                                    selectRestaurant(cart.id)
+                                    router.push("/cart")
+                                })
+                            }
+                            className="flex-row items-center"
+                            style={{
+                                paddingVertical: verticalScale(4),
+                                paddingHorizontal: scale(4),
+                                gap: scale(8)
+                            }}
+                        >
+                            <CartFoodImage imageUrl={firstImage} />
 
-                        <View className="flex-1">
-                            <Text
-                                numberOfLines={1}
-                                className="text-[#1F1F1F] font-bold"
-                                style={{ fontSize: moderateScale(14) }}
-                            >
-                                {cart.restaurantName}
-                            </Text>
+                            <View className="flex-1">
+                                <Text
+                                    numberOfLines={1}
+                                    className="text-[#1F1F1F] font-bold"
+                                    style={{ fontSize: moderateScale(14) }}
+                                >
+                                    {cart.restaurantName}
+                                </Text>
 
-                            <Text
-                                className="text-[#1F1F1F]/65 font-medium"
+                                <Text
+                                    className="text-[#1F1F1F]/65 font-medium"
+                                    style={{
+                                        fontSize:moderateScale(11),
+                                        marginTop: verticalScale(2)
+                                    }}
+                                >
+                                    {count}{" "}
+                                    {count === 1
+                                        ? "item"
+                                        : "items"}{" "}
+                                    added
+                                </Text>
+                            </View>
+
+                            <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                        </TouchableOpacity>
+
+                        {index < otherCarts.length - 1 && (
+                            <View
                                 style={{
-                                    fontSize:moderateScale(11),
-                                    marginTop: verticalScale(2)
+                                    backgroundColor: "rgba(232,221,211,0.60)",
+                                    height: moderateScale(0.5),
+                                    marginVertical: verticalScale(4),
+                                    marginHorizontal: scale(8)
                                 }}
-                            >
-                                {count}{" "}
-                                {count === 1
-                                    ? "item"
-                                    : "items"}{" "}
-                                added
-                            </Text>
-                        </View>
-
-                        <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
-                    </TouchableOpacity>
+                            />
+                        )}
+                    </View>
                 )
             })}
         </View>
@@ -369,7 +378,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
 
                 <View
                     className="flex-1"
-                    style={{ marginLeft: scale(10) }}
+                    style={{ marginLeft: scale(10), marginRight: scale(10) }}
                 >
                     <Text
                         numberOfLines={1}
