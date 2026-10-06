@@ -6,16 +6,16 @@ import IndiaFlag from '@/assets/icon/India.svg'
 import MailIcon from '@/assets/icon/MailIcon.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
 import VenusAndMarsIcon from '@/assets/icon/VenusAndMarsIcon.svg'
+import CalendarPicker from '@/components/CalenderSheet'
 import GradientButton from '@/components/GradientButton'
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
-import DateTimePicker, { DateTimePickerChangeEvent } from "@react-native-community/datetimepicker"
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
-import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, Keyboard, Modal, Platform, Pressable, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { Dimensions, Keyboard, Modal, Pressable, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { editUserProfile } from '../../Services/api-service'
 import { useAuthStore } from '../../Stores/auth-store'
@@ -40,15 +40,14 @@ const GENDER_OPTIONS: {label: string, value: Gender}[] = [
 ]
 
 export default function EditProfileScreen(){
-    const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const user = useAuthStore((state) => state.user)
     const updateUser = useAuthStore((state) => state.updateUser)
     const {showToast} = useToast()
 
     const [initialLoading, setInitialLoading] = useState(false)
-    const [dateOfBirth, setDateOfBirth] = useState("")
-    const [showDatePicker, setShowDatePicker] = useState(false)
+    const [dateOfBirth, setDateOfBirth] = useState<string>("")
+    const [dobPickerVisible, setDobPickerVisible] = useState(false)
 
     const [loading, setLoading] = useState(false)
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
@@ -63,7 +62,6 @@ export default function EditProfileScreen(){
     const nameRef = useRef<TextInput>(null)
     const emailRef = useRef<TextInput>(null)
 
-    const [isEditingPhone, setIsEditingPhone] = useState(mobileNumber.length !== 10)
     const hasSavedNumber = mobileNumber.trim().length === 10
 
     useEffect(() => {
@@ -94,13 +92,9 @@ export default function EditProfileScreen(){
     const formatDateForApi = (date: Date) => {
         const year = date.getFullYear()
 
-        const month = String(
-            date.getMonth() + 1
-        ).padStart(2, "0")
+        const month = String(date.getMonth() + 1).padStart(2, "0")
 
-        const day = String(
-            date.getDate()
-        ).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
 
         return `${year}-${month}-${day}`
     }
@@ -127,15 +121,21 @@ export default function EditProfileScreen(){
         )
     }
 
-    const handleDateChange = (event: DateTimePickerChangeEvent, selectedDate: Date) => {
+    const handleDobConfirm = useCallback((selectedDate: Date) => {
+        const today = new Date()
+
+        if (selectedDate > today) {
+            showToast("Date of birth cannot be in the future", "info")
+
+            return
+        }
+
         setDateOfBirth(formatDateForApi(selectedDate))
 
-        if (Platform.OS === "android") {
-            setShowDatePicker(false)
-        }
-    }
+        setDobPickerVisible(false)
+    },[])
 
-    const getDatePickerValue = () => {
+    const getDobPickerValue = useCallback(() => {
         if (!dateOfBirth) {
             return new Date(2000, 0, 1)
         }
@@ -150,7 +150,7 @@ export default function EditProfileScreen(){
             month - 1,
             day
         )
-    }
+    }, [dateOfBirth])
 
     const handlePickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -691,7 +691,7 @@ export default function EditProfileScreen(){
                         disabled={loading}
                         onPress={() => {
                             if (!loading) {
-                                setShowDatePicker(true)
+                                setDobPickerVisible(true)
                             }
                         }}
                         className='bg-[#FAFAFA] gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
@@ -732,23 +732,6 @@ export default function EditProfileScreen(){
 
                         <CalendarIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F95"} strokeWidth={1.8} />
                     </TouchableOpacity>
-
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={getDatePickerValue()}
-                            mode="date"
-                            display={
-                                Platform.OS === "ios"
-                                    ? "spinner"
-                                    : "default"
-                            }
-                            maximumDate={new Date()}
-                            onValueChange={handleDateChange}
-                            onDismiss={() => {
-                                setShowDatePicker(false)
-                            }}
-                        />
-                    )}
 
                     <View 
                         className="flex-row items-center"
@@ -911,6 +894,18 @@ export default function EditProfileScreen(){
                     )}
                 </View>
             </Modal>
+
+            <CalendarPicker
+                visible={dobPickerVisible}
+                title="Select Date of Birth"
+                selectedDate={getDobPickerValue()}
+                futureDisable
+                action="Select"
+                onConfirm={handleDobConfirm}
+                onClose={() => {
+                    setDobPickerVisible(false)
+                }}
+            />
         </SafeAreaView>
     )
 }

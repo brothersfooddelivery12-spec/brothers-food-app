@@ -301,7 +301,7 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                         right: HORIZONTAL_PADDING,
                         height: BANNER_HEIGHT,
                         borderRadius: moderateScale(24),
-                        backgroundColor: "rgb(229 228 226 / 0.75)",
+                        backgroundColor: "#FAFAFA",
                         justifyContent:"center",
                         alignItems:"center",
                         zIndex: 10
@@ -309,13 +309,13 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                 >
                     <LottieView
                         source={require(
-                            "../../../../assets/animations/Loading.json"
+                            "../../../../assets/animations/Loading3.json"
                         )}
                         autoPlay
                         loop
                         style={{
-                            width: moderateScale(82),
-                            height: moderateScale(82)
+                            width: moderateScale(42),
+                            height: moderateScale(42)
                         }}
                     />
                 </View>

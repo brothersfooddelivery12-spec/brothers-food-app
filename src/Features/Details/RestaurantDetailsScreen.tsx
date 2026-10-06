@@ -22,12 +22,12 @@ import { formatRestaurantTime } from '@/utils/time-utils'
 import { Image } from "expo-image"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useState } from "react"
-import { FlatList, Pressable, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { FlatList, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getCategory, getRestaurantById, getRestaurantCategories, getRestaurantMenu, RestaurantDetails } from '../../Services/api-service'
+import { getCategory, getRestaurantById, getRestaurantCategories, getRestaurantMenu, RestaurantCategory, RestaurantDetails } from '../../Services/api-service'
 import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
@@ -203,7 +203,22 @@ export default function RestaurantDetailsScreen() {
         fetchRestaurantMenu(restaurantId)
     }, [restaurantId, fetchRestaurantMenu])
 
-    const [categories, setCategories] = useState<any[]>([])
+    const [categories, setCategories] = useState<RestaurantCategory[]>([])
+    const [activeCategoryId, setActiveCategoryId] = useState<string>("all")
+    const categoriesWithAll = useMemo(() => {
+        return [
+            {
+                id: "all",
+                name: "All",
+                restaurant_id: "",
+                description: "",
+                is_active: true,
+                created_at: "",
+                updated_at: ""
+            },
+            ...categories
+        ]
+    }, [categories])
 
     const fetchRestaurantCategories = useCallback(async (restaurantId: string) => {
         try {
@@ -1008,9 +1023,54 @@ export default function RestaurantDetailsScreen() {
                         <View
                             style={{
                                 paddingHorizontal: scale(14),
-                                marginTop: verticalScale(24)
+                                marginTop: verticalScale(14)
                             }}
                         >
+                            <ScrollView
+                                horizontal
+                                nestedScrollEnabled
+                                directionalLockEnabled
+                                showsHorizontalScrollIndicator={false}
+                                className="-mx-5 mb-3"
+                                contentContainerStyle={{
+                                    paddingHorizontal: scale(14),
+                                    gap: scale(10)
+                                }}
+                            >
+                                {categoriesWithAll.map((category) => {
+                                    const isActive = activeCategoryId === category.id
+
+                                    return (
+                                        <TouchableOpacity
+                                            key={category.id}
+                                            activeOpacity={0.85}
+                                            onPress={() => {
+                                                setActiveCategoryId(category.id)
+                                            }}
+                                            className={`items-center justify-center ${
+                                                isActive ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
+                                            }`}
+                                            style={{
+                                                borderRadius: moderateScale(18),
+                                                paddingHorizontal: scale(16),
+                                                paddingVertical: verticalScale(7),
+                                                borderWidth: 0.7,
+                                                borderColor: "#E8DDD3"
+                                            }}
+                                        >
+                                            <Text
+                                                className={`font-semibold ${
+                                                    isActive ? "text-[#FFFFFF]" : "text-[#5A3825]"
+                                                }`}
+                                                style={{ fontSize: moderateScale(13) }}
+                                            >
+                                                {category.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )
+                                })}
+                            </ScrollView>
+
                             <View
                                 className="flex-row items-center w-full"
                                 style={{ marginBottom: verticalScale(16) }}

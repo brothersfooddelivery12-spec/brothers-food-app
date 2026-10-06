@@ -232,35 +232,6 @@ export const REDEEM_ITEMS: RedeemItem[] = [
     },
 ]
 
-export const COUPONS: CouponItem[] = [
-    {
-        id: "1",
-        code: "SAVE100",
-        title: "Flat ₹100 OFF",
-        description: "On orders above ₹499",
-        note: "Expires in 3 days",
-        noteType: "expiry",
-        featured: true,
-    },
-    {
-        id: "2",
-        code: "FREEDEL",
-        title: "Free Delivery",
-        description: "Valid for orders above ₹199",
-        note: "Applicable on select restaurants",
-        noteType: "info",
-    },
-    {
-        id: "3",
-        code: "BURGER30",
-        title: "30% OFF Burgers",
-        description: "Max discount up to ₹150",
-        note: "Exclusive to Burger Week",
-        noteType: "exclusive",
-        featured: true,
-    }
-]
-
 export default function RewardsAndCouponsScreen(){
     const insets = useSafeAreaInsets()
     const {showToast} = useToast()
@@ -269,12 +240,52 @@ export default function RewardsAndCouponsScreen(){
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("1")
 
-    const params = useLocalSearchParams<{tab?: "rewards" | "coupons"}>()
+    const params = useLocalSearchParams<{
+        tab?: "rewards" | "coupons"
+        section?: "redeem" | "purchase"
+    }>()
+    
     const [activeTab, setActiveTab] = useState<"rewards" | "coupons">(
-        params.tab === "coupons"
-            ? "coupons"
-            : "rewards"
+        params.tab === "coupons" ? "coupons" : "rewards"
     )
+
+    const rewardsListRef = useRef<FlatList>(null)
+    const [redeemSectionY, setRedeemSectionY] = useState<number | null>(null)
+    const [purchaseSectionY, setPurchaseSectionY] = useState<number | null>(null)
+
+    useEffect(() => {
+        if (params.tab !== "rewards" || activeTab !== "rewards") {
+            return
+        }
+
+        let sectionY: number | null = null
+
+        if (params.section === "redeem") {
+            sectionY = redeemSectionY
+        }
+
+        if (params.section === "purchase") {
+            sectionY = purchaseSectionY
+        }
+
+        if (sectionY === null) {
+            return
+        }
+
+        requestAnimationFrame(() => {
+            rewardsListRef.current?.scrollToOffset({
+                offset: Math.max(0, sectionY - verticalScale(12)),
+                animated: true
+            })
+        })
+    }, [
+        params.tab,
+        params.section,
+        activeTab,
+        redeemSectionY,
+        purchaseSectionY
+    ])
+
     const [rewardCoupons, setRewardCoupons] = useState<Coupon[]>([])
     const [moneyCoupons, setMoneyCoupons] = useState<Coupon[]>([])
     const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([])
@@ -288,9 +299,7 @@ export default function RewardsAndCouponsScreen(){
     const fetchingRewardsRef = useRef(false)
     const fetchingAvailableRef = useRef(false)
 
-    const fetchCouponsByTab = useCallback(async (
-        tab: "rewards" | "coupons"
-    ) => {
+    const fetchCouponsByTab = useCallback(async (tab: "rewards" | "coupons") => {
         if (tab === "rewards") {
             if (fetchingRewardsRef.current) {
                 return
@@ -389,13 +398,40 @@ export default function RewardsAndCouponsScreen(){
             description: coupon.description,
             note: `Valid until ${formattedExpiry}`,
             noteType: "expiry",
-            featured: coupon.purchase_method === "FREE"
+            featured: coupon.purchase_method === "FREE",
+            purchaseMethod: coupon.purchase_method,
+            pointsRequired: coupon.points_required,
+            moneyPrice: Number(coupon.money_price)
         }
     }
 
     useEffect(() => {
         fetchCouponsByTab(activeTab)
     }, [activeTab, fetchCouponsByTab])
+
+    const handleRedeemCoupon = useCallback((coupon: Coupon) => {
+        if (coupon.purchase_method !== "REWARD_POINTS") {
+            return
+        }
+
+        console.log("Redeem coupon:", coupon.id)
+
+        console.log("Points required:", coupon.points_required)
+
+        // call redeem API here
+    },[])
+
+    const handlePurchaseCoupon = useCallback((coupon: Coupon) => {
+        if (coupon.purchase_method !== "MONEY") {
+            return
+        }
+
+        console.log("Purchase coupon:", coupon.id)
+
+        console.log("Price:", coupon.money_price)
+
+        // create payment / purchase API here
+    },[])
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -453,6 +489,7 @@ export default function RewardsAndCouponsScreen(){
             </View>
 
             <FlatList
+                ref={rewardsListRef}
                 data={[{}]}
                 renderItem={null}
                 nestedScrollEnabled
@@ -633,135 +670,132 @@ export default function RewardsAndCouponsScreen(){
                                     }}
                                 />
 
-                                <Text
-                                    className="text-[#1F1F1F] font-bold mt-6"
-                                    style={{ fontSize: moderateScale(15) }}
+                                <View
+                                    onLayout={(event) => {
+                                        setRedeemSectionY(event.nativeEvent.layout.y)
+                                    }}
                                 >
-                                    Redeem Points
-                                </Text>
+                                    <Text
+                                        className="text-[#1F1F1F] font-bold mt-6 mb-3"
+                                        style={{ fontSize: moderateScale(15) }}
+                                    >
+                                        Redeem Points
+                                    </Text>
 
-                                {loadingRewardCoupons ? (
-                                    <View
-                                        className="items-center justify-center"
-                                        style={{ height: verticalScale(150) }}
-                                    >
-                                        <LottieView
-                                            source={require(
-                                                "../../../assets/animations/Loading3.json"
-                                            )}
-                                            autoPlay
-                                            loop
-                                            style={{
-                                                width: moderateScale(50),
-                                                height: moderateScale(50)
-                                            }}
-                                        />
-                                    </View>
-                                ) : rewardCouponsLoaded && rewardCoupons.length === 0 ? (
-                                    <View
-                                        className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
-                                        style={{
-                                            borderWidth: moderateScale(0.5),
-                                            borderRadius: moderateScale(20),
-                                            paddingHorizontal: scale(20),
-                                            paddingVertical: verticalScale(24),
-                                            marginTop: verticalScale(12)
-                                        }}
-                                    >
+                                    {loadingRewardCoupons ? (
                                         <View
-                                            className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
-                                            style={{
-                                                width: moderateScale(46),
-                                                height: moderateScale(46)
-                                            }}
+                                            className="items-center justify-center"
+                                            style={{ height: verticalScale(150) }}
                                         >
-                                            <CircleStarIcon width={moderateScale(30)} height={moderateScale(30)} color="#5A3825"/>
-                                        </View>
-
-                                        <Text
-                                            className="text-[#1F1F1F] font-semibold"
-                                            style={{
-                                                fontSize: moderateScale(14),
-                                                marginTop: verticalScale(8)
-                                            }}
-                                        >
-                                            No Rewards Available
-                                        </Text>
-
-                                        <Text
-                                            className="text-[#1F1F1F]/75 font-medium text-center"
-                                            style={{
-                                                fontSize: moderateScale(11),
-                                                marginTop: verticalScale(3)
-                                            }}
-                                        >
-                                            New reward coupons will appear here.
-                                        </Text>
-                                    </View>
-                                ) : (
-                                    <FlatList
-                                        data={rewardCoupons}
-                                        keyExtractor={item => item.id}
-                                        horizontal
-                                        nestedScrollEnabled
-                                        directionalLockEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                        className="-mx-5 mt-1"
-                                        contentContainerStyle={{
-                                            paddingHorizontal: scale(14),
-                                            gap: scale(10),
-                                            paddingVertical: verticalScale(4)
-                                        }}
-                                        renderItem={({ item }) => (
-                                            <RewardCouponCard
-                                                item={item}
-                                                onRedeem={(coupon) => {
-                                                    console.log(
-                                                        "Redeem coupon:",
-                                                        coupon
-                                                    )
+                                            <LottieView
+                                                source={require(
+                                                    "../../../assets/animations/Loading3.json"
+                                                )}
+                                                autoPlay
+                                                loop
+                                                style={{
+                                                    width: moderateScale(50),
+                                                    height: moderateScale(50)
                                                 }}
                                             />
-                                        )}
-                                    />
-                                )}
-
-                                {!loadingRewardCoupons && moneyCoupons.length > 0 && (
-                                    <>
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold mt-6"
-                                            style={{ fontSize: moderateScale(15) }}
-                                        >
-                                            Purchase Coupons
-                                        </Text>
-
-                                        <FlatList
-                                            data={moneyCoupons}
-                                            keyExtractor={item => item.id}
-                                            horizontal
-                                            nestedScrollEnabled
-                                            directionalLockEnabled
-                                            showsHorizontalScrollIndicator={false}
-                                            className="-mx-5 mt-1"
-                                            contentContainerStyle={{
-                                                paddingHorizontal: scale(14),
-                                                gap: scale(10),
-                                                paddingVertical: verticalScale(4)
+                                        </View>
+                                    ) : rewardCouponsLoaded && rewardCoupons.length === 0 ? (
+                                        <View
+                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                            style={{
+                                                borderWidth: moderateScale(0.5),
+                                                borderRadius: moderateScale(20),
+                                                paddingHorizontal: scale(20),
+                                                paddingVertical: verticalScale(24),
+                                                marginTop: verticalScale(12)
                                             }}
-                                            renderItem={({ item }) => (
-                                                <RewardCouponCard
-                                                    item={item}
-                                                    onPurchase={(coupon) => {
-                                                        console.log(
-                                                            "Purchase coupon:",
-                                                            coupon
-                                                        )
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </>
-                                )}
+                                        >
+                                            <View
+                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                style={{
+                                                    width: moderateScale(46),
+                                                    height: moderateScale(46)
+                                                }}
+                                            >
+                                                <CircleStarIcon width={moderateScale(30)} height={moderateScale(30)} color="#5A3825"/>
+                                            </View>
+
+                                            <Text
+                                                className="text-[#1F1F1F] font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    marginTop: verticalScale(8)
+                                                }}
+                                            >
+                                                No Rewards Available
+                                            </Text>
+
+                                            <Text
+                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                New reward coupons will appear here.
+                                            </Text>
+                                        </View>
+                                    ) : (
+                                        <View style={{ gap: verticalScale(12) }}>
+                                            {rewardCoupons.map((coupon) => {
+                                                const mappedCoupon = mapAvailableCoupon(coupon)
+
+                                                return (
+                                                    <RewardCouponCard
+                                                        key={coupon.id}
+                                                        item={mappedCoupon}
+                                                        onRedeem={() => {
+                                                            console.log("Redeem with points:", coupon)
+
+                                                            handleRedeemCoupon(coupon)
+                                                        }}
+                                                    />
+                                                )
+                                            })}
+                                        </View>
+                                    )}
+                                </View>
+
+                                <View
+                                    onLayout={(event) => {
+                                        setPurchaseSectionY(event.nativeEvent.layout.y)
+                                    }}
+                                    style={{ marginTop: verticalScale(20) }}
+                                >
+                                    {!loadingRewardCoupons && moneyCoupons.length > 0 && (
+                                        <>
+                                            <Text
+                                                className="text-[#1F1F1F] font-bold mb-3"
+                                                style={{ fontSize: moderateScale(15) }}
+                                            >
+                                                Purchase Coupons
+                                            </Text>
+
+                                            <View style={{ gap: verticalScale(12) }}>
+                                                {moneyCoupons.map((coupon) => {
+                                                    const mappedCoupon = mapAvailableCoupon(coupon)
+
+                                                    return (
+                                                        <RewardCouponCard
+                                                            key={coupon.id}
+                                                            item={mappedCoupon}
+                                                            onPurchase={() => {
+                                                                console.log("Purchase coupon:", coupon)
+
+                                                                handlePurchaseCoupon(coupon)
+                                                            }}
+                                                        />
+                                                    )
+                                                })}
+                                            </View>
+                                        </>
+                                    )}
+                                </View>
 
                                 <Text
                                     className="text-[#1F1F1F] font-bold mt-5"
@@ -912,8 +946,8 @@ export default function RewardsAndCouponsScreen(){
                                             autoPlay
                                             loop
                                             style={{
-                                                width: moderateScale(55),
-                                                height: moderateScale(55)
+                                                width: moderateScale(50),
+                                                height: moderateScale(50)
                                             }}
                                         />
                                     </View>

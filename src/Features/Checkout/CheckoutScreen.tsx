@@ -16,9 +16,10 @@ import UpiIcon from '@/assets/icon/upi.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
+import { useCouponStore } from '@/Stores/useCouponStore'
 import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
 import { Image } from "expo-image"
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router"
 import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FlatList, StatusBar, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
@@ -96,7 +97,11 @@ export default function CheckoutScreen() {
     const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
+    const navigation = useNavigation()
     const {showToast} = useToast()
+
+    const appliedCoupon = useCouponStore(state => state.appliedCoupon)
+    const clearAppliedCoupon = useCouponStore(state => state.clearAppliedCoupon)
 
     const hasFetchedAddresses = useRef(false)
     const currentPaymentUpiRef = useRef<SavedPaymentMethod | null>(null)
@@ -228,6 +233,25 @@ export default function CheckoutScreen() {
         }, [addressesDirty, clearAddressesDirty, fetchAddresses])
     )
 
+    useEffect(() => {
+        if (!appliedCoupon) return
+
+        showToast(`Coupon applied successfully`, "success")
+    }, [appliedCoupon?.id])
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener(
+            "beforeRemove",
+            () => {
+                console.log("Leaving checkout - clearing coupon")
+
+                clearAppliedCoupon()
+            }
+        )
+
+        return unsubscribe
+    }, [navigation, clearAppliedCoupon])
+
     const router = useRouter()
 
     const [creatingOrder, setCreatingOrder] = useState(false)
@@ -290,51 +314,55 @@ export default function CheckoutScreen() {
     const [cartPreview, setCartPreview] = useState<CartPreview | null>(null)
     const [previewLoading, setPreviewLoading] = useState(false)
 
-    const handleCartPreview = useCallback(
-        async () => {
-            if (
-                !selectedCart ||
-                selectedCart.items.length === 0 ||
-                !selectedAddress
-            ) {
+    const handleCartPreview = useCallback(async () => {
+        if (!selectedCart || selectedCart.items.length === 0 || !selectedAddress) {
+            return
+        }
+
+        try {
+            setPreviewLoading(true)
+
+            const payload: CartPreviewRequest = {
+                restaurant_id: selectedCart.id,
+                address_id: selectedAddress,
+                coupon_id: appliedCoupon?.id ?? null,
+                items: selectedCart.items.map(
+                    (item) => ({
+                        menu_id: item.id,
+                        quantity: item.quantity
+                    })
+                )
+            }
+
+            console.log("Cart preview payload:", payload)
+
+            const res = await getCartPreview(payload)
+
+            console.log("Cart preview response:", res.data)
+
+            if (!res.data.success) {
+                setCouponSavings(0)
+
+                showToast(res.data.message || "Unable to calculate cart", "info")
+
                 return
             }
 
-            try {
-                setPreviewLoading(true)
+            if (res.data.success) {
+                const preview = res.data.data
 
-                const payload: CartPreviewRequest = {
-                    restaurant_id: selectedCart.id,
-                    address_id: selectedAddress,
-                    //coupon_id: "7f0ca9dd-74b2-46da-ba74-bb5eca9fb89b",
-                    items: selectedCart.items.map(
-                        (item) => ({
-                            menu_id: item.id,
-                            quantity: item.quantity
-                        })
-                    )
-                }
-
-                console.log("Cart preview payload:", payload)
-
-                const res = await getCartPreview(payload)
-
-                console.log("Cart preview response:", res.data)
-
-                if (res.data.success) {
-                    setCartPreview(res.data.data)
-                }
-            } catch (error: any) {
-                console.log("Cart preview error:", error?.response?.data || error?.message || error)
-
-                showToast(error?.message || "Unable to calculate cart", "warning")
-            } finally {
-                setPreviewLoading(false)
-                setHasPreviewLoaded(true)
+                setCartPreview(preview)
+                setCouponSavings(Number(preview?.discount ?? 0))
             }
-        },
-        [selectedCart, selectedAddress]
-    )
+        } catch (error: any) {
+            console.log("Cart preview error:", error?.response?.data || error?.message || error)
+
+            showToast(error?.message || "Unable to calculate cart", "warning")
+        } finally {
+            setPreviewLoading(false)
+            setHasPreviewLoaded(true)
+        }
+    },[selectedCart, selectedAddress, appliedCoupon?.id])
 
     useEffect(() => {
         if (
@@ -448,6 +476,7 @@ export default function CheckoutScreen() {
                     params: successParams
                 })
 
+                clearAppliedCoupon()
                 removeRestaurantCart(completedCart.id)
                 currentOrderIdRef.current = null
 
@@ -815,6 +844,8 @@ export default function CheckoutScreen() {
                     items: JSON.stringify(completedCart.items)
                 }
 
+                clearAppliedCoupon()
+
                 router.replace({
                     pathname: "/order-success",
                     params: successParams
@@ -855,6 +886,8 @@ export default function CheckoutScreen() {
                     paymentMethod: "cod",
                     items: JSON.stringify(completedCart.items)
                 }
+
+                clearAppliedCoupon()
 
                 router.replace({
                     pathname: "/order-success",
@@ -1734,60 +1767,122 @@ export default function CheckoutScreen() {
                                     })}
                                 </View>
         
-                                <View
-                                    className="p-4 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                                    style={{
-                                        borderWidth: moderateScale(0.5),
-                                        borderRadius: moderateScale(18),
-                                        marginTop: verticalScale(18)
-                                    }}
-                                >
+                                {appliedCoupon ? (
                                     <View
-                                        className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                        className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
-                                            width: moderateScale(40),
-                                            height: moderateScale(40)
+                                            borderWidth: moderateScale(0.5),
+                                            borderRadius: moderateScale(18),
+                                            marginTop: verticalScale(18)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5}/>
-                                    </View>
-
-                                    <View className="items-start gap-1 flex-1">
-                                        <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{ fontSize: moderateScale(14) }}
+                                        <View
+                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            style={{
+                                                width: moderateScale(40),
+                                                height: moderateScale(40)
+                                            }}
                                         >
-                                            Apply Coupon
-                                        </Text>
+                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                                        </View>
 
-                                        <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(10.5) }}
+                                        <View className="flex-1">
+                                            <Text
+                                                numberOfLines={1}
+                                                className="text-[#1F1F1F] font-bold"
+                                                style={{ fontSize: moderateScale(14) }}
+                                            >
+                                                {appliedCoupon.title}
+                                            </Text>
+
+                                            <Text
+                                                numberOfLines={1}
+                                                className="text-[#1F1F1F]/65 font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(10.5),
+                                                    marginTop: verticalScale(2)
+                                                }}
+                                            >
+                                                Coupon applied successfully
+                                            </Text>
+                                        </View>
+
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => {clearAppliedCoupon()}}
+                                            className="items-center justify-center bg-[#3F2516]"
+                                            style={{
+                                                paddingHorizontal: moderateScale(16),
+                                                paddingVertical: moderateScale(7),
+                                                borderRadius: moderateScale(18)
+                                            }}
                                         >
-                                            Save more on your order with available offers
-                                        </Text>
+                                            <Text
+                                                className="text-[#FFFFFF] font-semibold"
+                                                style={{ fontSize: moderateScale(12) }}
+                                            >
+                                                Remove
+                                            </Text>
+                                        </TouchableOpacity>
                                     </View>
-
-                                    <TouchableOpacity
-                                        activeOpacity={0.95}
-                                        onPress={() => {
-                                            router.push('/apply-coupon')
-                                        }}
-                                        className="items-center justify-center bg-[#3F2516]"
+                                ) : (
+                                    <View
+                                        className="p-4 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
                                         style={{
-                                            paddingHorizontal: moderateScale(16),
-                                            paddingVertical: moderateScale(7),
-                                            borderRadius: moderateScale(18)
+                                            borderWidth: moderateScale(0.5),
+                                            borderRadius: moderateScale(18),
+                                            marginTop: verticalScale(18)
                                         }}
                                     >
-                                        <Text
-                                            className="font-semibold text-white"
-                                            style={{ fontSize: moderateScale(12) }}
+                                        <View
+                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            style={{
+                                                width: moderateScale(40),
+                                                height: moderateScale(40)
+                                            }}
                                         >
-                                            Apply
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
+                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                                        </View>
+
+                                        <View className="items-start gap-1 flex-1">
+                                            <Text
+                                                className="text-[#1F1F1F] font-bold"
+                                                style={{ fontSize: moderateScale(14) }}
+                                            >
+                                                Apply Coupon
+                                            </Text>
+
+                                            <Text
+                                                className="text-[#1F1F1F]/65 font-medium"
+                                                style={{ fontSize: moderateScale(10.5) }}
+                                            >
+                                                Save more on your order with available offers
+                                            </Text>
+                                        </View>
+
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => 
+                                                preventDoublePress(() => {
+                                                    router.push("/apply-coupon")
+                                                })
+                                            }
+                                            className="items-center justify-center bg-[#3F2516]"
+                                            style={{
+                                                paddingHorizontal: moderateScale(16),
+                                                paddingVertical: moderateScale(7),
+                                                borderRadius: moderateScale(18)
+                                            }}
+                                        >
+                                            <Text
+                                                className="font-semibold text-[#FFFFFF]"
+                                                style={{ fontSize: moderateScale(12) }}
+                                            >
+                                                Apply
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
         
                                {selectedCart && (
                                     <View

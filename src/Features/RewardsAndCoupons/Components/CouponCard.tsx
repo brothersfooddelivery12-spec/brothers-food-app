@@ -11,9 +11,19 @@ export type CouponItem = {
     code: string
     title: string
     description: string
+
     note: string
     noteType: "expiry" | "info" | "exclusive"
+
     featured?: boolean
+
+    purchaseMethod:
+        | "REWARD_POINTS"
+        | "MONEY"
+        | "FREE"
+
+    pointsRequired: number | null
+    moneyPrice: number
 }
 
 type CouponCardProps = {
@@ -72,6 +82,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 </View>
 
                 <Text
+                    numberOfLines={2}
                     className="text-[#1F1F1F] font-extrabold"
                     style={{
                         fontSize: moderateScale(18),
@@ -82,6 +93,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 </Text>
 
                 <Text
+                    numberOfLines={2}
                     className="text-[#1F1F1F]/75 font-medium"
                     style={{
                         fontSize: moderateScale(12),

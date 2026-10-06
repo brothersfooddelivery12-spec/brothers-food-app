@@ -242,7 +242,7 @@ const ActiveOrderCard = ({
                     />
                 </View>
 
-                <View className="justify-center gap-1 flex-1 ml-2">
+                <View className="justify-center gap-1 flex-1 mx-2">
                     <Text
                         numberOfLines={2}
                         className="text-[#1F1F1F] font-extrabold"

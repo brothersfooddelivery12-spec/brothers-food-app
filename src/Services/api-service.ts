@@ -287,6 +287,16 @@ export const getRestaurantMenu = async (restaurantId: string) => {
     return api.get(`/menu/restaurant/${restaurantId}`)
 }
 
+export type RestaurantCategory = {
+    id: string
+    restaurant_id: string
+    name: string
+    description: string
+    is_active: boolean
+    created_at: string
+    updated_at: string
+}
+
 export const getRestaurantCategories = async (restaurantId: string) => {
     return api.get(`/categories/restaurant/${restaurantId}`)
 }
@@ -386,7 +396,7 @@ export type CartPreviewRequest = {
     restaurant_id: string
     address_id?: string | null
 
-    coupon_id?: string
+    coupon_id?: string | null
     items: CartItemRequest[]
 }
 

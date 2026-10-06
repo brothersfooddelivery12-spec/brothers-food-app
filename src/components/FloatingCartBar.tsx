@@ -247,7 +247,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                         {index < otherCarts.length - 1 && (
                             <View
                                 style={{
-                                    backgroundColor: "rgba(232,221,211,0.60)",
+                                    backgroundColor: "rgba(31,31,31,0.15)",
                                     height: moderateScale(0.5),
                                     marginVertical: verticalScale(4),
                                     marginHorizontal: scale(8)
