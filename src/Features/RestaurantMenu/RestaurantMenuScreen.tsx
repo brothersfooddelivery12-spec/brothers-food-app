@@ -15,7 +15,7 @@ import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimen
 import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated'
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import PopularItemCard from '../Details/components/PopularItemCard'
+import RestaurantMenuItemCard from '../Details/components/RestaurantMenuItemCard'
 import FoodCard, { MenuItem } from '../Home/components/FoodCard'
 import ComboCard from './Components/ComboCard'
 
@@ -176,7 +176,7 @@ export default function RestaurantMenuScreen(){
                         gap: moderateScale(15)
                     }}
                 >
-                    <PopularItemCard
+                    <RestaurantMenuItemCard
                         item={item}
                         onPress={handleItemPress}
                         onAdd={handleAddItem}

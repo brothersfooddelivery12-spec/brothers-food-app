@@ -9,12 +9,12 @@ import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
 import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
 import ShareIcon from '@/assets/icon/ShareIcon.svg'
 import StoreIcon from '@/assets/icon/StoreIcon.svg'
+import FoodIcon from '@/assets/icon/UtensilIcon2.svg'
 import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
 import WalletIcon from '@/assets/icon/WalletIcon.svg'
 import { COLORS } from '@/constant/colors'
 import { popularitems } from "@/constant/PopularItemData"
 import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
-import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
 import { useLocationStore } from '@/Stores/locationStore'
@@ -27,15 +27,15 @@ import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FlatList, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
-import { getCategory, getRestaurantById, getRestaurantCategories, getRestaurantMenu, RestaurantCategory, RestaurantDetails } from '../../Services/api-service'
+import { getMenuByCategory, getRestaurantById, getRestaurantCategories, getRestaurantMenu, PopularMenu, RestaurantCategory, RestaurantDetails } from '../../Services/api-service'
 import { useCartStore } from '../../Stores/useCartStore'
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from "../hook/usePreventDoublePress"
 import ImageGrid from "./components/ImageGrid"
-import PopularItemCard from "./components/PopularItemCard"
 import RatingDistribution from "./components/RatingDistribution"
+import RestaurantMenuItemCard, { RestaurantMenuItem } from "./components/RestaurantMenuItemCard"
 import RestaurantOfferCard from "./components/RestaurantOfferCard"
 import ReviewCard from "./components/ReviewCard"
 import SimilarRestaurantCard from "./components/SimilarRestaurantCard"
@@ -123,7 +123,6 @@ const SimialrRestaurants = [
 ]
 
 export default function RestaurantDetailsScreen() {
-    const insets = useSafeAreaInsets()
     const { restaurantId } = useLocalSearchParams<{restaurantId: string}>()
     const preventDoublePress = usePreventDoublePress()
     const {showToast} = useToast()
@@ -173,51 +172,11 @@ export default function RestaurantDetailsScreen() {
         fetchRestaurant()
     }, [fetchRestaurant])
 
-    const fetchRestaurantMenu = useCallback(async (restaurantId: string, latitude: number, longitude: number) => {
-        try {
-            const res = await getRestaurantMenu(restaurantId, latitude, longitude)
-
-            console.log("Restaurant menu response:", res.data)
-
-            if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch restaurant menu", "warning")
-
-                return
-            }
-
-            const data = res.data.data ?? []
-
-            console.log("RESTAURANT MENU:", data)
-
-        } catch (error: any) {
-            console.log("Restaurant menu error:", error)
-
-            showToast(error?.response?.data?.message || error?.message ||
-                "Unable to fetch restaurant menu",
-                "warning"
-            )
-        }
-    },[])
-
-    useEffect(() => {
-        if (!restaurantId || !location) {
-            return
-        }
-
-        fetchRestaurantMenu(
-            restaurantId,
-            location.latitude,
-            location.longitude
-        )
-    }, [
-        restaurantId,
-        location?.latitude,
-        location?.longitude,
-        fetchRestaurantMenu
-    ])
-
     const [categories, setCategories] = useState<RestaurantCategory[]>([])
     const [activeCategoryId, setActiveCategoryId] = useState<string>("all")
+    const [menuItems, setMenuItems] = useState<RestaurantMenuItem[]>([])
+    const [loadingMenu, setLoadingMenu] = useState(false)
+
     const categoriesWithAll = useMemo(() => {
         return [
             {
@@ -247,8 +206,6 @@ export default function RestaurantDetailsScreen() {
 
             const data = res.data.data ?? []
 
-            console.log("RESTAURANT CATEGORIES:", data)
-
             setCategories(data)
         } catch (error: any) {
             console.log("Restaurant categories error:", error)
@@ -268,42 +225,91 @@ export default function RestaurantDetailsScreen() {
         )
     }, [restaurantId, fetchRestaurantCategories])
 
-    const [category, setCategory] = useState<any | null>(null)
-
-    const fetchCategory = useCallback(async (categoryId: string) => {
+    const fetchMenu = useCallback(async (
+        restaurantId: string,
+        categoryId: string,
+        latitude: number,
+        longitude: number
+    ) => {
         try {
-            const res = await getCategory(categoryId)
+            setLoadingMenu(true)
+            let res
 
-            console.log("Category response:", res.data)
+            if (categoryId === "all") {
+                res = await getRestaurantMenu(
+                    restaurantId,
+                    latitude,
+                    longitude
+                )
+            } else {
+                res = await getMenuByCategory(
+                    categoryId,
+                    latitude,
+                    longitude
+                )
+            }
+
+            console.log("Menu response:", res.data)
 
             if (!res.data.success) {
-                showToast(res.data.message || "Unable to fetch category", "warning")
+                showToast(res.data.message || "Unable to fetch menu", "warning")
 
                 return
             }
 
-            const data = res.data.data
-
-            console.log("CATEGORY:", data)
-
-            setCategory(data)
-        } catch (error: any) {
-            console.log("Get category error:", error)
-
-            showToast(error?.response?.data?.message || error?.message ||
-                "Unable to fetch category",
-                "warning"
+            const RestaurantMenuData: PopularMenu[] = res.data.data ?? []
+            
+            const mappedRestaurantMenu: RestaurantMenuItem[] = RestaurantMenuData.map((item) => ({
+                    id: item.id,
+                    restaurant: {
+                        id: item.restaurant.id,
+                        name: item.restaurant.name,
+                        LogoUrl: item.restaurant.logo_url ?? null,
+                        isOpen: item.restaurant.is_open
+                    },
+                    name: item.name,
+                    description: item.description ?? "",
+                    imageUrl: item.image_url || null,
+                    price: Number(item.price),
+                    preparationTime: item.estimated_time_minutes,
+                    deliveryFee: item.delivery_fee,
+                    isAvailable: item.is_available,
+                    isVeg: item.is_veg
+                })
             )
+
+            setMenuItems(mappedRestaurantMenu)
+        } catch (error: any) {
+            console.log("Menu fetch error:", error)
+
+            showToast(error?.response?.data?.message || error?.message || "Unable to fetch menu", "warning")
+        } finally {
+            setLoadingMenu(false)
         }
     },[])
 
-    const categoryId = "bd0f0dfa-f34e-4cec-999c-ccd1b8f18371"
-
     useEffect(() => {
-        if (!categoryId) return
+        if (
+            !restaurantId ||
+            !activeCategoryId ||
+            !location
+        ) {
+            return
+        }
 
-        fetchCategory(categoryId)
-    }, [categoryId, fetchCategory])
+        fetchMenu(
+            restaurantId,
+            activeCategoryId,
+            location.latitude,
+            location.longitude
+        )
+    }, [
+        restaurantId,
+        activeCategoryId,
+        location?.latitude,
+        location?.longitude,
+        fetchMenu
+    ])
 
     const [coverImageError, setCoverImageError] = useState(false)
     const [logoImageError, setLogoImageError] = useState(false)
@@ -385,12 +391,6 @@ export default function RestaurantDetailsScreen() {
 
     const addToCart = useCartStore((state) => state.addToCart)
     
-    const getRestaurantByID = (restaurantId: string) => {
-        return RESTAURANTS.find(
-            (restaurant) => restaurant.id === restaurantId
-        )
-    }
-
     const ratingStar = 4.8
     const stars = getRatingStars(ratingStar)
 
@@ -405,56 +405,6 @@ export default function RestaurantDetailsScreen() {
     const handleTabChange = useCallback((tab: string) => {
         setActiveTab(tab)
     }, [])
-
-    const handleItemPress = useCallback((item: any) => {
-        console.log("Item pressed:", item.name)
-    }, [])
-
-    const handleAddItem = useCallback(
-        (item: any) => {
-            if (!item.isActive) {
-                showToast("This item is currently unavailable", "warning")
-
-                return
-            }
-
-            const restaurant = getRestaurantByID(item.restaurantId)
-
-            if (!restaurant) {
-                showToast("Restaurant not found", "warning")
-
-                return
-            }
-
-            if (!restaurant.isActive) {
-                showToast("Restaurant is currently closed", "warning")
-
-                return
-            }
-
-            // addToCart({
-            //     restaurant: {
-            //         id: restaurant.id,
-            //         restaurantName: restaurant.name,
-            //         restaurantLogoUrl: restaurant.imageUri,
-            //         deliveryTime: restaurant.deliveryTime,
-            //         deliveryFee: restaurant.deliveryFee,
-            //         isOpen: restaurant.isActive
-            //     },
-
-            //     item: {
-            //         id: item.id,
-            //         name: item.name,
-            //         imageUrl: item.imageUri,
-            //         price: item.price,
-            //         description: item.description,
-            //         isAvailable: item.isActive
-            //     }
-            // })
-
-            showToast("added to cart", "success")
-        },[addToCart]
-    )
 
     const handleOfferPress = useCallback((id: string) => {
         console.log("Selected offer:", id)
@@ -476,6 +426,62 @@ export default function RestaurantDetailsScreen() {
         },[handleOfferPress]
     )
 
+    const handleFoodPress = useCallback(
+        (menuId: string) => {
+            preventDoublePress(() => {
+                router.push({
+                    pathname: "/food-details",
+                    params: {
+                        menuId
+                    }
+                })
+            })
+        },
+        [preventDoublePress, router]
+    )
+
+    const handleAddToCart = useCallback((item: RestaurantMenuItem) => {
+        if (!item.isAvailable) {
+            showToast("This menu is currently unavailable", "info")
+
+            return
+        }
+
+        if (!item.restaurant) {
+            showToast("Restaurant not found", "info")
+
+            return
+        }
+
+        if (!item.restaurant.isOpen) {
+            showToast("Restaurant is currently closed", "info")
+
+            return
+        }
+
+        addToCart({
+            restaurant: {
+                id: item.restaurant.id,
+                restaurantName: item.restaurant.name,
+                restaurantLogoUrl: item.restaurant.LogoUrl,
+                deliveryFee: Number(item.deliveryFee) || 0,
+                isOpen: item.restaurant.isOpen
+            },
+
+            item: {
+                id: item.id,
+                imageUrl: item.imageUrl,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                preparationTime: item.preparationTime,
+                isAvailable: item.isAvailable
+            }
+        })
+
+        showToast("Menu added to cart", "success")
+    },[addToCart])
+
     const renderPopularitems = useCallback(
         ({ item }: { item: any }) => {
             return(
@@ -486,14 +492,14 @@ export default function RestaurantDetailsScreen() {
                         marginHorizontal: scale(12)
                     }}
                 >
-                    <PopularItemCard
+                    <RestaurantMenuItemCard
                         item={item}
-                        onPress={handleItemPress}
-                        onAdd={handleAddItem}
+                        onPress={() => {}}
+                        onAddPress={() => {}}
                     />
                 </View>
             )
-        },[handleItemPress, handleAddItem]
+        },[handleFoodPress, handleAddToCart]
     )
 
     const renderSimilarRestaurants = useCallback(
@@ -1090,7 +1096,7 @@ export default function RestaurantDetailsScreen() {
                         <View
                             style={{
                                 paddingHorizontal: scale(14),
-                                marginTop: verticalScale(14)
+                                marginTop: verticalScale(16)
                             }}
                         >
                             <ScrollView
@@ -1140,6 +1146,89 @@ export default function RestaurantDetailsScreen() {
                                 })}
                             </ScrollView>
 
+                            {loadingMenu ? (
+                                <View
+                                    className="items-center justify-center"
+                                    style={{ height: verticalScale(180) }}
+                                >
+                                    <LottieView
+                                        source={require(
+                                            "../../../assets/animations/Loading3.json"
+                                        )}
+                                        autoPlay
+                                        loop
+                                        style={{
+                                            width: moderateScale(50),
+                                            height: moderateScale(50)
+                                        }}
+                                    />
+                                </View>
+                            ) : menuItems.length > 0 ? (
+                                <View
+                                    style={{ gap: verticalScale(12) }}
+                                >
+                                    {menuItems.map((item) => (
+                                        <RestaurantMenuItemCard
+                                            key={item.id}
+                                            item={item}
+                                            onPress={() => handleFoodPress(item.id)}
+                                            onAddPress={() => handleAddToCart(item)}
+                                        />
+                                    ))}
+                                </View>
+                            ) : (
+                                <View
+                                    className=" w-full items-center justify-center mx-2 mt-3 mb-6"
+                                    style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderWidth: moderateScale(0.5),
+                                        paddingHorizontal: scale(20),
+                                        paddingVertical: verticalScale(24),
+                                        borderRadius: moderateScale(20)
+                                    }}
+                                >
+                                    <View
+                                        className='rounded-full items-center justify-center'
+                                        style={{
+                                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
+                                            width: moderateScale(46),
+                                            height: moderateScale(46)
+                                        }}
+                                    >
+                                        <FoodIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} />
+                                    </View>
+
+                                    <Text
+                                        className="font-semibold text-center"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            marginTop: moderateScale(8),
+                                            color: COLORS.primaryTextColor
+                                        }}
+                                    >
+                                        {activeCategoryId === "all"
+                                            ? "No menu items available"
+                                            : "No items in this category"
+                                        }
+                                    </Text>
+
+                                    <Text
+                                        className="font-medium text-center"
+                                        style={{
+                                            fontSize: moderateScale(11),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                                            marginTop: verticalScale(3)
+                                        }}
+                                    >
+                                        {activeCategoryId === "all"
+                                            ? "This restaurant currently has no menu items available."
+                                            : "There are currently no menu items available in this category."
+                                        }
+                                    </Text>
+                                </View>
+                            )}
+
                             <View
                                 className="flex-row items-center w-full"
                                 style={{ marginBottom: verticalScale(16) }}
@@ -1176,7 +1265,7 @@ export default function RestaurantDetailsScreen() {
                             </View>
     
                             <ImageGrid
-                                images={FODD_IMAGES}
+                                images={restaurant?.gallery ?? []}
                                 gap={moderateScale(15)}
                                 size={moderateScale(160)}
                                 borderRadius={moderateScale(22)}

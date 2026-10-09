@@ -453,7 +453,7 @@ const RetryPaymentModal = memo(({
                         marginHorizontal: scale(8),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
-                        maxHeight: "88%"
+                        maxHeight: "85%"
                     }}
                 >
                     <ScrollView

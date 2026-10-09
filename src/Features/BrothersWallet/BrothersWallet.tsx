@@ -375,13 +375,13 @@ export default function BrothersWalletScreen(){
                         >
                             <LottieView
                                 source={require(
-                                    "../../../assets/animations/Food_Loading2.json"
+                                    "../../../assets/animations/Loading3.json"
                                 )}
                                 autoPlay
                                 loop
                                 style={{
-                                    width: moderateScale(115),
-                                    height: moderateScale(115)
+                                    width: moderateScale(50),
+                                    height: moderateScale(50)
                                 }}
                             />
                         </View>

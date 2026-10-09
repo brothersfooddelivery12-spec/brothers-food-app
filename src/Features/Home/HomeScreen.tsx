@@ -1693,8 +1693,10 @@ export default function HomeScreen() {
                         }
                         ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
                             <View
-                                className="items-center justify-center"
-                                style={{ minHeight: screenHeight - headerHeight - verticalScale(88) }}
+                                className="flex-1 items-center justify-center"
+                                style={{
+                                    paddingTop: verticalScale(20)
+                                }}
                             >
                                 <LottieView
                                     source={require(

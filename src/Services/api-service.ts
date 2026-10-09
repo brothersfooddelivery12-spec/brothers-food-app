@@ -250,7 +250,7 @@ export interface RestaurantDetails {
 
     logo_url: string | null
     cover_image_url: string | null
-    gallery: string[]
+    gallery: string[] | null
 
     opening_time: string
     closing_time: string
@@ -309,8 +309,15 @@ export const getRestaurantCategories = async (restaurantId: string) => {
     return api.get(`/categories/restaurant/${restaurantId}`)
 }
 
-export const getCategory = async (categoryId: string) => {
-    return api.get(`/categories/${categoryId}`)
+export const getMenuByCategory = async (categoryId: string, latitude: number, longitude: number) => {
+    return api.get(`/menu/${categoryId}`,
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
 export interface MenuDetails {

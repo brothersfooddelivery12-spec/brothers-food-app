@@ -1,39 +1,42 @@
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import { COLORS } from "@/constant/colors"
+import { MenuItemRestaurant } from "@/Features/Home/components/FoodCard"
 import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
-export interface PopularItem {
-    id: string;
-    restaurantId: string
+export interface RestaurantMenuItem {
+    id: string
+    restaurant: MenuItemRestaurant
     
     name: string
+    imageUrl?: string | null
     description: string
-    imageUri: string
-
-    rating: number
     price: number
-
+    preparationTime?: number
+    deliveryFee?: string
+    isHot?: boolean
+    isAvailable: boolean
+    isVeg: boolean
     tag?: string
-    isActive: boolean
+    rating?: number | null
 }
 
-interface PopularItemCardProps {
-    item: PopularItem;
-    onPress?: (item: PopularItem) => void;
-    onAdd?: (item: PopularItem) => void;
+interface RestaurantMenuItemCardProps {
+    item: RestaurantMenuItem;
+    onPress?: () => void
+    onAddPress?: () => void
 }
 
-const PopularItemCard = ({
+const RestaurantMenuItemCard = ({
     item,
     onPress,
-    onAdd
-}: PopularItemCardProps) => {
-    const isInactive = !item.isActive
+    onAddPress
+}: RestaurantMenuItemCardProps) => {
+    const isInactive = !item.isAvailable
 
     const [imageError, setImageError] = useState(false)
         
@@ -41,17 +44,14 @@ const PopularItemCard = ({
     
     useEffect(() => {
         setImageError(false)
-    }, [item.imageUri])
+    }, [item.imageUrl])
 
-    const hasImage = !!item.imageUri && !imageError
+    const hasImage = !!item.imageUrl && !imageError
 
     return (
         <TouchableOpacity
-            activeOpacity={item.isActive ? 0.95 : 1}
-            onPress={() => {
-                if (isInactive) return
-                onPress?.(item)
-            }}
+            activeOpacity={item.isAvailable ? 0.95 : 1}
+            onPress={item.isAvailable ? onPress : undefined}
             className="w-full p-2 overflow-hidden"
             style={{
                 borderWidth: moderateScale(0.5),
@@ -77,7 +77,7 @@ const PopularItemCard = ({
                         source={
                             hasImage
                                 ? {
-                                    uri: item.imageUri!
+                                    uri: item.imageUrl!
                                 }
                                 : DefaultFoodImage
                         }
@@ -244,9 +244,9 @@ const PopularItemCard = ({
                     onPress={(event) => {
                         event.stopPropagation()
 
-                        if (isInactive) return
+                        if (!item.isAvailable) return
 
-                        onAdd?.(item)
+                        onAddPress?.()
                     }}
                     className="items-center justify-center ml-auto"
                     style={{
@@ -269,4 +269,4 @@ const PopularItemCard = ({
     )
 }
 
-export default React.memo(PopularItemCard)
+export default React.memo(RestaurantMenuItemCard)

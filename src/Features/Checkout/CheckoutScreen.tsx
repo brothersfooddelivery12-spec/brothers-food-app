@@ -336,8 +336,6 @@ export default function CheckoutScreen() {
                 )
             }
 
-            console.log("Cart preview payload:", payload)
-
             const res = await getCartPreview(payload)
 
             console.log("Cart preview response:", res.data)
@@ -1008,7 +1006,7 @@ export default function CheckoutScreen() {
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(10),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >

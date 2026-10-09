@@ -120,7 +120,7 @@ export default function WriteReviewScreen() {
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(10),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
