@@ -1,6 +1,8 @@
 import ErrorIcon from '@/assets/icon/ErrorIcon.svg'
 import InfoIcon from '@/assets/icon/InformationSquareIcon.svg'
 import SuccessIcon from '@/assets/icon/SuccessIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import React, { createContext, useContext, useRef, useState } from "react"
 import { Animated, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -84,36 +86,38 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <View
-            className={`py-1.5 px-2 flex-row items-center gap-2 ${
-                mode === "success"
-                    ? "bg-[#523b2d]"
-                    : mode === "warning"
-                        ? "bg-red-400"
-                        : "bg-[#523b2d]"
-            }`}
-            style={{ borderRadius: moderateScale(12) }}
+            className="py-1.5 px-2 flex-row items-center gap-2"
+            style={{
+              borderRadius: moderateScale(12),
+              backgroundColor: mode === "warning"
+                ? COLORS.errorBorderColor
+                : COLORS.primaryColor
+            }}
           >
             {mode === "success" ? (
                 <SuccessIcon
                     width={moderateScale(22)}
                     height={moderateScale(22)}
-                    color="#f8d771"
+                    color={COLORS.accentLightColor}
                 />
             ) : mode === "warning" ? (
                 <ErrorIcon
                     width={moderateScale(22)}
                     height={moderateScale(22)}
-                    color="#FFE4E6"
+                    color={hexToRgba(COLORS.primaryBackgroundColor, 0.85)}
                 />
             ) : (
                 <InfoIcon
                     width={moderateScale(22)}
                     height={moderateScale(22)}
-                    color="#f8d771"
+                    color={COLORS.accentLightColor}
                 />
             )}
 
-            <Text className="text-[#FFFFFF] text-base font-medium mr-1">
+            <Text
+              className="text-base font-medium mr-1"
+              style={{ color: COLORS.primaryBackgroundColor }}
+            >
               {message}
             </Text>
           </View>

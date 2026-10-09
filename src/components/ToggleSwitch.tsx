@@ -1,3 +1,4 @@
+import { COLORS } from "@/constant/colors"
 import { LinearGradient } from "expo-linear-gradient"
 import { TouchableOpacity, View } from "react-native"
 
@@ -12,7 +13,10 @@ export default function ToggleSwitch({ enabled, color=false, onPress }: ToggleSw
     <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
         {enabled ? (
             <LinearGradient
-                colors={["#5C4639", "#45352b"]}
+                colors={[
+                    COLORS.secondaryColor,
+                    COLORS.secondaryDarkColor
+                ]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
@@ -23,15 +27,21 @@ export default function ToggleSwitch({ enabled, color=false, onPress }: ToggleSw
                     paddingHorizontal: 4,
                 }}
             >
-                <View className="h-6 w-6 self-end rounded-full bg-white shadow" 
+                <View className="h-6 w-6 self-end rounded-full shadow" 
                     style={{
-                        backgroundColor: color ? "#F8D56A" : "#FFFFFF"
+                        backgroundColor: color ? COLORS.inactiveBackgroundColor : COLORS.primaryBackgroundColor
                     }}
                 />
             </LinearGradient>
         ) : (
-            <View className="h-[28px] w-[48px] justify-center rounded-full bg-[#E5E4E2]/75">
-                <View className="mx-1 h-6 w-6 self-start rounded-full bg-white shadow" />
+            <View
+                className="h-[28px] w-[48px] justify-center rounded-full"
+                style={{ backgroundColor: COLORS.inactiveBackgroundColor }}
+            >
+                <View
+                    className="mx-1 h-6 w-6 self-start rounded-full shadow"
+                    style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+                />
             </View>
         )}
     </TouchableOpacity>

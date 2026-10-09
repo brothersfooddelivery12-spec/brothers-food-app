@@ -3,8 +3,10 @@ import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import RestaurantFoodCard, { SignatureItem } from "./RestaurantFoodCard"
@@ -42,19 +44,28 @@ const RestaurantSearchCard = ({
     onFoodPress,
     onAddPress
 }: RestaurantCardProps) => {
-
     const isInactive = !isActive
+
+    const [imageError, setImageError] = useState(false)
+
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Cover_Image.png")
+
+    useEffect(() => {
+        setImageError(false)
+    }, [imageUri])
+
+    const hasImage = !!imageUri && !imageError
 
     return (
         <View
             className="mt-5 w-full overflow-hidden"
             style={{
-                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderWidth: moderateScale(0.5),
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <TouchableOpacity
@@ -70,7 +81,9 @@ const RestaurantSearchCard = ({
                             width: "100%",
                             height: "100%",
                             borderRadius: moderateScale(18),
-                            overflow: "hidden"
+                            overflow: "hidden",
+                            borderWidth: !hasImage && !isInactive ? 0.7 : 0,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                         }}
                     >
                         <Image
@@ -89,7 +102,8 @@ const RestaurantSearchCard = ({
                         {isInactive && (
                             <View
                                 pointerEvents="none"
-                                className="absolute inset-0 bg-black/25"
+                                className="absolute inset-0"
+                                style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                             />
                         )}
                     </View>
@@ -103,39 +117,43 @@ const RestaurantSearchCard = ({
                             }}
                         >
                             <View
-                                className="flex-row items-center bg-[#F8D56A]"
+                                className="flex-row items-center"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(4.5),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
                                 <Text
-                                    className="font-bold text-[#3F2516]"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     30% OFF
                                 </Text>
                             </View>
 
                             <View
-                                className="flex-row items-center justify-center bg-[#F8D56A]"
+                                className="flex-row items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     gap: moderateScale(5),
                                     paddingHorizontal: moderateScale(7), 
                                     paddingVertical: moderateScale(3.5),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
-                                <DeliveryIcon
-                                    width={moderateScale(16)}
-                                    height={moderateScale(16)}
-                                    color="#3F2516"
-                                />
+                                <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className="font-semibold text-[#3F2516]"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
                                 </Text>
@@ -152,12 +170,15 @@ const RestaurantSearchCard = ({
                                 paddingHorizontal: moderateScale(10),
                                 paddingVertical: verticalScale(5),
                                 borderRadius: moderateScale(10),
-                                backgroundColor: "rgba(31,31,31,0.85)"
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.85)
                             }}
                         >
                             <Text
-                                className="font-bold text-white uppercase"
-                                style={{ fontSize: moderateScale(9) }}
+                                className="font-bold uppercase"
+                                style={{
+                                    fontSize: moderateScale(9),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Currently Closed
                             </Text>
@@ -177,24 +198,22 @@ const RestaurantSearchCard = ({
                             top: moderateScale(14),
                             width: moderateScale(32),
                             height: moderateScale(32),
-                            backgroundColor: isInactive
-                                ? "rgba(255,255,255,0.80)"
-                                : "#FFFFFF",
-                            borderColor: "rgba(31,31,31,0.10)",
-                            borderWidth: moderateScale(0.7)
+                            backgroundColor: isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.75) : COLORS.primaryBackgroundColor,
+                            borderWidth: moderateScale(0.7),
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.10)
                         }}
                     >
                         {isFavourite ? (
                             <FavouriteIconFilled
                                 width={moderateScale(20)}
                                 height={moderateScale(20)}
-                                color={ isInactive ? "#737373" : "#3F2516" }
+                                color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                             />
                         ) : (
                             <FavouriteIcon
                                 width={moderateScale(20)}
                                 height={moderateScale(20)}
-                                color={ isInactive ? "#737373" : "#3F2516" }
+                                color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                                 strokeWidth={1.5}
                             />
                         )}
@@ -207,7 +226,7 @@ const RestaurantSearchCard = ({
                         className="font-bold"
                         style={{
                             fontSize: moderateScale(16),
-                            color: isInactive ? "rgba(31,31,31,0.52)" : "#1F1F1F"
+                            color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                         }}
                     >
                         {name}
@@ -222,21 +241,21 @@ const RestaurantSearchCard = ({
                                 paddingVertical: moderateScale(4),
                                 borderRadius: moderateScale(12),
                                 backgroundColor: isInactive
-                                    ? "rgba(31,31,31,0.07)"
-                                    : "rgba(232,185,63,0.15)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    : hexToRgba(COLORS.accentColor, 0.15)
                             }}
                         >
                             <RatingIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
-                                color={isInactive ? "#858585" : "#5C4639"}
+                                color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                             />
 
                             <Text
                                 className="font-semibold"
                                 style={{
                                     fontSize: moderateScale(12),
-                                    color: isInactive ? "#858585" : "#5C4639"
+                                    color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                                 }}
                             >
                                 {rating}
@@ -246,9 +265,7 @@ const RestaurantSearchCard = ({
                                 className="font-medium"
                                 style={{
                                     fontSize: moderateScale(11),
-                                    color: isInactive
-                                        ? "rgba(31,31,31,0.42)"
-                                        : "rgba(92,70,57,0.85)"
+                                    color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                                 }}
                             >
                                 ({ratingCount})
@@ -263,21 +280,21 @@ const RestaurantSearchCard = ({
                                 paddingVertical: moderateScale(4),
                                 borderRadius: moderateScale(12),
                                 backgroundColor: isInactive
-                                    ? "rgba(31,31,31,0.07)"
-                                    : "rgba(232,185,63,0.15)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    : hexToRgba(COLORS.accentColor, 0.15)
                             }}
                         >
                             <LocationIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
-                                color={isInactive ? "#858585" : "#5C4639"}
+                                color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                             />
 
                             <Text
                                 className="font-semibold"
                                 style={{
                                     fontSize: moderateScale(12),
-                                    color: isInactive ? "#858585" : "#5C4639"
+                                    color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                                 }}
                             >
                                 {distance}
@@ -291,14 +308,14 @@ const RestaurantSearchCard = ({
                                     paddingHorizontal: scale(8),
                                     paddingVertical: verticalScale(4),
                                     borderRadius: moderateScale(10),
-                                    backgroundColor: "rgba(31,31,31,0.08)"
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                 }}
                             >
                                 <Text
                                     className="font-semibold uppercase"
                                     style={{
                                         fontSize: moderateScale(8.5),
-                                        color: "rgba(31,31,31,0.50)"
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.5)
                                     }}
                                 >
                                     Unavailable
@@ -319,7 +336,7 @@ const RestaurantSearchCard = ({
                         marginTop: verticalScale(14),
                         fontSize: moderateScale(12),
                         letterSpacing: moderateScale(1),
-                        color: isInactive ? "rgba(31,31,31,0.45)" : "#3F2516"
+                        color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.45) : COLORS.primaryColor
                     }}
                 >
                     Signature Selection

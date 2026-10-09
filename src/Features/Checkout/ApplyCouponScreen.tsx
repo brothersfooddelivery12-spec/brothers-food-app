@@ -3,8 +3,10 @@ import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import MoneyFilledIcon from '@/assets/icon/MoneyFilledIcon.svg'
 import FoodIcon from '@/assets/icon/UtensilIcon2.svg'
+import { COLORS } from '@/constant/colors'
 import { Coupon, getAvailableCoupons } from '@/Services/api-service'
 import { useCouponStore } from '@/Stores/useCouponStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import * as Clipboard from "expo-clipboard"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -85,7 +87,8 @@ export default function ApplyCouponScreen(){
     }, [fetchAvailableCoupons])
 
     const mapAvailableCoupon = (coupon: Coupon): CouponItem => {
-        const validTo = new Date(coupon.valid_to)
+        const validTo = new Date(coupon.valid_to) 
+        const isExpired = validTo.getTime() < Date.now()
 
         const formattedExpiry =
             validTo.toLocaleDateString(
@@ -102,12 +105,16 @@ export default function ApplyCouponScreen(){
             code: coupon.code,
             title: coupon.title,
             description: coupon.description,
-            note: `Valid until ${formattedExpiry}`,
+            note: isExpired
+                ? `Expired on ${formattedExpiry}`
+                : `Valid until ${formattedExpiry}`,
             noteType: "expiry",
-            featured: coupon.purchase_method === "FREE",
+            featured: coupon.purchase_method === "REWARD_POINTS",
             purchaseMethod: coupon.purchase_method,
             pointsRequired: coupon.points_required,
-            moneyPrice: Number(coupon.money_price)
+            moneyPrice: Number(coupon.money_price),
+            isActive: coupon.is_active,
+            isExpired
         }
     }
 
@@ -186,10 +193,13 @@ export default function ApplyCouponScreen(){
     },[])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -205,27 +215,35 @@ export default function ApplyCouponScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Apply Coupon
                     </Text>
                     
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Save more with available offers and discounts.
                     </Text>
@@ -266,8 +284,10 @@ export default function ApplyCouponScreen(){
                     ListHeaderComponent={
                         <>
                             <View
-                                className="p-4 items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                className="p-4 items-center"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(20),
                                     marginTop: verticalScale(6)
@@ -275,26 +295,33 @@ export default function ApplyCouponScreen(){
                             >
                                 <View className='flex-row gap-3 items-center'>
                                     <View
-                                        className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                        className="items-center justify-center rounded-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                             width: moderateScale(42),
                                             height: moderateScale(42)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5}/>
+                                        <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} strokeWidth={1.5}/>
                                     </View>
     
                                     <View className="items-start gap-1 flex-1">
                                         <Text
-                                            className="text-[#1F1F1F] font-bold"
-                                            style={{ fontSize: moderateScale(14) }}
+                                            className="font-bold"
+                                            style={{
+                                                fontSize: moderateScale(14),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                         >
                                             Have a coupon code?
                                         </Text>
     
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(10.5) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(10.5),
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                            }}
                                         >
                                             Enter your code and unlock delicious savings.
                                         </Text>
@@ -306,8 +333,10 @@ export default function ApplyCouponScreen(){
                                         onPress={() => {
                                             couponInputRef.current?.focus()
                                         }}
-                                        className="flex-1 items-start bg-[#FFFFFF] border-[#1F1F1F]/10"
+                                        className="flex-1 items-start"
                                         style={{
+                                            backgroundColor: COLORS.primaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.7),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(10),
@@ -325,13 +354,16 @@ export default function ApplyCouponScreen(){
                                                 }
                                             }}
                                             placeholder="Enter coupon code"
-                                            placeholderTextColor="#1F1F1F65"
+                                            placeholderTextColor={COLORS.placeholderTextColor}
                                             multiline={false}
                                             numberOfLines={1}
                                             autoCapitalize="characters"
-                                            className="flex-1 text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(13)}}
-                                            selectionColor="#79685e"
+                                            className="flex-1 font-medium"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: COLORS.inputTextColor
+                                            }}
+                                            selectionColor={COLORS.selectionColor}
                                         />
                                     </Pressable>
     
@@ -342,8 +374,9 @@ export default function ApplyCouponScreen(){
 
                                             Keyboard.dismiss()
                                         }}
-                                        className="items-center justify-center bg-[#3F2516]"
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: COLORS.primaryColor,
                                             height: verticalScale(34),
                                             minWidth: scale(80),
                                             paddingHorizontal: scale(14),
@@ -351,8 +384,11 @@ export default function ApplyCouponScreen(){
                                         }}
                                     >
                                         <Text
-                                            className="text-[#FFFFFF] font-semibold"
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             Apply
                                         </Text>
@@ -361,8 +397,13 @@ export default function ApplyCouponScreen(){
     
                                 {couponError && (
                                     <Text
-                                        className="self-start font-medium text-[#E05252]"
-                                        style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                                        className="self-start font-medium"
+                                        style={{
+                                            marginTop: verticalScale(4),
+                                            marginLeft: scale(8),
+                                            fontSize: moderateScale(11),
+                                            color: COLORS.errorTextColor
+                                        }}
                                     >
                                         {couponError}
                                     </Text>
@@ -371,15 +412,19 @@ export default function ApplyCouponScreen(){
 
                             <View style={{ marginTop: verticalScale(14) }}>
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Get More Coupons
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                         fontSize: moderateScale(11),
                                         marginTop: verticalScale(2)
                                     }}
@@ -405,8 +450,10 @@ export default function ApplyCouponScreen(){
                                                 }
                                             })
                                         }}
-                                        className="flex-1 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="flex-1"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(12),
@@ -414,18 +461,20 @@ export default function ApplyCouponScreen(){
                                         }}
                                     >
                                         <View
-                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
                                         >
-                                            <CouponIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516"/>
+                                            <CouponIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} />
                                         </View>
 
                                         <Text
-                                            className="text-[#1F1F1F] font-bold"
+                                            className="font-bold"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(13),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -434,8 +483,9 @@ export default function ApplyCouponScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
+                                            className="font-medium"
                                             style={{
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                 fontSize: moderateScale(9.5),
                                                 marginTop: verticalScale(2)
                                             }}
@@ -455,8 +505,10 @@ export default function ApplyCouponScreen(){
                                                 }
                                             })
                                         }}
-                                        className="flex-1 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="flex-1"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(12),
@@ -464,18 +516,20 @@ export default function ApplyCouponScreen(){
                                         }}
                                     >
                                         <View
-                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
                                         >
-                                            <CouponIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516"/>
+                                            <CouponIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} />
                                         </View>
 
                                         <Text
-                                            className="text-[#1F1F1F] font-bold"
+                                            className="font-bold"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(13),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -484,8 +538,9 @@ export default function ApplyCouponScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
+                                            className="font-medium"
                                             style={{
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                 fontSize: moderateScale(9.5),
                                                 marginTop: verticalScale(2)
                                             }}
@@ -498,8 +553,10 @@ export default function ApplyCouponScreen(){
 
                             {availableCouponsLoaded && mappedAvailableCoupons.length === 0 && (
                                 <View
-                                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                         borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(20),
                                         paddingHorizontal: scale(20),
@@ -508,18 +565,20 @@ export default function ApplyCouponScreen(){
                                     }}
                                 >
                                     <View
-                                        className="bg-[#E8B93F]/15 rounded-full items-center justify-center"
+                                        className="rounded-full items-center justify-center"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                             width: moderateScale(46),
                                             height: moderateScale(46)
                                         }}
                                     >
-                                        <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color="#5A3825" />
+                                        <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color={COLORS.secondaryColor} />
                                     </View>
 
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold"
+                                        className="font-semibold"
                                         style={{
+                                            color: COLORS.primaryTextColor,
                                             fontSize: moderateScale(14),
                                             marginTop: verticalScale(8)
                                         }}
@@ -528,8 +587,9 @@ export default function ApplyCouponScreen(){
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium text-center"
+                                        className="font-medium text-center"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                             fontSize: moderateScale(11),
                                             marginTop: verticalScale(3)
                                         }}
@@ -560,26 +620,28 @@ export default function ApplyCouponScreen(){
                                                 key={category.id}
                                                 activeOpacity={0.95}
                                                 onPress={() => setSelectedCategory(category.id)}
-                                                className={`flex-row gap-2 items-center justify-center ${
-                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                                }`}
+                                                className="flex-row gap-2 items-center justify-center"
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? COLORS.primaryColor
+                                                        : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                     borderRadius: moderateScale(18),
                                                     paddingHorizontal: category.title === "All" ? scale(18) : scale(14),
                                                     paddingVertical: verticalScale(7),
                                                     borderWidth: 0.7,
-                                                    borderColor: isSelected ? "#3F2516" : "#E8DDD3"
+                                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                                 }}
                                             >
                                                 {Icon && (
-                                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? "#FFFFFF" : "#5A3825"} />
+                                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor} />
                                                 )}
         
                                                 <Text
-                                                    className={`font-semibold ${
-                                                        isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {category.title}
                                                 </Text>

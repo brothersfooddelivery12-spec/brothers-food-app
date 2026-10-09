@@ -1,6 +1,8 @@
 import ClockIcon from "@/assets/icon/ClockIcon3.svg"
 import InfoIcon from "@/assets/icon/InformationCircleIcon.svg"
 import UtensilsIcon from "@/assets/icon/UtensilIcon2.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { memo } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -59,8 +61,10 @@ function RewardCouponCard({
 
     return (
         <View
-            className="flex-row bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible"
+            className="flex-row overflow-visible"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 minHeight: verticalScale(120)
@@ -74,20 +78,20 @@ function RewardCouponCard({
                 }}
             >
                 <View
-                    className={`self-start flex-row items-center gap-2 ${
-                        item.featured
-                            ? "bg-[#F8D56A]"
-                            : "bg-[#E8B93F]/15"
-                    }`}
+                    className="self-start flex-row items-center gap-2"
                     style={{
+                        backgroundColor: item.featured
+                            ? COLORS.accentLightColor
+                            : hexToRgba(COLORS.accentColor, 0.15),
                         paddingHorizontal: scale(8),
                         paddingVertical: verticalScale(4),
                         borderRadius: moderateScale(20)
                     }}
                 >
                     <Text
-                        className="text-[#5C4639] font-bold uppercase"
+                        className="font-bold uppercase"
                         style={{
+                            color: COLORS.secondaryColor,
                             fontSize: moderateScale(10),
                             letterSpacing: 0.4
                         }}
@@ -98,8 +102,9 @@ function RewardCouponCard({
 
                 <Text
                     numberOfLines={2}
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="font-extrabold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
@@ -109,8 +114,9 @@ function RewardCouponCard({
 
                 <Text
                     numberOfLines={2}
-                    className="text-[#1F1F1F]/75 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(3)
@@ -120,8 +126,9 @@ function RewardCouponCard({
                 </Text>
 
                 <View
-                    className="bg-[#E8DDD3]/65 mx-2"
+                    className="mx-2"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: 0.7,
                         marginVertical: verticalScale(8)
                     }}
@@ -131,17 +138,16 @@ function RewardCouponCard({
                     <NoteIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isExpiry ? "#DC2626" : "#5C4639"}
+                        color={isExpiry ? COLORS.errorTextColor : COLORS.secondaryColor}
                         strokeWidth={1.8}
                     />
 
                     <Text
-                        className={`font-medium flex-1 ${
-                            isExpiry
-                                ? "text-[#DC2626]"
-                                : "text-[#5C4639]"
-                        }`}
+                        className="font-medium flex-1"
                         style={{
+                            color: isExpiry
+                                ? COLORS.errorTextColor
+                                : COLORS.secondaryColor,
                             fontSize: moderateScale(10.5),
                             lineHeight: moderateScale(17)
                         }}
@@ -152,8 +158,9 @@ function RewardCouponCard({
             </View>
 
             <View
-                className="relative items-center justify-center bg-[#FFF9F2] overflow-visible"
+                className="relative items-center justify-center overflow-visible"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
                     width: scale(105),
                     paddingHorizontal: scale(10),
                     borderTopRightRadius: moderateScale(20),
@@ -173,7 +180,7 @@ function RewardCouponCard({
                             style={{
                                 width: 0.7,
                                 height: verticalScale(4),
-                                backgroundColor: "rgba(232,185,63,0.55)"
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.45),
                             }}
                         />
                     ))}
@@ -181,8 +188,9 @@ function RewardCouponCard({
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#FFFFFF]"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         top: -moderateScale(11),
                         left: -moderateScale(11),
                         width: moderateScale(22),
@@ -194,8 +202,9 @@ function RewardCouponCard({
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#FFFFFF]"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         bottom: -moderateScale(11),
                         left: -moderateScale(11),
                         width: moderateScale(22),
@@ -206,8 +215,9 @@ function RewardCouponCard({
                 />
 
                 <Text
-                    className="text-[#5C4639] font-extrabold"
+                    className="font-extrabold"
                     style={{
+                        color: COLORS.primaryColor,
                         fontSize: moderateScale(15.5),
                         marginBottom: verticalScale(9)
                     }}
@@ -218,15 +228,19 @@ function RewardCouponCard({
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={handleAction}
-                    className="w-full items-center justify-center bg-[#3F2516]"
+                    className="w-full items-center justify-center"
                     style={{
+                        backgroundColor: COLORS.primaryColor,
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(18)
                     }}
                 >
                     <Text
-                        className="text-[#FFFFFF] font-bold"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: COLORS.primaryBackgroundColor
+                        }}
                     >
                         {actionText}
                     </Text>

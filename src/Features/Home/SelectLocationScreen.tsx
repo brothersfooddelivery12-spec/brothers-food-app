@@ -4,8 +4,10 @@ import LocateFixedIcon from '@/assets/icon/LocateFixedIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import LocationFilledIcon from '@/assets/icon/LocationIcon3.svg'
 import SearchIcon from '@/assets/icon/SearchOutline.svg'
+import { COLORS } from '@/constant/colors'
 import { useLocationStore } from '@/Stores/locationStore'
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
+import { hexToRgba } from '@/utils/hexToRgba'
 import * as Location from "expo-location"
 import { router } from "expo-router"
 import { useCallback, useState } from "react"
@@ -156,10 +158,13 @@ export default function SelectLocationScreen(){
     }, [handleUseCurrentLocation])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -175,27 +180,35 @@ export default function SelectLocationScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Select a location
                     </Text>
                     
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Choose where we should deliver.
                     </Text>
@@ -214,8 +227,10 @@ export default function SelectLocationScreen(){
                         })
                     })
                 }
-                className="flex-row gap-3 items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                className="flex-row gap-3 items-center"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     marginHorizontal: scale(14),
                     marginBottom: moderateScale(14),
                     borderWidth: moderateScale(0.5),
@@ -224,11 +239,14 @@ export default function SelectLocationScreen(){
                     height: verticalScale(46)
                 }}
             >
-                <SearchIcon height={moderateScale(22)} width={moderateScale(22)} color="#3F2516" strokeWidth={2} />
+                <SearchIcon height={moderateScale(22)} width={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={2} />
 
                 <Text
-                    className="font-medium text-[#7A7D81]"
-                    style={{ fontSize: moderateScale(14) }}
+                    className="font-medium"
+                    style={{
+                        fontSize: moderateScale(14),
+                        color: COLORS.placeholderTextColor
+                    }}
                 >
                     Search area, street or landmark
                 </Text>
@@ -250,36 +268,48 @@ export default function SelectLocationScreen(){
                             activeOpacity={0.95}
                             disabled={locationLoading}
                             onPress={handleLocationAccess}
-                            className="p-3 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="p-3 items-center flex-row gap-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View
-                                className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     width: moderateScale(40),
                                     height: moderateScale(40)
                                 }}
                             >
-                                <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5}/>
+                                <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={1.5}/>
                             </View>
 
                             <View className="items-start gap-1 flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Use Current Location
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{ fontSize: moderateScale(10.5) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10.5),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     Automatically detect your address
                                 </Text>
                             </View>
 
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F85"} strokeWidth={1.8} />
+                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.45)} strokeWidth={1.8} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -289,41 +319,54 @@ export default function SelectLocationScreen(){
                                     router.push('/map-location')
                                 })
                             }
-                            className="p-3 items-center flex-row gap-3 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5), }}
+                            className="p-3 items-center flex-row gap-3 mt-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View
-                                className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     width: moderateScale(40),
                                     height: moderateScale(40)
                                 }}
                             >
-                                <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.5}/>
+                                <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={1.5}/>
                             </View>
 
                             <View className="items-start gap-1 flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Add Address
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{ fontSize: moderateScale(10.5) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10.5),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     Save a new address for faster checkout
                                 </Text>
                             </View>
 
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F85"} strokeWidth={1.8} />
+                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.45)} strokeWidth={1.8} />
                         </TouchableOpacity>
 
                         <Text
-                            className='text-[#1F1F1F] font-semibold'
+                            className='font-semibold'
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(15),
                                 marginTop: verticalScale(12)
                             }}
@@ -336,24 +379,32 @@ export default function SelectLocationScreen(){
                             onPress={() => {
                                 // handle address press
                             }}
-                            className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8), borderWidth: moderateScale(0.5) }}
+                            className="p-4 flex-row items-center gap-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                marginTop: verticalScale(8),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className="items-center justify-center">
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(42),
                                         height: moderateScale(42),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <LocationFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                                    <LocationFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         marginTop: verticalScale(5),
                                         paddingHorizontal: scale(10),
                                         paddingVertical: verticalScale(3),
@@ -361,8 +412,11 @@ export default function SelectLocationScreen(){
                                     }}
                                 >
                                     <Text
-                                        className="font-semibold text-[#3F2516]"
-                                        style={{ fontSize: moderateScale(10.5) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(10.5),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         443 m
                                     </Text>
@@ -372,16 +426,20 @@ export default function SelectLocationScreen(){
                             <View className="flex-1">
                                 <Text
                                     numberOfLines={1}
-                                    className="font-extrabold text-[#1F1F1F]"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Ambit Finvest SUMERPUR
                                 </Text>
 
                                 <Text
                                     numberOfLines={2}
-                                    className="font-medium text-[#1F1F1F]/65"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                         fontSize: moderateScale(11.5),
                                         lineHeight: moderateScale(16),
                                         marginTop: verticalScale(3)
@@ -391,12 +449,13 @@ export default function SelectLocationScreen(){
                                 </Text>
                             </View>
 
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F85" strokeWidth={1.8} />
+                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.45)} strokeWidth={1.8} />
                         </TouchableOpacity>
 
                         <Text
-                            className='text-[#1F1F1F] font-semibold'
+                            className='font-semibold'
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(15),
                                 marginTop: verticalScale(12)
                             }}
@@ -409,24 +468,32 @@ export default function SelectLocationScreen(){
                             onPress={() => {
                                 // handle address press
                             }}
-                            className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(8), borderWidth: moderateScale(0.5) }}
+                            className="p-4 flex-row items-center gap-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                marginTop: verticalScale(8),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className="items-center justify-center">
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(42),
                                         height: moderateScale(42),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <LocationFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                                    <LocationFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         marginTop: verticalScale(5),
                                         paddingHorizontal: scale(10),
                                         paddingVertical: verticalScale(3),
@@ -434,8 +501,11 @@ export default function SelectLocationScreen(){
                                     }}
                                 >
                                     <Text
-                                        className="font-semibold text-[#3F2516]"
-                                        style={{ fontSize: moderateScale(10.5) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(10.5),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         249 m
                                     </Text>
@@ -445,16 +515,20 @@ export default function SelectLocationScreen(){
                             <View className="flex-1">
                                 <Text
                                     numberOfLines={1}
-                                    className="font-extrabold text-[#1F1F1F]"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Sumerpur
                                 </Text>
 
                                 <Text
                                     numberOfLines={2}
-                                    className="font-medium text-[#1F1F1F]/65"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                         fontSize: moderateScale(11.5),
                                         lineHeight: moderateScale(16),
                                         marginTop: verticalScale(3)
@@ -464,7 +538,7 @@ export default function SelectLocationScreen(){
                                 </Text>
                             </View>
 
-                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F85" strokeWidth={1.8} />
+                            <ArrowRightIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.45)} strokeWidth={1.8} />
                         </TouchableOpacity>
                     </>
                 }

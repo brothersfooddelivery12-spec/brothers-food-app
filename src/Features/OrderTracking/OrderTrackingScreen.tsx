@@ -6,6 +6,8 @@ import ClipboardFilledIcon from '@/assets/icon/ClipboardFilledIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import ShareIcon from '@/assets/icon/ShareIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { useCallback, useState } from 'react'
@@ -86,10 +88,13 @@ export default function OrderTrackingScreen() {
     }))
     
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -105,27 +110,35 @@ export default function OrderTrackingScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Order Tracking
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Order ID: #BFD-882941
                     </Text>
@@ -140,8 +153,9 @@ export default function OrderTrackingScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <View
-                    className="w-full bg-[#FAFAFA]"
+                    className="w-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
                         marginTop: verticalScale(180),
                         borderTopLeftRadius: moderateScale(22),
                         borderTopRightRadius: moderateScale(22),
@@ -152,34 +166,43 @@ export default function OrderTrackingScreen() {
                     <View className='flex-row items-center mx-1'>
                         <View className='justify-center flex-1'>
                             <Text
-                                className='text-[#1F1F1F] font-bold'
-                                style={{ fontSize: moderateScale(16) }}
+                                className='font-bold'
+                                style={{
+                                    fontSize: moderateScale(16),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Rider is on the way
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-bold mt-1'
-                                style={{ fontSize: moderateScale(12) }}
+                                className='font-bold mt-1'
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 From Burger Castle
                             </Text>
                         </View>
 
                         <View
-                            className="items-center justify-center rounded-full bg-[#F8D56A]"
+                            className="items-center justify-center rounded-full"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 width: moderateScale(44),
                                 height: moderateScale(44)
                             }}
                         >
-                            <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} />
+                            <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
                         </View>
                     </View>
 
                     <View 
-                        className='flex-row gap-2 bg-[#FFFFFF] border-[#1F1F1F]/10 items-center p-3'
+                        className='flex-row gap-2 items-center p-3'
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(20),
                             marginTop: verticalScale(14)
@@ -195,15 +218,17 @@ export default function OrderTrackingScreen() {
                                     height: moderateScale(62),
                                     borderRadius: moderateScale(90),
                                     borderWidth: 1.5,
-                                    borderColor: "#E8B93F"
+                                    borderColor: COLORS.accentLightColor
                                 }}
                             />
                         
                             <View
-                                className={`absolute border-[#FFFFFF] items-center justify-center ${
-                                    isOnline ? "bg-[#22A06B]" : "bg-[#7A7D81]"
-                                }`}
+                                className="absolute items-center justify-center"
                                 style={{
+                                    backgroundColor: isOnline
+                                        ? COLORS.activeStatusTextColor
+                                        : COLORS.neutralSurfaceColor,
+                                    borderColor: COLORS.primaryBackgroundColor,
                                     borderWidth: 1.5,
                                     width: moderateScale(15),
                                     height: moderateScale(15),
@@ -218,15 +243,21 @@ export default function OrderTrackingScreen() {
 
                         <View className='justify-center flex-1 ml-1'>
                             <Text
-                                className='text-[#1F1F1F] font-bold'
-                                style={{ fontSize: moderateScale(14) }}
+                                className='font-bold'
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Rahul Sharma
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium mt-1'
-                                style={{ fontSize: moderateScale(10) }}
+                                className='font-medium mt-1'
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 Honda Activa • RJ 22XX 1234
                             </Text>
@@ -235,18 +266,22 @@ export default function OrderTrackingScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#3F2516] items-center justify-center py-4 px-5 gap-1"
+                            className="items-center justify-center py-4 px-5 gap-1"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 width: moderateScale(55),
                                 height: moderateScale(55),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <CallFilledIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} />
+                            <CallFilledIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} />
 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Call
                             </Text>
@@ -255,18 +290,22 @@ export default function OrderTrackingScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#3F2516] items-center justify-center py-4 px-5 gap-1"
+                            className="items-center justify-center py-4 px-5 gap-1"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 width: moderateScale(55),
                                 height: moderateScale(55),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <ChatFilledIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} />
+                            <ChatFilledIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} />
 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Chat
                             </Text>
@@ -276,8 +315,10 @@ export default function OrderTrackingScreen() {
                     <OrderTimeline steps={orderSteps} />
 
                     <View
-                        className="bg-[#FFFFFF] border-[#1F1F1F]/10 px-3 py-4"
+                        className="px-3 py-4"
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(14)
@@ -288,27 +329,36 @@ export default function OrderTrackingScreen() {
                             onPress={toggleExpanded}
                             className="flex-row gap-3 items-center"
                         >
-                            <ClipboardFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                            <ClipboardFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
 
                             <View className="justify-center flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Order Summary
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium mt-1"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium mt-1"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     3 items • {isExpanded ? "Hide details" : "View details"}
                                 </Text>
                             </View>
 
                             <Text
-                                className="text-[#1F1F1F] font-black tracking-wide"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-black tracking-wide"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 ₹710
                             </Text>
@@ -323,18 +373,24 @@ export default function OrderTrackingScreen() {
                                 ]}
                                 className="items-center justify-center rounded-full"
                             >
-                                <ArrowDownIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F" />
+                                <ArrowDownIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryTextColor} />
                             </Animated.View>
                         </TouchableOpacity>
 
                         <Animated.View style={contentAnimatedStyle}>
                             <View
-                                className="p-5 bg-[#FAFAFA] border-[#1F1F1F]/10 w-full"
-                                style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.7) }}
+                                className="p-5 w-full"
+                                style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                    borderRadius: moderateScale(18),
+                                    borderWidth: moderateScale(0.5)
+                                }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
+                                    className="font-bold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginBottom: verticalScale(8)
                                     }}
@@ -353,54 +409,69 @@ export default function OrderTrackingScreen() {
                                 <OrderPriceRow label="GST and Taxes" value={38} />
 
                                 <View
-                                    className="items-center flex-row justify-center bg-[#E3F2E8] mt-3 -mx-1"
+                                    className="items-center flex-row justify-center mt-3 -mx-1"
                                     style={{
+                                        backgroundColor: COLORS.activeStatusBackgroundColor,
                                         paddingHorizontal: scale(12),
                                         paddingVertical: verticalScale(8),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
                                     <Text
-                                        className="text-[#4D9151] font-semibold flex-1"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold flex-1"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.activeStatusTextColor
+                                        }}
                                     >
                                         Coupon Savings
                                     </Text>
 
                                     <Text
-                                        className="text-[#4D9151] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-bold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.activeStatusTextColor
+                                        }}
                                     >
                                         -₹100
                                     </Text>
                                 </View>
 
                                 <View
-                                    className="items-center flex-row justify-center bg-[#E3F2E8] mt-3 -mx-1"
+                                    className="items-center flex-row justify-center mt-3 -mx-1"
                                     style={{
+                                        backgroundColor: COLORS.activeStatusBackgroundColor,
                                         paddingHorizontal: scale(12),
                                         paddingVertical: verticalScale(8),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
                                     <Text
-                                        className="text-[#4D9151] font-semibold flex-1"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold flex-1"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.activeStatusTextColor
+                                        }}
                                     >
                                         Reward Points Used
                                     </Text>
 
                                     <Text
-                                        className="text-[#4D9151] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-bold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.activeStatusTextColor
+                                        }}
                                     >
                                         -₹50
                                     </Text>
                                 </View>
 
                                 <View
-                                    className="rounded-full bg-[#E8DDD3]/65"
+                                    className="rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                                         height: verticalScale(0.7),
                                         marginVertical: verticalScale(12),
                                         marginHorizontal: verticalScale(2)
@@ -409,15 +480,21 @@ export default function OrderTrackingScreen() {
 
                                 <View className="flex-row justify-between items-center">
                                     <Text
-                                        className="text-[#1F1F1F]/85 font-extrabold"
-                                        style={{ fontSize: moderateScale(15) }}
+                                        className="font-extrabold"
+                                        style={{
+                                            fontSize: moderateScale(15),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                        }}
                                     >
                                         Grand Total
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F] font-black tracking-wide"
-                                        style={{ fontSize: moderateScale(16) }}
+                                        className="font-black tracking-wide"
+                                        style={{
+                                            fontSize: moderateScale(16),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         ₹620
                                     </Text>
@@ -443,8 +520,12 @@ export default function OrderTrackingScreen() {
                             }}
                         >
                             <View
-                                className="p-5 bg-[#FFFFFF] border-[#1F1F1F]/10 w-full"
-                                style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                                className="p-5 w-full"
+                                style={{
+
+                                    borderRadius: moderateScale(18),
+                                    borderWidth: moderateScale(0.5)
+                                }}
                             >
                                 <Text
                                     className="text-[#1F1F1F] font-bold"
@@ -536,8 +617,10 @@ export default function OrderTrackingScreen() {
                     </View>
 
                     <View 
-                        className='p-4 flex-row gap-3 bg-[#FFFFFF] border-[#1F1F1F]/10'
+                        className='p-4 flex-row gap-3'
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(14)
@@ -548,11 +631,11 @@ export default function OrderTrackingScreen() {
                             style={{
                                 width: moderateScale(44),
                                 height: moderateScale(44),
-                                backgroundColor: "#3F2516"
+                                backgroundColor: COLORS.primaryColor
                                                 
                             }}
                         >
-                            <HomeIcon width={moderateScale(21)} height={moderateScale(21)} color={"#FFFFFF"} strokeWidth={1.5} />
+                            <HomeIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
                         </View>
                         
                         <View
@@ -563,22 +646,29 @@ export default function OrderTrackingScreen() {
                             }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Delivering to
                             </Text>
                         
                             <Text
-                                className="font-semibold text-[#3F2516] mt-1"
-                                style={{ fontSize: moderateScale(13) }}
+                                className="font-semibold mt-1"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Harsh Suthar
                             </Text>
                         
                             <Text
-                                className="font-medium text-[#1F1F1F]/65"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                     fontSize: moderateScale(11),
                                     lineHeight: moderateScale(15),
                                     width: "100%"
@@ -592,19 +682,23 @@ export default function OrderTrackingScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-5"
+                        className="flex-row gap-2 items-center justify-center mx-5"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             marginTop: verticalScale(20),
                             borderRadius: moderateScale(28),
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(12)
                         }}
                     >
-                        <ShareIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFFFFF"} />
+                        <ShareIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryBackgroundColor} />
                     
                         <Text
-                            className="text-[#FFFFFF] font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Share Tracking
                         </Text>

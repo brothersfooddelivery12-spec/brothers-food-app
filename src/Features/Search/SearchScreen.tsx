@@ -4,6 +4,8 @@ import SearchBar from "@/components/SearchBar"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { recommendedItems } from "@/constant/RecommendedData"
 import { restaurants } from "@/constant/RestaurantData"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -189,20 +191,24 @@ export default function SearchScreen() {
     }))
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
+                className="w-full absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
                         paddingHorizontal: moderateScale(14),
-                        zIndex: 10
+                        zIndex: 10,
+                        backgroundColor: COLORS.primaryBackgroundColor
                     },
                     headerContainerStyle,
                 ]}
@@ -217,8 +223,9 @@ export default function SearchScreen() {
                     }}
                 >
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
+                        className="font-extrabold"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(18),
                             marginTop: verticalScale(10)
                         }}
@@ -227,8 +234,9 @@ export default function SearchScreen() {
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                             fontSize: moderateScale(12),
                             marginTop: verticalScale(2)
                         }}
@@ -316,22 +324,24 @@ export default function SearchScreen() {
                                                     })
                                                 }
                                             }}
-                                            className={`items-center justify-center ${
-                                                isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                            }`}
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: isSelected
+                                                    ? COLORS.primaryColor
+                                                    : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(16),
                                                 paddingVertical: verticalScale(7),
                                                 borderWidth: 0.7,
-                                                borderColor: "#E8DDD3"
+                                                borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                             }}
                                         >
                                             <Text
-                                                className={`font-semibold ${
-                                                    isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                                }`}
-                                                style={{ fontSize: moderateScale(13) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                }}
                                             >
                                                 {category}
                                             </Text>
@@ -342,8 +352,12 @@ export default function SearchScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(15) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                marginTop: verticalScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Trending Searches
                         </Text>
@@ -365,16 +379,20 @@ export default function SearchScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.85}
                                     onPress={() => setSelectedTrending(item.title)}
-                                    className="items-center justify-center bg-[#E5E4E2]/65"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.55),
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(16),
                                         paddingVertical: verticalScale(7)
                                     }}
                                 >
                                     <Text
-                                        className="font-medium text-[#1F1F1F]"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         {item.title}
                                     </Text>
@@ -385,16 +403,22 @@ export default function SearchScreen() {
                         <View style={{ marginTop: verticalScale(10) }}>
                             <View className="flex-row items-center">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold flex-1"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-bold flex-1"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Recent Searches
                                 </Text>
 
                                 <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
                                     <Text
-                                        className="text-[#3F2516] font-semibold"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Clear All
                                     </Text>
@@ -410,8 +434,10 @@ export default function SearchScreen() {
                                         key={item.id}
                                         activeOpacity={0.85}
                                         onPress={() => setSelectedTrending(item.title)}
-                                        className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="flex-row items-center"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             gap: moderateScale(5),
                                             borderRadius: moderateScale(18),
@@ -419,11 +445,14 @@ export default function SearchScreen() {
                                             paddingVertical: verticalScale(7)
                                         }}
                                     >
-                                        <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F" strokeWidth={2} />
+                                        <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryTextColor} strokeWidth={2} />
 
                                         <Text
-                                            className="font-medium text-[#1F1F1F]"
-                                            style={{ fontSize: moderateScale(12) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(12),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                             numberOfLines={1}
                                         >
                                             {item.title}
@@ -434,8 +463,12 @@ export default function SearchScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(18) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                marginTop: verticalScale(18),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Recommended For You
                         </Text>
@@ -456,8 +489,12 @@ export default function SearchScreen() {
                         />
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(15), marginTop: verticalScale(20) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                marginTop: verticalScale(20),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Top Restaurants Near You
                         </Text>

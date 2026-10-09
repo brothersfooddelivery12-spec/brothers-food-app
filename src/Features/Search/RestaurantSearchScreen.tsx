@@ -2,13 +2,15 @@ import BackArrowIcon from "@/assets/icon/ArrowLeft.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import RestaurantCard from "@/components/RestaurantCard"
 import SearchBar from "@/components/SearchBar"
+import { COLORS } from "@/constant/colors"
 import { restaurants } from "@/constant/RestaurantData"
 import { RestaurantSearchData } from "@/constant/RestaurantSearchData"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import RestaurantSearchCard from "./Components/RestaurantSearchCard"
 
@@ -52,7 +54,6 @@ const RECENTLY_VIEWED = [
 ]
 
 export default function RestaurantSearchScreen() {
-    const insets = useSafeAreaInsets()
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
 
@@ -117,8 +118,9 @@ export default function RestaurantSearchScreen() {
     const renderResultsHeader = useCallback(() => (
             <View>
                 <Text
-                    className="text-[#1F1F1F] font-bold"
+                    className="font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(16),
                         marginTop: verticalScale(2),
                     }}
@@ -128,8 +130,9 @@ export default function RestaurantSearchScreen() {
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/65 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         fontSize: moderateScale(11.5),
                         marginTop: verticalScale(4)
                     }}
@@ -146,8 +149,9 @@ export default function RestaurantSearchScreen() {
     const renderFooter = useCallback(() => (
             <View>
                 <Text
-                    className="text-[#1F1F1F] font-bold"
+                    className="font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(15),
                         marginTop: verticalScale(14)
                     }}
@@ -156,10 +160,11 @@ export default function RestaurantSearchScreen() {
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/65 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         fontSize: moderateScale(11),
-                        marginTop: verticalScale(4)
+                        marginTop: verticalScale(2)
                     }}
                 >
                     Similar to your search for{" "}
@@ -185,8 +190,9 @@ export default function RestaurantSearchScreen() {
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F] font-bold"
+                    className="font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(15),
                         marginTop: verticalScale(18)
                     }}
@@ -225,10 +231,10 @@ export default function RestaurantSearchScreen() {
                                     borderRadius: moderateScale(20),
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(7),
-                                    backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                                    borderColor: isInactive
-                                        ? "rgba(31,31,31,0.08)"
-                                        : "rgba(31,31,31,0.10)"
+                                    backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                                    borderColor: isInactive 
+                                        ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.10)
                                 }}
                             >
                                 <View
@@ -257,7 +263,7 @@ export default function RestaurantSearchScreen() {
                                         <View
                                             pointerEvents="none"
                                             className="absolute inset-0"
-                                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                                         />
                                     )}
                                 </View>
@@ -268,7 +274,7 @@ export default function RestaurantSearchScreen() {
                                         className="font-bold mt-1"
                                         style={{
                                             fontSize: moderateScale(13),
-                                            color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                                            color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                                         }}
                                     >
                                         {item.name}
@@ -281,8 +287,8 @@ export default function RestaurantSearchScreen() {
                                             fontSize: moderateScale(10),
                                             marginTop: moderateScale(3),
                                             color: isInactive
-                                                ? "rgba(31,31,31,0.38)"
-                                                : "rgba(31,31,31,0.65)"
+                                                ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                                                : hexToRgba(COLORS.primaryTextColor, 0.65)
                                         }}
                                     >
                                         {isInactive ? "Currently unavailable" : item.category}
@@ -297,21 +303,21 @@ export default function RestaurantSearchScreen() {
                                             paddingVertical: moderateScale(4),
                                             borderRadius: moderateScale(12),
                                             backgroundColor: isInactive
-                                                ? "rgba(31,31,31,0.07)"
-                                                : "rgba(232,185,63,0.15)"
+                                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                                : hexToRgba(COLORS.accentColor, 0.15)
                                         }}
                                     >
                                         <LocationIcon
                                             width={moderateScale(14)}
                                             height={moderateScale(14)}
-                                            color={ isInactive ? "#858585" : "#5C4639" }
+                                            color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                                         />
 
                                         <Text
                                             className="font-semibold"
                                             style={{
                                                 fontSize: moderateScale(11),
-                                                color: isInactive ? "#858585" : "#5C4639"
+                                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                                             }}
                                         >
                                             {item.distance}
@@ -356,10 +362,13 @@ export default function RestaurantSearchScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -375,15 +384,17 @@ export default function RestaurantSearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(46),
                         height: moderateScale(46),
                         flexShrink: 0
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
+                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                 </TouchableOpacity>
 
                 <View

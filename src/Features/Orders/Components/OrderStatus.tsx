@@ -1,4 +1,5 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { OrderStatusType } from "@/Services/api-service"
 import { useFocusEffect } from "expo-router"
 import { useCallback } from "react"
@@ -101,7 +102,7 @@ export default function OrderStatus({ status }: OrderStatusProps) {
                         right: 0,
                         height: verticalScale(8),
                         borderRadius: moderateScale(20),
-                        backgroundColor: "#F3EDE5"
+                        backgroundColor: COLORS.progressTrackColor
                     }}
                 />
 
@@ -112,7 +113,7 @@ export default function OrderStatus({ status }: OrderStatusProps) {
                             left: 0,
                             height: verticalScale(9),
                             borderRadius: moderateScale(20),
-                            backgroundColor: "#FBB52B"
+                            backgroundColor: COLORS.progressActiveColor
                         },
                         progressStyle
                     ]}
@@ -125,7 +126,7 @@ export default function OrderStatus({ status }: OrderStatusProps) {
                             width: INDICATOR_SIZE,
                             height: INDICATOR_SIZE,
                             borderRadius: INDICATOR_SIZE / 2,
-                            backgroundColor: "#FBB52B",
+                            backgroundColor: COLORS.progressActiveColor,
                             alignItems: "center",
                             justifyContent: "center",
                             marginLeft: -INDICATOR_HALF
@@ -133,7 +134,7 @@ export default function OrderStatus({ status }: OrderStatusProps) {
                         indicatorStyle
                     ]}
                 >
-                    <DeliveryIcon width={moderateScale(17)} height={moderateScale(17)} color="#3F2516"/>
+                    <DeliveryIcon width={moderateScale(17)} height={moderateScale(17)} color={COLORS.primaryColor} />
                 </Animated.View>
             </View>
 
@@ -145,7 +146,6 @@ export default function OrderStatus({ status }: OrderStatusProps) {
             >
                 {STEPS.map((step, index) => {
                     const isActive = index === activeStep
-
                     const isCompleted = index < activeStep
 
                     return (
@@ -163,8 +163,10 @@ export default function OrderStatus({ status }: OrderStatusProps) {
                                     fontSize: moderateScale(11),
                                     fontWeight: isActive ? "600" : "500",
                                     color: isActive
-                                        ? "#24170F"
-                                        : isCompleted ? "#756A63" : "#8F8984"
+                                        ? COLORS.progressActiveTextColor
+                                        : isCompleted
+                                            ? COLORS.progressCompletedTextColor
+                                            : COLORS.progressInactiveTextColor
                                 }}
                             >
                                 {step}

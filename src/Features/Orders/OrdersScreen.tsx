@@ -1,7 +1,9 @@
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SearchBar from "@/components/SearchBar"
+import { COLORS } from '@/constant/colors'
 import { cancelOrder, getOrderById, getUserOrders, OrderListItem, OrderListStatus } from "@/Services/api-service"
 import { hideLoader, showLoader } from '@/Services/loader-service'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from "lottie-react-native"
@@ -438,20 +440,24 @@ export default function OrdersScreen() {
     )
 
     return(
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}    
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
+                className="w-full absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
                         paddingHorizontal: moderateScale(14),
                         zIndex: 10,
+                        backgroundColor: COLORS.primaryBackgroundColor
                     },
                     headerContainerStyle,
                 ]}
@@ -466,8 +472,9 @@ export default function OrdersScreen() {
                     }}
                 >
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
+                        className="font-extrabold"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(18),
                             marginTop: verticalScale(10),
                         }}
@@ -476,8 +483,9 @@ export default function OrdersScreen() {
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                             fontSize: moderateScale(12),
                             marginTop: verticalScale(2)
                         }}
@@ -532,8 +540,10 @@ export default function OrdersScreen() {
                             style={{ paddingVertical: verticalScale(20) }}
                         >
                             <View
-                                className=" w-full items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                className=" w-full items-center justify-center mx-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     paddingHorizontal: scale(20),
                                     paddingVertical: verticalScale(24),
@@ -541,18 +551,20 @@ export default function OrdersScreen() {
                                 }}
                             >
                                 <View
-                                    className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                    className='rounded-full items-center justify-center'
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(46),
                                         height: moderateScale(46)
                                     }}
                                 >
-                                    <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" />
+                                    <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} />
                                 </View>
     
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold"
+                                    className="font-semibold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginTop: verticalScale(8)
                                     }}
@@ -564,8 +576,9 @@ export default function OrdersScreen() {
                                 </Text>
     
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium text-center"
+                                    className="font-medium text-center"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                         fontSize: moderateScale(11),
                                         marginTop: verticalScale(3)
                                     }}
@@ -583,8 +596,10 @@ export default function OrdersScreen() {
                     <View style={{ marginTop: verticalScale(4) }}>
                         <View className="flex-row items-center justify-center gap-3 mb-5">
                             <View
-                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-4 gap-2"
+                                className="justify-center py-4 px-4 gap-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -592,23 +607,31 @@ export default function OrdersScreen() {
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                    }}
                                 >
                                     Active Orders
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(17) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(17),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     {orderStats.active}
                                 </Text>
                             </View>
 
                             <View
-                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                className="justify-center py-4 px-5 gap-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -616,23 +639,31 @@ export default function OrdersScreen() {
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                    }}
                                 >
                                     Past Orders
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(17) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(17),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     {orderStats.past}
                                 </Text>
                             </View>
 
                             <View
-                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                                className="justify-center py-4 px-5 gap-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -640,15 +671,21 @@ export default function OrdersScreen() {
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-medium"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                    }}
                                 >
                                     Completed
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(17) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(17),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     0
                                 </Text>

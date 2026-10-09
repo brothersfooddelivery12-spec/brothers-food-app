@@ -32,10 +32,9 @@ export interface WalletTransaction {
     amount: number
     description: string
     transaction_type:
-        | "ADD_MONEY"
-        | "ORDER_PAYMENT"
+        | "DEBIT"
+        | "CREDIT"
         | "REFUND"
-        | "WITHDRAW"
         | "ADJUSTMENT"
         | string
 

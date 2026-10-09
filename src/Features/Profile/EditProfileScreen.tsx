@@ -9,6 +9,8 @@ import VenusAndMarsIcon from '@/assets/icon/VenusAndMarsIcon.svg'
 import CalendarPicker from '@/components/CalenderSheet'
 import GradientButton from '@/components/GradientButton'
 import ProfilePhotoPicker from "@/components/ProfilePhotoPicker"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -306,10 +308,13 @@ export default function EditProfileScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -318,34 +323,42 @@ export default function EditProfileScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Edit Profile
                     </Text>
                                 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Manage your personal information
                     </Text>
@@ -380,8 +393,13 @@ export default function EditProfileScreen(){
                     <ProfilePhotoPicker imageUri={profileImage} onPress={handlePickImage} />
 
                     <Text
-                        className="font-medium text-[#1F1F1F]/85 self-start"
-                        style={{ fontSize: moderateScale(13), marginTop: verticalScale(15), marginLeft: scale(6) }}
+                        className="font-medium self-start"
+                        style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.85),
+                            fontSize: moderateScale(13),
+                            marginTop: verticalScale(15),
+                            marginLeft: scale(6)
+                        }}
                     >
                         Full Name
                     </Text>
@@ -392,9 +410,10 @@ export default function EditProfileScreen(){
                                 nameRef.current?.focus()
                             }
                         }}
-                        className={`flex-row items-center overflow-hidden
-                        ${nameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: nameError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -404,25 +423,23 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
+                            <UserIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
                                 ref={nameRef}
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -438,7 +455,7 @@ export default function EditProfileScreen(){
                                     setNameError(false)
                                 }}
                                 placeholder="Full Name"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={COLORS.placeholderTextColor}
                                 keyboardType="default"
                                 returnKeyType="done"
                                 autoCapitalize="words"
@@ -446,7 +463,7 @@ export default function EditProfileScreen(){
                                 textContentType="name"
                                 autoComplete="name"
                                 maxLength={50}
-                                selectionColor="#79685e"
+                                selectionColor={COLORS.selectionColor}
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -457,16 +474,26 @@ export default function EditProfileScreen(){
 
                     {nameError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                color: COLORS.errorTextColor,
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11)
+                            }}
                         >
                             Please enter your full name
                         </Text>
                     )}
 
                     <Text
-                        className="font-medium text-[#1F1F1F]/85 self-start"
-                        style={{ fontSize: moderateScale(13), marginTop: verticalScale(10), marginLeft: scale(6) }}
+                        className="font-medium self-start"
+                        style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.85),
+                            fontSize: moderateScale(13),
+                            marginTop: verticalScale(10),
+                            marginLeft: scale(6)
+                        }}
                     >
                         Email Address
                     </Text>
@@ -477,9 +504,10 @@ export default function EditProfileScreen(){
                                 emailRef.current?.focus()
                             }
                         }}
-                        className={`w-full flex-row items-center overflow-hidden
-                        ${emailError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="w-full flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: emailError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -489,25 +517,23 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <MailIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
+                            <MailIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
                                 ref={emailRef}
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -522,7 +548,7 @@ export default function EditProfileScreen(){
                                     setEmailError(false)
                                 }}
                                 placeholder="Email Address"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={COLORS.placeholderTextColor}
                                 keyboardType="email-address"
                                 returnKeyType="next"
                                 autoCapitalize="none"
@@ -530,7 +556,7 @@ export default function EditProfileScreen(){
                                 textContentType="emailAddress"
                                 autoComplete="email"
                                 maxLength={100}
-                                selectionColor="#79685e"
+                                selectionColor={COLORS.selectionColor}
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -541,8 +567,13 @@ export default function EditProfileScreen(){
 
                     {emailError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                color: COLORS.errorTextColor,
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11)
+                            }}
                         >
                             Please enter a valid email address
                         </Text>
@@ -556,20 +587,21 @@ export default function EditProfileScreen(){
                         }}    
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85),
+                                fontSize: moderateScale(13)
+                            }}
                         >
                             Mobile Number
                         </Text>
                     </View>
 
                     <View
-                        className={`w-full flex-row overflow-hidden ${
-                            numberError
-                                ? "border-red-400"
-                                : "border-[#1F1F1F]/10"
-                        } bg-[#FAFAFA]`}
+                        className="w-full flex-row overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: numberError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             height: verticalScale(46),
@@ -578,26 +610,26 @@ export default function EditProfileScreen(){
                     >
                         <View
                             className="flex-row items-center justify-center relative"
-                            style={{
-                                width: "22%"
-                            }}
+                            style={{ width: "22%" }}
                         >
-                            <IndiaFlag
-                                width={scale(20)}
-                                height={verticalScale(22)}
-                                style={{ marginRight: scale(6) }}
-                            />
+                            <IndiaFlag width={scale(20)} height={verticalScale(22)} style={{ marginRight: scale(6) }} />
 
                             <Text
-                                className="font-medium text-[#151515]"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.inputTextColor
+                                }}
                             >
                                 +91
                             </Text>
 
                             <View
-                                className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10"
-                                style={{ width: scale(0.6) }}
+                                className="absolute right-0 top-0 bottom-0"
+                                style={{
+                                    width: scale(0.6),
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                }}
                             />
                         </View>
 
@@ -609,8 +641,9 @@ export default function EditProfileScreen(){
                             }}
                         >
                             <TextInput
-                                className="flex-1 p-0 tracking-wide font-medium text-[#151515]"
+                                className="flex-1 p-0 tracking-wide font-medium"
                                 style={{
+                                    color: COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -622,7 +655,7 @@ export default function EditProfileScreen(){
                                         .trim()
                                 }
                                 placeholder="No mobile number added"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={COLORS.placeholderTextColor}
                                 editable={false}
                                 pointerEvents="none"
                             />
@@ -630,7 +663,7 @@ export default function EditProfileScreen(){
                             <TouchableOpacity
                                 activeOpacity={0.95}
                                 disabled={loading}
-                                className='items-center justify-center bg-[#3F2516] mr-2'
+                                className='items-center justify-centermr-2'
                                 onPress={() => {
                                     preventDoublePress(() => {
                                         router.push({
@@ -643,14 +676,18 @@ export default function EditProfileScreen(){
                                     })
                                 }}
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     borderRadius:moderateScale(16),
                                     paddingHorizontal: scale(14),
                                     paddingVertical: verticalScale(6)
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     {hasSavedNumber ? "Change" : "Add"}
                                 </Text>
@@ -660,8 +697,9 @@ export default function EditProfileScreen(){
 
                     {numberError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
+                            className="self-start font-medium"
                             style={{
+                                color: COLORS.errorTextColor,
                                 marginTop: verticalScale(4),
                                 marginLeft: scale(8),
                                 fontSize: moderateScale(11)
@@ -679,8 +717,11 @@ export default function EditProfileScreen(){
                         }}    
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Date of Birth
                         </Text>
@@ -694,8 +735,10 @@ export default function EditProfileScreen(){
                                 setDobPickerVisible(true)
                             }
                         }}
-                        className='bg-[#FAFAFA] gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
+                        className='gap-3 w-full flex-row items-center overflow-hidden'
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(15),
@@ -705,32 +748,35 @@ export default function EditProfileScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <CakeIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.5} /> 
+                            <CakeIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} /> 
                         </View>
 
                         <Text
-                            className={`tracking-wide font-medium flex-1 ${
-                                dateOfBirth
-                                    ? "text-[#151515]"
-                                    : "text-[#9A9A9A]"
-                            }`}
-                            style={{ fontSize: moderateScale(13) }}
+                            className="tracking-wide font-medium flex-1"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: dateOfBirth
+                                    ? COLORS.inputTextColor
+                                    : COLORS.placeholderTextColor
+                            }}
                         >
                             {dateOfBirth
                                 ? formatDateForDisplay(
                                     dateOfBirth
                                 )
-                                : "Enter your Date of Birth"}
+                                : "Enter your Date of Birth"
+                            }
                         </Text>
 
-                        <CalendarIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F95"} strokeWidth={1.8} />
+                        <CalendarIcon width={moderateScale(22)} height={moderateScale(22)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                     </TouchableOpacity>
 
                     <View 
@@ -741,8 +787,11 @@ export default function EditProfileScreen(){
                         }}    
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Gender
                         </Text>
@@ -759,8 +808,10 @@ export default function EditProfileScreen(){
                                     handleOpenMenu("gender")
                                 }
                             }}
-                            className='bg-[#FAFAFA] gap-3 border-[#1F1F1F]/10 w-full flex-row items-center overflow-hidden'
+                            className='gap-3 w-full flex-row items-center overflow-hidden'
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(15),
@@ -770,23 +821,26 @@ export default function EditProfileScreen(){
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#E5E4E2]/65"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                     width: moderateScale(36),
                                     height: moderateScale(36),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
-                                <VenusAndMarsIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.5} /> 
+                                <VenusAndMarsIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} /> 
                             </View>
 
                             <Text
-                                className={`flex-1 font-medium ${
-                                    selectedGender
-                                        ? "text-[#151515]"
-                                        : "text-[#9A9A9A]"
-                                }`}
-                                style={{ fontSize: moderateScale(13) }}
+                                className="flex-1 font-medium"
+                                style={{
+                                    color: selectedGender
+                                        ? COLORS.inputTextColor
+                                        : COLORS.placeholderTextColor,
+                                    fontSize: moderateScale(13)
+                                    
+                                }}
                             >
                                 {selectedGender
                                     ? GENDER_OPTIONS.find(
@@ -798,7 +852,7 @@ export default function EditProfileScreen(){
                                 }
                             </Text>
 
-                            <ArrowDownIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F95"} strokeWidth={1.8} />
+                            <ArrowDownIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                         </TouchableOpacity>
                     </View>
 
@@ -831,8 +885,10 @@ export default function EditProfileScreen(){
 
                     {openMenu === "gender" && (
                         <View
-                            className="absolute bg-white border-[#1F1F1F]/10"
+                            className="absolute"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
@@ -864,12 +920,11 @@ export default function EditProfileScreen(){
                                                 }}
                                             >
                                                 <Text
-                                                    className={
-                                                        isSelected
-                                                            ? "text-[#3F2516] font-semibold"
-                                                            : "text-[#1F1F1F]/85 font-medium"
-                                                    }
+                                                    className={isSelected ? "font-semibold" : "font-medium"}
                                                     style={{
+                                                        color: isSelected
+                                                            ? COLORS.primaryColor
+                                                            : hexToRgba(COLORS.primaryTextColor, 0.85),
                                                         fontSize: moderateScale(13)
                                                     }}
                                                 >
@@ -879,8 +934,8 @@ export default function EditProfileScreen(){
 
                                             {index !== GENDER_OPTIONS.length - 1 && (
                                                 <View
-                                                    className="bg-[#1F1F1F]/10"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                         height: 1,
                                                         marginHorizontal: scale(10)
                                                     }}

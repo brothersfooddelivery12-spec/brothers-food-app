@@ -1,4 +1,6 @@
 import ToggleSwitch from "@/components/ToggleSwitch"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import React, { memo } from "react"
 import { Text, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
@@ -17,8 +19,13 @@ type NotificationPreferenceCardProps = {
 const NotificationPreferenceCard = ({ items, onToggle }: NotificationPreferenceCardProps) => {
     return (
         <View
-            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+            className="mt-3 p-4"
+            style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                borderRadius: moderateScale(18),
+                borderWidth: moderateScale(0.5)
+            }}
         >
             {items.map((item, index) => {
                 const isLast = index === items.length - 1
@@ -27,8 +34,11 @@ const NotificationPreferenceCard = ({ items, onToggle }: NotificationPreferenceC
                     <React.Fragment key={item.id}>
                         <View className="flex-row items-center gap-2">
                             <Text
-                                className="text-[#1F1F1F] font-medium flex-1"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-medium flex-1"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 {item.title}
                             </Text>
@@ -41,8 +51,8 @@ const NotificationPreferenceCard = ({ items, onToggle }: NotificationPreferenceC
 
                         {!isLast && (
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: moderateScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: moderateScale(6)

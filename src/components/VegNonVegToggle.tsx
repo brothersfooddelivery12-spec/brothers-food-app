@@ -1,5 +1,7 @@
 import LeafIcon from '@/assets/icon/LeafIcon.svg'
 import NonvegIcon from '@/assets/icon/PoultryLeg.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { memo, useEffect } from "react"
 import { TouchableOpacity, View } from "react-native"
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
@@ -49,7 +51,7 @@ const VegNonVegToggle = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["#FFFFFF", "#1F1F1F"]
+                    [COLORS.primaryBackgroundColor, COLORS.primaryTextColor]
                 )
         }))
 
@@ -58,14 +60,16 @@ const VegNonVegToggle = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["#1F1F1F", "#FFFFFF" ]
+                    [COLORS.primaryTextColor, COLORS.primaryBackgroundColor]
                 )
         }))
 
         return (
             <View
-                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+                className="flex-row items-center overflow-hidden"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     width: containerWidth,
                     height: containerHeight,
@@ -83,7 +87,7 @@ const VegNonVegToggle = memo(
                             width: tabWidth,
                             height: containerHeight - containerPadding * 2,
                             borderRadius: moderateScale(21),
-                            backgroundColor: "#3F2516"
+                            backgroundColor: COLORS.primaryColor
                         },
                         indicatorStyle
                     ]}

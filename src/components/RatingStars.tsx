@@ -1,7 +1,8 @@
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
 import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
-import { View } from 'react-native';
+import { COLORS } from '@/constant/colors'
+import { View } from 'react-native'
 import { moderateScale } from 'react-native-size-matters'
 
 interface RatingStarsProps {
@@ -30,7 +31,7 @@ const RatingStars = ({ rating, size = 16 }: RatingStarsProps) => {
                 }
 
                 return (
-                    <Icon key={star} width={moderateScale(size)} height={moderateScale(size)} color="#5C4639" />
+                    <Icon key={star} width={moderateScale(size)} height={moderateScale(size)} color={COLORS.secondaryColor} />
                 )
             })}
         </View>

@@ -1,6 +1,8 @@
+import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Text, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
-import RatingIcon from '@/assets/icon/RatingIcon.svg'
 
 interface RatingDistributionProps {
     ratings: Number[],
@@ -34,17 +36,21 @@ const RatingDistribution = ({ ratings, ratingLevels = [5, 4, 3, 2, 1] }: RatingD
                         className="flex-row items-center"
                     >
                         <Text
-                            className="mr-1 font-semibold text-[#1F1F1F]"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="mr-1 font-semibold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             {rating}
                         </Text>
 
-                        <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
+                        <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} />
 
                         <View
-                            className="overflow-hidden bg-[#e8e3dc]"
+                            className="overflow-hidden"
                             style={{
+                                backgroundColor: COLORS.progressTrackColor,
                                 flex: 1,
                                 height: verticalScale(8),
                                 marginLeft: moderateScale(12),
@@ -52,8 +58,9 @@ const RatingDistribution = ({ ratings, ratingLevels = [5, 4, 3, 2, 1] }: RatingD
                             }}
                         >
                             <View
-                                className="h-full bg-[#E9A21B]"
+                                className="h-full"
                                 style={{
+                                    backgroundColor: COLORS.accentColor,
                                     width: `${percentage}%`,
                                     borderRadius: moderateScale(18)
                                 }}
@@ -61,8 +68,9 @@ const RatingDistribution = ({ ratings, ratingLevels = [5, 4, 3, 2, 1] }: RatingD
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
+                            className="font-medium"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 width: moderateScale(38),
                                 marginLeft: moderateScale(6),
                                 fontSize: moderateScale(12),

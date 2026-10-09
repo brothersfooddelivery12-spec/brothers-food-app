@@ -1,8 +1,10 @@
 import HeartFilledIcon from '@/assets/icon/FavouriteFilledIcon.svg'
 import SearchBar from "@/components/SearchBar"
+import { COLORS } from '@/constant/colors'
 import { FavoriteMenuItemResponse, FavoriteRestaurantResponse, getFavoriteMenuItems, getFavoriteRestaurants, removeMenuItemFromFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
 import { useLocationStore } from '@/Stores/locationStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import LottieView from 'lottie-react-native'
@@ -454,20 +456,24 @@ export default function FavouritesScreen() {
     )
 
     return (
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}    
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
+                className="w-full absolute left-0 right-0"
                 style={[
                     {
                         top: insets.top,
                         paddingHorizontal: moderateScale(14),
-                        zIndex: 10
+                        zIndex: 10,
+                        backgroundColor: COLORS.primaryBackgroundColor
                     },
                     headerContainerStyle,
                 ]}
@@ -483,8 +489,9 @@ export default function FavouritesScreen() {
                 >
                     <View className="gap-1">
                         <Text
-                            className="text-[#1F1F1F] font-extrabold self-start"
+                            className="font-extrabold self-start"
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(18),
                                 marginTop: verticalScale(10)
                             }}
@@ -493,8 +500,11 @@ export default function FavouritesScreen() {
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F]/65 font-medium self-start"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium self-start"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                            }}
                         >
                             Your favourite restaurants & foods
                         </Text>
@@ -547,8 +557,10 @@ export default function FavouritesScreen() {
                             style={{ paddingVertical: verticalScale(20) }}
                         >
                             <View
-                                className=" w-full items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                className=" w-full items-center justify-center mx-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     paddingHorizontal: scale(20),
                                     paddingVertical: verticalScale(24),
@@ -556,37 +568,42 @@ export default function FavouritesScreen() {
                                 }}
                             >
                                 <View
-                                    className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                    className='rounded-full items-center justify-center'
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(46),
                                         height: moderateScale(46)
                                     }}
                                 >
-                                    <HeartFilledIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" />
+                                    <HeartFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} />
                                 </View>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold"
+                                    className="font-semibold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginTop: verticalScale(8)
                                     }}
                                 >
                                     {activeTab === "restaurants"
                                         ? "No Favourite Restaurants"
-                                        : "No Favourite Foods"}
+                                        : "No Favourite Foods"
+                                    }
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium text-center"
+                                    className="font-medium text-center"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                         fontSize: moderateScale(11),
                                         marginTop: verticalScale(3)
                                     }}
                                 >
                                     {activeTab === "restaurants"
                                         ? "Restaurants you save will appear here."
-                                        : "Food items you save will appear here."}
+                                        : "Food items you save will appear here."
+                                    }
                                 </Text>
                             </View>
                         </View>
@@ -596,8 +613,10 @@ export default function FavouritesScreen() {
                     <View style={{ marginTop: verticalScale(4) }}>
                          <View className="flex-row items-center gap-3 mb-5">
                             <View
-                                className="bg-[#FAFAFA] justify-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="justify-center py-4 px-5 gap-1"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(95),
@@ -605,52 +624,71 @@ export default function FavouritesScreen() {
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-medium"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Saved
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(18) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(18),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     {savedCount}
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     {activeTab == "food" ? "Foods" : "Restaurants"}
                                 </Text>
                             </View>
 
                             <View
-                                className="bg-[#3F2516] py-4 px-5 gap-1 justify-center"
+                                className="py-4 px-5 gap-1 justify-center"
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     width: cardWidth,
                                     height: moderateScale(95),
                                     borderRadius: moderateScale(22)
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF]/95 font-medium"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.95)
+                                    }}
                                 >
                                     Available
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF] font-bold"
-                                    style={{ fontSize: moderateScale(18) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(18),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     {availableCount}
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                    }}
                                 >
                                     {activeTab === "food" ? "Foods Now" : "Restaurants Now"}
                                 </Text>

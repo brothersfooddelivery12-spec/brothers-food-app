@@ -11,12 +11,14 @@ import ShareIcon from '@/assets/icon/ShareIcon.svg'
 import StoreIcon from '@/assets/icon/StoreIcon.svg'
 import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
 import WalletIcon from '@/assets/icon/WalletIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { popularitems } from "@/constant/PopularItemData"
 import { restaurantsOffers } from "@/constant/restaurantOfferCardData"
 import { RESTAURANTS } from '@/constant/RESTAURANTS'
 import { addRestaurantToFavorites, removeRestaurantFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
 import { useLocationStore } from '@/Stores/locationStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { getRatingStars } from "@/utils/rating"
 import { formatRestaurantTime } from '@/utils/time-utils'
 import { Image } from "expo-image"
@@ -171,9 +173,9 @@ export default function RestaurantDetailsScreen() {
         fetchRestaurant()
     }, [fetchRestaurant])
 
-    const fetchRestaurantMenu = useCallback(async (restaurantId: string) => {
+    const fetchRestaurantMenu = useCallback(async (restaurantId: string, latitude: number, longitude: number) => {
         try {
-            const res = await getRestaurantMenu(restaurantId)
+            const res = await getRestaurantMenu(restaurantId, latitude, longitude)
 
             console.log("Restaurant menu response:", res.data)
 
@@ -198,10 +200,21 @@ export default function RestaurantDetailsScreen() {
     },[])
 
     useEffect(() => {
-        if (!restaurantId) return
+        if (!restaurantId || !location) {
+            return
+        }
 
-        fetchRestaurantMenu(restaurantId)
-    }, [restaurantId, fetchRestaurantMenu])
+        fetchRestaurantMenu(
+            restaurantId,
+            location.latitude,
+            location.longitude
+        )
+    }, [
+        restaurantId,
+        location?.latitude,
+        location?.longitude,
+        fetchRestaurantMenu
+    ])
 
     const [categories, setCategories] = useState<RestaurantCategory[]>([])
     const [activeCategoryId, setActiveCategoryId] = useState<string>("all")
@@ -509,10 +522,13 @@ export default function RestaurantDetailsScreen() {
                 : "CLOSED"
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -530,7 +546,8 @@ export default function RestaurantDetailsScreen() {
                 </View>
             ) :(
                 <FlatList
-                    className="flex-1 bg-[#FFFFFF]"
+                    className="flex-1"
+                    style={{ backgroundColor: COLORS.primaryBackgroundColor }}
                     data={popularitems}
                     keyExtractor={(item) => item.id}
                     nestedScrollEnabled
@@ -576,14 +593,16 @@ export default function RestaurantDetailsScreen() {
                                     <TouchableOpacity
                                         activeOpacity={0.95}
                                         onPress={handleBack}
-                                        className="items-center self-start justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                        className="items-center self-start justify-center rounded-full"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             width: moderateScale(38),
                                             height: moderateScale(38)
                                         }}
                                     >
-                                        <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: scale(3) }} />
+                                        <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: scale(3) }} />
                                     </TouchableOpacity>
     
                                     <View
@@ -593,39 +612,44 @@ export default function RestaurantDetailsScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={handleFavouritePress}
-                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
                                         >
                                             {isFavourite ? (
-                                                <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
+                                                <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} style={{ marginTop: moderateScale(2) }} />
                                             ): (
-                                                <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
+                                                <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
                                             )}
                                         </TouchableOpacity>
     
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={handleShare}
-                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 width: moderateScale(38),
                                                 height: moderateScale(38)
                                             }}
                                         >
-                                            <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
+                                            <ShareIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} style={{ marginRight: moderateScale(2)} } />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
     
                             <View
-                                className="w-full bg-[#FFFFFF]"
+                                className="w-full"
                                 style={{
+                                    backgroundColor: COLORS.primaryBackgroundColor,
                                     marginTop: verticalScale(180),
                                     borderTopLeftRadius: moderateScale(22),
                                     borderTopRightRadius: moderateScale(22),
@@ -633,16 +657,20 @@ export default function RestaurantDetailsScreen() {
                                 }}
                             >
                                 <View
-                                    className="p-4 pb-5 bg-[#E5E4E2]/35"
+                                    className="p-4 pb-5"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(22),
                                         marginTop: moderateScale(15)
                                     }}
                                 >
                                     <View className="w-full flex-row gap-3 items-center">
                                         <View
-                                            className="overflow-hidden rounded-full border-[#FFFFFF]"
+                                            className="overflow-hidden rounded-full"
                                             style={{
+                                                borderColor: COLORS.primaryBackgroundColor,
                                                 borderWidth: moderateScale(3),
                                                 width: moderateScale(68),
                                                 height: moderateScale(68),
@@ -674,8 +702,11 @@ export default function RestaurantDetailsScreen() {
                                         >
                                             <Text
                                                 ellipsizeMode="tail"
-                                                className="text-[#1F1F1F] self-start font-extrabold"
-                                                style={{ fontSize: moderateScale(18) }}
+                                                className="self-start font-extrabold"
+                                                style={{
+                                                    fontSize: moderateScale(18),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {restaurant?.name || "Restaurant"}
                                             </Text>
@@ -683,8 +714,9 @@ export default function RestaurantDetailsScreen() {
                                             <Text
                                                 numberOfLines={2}
                                                 ellipsizeMode="tail"
-                                                className="font-medium text-[#1F1F1F]/65"
+                                                className="font-medium"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                     fontSize: moderateScale(11),
                                                     marginTop: moderateScale(2),
                                                     lineHeight: moderateScale(15)
@@ -698,18 +730,20 @@ export default function RestaurantDetailsScreen() {
                                     <View className="flex-row gap-2 items-center mt-3">
                                         {isVerified && (
                                             <View
-                                                className="self-start flex-row items-center bg-[#E8B93F]/20"
+                                                className="self-start flex-row items-center"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     paddingHorizontal: moderateScale(7),
                                                     paddingVertical: moderateScale(3.5),
                                                     borderRadius: moderateScale(14)
                                                 }}
                                             >
-                                                <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                                                <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
                             
                                                 <Text
-                                                    className="font-bold text-[#3F2516]"
+                                                    className="font-bold"
                                                     style={{
+                                                        color: COLORS.primaryColor,
                                                         fontSize: moderateScale(10.5),
                                                         marginLeft: moderateScale(2),
                                                         marginRight: moderateScale(2)
@@ -721,25 +755,33 @@ export default function RestaurantDetailsScreen() {
                                         )}
     
                                         <View
-                                            className="self-start flex-row items-center justify-center gap-1 bg-[#E8B93F]/20"
+                                            className="self-start flex-row items-center justify-center gap-1"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 paddingHorizontal: moderateScale(9),
                                                 paddingVertical: moderateScale(5),
                                                 borderRadius: moderateScale(12)
                                             }}
                                         >
-                                            <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" />
+                                            <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} />
     
                                             <Text
-                                                className="font-bold text-[#3F2516]"
-                                                style={{ fontSize: moderateScale(12), marginRight: moderateScale(2) }}
+                                                className="font-bold"
+                                                style={{
+                                                    color: COLORS.primaryColor,
+                                                    fontSize: moderateScale(12),
+                                                    marginRight: moderateScale(2)
+                                                }}
                                             >
                                                 {rating.toFixed(1)}
                                             </Text>
     
                                             <Text
-                                                className="font-medium text-[#3F2516]/85"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryColor
+                                                }}
                                             >
                                                 {reviewCount > 0
                                                     ? `(${reviewCount.toLocaleString(
@@ -786,8 +828,9 @@ export default function RestaurantDetailsScreen() {
                                     )} */}
     
                                     <View
-                                        className="rounded-full bg-[#E8DDD3]/75"
+                                        className="rounded-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                                             height: verticalScale(0.7),
                                             marginVertical: verticalScale(12),
                                             marginHorizontal: verticalScale(2)
@@ -798,26 +841,33 @@ export default function RestaurantDetailsScreen() {
                                         <View className="gap-4 flex-1 ml-2">
                                             <View className="flex-row items-center gap-2">
                                                 <View
-                                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                    className="items-center justify-center rounded-full"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                         width: moderateScale(36),
                                                         height: moderateScale(36)
                                                     }}
                                                 >
-                                                    <ClockIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
+                                                    <ClockIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                 </View>
     
                                                 <View className="justify-center">
                                                     <Text
-                                                        className="text-[#1F1F1F]/75 font-medium uppercase"
-                                                        style={{ fontSize: moderateScale(11) }}
+                                                        className="font-medium uppercase"
+                                                        style={{
+                                                            fontSize: moderateScale(11),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                        }}
                                                     >
                                                         Delivery
                                                     </Text>
     
                                                     <Text
-                                                        className="text-[#1F1F1F] font-bold"
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                        className="font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(12),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                         {restaurant?.average_preparation_time
                                                             ? `${restaurant.average_preparation_time} min`
@@ -829,26 +879,33 @@ export default function RestaurantDetailsScreen() {
     
                                             <View className="flex-row items-center gap-2">
                                                 <View
-                                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                    className="items-center justify-center rounded-full"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                         width: moderateScale(36),
                                                         height: moderateScale(36)
                                                     }}
                                                 >
-                                                    <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" strokeWidth={1.8} />
+                                                    <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                 </View>
     
                                                 <View className="justify-center">
                                                     <Text
-                                                        className="text-[#1F1F1F]/75 font-medium uppercase"
-                                                        style={{ fontSize: moderateScale(11) }}
+                                                        className="font-medium uppercase"
+                                                        style={{
+                                                            fontSize: moderateScale(11),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                        }}
                                                     >
                                                         Distance
                                                     </Text>
     
                                                     <Text
-                                                        className="text-[#1F1F1F] font-bold"
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                        className="font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(12),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                         {restaurant?.distance != null
                                                             ? Number(restaurant?.distance) < 1
@@ -864,26 +921,33 @@ export default function RestaurantDetailsScreen() {
                                         <View className="gap-4 mr-4">
                                             <View className="flex-row items-center gap-2">
                                                 <View
-                                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                    className="items-center justify-center rounded-full"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                         width: moderateScale(36),
                                                         height: moderateScale(36)
                                                     }}
                                                 >
-                                                    <WalletIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" />
+                                                    <WalletIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                 </View>
     
                                                 <View className="justify-center">
                                                     <Text
-                                                        className="text-[#1F1F1F]/75 font-medium uppercase"
-                                                        style={{ fontSize: moderateScale(11) }}
+                                                        className="font-medium uppercase"
+                                                        style={{
+                                                            fontSize: moderateScale(11),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                        }}
                                                     >
                                                         Cost
                                                     </Text>
     
                                                     <Text
-                                                        className="text-[#1F1F1F] font-bold"
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                        className="font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(12),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                          {restaurant?.price_for_two != null
                                                             ? `₹${Number(
@@ -899,32 +963,34 @@ export default function RestaurantDetailsScreen() {
     
                                             <View className="flex-row items-center gap-2">
                                                 <View
-                                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                    className="items-center justify-center rounded-full"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                         width: moderateScale(36),
                                                         height: moderateScale(36)
                                                     }}
                                                 >
-                                                    <StoreIcon width={moderateScale(20)} height={moderateScale(20)} color="#5C4639" strokeWidth={1.8} />
+                                                    <StoreIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                 </View>
     
                                                 <View className="justify-center">
                                                     <Text
-                                                        className="text-[#1F1F1F]/75 font-medium uppercase"
-                                                        style={{ fontSize: moderateScale(11) }}
+                                                        className="font-medium uppercase"
+                                                        style={{
+                                                            fontSize: moderateScale(11),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                        }}
                                                     >
                                                         Status
                                                     </Text>
     
                                                     <Text
-                                                        className="text-green-600 font-bold"
+                                                        className="font-bold"
                                                         style={{ 
                                                             fontSize: moderateScale(12),
-                                                            color:
-                                                                restaurantStatus ===
-                                                                "OPEN NOW"
-                                                                    ? "#16A34A"
-                                                                    : "#E05252"
+                                                            color: restaurantStatus === "OPEN NOW"
+                                                                ? COLORS.activeStatusTextColor
+                                                                : COLORS.dangerTextColor
                                                         }}
                                                     >
                                                         {restaurantStatus}
@@ -974,12 +1040,11 @@ export default function RestaurantDetailsScreen() {
                                                 >
                                                     <View className="items-center">
                                                         <Text
-                                                            className={
-                                                                isActive
-                                                                    ? "font-bold text-[#3F2516]"
-                                                                    : "font-medium text-[#514A46]"
-                                                            }
+                                                            className={isActive ? "font-bold" : "font-medium"}
                                                             style={{
+                                                                color: isActive
+                                                                    ? COLORS.primaryColor
+                                                                    : hexToRgba(COLORS.primaryTextColor, 0.65),
                                                                 fontSize: moderateScale(14),
                                                                 marginBottom: verticalScale(6)
                                                             }}
@@ -991,8 +1056,9 @@ export default function RestaurantDetailsScreen() {
                                                             <Animated.View
                                                                 entering={ZoomIn.duration(340)}
                                                                 exiting={ZoomOut.duration(360)}
-                                                                className="absolute bottom-0 bg-[#3F2516]"
+                                                                className="absolute bottom-0"
                                                                 style={{
+                                                                    backgroundColor: COLORS.primaryColor,
                                                                     left: -scale(3),
                                                                     right: -scale(3),
                                                                     height: verticalScale(2.5),
@@ -1007,8 +1073,9 @@ export default function RestaurantDetailsScreen() {
                                     </View>
     
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold"
+                                        className="font-semibold"
                                         style={{
+                                            color: COLORS.primaryTextColor,
                                             fontSize: moderateScale(16),
                                             marginTop: verticalScale(6)
                                         }}
@@ -1047,22 +1114,24 @@ export default function RestaurantDetailsScreen() {
                                             onPress={() => {
                                                 setActiveCategoryId(category.id)
                                             }}
-                                            className={`items-center justify-center ${
-                                                isActive ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                            }`}
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: isActive
+                                                    ? COLORS.primaryColor
+                                                    : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                 borderRadius: moderateScale(18),
-                                                paddingHorizontal: scale(16),
+                                                paddingHorizontal: category.name === "All" ? scale(18) : scale(14),
                                                 paddingVertical: verticalScale(7),
                                                 borderWidth: 0.7,
-                                                borderColor: "#E8DDD3"
+                                                borderColor: isActive ? COLORS.primaryColor : COLORS.softBackgroundColor
                                             }}
                                         >
                                             <Text
-                                                className={`font-semibold ${
-                                                    isActive ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                                }`}
-                                                style={{ fontSize: moderateScale(13) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: isActive ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                }}
                                             >
                                                 {category.name}
                                             </Text>
@@ -1076,8 +1145,11 @@ export default function RestaurantDetailsScreen() {
                                 style={{ marginBottom: verticalScale(16) }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-bold flex-1"
-                                    style={{ fontSize: moderateScale(16) }}
+                                    className="font-semibold flex-1"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Ambience & Kitchen
                                 </Text>
@@ -1092,8 +1164,11 @@ export default function RestaurantDetailsScreen() {
                                     className="items-center"
                                 >
                                     <Text
-                                        className="text-[#3F2516] font-bold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-bold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         See All
                                     </Text>
@@ -1108,15 +1183,21 @@ export default function RestaurantDetailsScreen() {
                             />
     
                             <View
-                                className="p-4 pb-2 bg-[#F5F5F5]"
+                                className="p-4 pb-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                    borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(22),
                                     marginTop: moderateScale(15)
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-black text-center mt-3"
-                                    style={{ fontSize: moderateScale(38) }}
+                                    className="font-black text-center mt-3"
+                                    style={{
+                                        fontSize: moderateScale(38),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     {ratingStar}
                                 </Text>
@@ -1128,25 +1209,26 @@ export default function RestaurantDetailsScreen() {
                                     {stars.map((type, index) => {
                                         if (type === "full") {
                                             return (
-                                                <RatingIcon key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                                <RatingIcon key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                             )
                                         }
     
                                         if (type === "half") {
                                             return (
-                                                <RatingIcon2 key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                                <RatingIcon2 key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                             )
                                         }
     
                                         return (
-                                            <RatingIcon3 key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                            <RatingIcon3 key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                         )
                                     })}
                                 </View>
     
                                 <Text
-                                    className="text-[#5C4639]/90 font-semibold text-center"
+                                    className="font-semibold text-center"
                                     style={{
+                                        color: hexToRgba(COLORS.secondaryColor, 0.85),
                                         fontSize: moderateScale(12),
                                         marginTop: moderateScale(4)
                                     }}
@@ -1157,19 +1239,16 @@ export default function RestaurantDetailsScreen() {
                                 <RatingDistribution ratings={USER_RATINGS} ratingLevels={[5, 4, 3]} />
     
                                 <View
-                                    className="rounded-full bg-[#E8DDD3]/75"
+                                    className="rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                                         height: verticalScale(0.7),
                                         marginVertical: verticalScale(14),
                                         marginHorizontal: verticalScale(2)
                                     }}
                                 />
     
-                                <View
-                                    style={{
-                                            
-                                    }}
-                                >
+                                <View>
                                     {REVIEWS.map((item) => (
                                         <ReviewCard
                                             key={item.id}
@@ -1188,9 +1267,10 @@ export default function RestaurantDetailsScreen() {
                                 className="items-center justify-center mt-5"
                             >
                                 <Text
-                                    className="text-[#3F2516] font-semibold text-center"
+                                    className="font-semibold text-center"
                                     style={{
-                                        fontSize: moderateScale(14)
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                                        fontSize: moderateScale(13)
                                     }}
                                 >
                                     See All Reviews
@@ -1198,8 +1278,9 @@ export default function RestaurantDetailsScreen() {
                             </Pressable>
     
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
+                                className="font-semibold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(15),
                                     marginTop: verticalScale(18)
                                 }}

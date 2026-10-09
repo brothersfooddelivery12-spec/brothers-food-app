@@ -1,4 +1,6 @@
 import DoubleTickIcon from "@/assets/icon/DoubleTickIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import { memo } from "react"
 import { Text, View } from "react-native"
@@ -33,13 +35,15 @@ function ChatMessage({ item }: ChatMessageProps) {
             >
                 {!isUser && (
                     <View
-                        className="overflow-hidden bg-white border border-[#E8B93F]"
+                        className="overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: COLORS.accentLightColor,
                             width: moderateScale(42),
                             height: moderateScale(42),
                             borderRadius: moderateScale(21),
                             marginRight: scale(6),
-                            borderWidth: moderateScale(1.5)
+                            borderWidth: moderateScale(1)
                         }}
                     >
                         <Image
@@ -62,12 +66,13 @@ function ChatMessage({ item }: ChatMessageProps) {
                     style={{ maxWidth: isUser ? "82%" : "78%" }}
                 >
                     <View
-                        className={
-                            isUser
-                                ? "bg-[#3F2516]"
-                                : "bg-[#FAFAFA] border-[#E8DDD3]"
-                        }
                         style={{
+                            backgroundColor: isUser
+                                ? COLORS.primaryColor
+                                : COLORS.secondaryBackgroundColor,
+                            borderColor: isUser
+                                ? COLORS.primaryColor
+                                : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             paddingHorizontal: scale(16),
                             paddingVertical: verticalScale(14),
@@ -84,12 +89,11 @@ function ChatMessage({ item }: ChatMessageProps) {
                         }}
                     >
                         <Text
-                            className={
-                                isUser
-                                    ? "text-[#FFFFFF] font-medium"
-                                    : "text-[#1F1F1F] font-medium"
-                            }
+                            className="font-medium"
                             style={{
+                                color: isUser
+                                    ? COLORS.primaryBackgroundColor
+                                    : COLORS.primaryTextColor,
                                 fontSize: moderateScale(12),
                                 lineHeight: moderateScale(18)
                             }}
@@ -109,8 +113,11 @@ function ChatMessage({ item }: ChatMessageProps) {
                         }}
                     >
                         <Text
-                            className="text-[#1F1F1F]/65 font-medium"
-                            style={{ fontSize: moderateScale(10) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(10),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                            }}
                         >
                             {item.time}
                         </Text>

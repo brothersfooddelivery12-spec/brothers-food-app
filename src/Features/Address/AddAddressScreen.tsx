@@ -9,6 +9,8 @@ import MapsLocationIcon from '@/assets/icon/MapsLocationIcon.svg'
 import PinLocation from '@/assets/icon/PinLocation.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -285,10 +287,13 @@ export default function AddAddressScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -297,38 +302,47 @@ export default function AddAddressScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {isEditMode ? "Edit Address" : "Add Address"}
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         {isEditMode
                             ? "Update your delivery address details"
-                            : "Add your delivery address for a seamless experience"}
+                            : "Add your delivery address for a seamless experience"
+                        }
                     </Text>
                 </View>
             </View>
@@ -359,33 +373,43 @@ export default function AddAddressScreen(){
                     extraKeyboardSpace={20}
                 >
                     <View
-                        className="flex-row gap-2 p-3 items-center bg-[#E8B93F]/10 border border-[#E8B93F]/15"
+                        className="flex-row gap-2 p-3 items-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                            borderColor: hexToRgba(COLORS.accentColor, 0.15),
+                            borderWidth: moderateScale(0.7),
                             borderRadius: moderateScale(16),
                             marginBottom: verticalScale(8)
                         }}
                     >
                         <View
-                            className='bg-[#E8B93F]/25 rounded-full items-center justify-center'
+                            className='rounded-full items-center justify-center'
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.25),
                                 width: moderateScale(40),
                                 height: moderateScale(40)
                             }}
                         >
-                            <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.5} />
+                            <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                         </View>
 
                         <View className='justify-center gap-1 mr-1'>
                             <Text
-                                className='text-[#1F1F1F] font-semibold'
-                                style={{ fontSize: moderateScale(12) }}
+                                className='font-semibold'
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Use Current Location
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium'
-                                style={{ fontSize: moderateScale(9) }}
+                                className='font-medium'
+                                style={{
+                                    fontSize: moderateScale(9),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 Automatically detect your address
                             </Text>
@@ -394,26 +418,33 @@ export default function AddAddressScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#3F2516] flex-row gap-2 items-center justify-center"
+                            className="flex-row gap-2 items-center justify-center"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 paddingHorizontal: scale(10),
                                 paddingVertical: verticalScale(7),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <LocateFixedIcon width={moderateScale(21)} height={moderateScale(21)} color={"#FFFFFF"} strokeWidth={1.5} />
+                            <LocateFixedIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
 
                             <View className='justify-center mr-1'>
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
-                                    style={{ fontSize: moderateScale(9) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(9),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Select
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
-                                    style={{ fontSize: moderateScale(9) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(9),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Current Location
                                 </Text>
@@ -422,8 +453,11 @@ export default function AddAddressScreen(){
                     </View>
 
                     <Text
-                        className='text-[#1F1F1F] font-semibold mt-3'
-                        style={{ fontSize: moderateScale(15) }}
+                        className='font-semibold mt-3'
+                        style={{
+                            fontSize: moderateScale(15),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Address Label
                     </Text>
@@ -449,22 +483,24 @@ export default function AddAddressScreen(){
                                     onPress={() => {
                                         setSelectedCategory(category)
                                     }}
-                                    className={`items-center justify-center ${
-                                        isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                    }`}
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: isSelected
+                                            ? COLORS.primaryColor
+                                            : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(16),
                                         paddingVertical: verticalScale(7),
                                         borderWidth: 0.7,
-                                        borderColor: isSelected ? "#3F2516" : "#E8DDD3"
+                                        borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                     }}
                                 >
                                     <Text
-                                        className={`font-semibold ${
-                                            isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                        }`}
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                        }}
                                     >
                                         {category}
                                     </Text>
@@ -478,15 +514,19 @@ export default function AddAddressScreen(){
                         style={{ marginTop: verticalScale(14) }}
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Receiver Name
                         </Text>
 
                         <Text
-                            className="font-bold text-[#DC2626]"
+                            className="font-bold"
                             style={{
+                                color: COLORS.errorBorderColor,
                                 fontSize: moderateScale(13),
                                 marginLeft: scale(2)
                             }}
@@ -501,9 +541,10 @@ export default function AddAddressScreen(){
                                 receiverNameRef.current?.focus()
                             }
                         }}
-                        className={`flex-row items-center overflow-hidden
-                        ${receiverNameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: receiverNameError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -513,25 +554,23 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
+                            <UserIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
                                 ref={receiverNameRef}
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -547,7 +586,7 @@ export default function AddAddressScreen(){
                                     setReceiverNameError(false)
                                 }}
                                 placeholder="Enter Receiver Name"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={ COLORS.placeholderTextColor }
                                 keyboardType="default"
                                 returnKeyType="done"
                                 autoCapitalize="words"
@@ -555,7 +594,7 @@ export default function AddAddressScreen(){
                                 textContentType="name"
                                 autoComplete="name"
                                 maxLength={50}
-                                selectionColor="#79685e"
+                                selectionColor={ COLORS.selectionColor }
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -566,8 +605,13 @@ export default function AddAddressScreen(){
 
                     {receiverNameError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11),
+                                color: COLORS.errorTextColor
+                            }}
                         >
                             Please enter receiver name
                         </Text>
@@ -578,15 +622,19 @@ export default function AddAddressScreen(){
                         style={{ marginTop: verticalScale(10) }}
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Receiver Phone
                         </Text>
 
                         <Text
-                            className="font-bold text-[#DC2626]"
+                            className="font-bold"
                             style={{
+                                color: COLORS.errorBorderColor,
                                 fontSize: moderateScale(13),
                                 marginLeft: scale(2)
                             }}
@@ -601,9 +649,10 @@ export default function AddAddressScreen(){
                                 phoneRef.current?.focus()
                             }
                         }}
-                        className={`flex-row items-center overflow-hidden
-                        ${numberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: numberError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -613,25 +662,23 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <CallIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
+                            <CallIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
                                 ref={phoneRef}
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -647,7 +694,7 @@ export default function AddAddressScreen(){
                                     setNumberError(false)
                                 }}
                                 placeholder="Enter 10-digit mobile number"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={ COLORS.placeholderTextColor }
                                 keyboardType="phone-pad"
                                 returnKeyType="done"
                                 autoCorrect={false}
@@ -655,7 +702,7 @@ export default function AddAddressScreen(){
                                 textContentType="telephoneNumber"
                                 autoComplete="tel"
                                 maxLength={16}
-                                selectionColor="#79685e"
+                                selectionColor={ COLORS.selectionColor }
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -666,8 +713,13 @@ export default function AddAddressScreen(){
 
                     {numberError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11),
+                                color: COLORS.errorTextColor
+                            }}
                         >
                             Please enter a valid 10-digit mobile number
                         </Text>
@@ -678,15 +730,19 @@ export default function AddAddressScreen(){
                         style={{ marginTop: verticalScale(10) }}
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Address Line
                         </Text>
 
                         <Text
-                            className="font-bold text-[#DC2626]"
+                            className="font-bold"
                             style={{
+                                color: COLORS.errorBorderColor,
                                 fontSize: moderateScale(13),
                                 marginLeft: scale(2)
                             }}
@@ -701,9 +757,10 @@ export default function AddAddressScreen(){
                                 addressLineRef.current?.focus()
                             }
                         }}
-                        className={`flex-row items-center overflow-hidden
-                        ${addressLineError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: addressLineError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -713,25 +770,23 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <HouseIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} strokeWidth={1.8} /> 
+                            <HouseIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                             <TextInput
                                 ref={addressLineRef}
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: verticalScale(40),
                                     fontSize: moderateScale(13),
                                     textAlignVertical: "center",
@@ -747,7 +802,7 @@ export default function AddAddressScreen(){
                                     setAddressLineError(false)
                                 }}
                                 placeholder="House/Building No., Street Name etc."
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={ COLORS.placeholderTextColor }
                                 keyboardType="default"
                                 returnKeyType="next"
                                 autoCapitalize="words"
@@ -755,7 +810,7 @@ export default function AddAddressScreen(){
                                 textContentType="fullStreetAddress"
                                 autoComplete="street-address"
                                 maxLength={120}
-                                selectionColor="#79685e"
+                                selectionColor={ COLORS.selectionColor }
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -766,8 +821,13 @@ export default function AddAddressScreen(){
 
                     {addressLineError  && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11),
+                                color: COLORS.errorTextColor
+                            }}
                         >
                             Please enter your complete address
                         </Text>
@@ -862,15 +922,19 @@ export default function AddAddressScreen(){
                         style={{ marginTop: verticalScale(10) }}
                     >
                         <Text
-                            className="font-medium text-[#1F1F1F]/85"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Pincode
                         </Text>
 
                         <Text
-                            className="font-bold text-[#DC2626]"
+                            className="font-bold"
                             style={{
+                                color: COLORS.errorBorderColor,
                                 fontSize: moderateScale(13),
                                 marginLeft: scale(2)
                             }}
@@ -885,9 +949,10 @@ export default function AddAddressScreen(){
                                 pincodeRef.current?.focus()
                             }
                         }}
-                        className={`flex-row items-center overflow-hidden
-                        ${pinCodeError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        className="flex-row items-center overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: pinCodeError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             marginTop: verticalScale(6),
                             paddingRight: scale(10),
@@ -897,14 +962,15 @@ export default function AddAddressScreen(){
                         }}
                     >
                         <View
-                            className="items-center justify-center bg-[#E5E4E2]/65"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(36),
                                 height: moderateScale(36),
                                 borderRadius: moderateScale(10)
                             }}
                         >
-                            <MapsLocationIcon width={scale(20)} height={scale(20)} color={"#655145"} strokeWidth={1.8} /> 
+                            <MapsLocationIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} /> 
                         </View>
 
                         <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
@@ -920,7 +986,7 @@ export default function AddAddressScreen(){
                                     setPinCodeError(false)
                                 }}
                                 placeholder="Enter 6-digit pincode"
-                                placeholderTextColor="#9A9A9A"
+                                placeholderTextColor={ COLORS.placeholderTextColor }
                                 keyboardType="number-pad"
                                 returnKeyType="done"
                                 maxLength={6}
@@ -928,18 +994,15 @@ export default function AddAddressScreen(){
                                 autoCapitalize="none"
                                 textContentType="postalCode"
                                 autoComplete="postal-code"
-                                className={`p-0 tracking-wide font-medium ${
-                                    loading
-                                        ? "text-[#9CA3AF]"
-                                        : "text-[#151515]"
-                                }`}
+                                className="p-0 tracking-wide font-medium"
                                 style={{
+                                    color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                     height: moderateScale(22),
                                     fontSize: moderateScale(13),
                                     includeFontPadding: false,
                                     textAlignVertical: "center"
                                 }}
-                                selectionColor="#79685e"
+                                selectionColor={ COLORS.selectionColor }
                                 editable={!loading}
                                 onSubmitEditing={() => {
                                     Keyboard.dismiss()
@@ -950,8 +1013,13 @@ export default function AddAddressScreen(){
 
                     {pinCodeError && (
                         <Text
-                            className="self-start font-medium text-[#E05252]"
-                            style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                            className="self-start font-medium"
+                            style={{
+                                marginTop: verticalScale(4),
+                                marginLeft: scale(8),
+                                fontSize: moderateScale(11),
+                                color: COLORS.errorTextColor
+                            }}
                         >
                             Please enter a valid 6-digit PIN code
                         </Text>

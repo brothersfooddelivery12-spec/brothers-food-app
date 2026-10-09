@@ -1,3 +1,4 @@
+import { Coupon } from "@/Services/api-service"
 import { create } from "zustand"
 
 type AppliedCoupon = {
@@ -6,7 +7,7 @@ type AppliedCoupon = {
     title: string
     description: string
 
-    discount_type: "FLAT" | "PERCENTAGE"
+    discount_type: Coupon["discount_type"]
     discount_value: string
     max_discount: string | null
     min_order_amount: string

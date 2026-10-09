@@ -4,6 +4,8 @@ import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
 import TimerIcon from "@/assets/icon/TimerIcon.svg"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { formatRestaurantTime } from "@/utils/time-utils"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
@@ -74,11 +76,11 @@ const RestaurantCard = ({
             className="w-full overflow-hidden border"
             style={{
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
                 borderWidth: moderateScale(0.5),
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View
@@ -92,7 +94,7 @@ const RestaurantCard = ({
                         borderRadius: moderateScale(18),
                         overflow: "hidden",
                         borderWidth: !hasImage && !isInactive ? 0.7 : 0,
-                        borderColor: "rgba(31,31,31,0.08)"
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
@@ -118,7 +120,8 @@ const RestaurantCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 bg-black/25"
+                            className="absolute inset-0"
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
                 </View>
@@ -137,23 +140,23 @@ const RestaurantCard = ({
                         top: moderateScale(14),
                         width: moderateScale(34),
                         height: moderateScale(34),
-                        backgroundColor: isInactive ? "rgba(255,255,255,0.75)" : "#FFFFFF",
+                        backgroundColor: isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.75) : COLORS.primaryBackgroundColor,
                         borderWidth: moderateScale(0.7),
-                        borderColor: "rgba(31,31,31,0.10)"
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.10)
                     }}
                 >
                     {isFavourite ? (
                         <FavouriteIconFilled
                             width={moderateScale(20)}
                             height={moderateScale(20)}
-                            color={isInactive ? "#777777" : "#3F2516"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                             style={{ marginTop: moderateScale(1.5) }}
                         />
                     ) : (
                         <FavouriteIcon
                             width={moderateScale(20)}
                             height={moderateScale(20)}
-                            color={isInactive ? "#777777" : "#3F2516"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                             strokeWidth={1.5}
                             style={{ marginTop: moderateScale(1.5) }}
                         />
@@ -169,12 +172,15 @@ const RestaurantCard = ({
                             paddingHorizontal: moderateScale(9),
                             paddingVertical: verticalScale(5),
                             borderRadius: moderateScale(10),
-                            backgroundColor: "rgba(31,31,31,0.85)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.85)
                         }}
                     >
                         <Text
-                            className="font-bold text-[#FFFFFF] uppercase"
-                            style={{ fontSize: moderateScale(9) }}
+                            className="font-bold uppercase"
+                            style={{
+                                fontSize: moderateScale(9),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Currently Closed
                         </Text>
@@ -194,7 +200,7 @@ const RestaurantCard = ({
                             className="font-extrabold"
                             style={{
                                 fontSize: moderateScale(15),
-                                color: isInactive ? "rgba(31,31,31,0.52)" : "#1F1F1F"
+                                color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                             }}
                         >
                             {restaurant.name}
@@ -208,8 +214,8 @@ const RestaurantCard = ({
                                 marginTop: moderateScale(4),
                                 lineHeight: moderateScale(14),
                                 color: isInactive
-                                    ? "rgba(31,31,31,0.38)"
-                                    : "rgba(31,31,31,0.65)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                                    : hexToRgba(COLORS.primaryTextColor, 0.65)
                             }}
                         >
                             {restaurant.cuisines}
@@ -226,7 +232,7 @@ const RestaurantCard = ({
                                 <ClockIcon
                                     width={moderateScale(16)}
                                     height={moderateScale(16)}
-                                    color={isInactive ? "#858585" : "rgba(31,31,31,0.65)"}
+                                    color={isInactive ? COLORS.inactiveContentColor : hexToRgba(COLORS.primaryTextColor, 0.65)}
                                     strokeWidth={1.8}
                                 />
 
@@ -235,8 +241,8 @@ const RestaurantCard = ({
                                     style={{
                                         fontSize: moderateScale(10.5),
                                         color: isInactive
-                                            ? "rgba(31,31,31,0.45)"
-                                            : "rgba(31,31,31,0.65)"
+                                            ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                            : hexToRgba(COLORS.primaryTextColor, 0.65)
                                     }}
                                 >
                                     {isInactive
@@ -260,18 +266,18 @@ const RestaurantCard = ({
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
-                        <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color={isInactive ? "#858585" : "#5C4639"} />
+                        <RatingIcon width={moderateScale(15)} height={moderateScale(15)} color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor} />
 
                         <Text
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(11),
                                 marginRight: moderateScale(2),
-                                color: isInactive ? "#858585" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             {(rating ?? 0).toFixed(1)}
@@ -285,8 +291,8 @@ const RestaurantCard = ({
                         marginVertical: verticalScale(8),
                         marginHorizontal: verticalScale(2),
                         backgroundColor: isInactive
-                            ? "rgba(31,31,31,0.10)"
-                            : "rgba(232,221,211,0.60)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                            : hexToRgba(COLORS.borderColor, 0.6)
                     }}
                 />
 
@@ -299,17 +305,17 @@ const RestaurantCard = ({
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
-                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={isInactive ? "#858585" : "#5C4639"} />
+                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor} />
 
                         <Text
                             className="font-semibold"
                             style={{
                                 fontSize: moderateScale(11),
-                                color: isInactive ? "#858585" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             {restaurant.deliveryFee === 0 ? "FREE" : `₹${restaurant.deliveryFee}`}
@@ -323,14 +329,14 @@ const RestaurantCard = ({
                                 width: moderateScale(22),
                                 height: moderateScale(22),
                                 backgroundColor: isInactive
-                                    ? "rgba(31,31,31,0.07)"
-                                    : "rgba(232,185,63,0.15)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    : hexToRgba(COLORS.accentColor, 0.15)
                             }}
                         >
                             <TimerIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
-                                color={isInactive ? "#858585" : "#5C4639"} strokeWidth={1.8}
+                                color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor} strokeWidth={1.8}
                             />
                         </View>
 
@@ -339,8 +345,8 @@ const RestaurantCard = ({
                             style={{
                                 fontSize: moderateScale(11),
                                 color: isInactive
-                                    ? "rgba(31,31,31,0.45)"
-                                    : "rgba(31,31,31,0.75)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                    : hexToRgba(COLORS.primaryTextColor, 0.75)
                             }}
                         >
                             {isInactive ? "Closed"
@@ -358,12 +364,15 @@ const RestaurantCard = ({
                                 paddingHorizontal: moderateScale(9),
                                 paddingVertical: moderateScale(5),
                                 borderRadius: moderateScale(10),
-                                backgroundColor: isInactive ? "#B5B5B5" : "#3F2516"
+                                backgroundColor: isInactive ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                             }}
                         >
                             <Text
-                                className="font-medium text-[#FFFFFF]"
-                                style={{ fontSize: moderateScale(11) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor
+                                }}
                             >
                                 ₹{restaurant.priceForTwo} for two
                             </Text>

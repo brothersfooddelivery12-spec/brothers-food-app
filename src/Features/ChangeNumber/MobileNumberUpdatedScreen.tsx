@@ -1,5 +1,7 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback } from 'react'
@@ -45,10 +47,13 @@ export default function MobileNumberUpdatedScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -57,21 +62,23 @@ export default function MobileNumberUpdatedScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 {/* <View className="items-start gap-1 flex-1">
@@ -113,8 +120,9 @@ export default function MobileNumberUpdatedScreen(){
                 </View>
 
                 <Text
-                    className='text-[#1F1F1F] font-extrabold text-center'
+                    className='font-extrabold text-center'
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(16)
                     }}
@@ -123,8 +131,9 @@ export default function MobileNumberUpdatedScreen(){
                 </Text>
 
                 <Text
-                    className='text-[#1F1F1F]/65 font-medium text-center mb-3'
+                    className='font-medium text-center mb-3'
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(5)

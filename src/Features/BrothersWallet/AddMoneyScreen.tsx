@@ -10,6 +10,8 @@ import PhonePeIcon from '@/assets/icon/PhonePe.svg'
 import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, Keyboard, Pressable, StatusBar, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native"
@@ -435,10 +437,13 @@ export default function AddMoneyScreen(){
     ])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -447,34 +452,42 @@ export default function AddMoneyScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Add Money
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Top up your Brothers Wallet
                     </Text>
@@ -496,8 +509,11 @@ export default function AddMoneyScreen(){
                 ListHeaderComponent={
                     <>
                         <Text
-                            className='text-[#1F1F1F] font-semibold'
-                            style={{ fontSize: moderateScale(15) }}
+                            className='font-semibold'
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Select Amount
                         </Text>
@@ -524,16 +540,16 @@ export default function AddMoneyScreen(){
                                             width: cardWidth,
                                             height: verticalScale(38),
                                             borderRadius: moderateScale(14),
-                                            backgroundColor: isSelected ? "#3F2516" : "#FAFAFA",
+                                            backgroundColor: isSelected ? COLORS.primaryColor : COLORS.secondaryBackgroundColor,
                                             borderWidth: 0.5,
-                                            borderColor: "rgba(31,31,31,0.10)"
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                         }}
                                     >
                                         <Text
                                             className="font-bold"
                                             style={{
                                                 fontSize: moderateScale(14),
-                                                color: isSelected ? "#FFFFFF" : "#1F1F1F"
+                                                color: isSelected ? COLORS.primaryBackgroundColor : COLORS.primaryTextColor
                                             }}
                                         >
                                             ₹{amount.toLocaleString("en-IN")}
@@ -551,13 +567,14 @@ export default function AddMoneyScreen(){
                                 className="flex-1"
                                 style={{
                                     height: 1,
-                                    backgroundColor: "rgba(31,31,31,0.10)"
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                 }}
                             />
 
                             <Text
-                                className="text-[#1F1F1F]/70 font-semibold"
+                                className="font-semibold"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(11),
                                     marginHorizontal: scale(15)
                                 }}
@@ -569,14 +586,15 @@ export default function AddMoneyScreen(){
                                 className="flex-1"
                                 style={{
                                     height: 1,
-                                    backgroundColor: "rgba(31,31,31,0.10)"
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                 }}
                             />
                         </View>
 
                         <Text
-                            className='text-[#1F1F1F]/85 font-semibold'
+                            className='font-semibold'
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85),
                                 fontSize: moderateScale(14),
                                 marginTop: moderateScale(18)
                             }}
@@ -590,12 +608,10 @@ export default function AddMoneyScreen(){
                                     amountRef.current?.focus()
                                 }
                             }}
-                            className={`flex-row items-center overflow-hidden ${
-                                amountError
-                                    ? "border-red-400"
-                                    : "border-[#1F1F1F]/10"
-                            } bg-[#FAFAFA]`}
+                            className="flex-row items-center overflow-hidden"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: amountError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(10),
@@ -605,16 +621,20 @@ export default function AddMoneyScreen(){
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#E5E4E2]/65"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                     width: moderateScale(36),
                                     height: moderateScale(36),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
                                 <Text
-                                    className="font-bold text-[#655145]"
-                                    style={{ fontSize: moderateScale(18) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(18),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     ₹
                                 </Text>
@@ -626,12 +646,9 @@ export default function AddMoneyScreen(){
                             >
                                 <TextInput
                                     ref={amountRef}
-                                    className={`p-0 tracking-wide font-medium ${
-                                        loading
-                                            ? "text-[#9CA3AF]"
-                                            : "text-[#151515]"
-                                    }`}
+                                    className="p-0 tracking-wide font-medium"
                                     style={{
+                                        color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                                         height: verticalScale(40),
                                         fontSize: moderateScale(13),
                                         textAlignVertical: "center",
@@ -646,11 +663,11 @@ export default function AddMoneyScreen(){
                                         setAmountError(false)
                                     }}
                                     placeholder="Enter amount"
-                                    placeholderTextColor="#9A9A9A"
+                                    placeholderTextColor={COLORS.placeholderTextColor}
                                     keyboardType="number-pad"
                                     returnKeyType="done"
                                     maxLength={7}
-                                    selectionColor="#79685e"
+                                    selectionColor={COLORS.selectionColor}
                                     editable={!loading}
                                     onSubmitEditing={() => {
                                         Keyboard.dismiss()
@@ -661,8 +678,9 @@ export default function AddMoneyScreen(){
 
                         {amountError && (
                             <Text
-                                className="self-start font-medium text-[#E05252]"
+                                className="self-start font-medium"
                                 style={{
+                                    color: COLORS.errorTextColor,
                                     marginTop: verticalScale(4),
                                     marginLeft: scale(8),
                                     fontSize: moderateScale(11)
@@ -673,8 +691,9 @@ export default function AddMoneyScreen(){
                         )}
 
                         <Text
-                            className='text-[#1F1F1F]/65 font-medium'
+                            className='font-medium'
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                 marginTop: verticalScale(5),
                                 marginLeft: scale(8),
                                 fontSize: moderateScale(11)
@@ -686,19 +705,28 @@ export default function AddMoneyScreen(){
                         {savedDeviceUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold mt-8 mb-2"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-semibold mt-8 mb-2"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Saved Payment Method
                                 </Text>
         
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.7) }}
+                                    className="overflow-hidden"
+                                    style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderRadius: moderateScale(20),
+                                        borderWidth: moderateScale(0.5)
+                                    }}
                                 >
                                     {savedDeviceUpiMethods.map((item, index) => {
                                         const isSelected = selectedPayment === item.id
                                         const isLast = index === savedDeviceUpiMethods.length - 1
+                                        const isProcessing = processingUpiApp === item.packageName
                                         const Icon = item.icon
         
                                         return (
@@ -711,31 +739,39 @@ export default function AddMoneyScreen(){
                                                     className="flex-row items-center"
                                                     style={{
                                                         paddingHorizontal: scale(14),
-                                                        paddingVertical: verticalScale(10)
+                                                        paddingVertical: verticalScale(11),
+                                                        opacity: processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                        className="items-center justify-center rounded-full"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                             width: moderateScale(42),
                                                             height: moderateScale(42)
                                                         }}
                                                     >
-                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryTextColor} />
                                                     </View>
         
                                                     <View className="flex-1 ml-3">
                                                         <Text
-                                                            className="text-[#1F1F1F] font-semibold"
-                                                            style={{ fontSize: moderateScale(14) }}
+                                                            className="font-semibold"
+                                                            style={{
+                                                                fontSize: moderateScale(14),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.title}
                                                         </Text>
         
                                                         {item.description && (
                                                             <Text
-                                                                className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                                style={{ fontSize: moderateScale(11) }}
+                                                                className="font-medium mt-1"
+                                                                style={{
+                                                                    fontSize: moderateScale(11),
+                                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)    
+                                                                }}
                                                             >
                                                                 {item.description}
                                                             </Text>
@@ -743,16 +779,21 @@ export default function AddMoneyScreen(){
                                                     </View>
         
                                                     <View
-                                                        className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                        className='items-center justify-center'
                                                         style={{
+                                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            borderWidth: moderateScale(0.7),
                                                             borderRadius: moderateScale(8),
                                                             paddingHorizontal: scale(8),
                                                             paddingVertical: verticalScale(3)
                                                         }}
                                                     >
                                                         <Text 
-                                                            className='text-[#1F1F1F] font-medium uppercase'
-                                                            style={{ fontSize: moderateScale(10) }}
+                                                            className='font-medium uppercase'
+                                                            style={{
+                                                                fontSize: moderateScale(10),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.paymentType}
                                                         </Text>
@@ -765,7 +806,9 @@ export default function AddMoneyScreen(){
                                                             height: moderateScale(22),
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
-                                                            borderColor: isSelected ? "#5c4639" : "#D6D0CA"
+                                                            borderColor: isSelected
+                                                                ? COLORS.secondaryColor
+                                                                : hexToRgba(COLORS.neutralSurfaceColor, 0.85),
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -774,7 +817,7 @@ export default function AddMoneyScreen(){
                                                                     width: moderateScale(14),
                                                                     height: moderateScale(14),
                                                                     borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639"
+                                                                    backgroundColor: COLORS.secondaryColor
                                                                 }}
                                                             />
                                                         )}
@@ -783,9 +826,9 @@ export default function AddMoneyScreen(){
         
                                                 {!isLast && (
                                                     <View
-                                                        className="bg-[#1F1F1F]/10"
                                                         style={{
-                                                            height: 1,
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            height: moderateScale(0.5),
                                                             marginHorizontal: scale(14)
                                                         }}
                                                     />
@@ -800,8 +843,9 @@ export default function AddMoneyScreen(){
                         {otherUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold mb-2"
+                                    className="font-semibold mb-2"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
                                     }}
@@ -810,8 +854,13 @@ export default function AddMoneyScreen(){
                                 </Text>
 
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                    className="overflow-hidden"
+                                    style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderRadius: moderateScale(20),
+                                        borderWidth: moderateScale(0.5)
+                                    }}
                                 >
                                     {otherUpiMethods.map((item, index) => {
                                         const Icon = item.icon
@@ -833,35 +882,37 @@ export default function AddMoneyScreen(){
                                                     style={{
                                                         paddingHorizontal: scale(14),
                                                         paddingVertical: verticalScale(11),
-                                                        opacity: 
-                                                            processingUpiApp !== null &&
-                                                            !isProcessing ? 0.5 : 1
+                                                        opacity:  processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                                        className="items-center justify-center rounded-full"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                             width: moderateScale(42),
                                                             height: moderateScale(42)
                                                         }}
                                                     >
-                                                        <Icon
-                                                            width={moderateScale(item.size)}
-                                                            height={moderateScale(item.size)}
-                                                        />
+                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} />
                                                     </View>
 
                                                     <View className="flex-1 ml-3">
                                                         <Text
-                                                            className="text-[#1F1F1F] font-semibold"
-                                                            style={{ fontSize: moderateScale(14) }}
+                                                            className="font-semibold"
+                                                            style={{
+                                                                fontSize: moderateScale(14),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.title}
                                                         </Text>
 
                                                         <Text
-                                                            className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                            style={{ fontSize: moderateScale(11) }}
+                                                            className="font-medium mt-1"
+                                                            style={{
+                                                                fontSize: moderateScale(11),
+                                                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                            }}
                                                         >
                                                             {item.description}
                                                         </Text>
@@ -875,8 +926,8 @@ export default function AddMoneyScreen(){
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
                                                             borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA"
+                                                                ? COLORS.secondaryColor
+                                                                : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -885,7 +936,7 @@ export default function AddMoneyScreen(){
                                                                     width: moderateScale(14),
                                                                     height: moderateScale(14),
                                                                     borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639"
+                                                                    backgroundColor: COLORS.secondaryColor
                                                                 }}
                                                             />
                                                         )}
@@ -894,9 +945,9 @@ export default function AddMoneyScreen(){
 
                                                 {!isLast && (
                                                     <View
-                                                        className="bg-[#1F1F1F]/10"
                                                         style={{
-                                                            height: 0.7,
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            height: moderateScale(0.5),
                                                             marginHorizontal: scale(14)
                                                         }}
                                                     />

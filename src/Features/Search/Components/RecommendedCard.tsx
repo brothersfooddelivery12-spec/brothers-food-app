@@ -1,7 +1,9 @@
 import FavouriteIconFilled from "@/assets/icon/FavouriteFilledIcon.svg"
 import FavouriteIcon from "@/assets/icon/FavouriteIconOutline.svg"
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
-import { MenuItemRestaurant } from "@/Features/Home/components/FoodCard"
+import { COLORS } from "@/constant/colors"
+import { FoodTypeIndicator, MenuItemRestaurant } from "@/Features/Home/components/FoodCard"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -31,54 +33,6 @@ interface RecommendedCardProps {
     onFavouritePress?: () => void
 }
 
-const FoodTypeIndicator = ({ isVeg, isInactive }: {
-    isVeg: boolean
-    isInactive: boolean
-}) => {
-    const color = isVeg ? "#20bb59" : "#DC2626"
-
-    return (
-        <View
-            className="flex-row items-center self-start"
-            style={{
-                gap: moderateScale(4),
-                borderRadius: moderateScale(8)
-            }}
-        >
-            <View
-                className="items-center justify-center"
-                style={{
-                    width: moderateScale(13),
-                    height: moderateScale(13),
-
-                    borderWidth: moderateScale(1.2),
-                    borderColor: isInactive ? "rgba(31,31,31,0.40)" : color,
-                    borderRadius: moderateScale(3)
-                }}
-            >
-                <View
-                    style={{
-                        width: moderateScale(6),
-                        height: moderateScale(6),
-                        borderRadius: moderateScale(4),
-                        backgroundColor: isInactive ? "rgba(31,31,31,0.40)" : color
-                    }}
-                />
-            </View>
-
-            <Text
-                className="font-semibold tracking-wide"
-                style={{
-                    fontSize: moderateScale(10),
-                    color: isInactive ? "rgba(31,31,31,0.45)" : color
-                }}
-            >
-                {isVeg ? "Veg" : "Non-Veg"}
-            </Text>
-        </View>
-    )
-}
-
 const RecommendedCard = ({
     item,
     onPress,
@@ -104,13 +58,13 @@ const RecommendedCard = ({
             disabled={isInactive}
             className="overflow-hidden"
             style={{
-                borderWidth: moderateScale(0.5),
                 width: moderateScale(160),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderWidth: moderateScale(0.5),
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View
@@ -124,7 +78,7 @@ const RecommendedCard = ({
                         borderRadius: moderateScale(18),
                         overflow: "hidden",
                         borderWidth: !hasImage && !isInactive ? 0.7 : 0,
-                        borderColor: "rgba(31,31,31,0.08)"
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
@@ -150,7 +104,8 @@ const RecommendedCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 bg-black/25"
+                            className="absolute inset-0"
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
                 </View>
@@ -191,12 +146,15 @@ const RecommendedCard = ({
                             paddingHorizontal: scale(8),
                             paddingVertical: verticalScale(5),
                             borderRadius: moderateScale(10),
-                            backgroundColor: "rgba(31,31,31,0.82)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.82),
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-bold uppercase"
-                            style={{ fontSize: moderateScale(8.5) }}
+                            className="font-bold uppercase"
+                            style={{
+                                fontSize: moderateScale(8.5),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Currently Unavailable
                         </Text>
@@ -210,31 +168,29 @@ const RecommendedCard = ({
                         onFavouritePress?.()
                     }}
                     hitSlop={8}
-                    className="absolute items-center justify-center rounded-full bg-white border-[#1F1F1F]/10"
+                    className="absolute items-center justify-center rounded-full"
                     style={{
                         right: moderateScale(12),
                         top: moderateScale(12),
                         width: moderateScale(32),
                         height: moderateScale(32),
-                        backgroundColor: isInactive
-                            ? "rgba(255,255,255,0.75)"
-                            : "#FFFFFF",
-                        borderColor: "rgba(31,31,31,0.10)",
-                        borderWidth: moderateScale(0.7)
+                        backgroundColor: isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.75) : COLORS.primaryBackgroundColor,
+                        borderWidth: moderateScale(0.7),
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.10)
                     }}
                 >
                     {item.isFavourite ? (
                         <FavouriteIconFilled
                             width={moderateScale(20)}
                             height={moderateScale(20)}
-                            color={isInactive ? "#777777" : "#3F2516"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                             style={{ marginTop: moderateScale(1.5) }}
                         />
                     ) : (
                         <FavouriteIcon
                             width={moderateScale(20)}
                             height={moderateScale(20)}
-                            color={isInactive ? "#777777" : "#3F2516"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.primaryColor}
                             strokeWidth={1.5}
                             style={{ marginTop: moderateScale(1.5) }}
                         />
@@ -254,7 +210,7 @@ const RecommendedCard = ({
                     className="font-bold"
                     style={{
                         fontSize: moderateScale(14),
-                        color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                        color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                     }}
                 >
                     {item.name}
@@ -267,8 +223,8 @@ const RecommendedCard = ({
                         fontSize: moderateScale(11),
                         marginTop: moderateScale(3),
                         color: isInactive
-                            ? "rgba(31,31,31,0.38)"
-                            : "rgba(31,31,31,0.65)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                            : hexToRgba(COLORS.primaryTextColor, 0.65)
                     }}
                 >
                     {item.description}
@@ -291,15 +247,15 @@ const RecommendedCard = ({
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
                         <Text
                             className="font-bold tracking-wide"
                             style={{
                                 fontSize: moderateScale(13),
-                                color: isInactive ? "rgba(31,31,31,0.45)" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             ₹{item.price}
@@ -321,13 +277,13 @@ const RecommendedCard = ({
                             width: moderateScale(30),
                             height: moderateScale(30),
                             borderRadius: moderateScale(12),
-                            backgroundColor: isInactive ? "#B8B8B8" : "#3F2516"
+                            backgroundColor: isInactive ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                         }}
                     >
                         <PlusIcon
                             width={moderateScale(16)}
                             height={moderateScale(16)}
-                            color={isInactive ? "#E8E8E8" : "#FFFFFF"}
+                            color={isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor}
                             strokeWidth={2}
                         />
                     </TouchableOpacity>

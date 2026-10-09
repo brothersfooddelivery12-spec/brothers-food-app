@@ -25,6 +25,8 @@ import StarBadgeIcon from '@/assets/icon/StarBadgeIcon.svg'
 import VegIcon from '@/assets/icon/VeganIcon.svg'
 import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import { router, useFocusEffect } from 'expo-router'
 import LottieView from 'lottie-react-native'
@@ -271,20 +273,24 @@ export default function ProfileScreen() {
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
             <Animated.View
-                className="w-full bg-[#FFFFFF] absolute left-0 right-0"
+                className="w-full absolute left-0 right-0"
                 style={[
                     {
                         paddingHorizontal: scale(14),
                         top: insets.top,
-                        zIndex: 10
+                        zIndex: 10,
+                        backgroundColor: COLORS.primaryBackgroundColor
                     },
                     headerContainerStyle
                 ]}
@@ -300,8 +306,9 @@ export default function ProfileScreen() {
                 >
                     <View className="gap-1">
                         <Text
-                            className="text-[#1F1F1F] font-extrabold self-start"
+                            className="font-extrabold self-start"
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(18),
                                 marginTop: verticalScale(10)
                             }}
@@ -310,8 +317,11 @@ export default function ProfileScreen() {
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F]/65 font-medium self-start"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium self-start"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                            }}
                         >
                             Personalize your account and experience
                         </Text>
@@ -339,8 +349,9 @@ export default function ProfileScreen() {
                 ListHeaderComponent={
                     <View>
                         <View
-                            className="relative bg-[#3F2516] p-4"
+                            className="relative p-4"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
@@ -352,8 +363,9 @@ export default function ProfileScreen() {
                                         router.push('/edit-profile')
                                     })
                                 }
-                                className="absolute flex-row items-center justify-center gap-1 bg-[#F8D56A]"
+                                className="absolute flex-row items-center justify-center gap-1"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     top: verticalScale(12),
                                     right: scale(12),
                                     paddingHorizontal: scale(9),
@@ -362,11 +374,14 @@ export default function ProfileScreen() {
                                     zIndex: 10
                                 }}
                             >
-                                <EditIcon width={moderateScale(13)} height={moderateScale(13)} color="#5C4639" strokeWidth={2.2} />
+                                <EditIcon width={moderateScale(13)} height={moderateScale(13)} color={COLORS.primaryColor} strokeWidth={2.2} />
 
                                 <Text
-                                    className="font-bold text-[#5C4639]"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     Edit Profile
                                 </Text>
@@ -393,21 +408,22 @@ export default function ProfileScreen() {
                                             height: moderateScale(68),
                                             borderRadius: moderateScale(37),
                                             borderWidth: moderateScale(2),
-                                            borderColor: "#FFFFFF"
+                                            borderColor: COLORS.primaryBackgroundColor
                                         }}
                                     />
 
                                     <Pressable
                                         onPress={() => {}}
-                                        className="absolute bg-[#FFFFFF] items-center justify-center rounded-full"
+                                        className="absolute items-center justify-center rounded-full"
                                         style={{
+                                            backgroundColor: COLORS.primaryBackgroundColor,
                                             right: moderateScale(5),
                                             bottom: moderateScale(3),
                                             width: moderateScale(23),
                                             height: moderateScale(23)
                                         }}
                                     >
-                                        <CameraIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={2} />
+                                        <CameraIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} strokeWidth={2} />
                                     </Pressable>
                                 </View>
 
@@ -417,8 +433,9 @@ export default function ProfileScreen() {
                                 >
                                     <Text
                                         numberOfLines={1}
-                                        className="text-[#FFFFFF] font-bold tracking-wide"
+                                        className="font-bold tracking-wide"
                                         style={{
+                                            color: COLORS.primaryBackgroundColor,
                                             fontSize: moderateScale(16),
                                             paddingRight: scale(70)
                                         }}
@@ -428,8 +445,9 @@ export default function ProfileScreen() {
 
                                     <Text
                                         numberOfLines={1}
-                                        className="text-white/75 font-medium"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                             fontSize: moderateScale(11),
                                             marginTop: verticalScale(7)
                                         }}
@@ -439,8 +457,9 @@ export default function ProfileScreen() {
 
                                     <Text
                                         numberOfLines={1}
-                                        className="text-white/75 font-medium"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                             fontSize: moderateScale(11),
                                             marginTop: verticalScale(2)
                                         }}
@@ -452,20 +471,22 @@ export default function ProfileScreen() {
                         </View>
 
                         <View
-                            className="flex-row items-center gap-3 bg-[#3F2516] p-4"
+                            className="flex-row items-center gap-3 p-4"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(12)
                             }}
                         >
                             <View
-                                className="items-center justify-center rounded-full bg-[#F8D56A]"
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     width: moderateScale(40),
                                     height: moderateScale(40)
                                 }}
                             >
-                                <PremiumBadgeIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} />
+                                <PremiumBadgeIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
                             </View>
 
                             <View
@@ -474,8 +495,9 @@ export default function ProfileScreen() {
                             >
                                 <Text
                                     numberOfLines={1}
-                                    className="text-[#FFFFFF] font-semibold"
+                                    className="font-semibold"
                                     style={{
+                                        color: COLORS.primaryBackgroundColor,
                                         fontSize: moderateScale(14),
                                         paddingRight: scale(70)
                                     }}
@@ -485,8 +507,9 @@ export default function ProfileScreen() {
 
                                 <Text
                                     numberOfLines={1}
-                                    className="text-[#F8D56A] font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: COLORS.accentLightColor,
                                         fontSize: moderateScale(10),
                                         marginTop: verticalScale(2)
                                     }}
@@ -496,8 +519,9 @@ export default function ProfileScreen() {
 
                                 <Text
                                     numberOfLines={1}
-                                    className="text-white/75 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                         fontSize: moderateScale(9),
                                         marginTop: verticalScale(4)
                                     }}
@@ -513,8 +537,9 @@ export default function ProfileScreen() {
                                         router.push('/brothers-plus')
                                     })
                                 }
-                                className="flex-row items-center justify-center gap-1 bg-[#F8D56A]"
+                                className="flex-row items-center justify-center gap-1"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     paddingStart: scale(9),
                                     paddingEnd: scale(4),
                                     paddingVertical: verticalScale(5),
@@ -522,13 +547,16 @@ export default function ProfileScreen() {
                                 }}
                             >
                                 <Text
-                                    className="font-bold text-[#5C4639]"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     Join Now
                                 </Text>
 
-                                <ArrowRightIcon width={moderateScale(13)} height={moderateScale(13)} color="#5C4639" strokeWidth={2.5} />
+                                <ArrowRightIcon width={moderateScale(13)} height={moderateScale(13)} color={COLORS.primaryColor} strokeWidth={2.5} />
                             </TouchableOpacity>
                         </View>
 
@@ -540,8 +568,10 @@ export default function ProfileScreen() {
                                         router.push('/brothers-wallet')
                                     })
                                 }
-                                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3 gap-2"
+                                className="flex-row items-center py-4 px-3 gap-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(60),
@@ -549,19 +579,23 @@ export default function ProfileScreen() {
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <WalletFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} />
+                                    <WalletFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View className='items-center gap-1'>
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         Brothers Wallet
                                     </Text>
@@ -586,8 +620,11 @@ export default function ProfileScreen() {
                                         />
                                     ) : (
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold self-start"
-                                            style={{ fontSize: moderateScale(14) }}
+                                            className="font-semibold self-start"
+                                            style={{
+                                                fontSize: moderateScale(14),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                         >
                                             ₹{Number(wallet?.balance ?? 0).toFixed(2)}
                                         </Text>
@@ -607,8 +644,10 @@ export default function ProfileScreen() {
                                         })
                                     })
                                 }
-                                className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3 gap-2"
+                                className="flex-row items-center  py-4 px-3 gap-2"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(60),
@@ -616,26 +655,33 @@ export default function ProfileScreen() {
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <CouponIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} />
+                                    <CouponIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View className='items-center gap-1'>
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         Active Coupons
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold self-start"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-semibold self-start"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         8 Available
                                     </Text>
@@ -644,27 +690,38 @@ export default function ProfileScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Preferences
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row items-center gap-2'>
                                 <View
                                     className="items-center justify-center"
                                     style={{ width: moderateScale(24) }}
                                 >
-                                    <VegIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} />
+                                    <VegIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-medium flex-1'
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className='font-medium flex-1'
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Veg Mode
                                 </Text>
@@ -679,8 +736,8 @@ export default function ProfileScreen() {
                             </View>
 
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: 0.7,
                                     marginVertical: verticalScale(12),
                                     marginHorizontal: moderateScale(6)
@@ -709,30 +766,36 @@ export default function ProfileScreen() {
                                         className="items-center justify-center"
                                         style={{ width: moderateScale(24) }}
                                     >
-                                        <PaintBoardIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={1.5} />
+                                        <PaintBoardIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                     </View>
 
                                     <Text
-                                        className="text-[#1F1F1F] font-medium flex-1"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-medium flex-1"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Appearance
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium -mr-1"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-medium -mr-1"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         {selectedAppearance}
                                     </Text>
 
-                                    <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                    <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                                 </TouchableOpacity>
                             </View>
 
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: 0.7,
                                     marginVertical: verticalScale(12),
                                     marginHorizontal: moderateScale(6)
@@ -761,38 +824,52 @@ export default function ProfileScreen() {
                                         className="items-center justify-center"
                                         style={{ width: moderateScale(24) }}
                                     >
-                                        <LanguagesIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={1.5} />
+                                        <LanguagesIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                     </View>
 
                                     <Text
-                                        className="text-[#1F1F1F] font-medium flex-1"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-medium flex-1"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Language
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium -mr-1"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-medium -mr-1"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         {selectedLanguage}
                                     </Text>
 
-                                    <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                    <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Food Delivery
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <ProfileMenuItem label="My orders" icon={OrderIcon} showDivider={true}
                                 onPress={()=> 
@@ -838,15 +915,23 @@ export default function ProfileScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Saved Information
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <ProfileMenuItem label="Payment Methods" icon={MoneyIcon} showDivider={true}
                                 onPress={()=>
@@ -866,15 +951,23 @@ export default function ProfileScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Rewards
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <TouchableOpacity
                                 activeOpacity={0.95}
@@ -894,29 +987,35 @@ export default function ProfileScreen() {
                                     className="items-center justify-center"
                                     style={{ width: moderateScale(24) }}
                                 >
-                                    <MedalIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} />
+                                    <MedalIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-medium flex-1'
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className='font-medium flex-1'
+                                    style={{
+                                        color: COLORS.primaryTextColor,
+                                        fontSize: moderateScale(14)
+                                    }}
                                 >
                                     Reward Points
                                 </Text>
 
                                 <Text
-                                    className='text-[#5c4639] font-semibold -mr-1'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold -mr-1'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     2,450 pts
                                 </Text>
 
-                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </TouchableOpacity>
 
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: 1,
                                     marginVertical: verticalScale(12),
                                     marginHorizontal: moderateScale(6)
@@ -935,15 +1034,23 @@ export default function ProfileScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Support
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <ProfileMenuItem label="Help Center" icon={HelpCircleIcon} showDivider={true}
                                 onPress={()=>
@@ -971,15 +1078,23 @@ export default function ProfileScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-4"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-4"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Settings
                         </Text>
 
                         <View
-                            className="mt-3 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-4"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <ProfileMenuItem label="Privacy" icon={PrivacyIcon} showDivider={true} 
                                 onPress={()=>
@@ -1002,24 +1117,30 @@ export default function ProfileScreen() {
                                     className="items-center justify-center"
                                     style={{ width: moderateScale(24) }}
                                 >
-                                    <InformationCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.5} />
+                                    <InformationCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-medium flex-1'
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className='font-medium flex-1'
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     App Version
                                 </Text>
 
                                 <Text
-                                    className='text-[#5c4639] font-semibold -mr-1'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold -mr-1'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.secondaryColor
+                                    }}
                                 >
                                     v4.2.1
                                 </Text>
 
-                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </View>
                         </View>
 
@@ -1028,19 +1149,23 @@ export default function ProfileScreen() {
                             onPress={() => {
                                 setAccountAction("logout")
                             }}
-                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <LogoutIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
+                            <LogoutIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 LogOut
                             </Text>
@@ -1051,19 +1176,23 @@ export default function ProfileScreen() {
                             onPress={() => {
                                 setAccountAction("delete")
                             }}
-                            className="flex-row gap-2 items-center justify-center bg-[#FEE2E2]/80 mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.dangerBackgroundColor,
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={"#DC2626"} strokeWidth={1.8} />
+                            <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.dangerTextColor} strokeWidth={1.8} />
 
                             <Text
-                                className="text-[#DC2626] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.dangerTextColor
+                                }}
                             >
                                 Delete Account
                             </Text>
@@ -1093,8 +1222,10 @@ export default function ProfileScreen() {
 
                     {openMenu && (
                         <View
-                            className="absolute bg-white border-[#1F1F1F]/10"
+                            className="absolute"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
@@ -1111,15 +1242,11 @@ export default function ProfileScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.9}
                                             onPress={() => {
-                                                if (
-                                                    openMenu === "appearance"
-                                                ) {
+                                                if (openMenu === "appearance") {
                                                     setSelectedAppearance(option)
                                                 }
 
-                                                if (
-                                                    openMenu === "language"
-                                                ) {
+                                                if (openMenu === "language") {
                                                     setSelectedLanguage(option)
                                                 }
 
@@ -1131,12 +1258,13 @@ export default function ProfileScreen() {
                                             }}
                                         >
                                             <Text
-                                                className={
-                                                    isSelected
-                                                        ? "text-[#3F2516] font-semibold"
-                                                        : "text-[#1F1F1F]/85 font-medium"
-                                                }
-                                                style={{ fontSize: moderateScale(13) }}
+                                                className={isSelected ? "font-semibold" : "font-medium"}
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: isSelected
+                                                        ? COLORS.primaryColor
+                                                        : hexToRgba(COLORS.primaryTextColor, 0.85)
+                                                }}
                                             >
                                                 {option}
                                             </Text>
@@ -1145,8 +1273,8 @@ export default function ProfileScreen() {
                                         {index !==
                                             activeOptions.length - 1 && (
                                             <View
-                                                className="bg-[#1F1F1F]/10"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                     height: 1,
                                                     marginHorizontal: scale(10)
                                                 }}

@@ -3,6 +3,8 @@ import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import SecurityIcon from '@/assets/icon/SecurityIcon.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
 import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { useLocalSearchParams, useRouter } from "expo-router"
 import LottieView from "lottie-react-native"
 import { useCallback, useState } from "react"
@@ -154,10 +156,13 @@ export default function VerificationSuccessScreen() {
     }))
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={ COLORS.primaryBackgroundColor }
                 barStyle="dark-content"
             />
 
@@ -185,15 +190,19 @@ export default function VerificationSuccessScreen() {
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F] font-extrabold text-center -mt-4"
-                    style={{ fontSize: moderateScale(20) }}
+                    className="font-extrabold text-center -mt-4"
+                    style={{
+                        fontSize: moderateScale(20),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     {userExists ? "Welcome back!" : "Welcome to Brothers!"}
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium leading-5 text-center mx-4"
+                    className="font-medium leading-5 text-center mx-4"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(13),
                         marginTop: verticalScale(10)
                     }}
@@ -203,8 +212,10 @@ export default function VerificationSuccessScreen() {
                 </Text>
 
                 <View
-                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 p-3"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(22)
@@ -218,20 +229,26 @@ export default function VerificationSuccessScreen() {
                             borderRadius: moderateScale(16)
                         }}
                     >
-                        <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} />
+                        <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} />
                     </View>
 
                     <View className="items-start gap-1 justify-center">
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Lightning Fast Delivery
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                            }}
                         >
                             Fresh food delivered in minutes.
                         </Text>
@@ -239,8 +256,10 @@ export default function VerificationSuccessScreen() {
                 </View>
 
                 <View
-                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 p-3"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(8)
@@ -254,20 +273,26 @@ export default function VerificationSuccessScreen() {
                             borderRadius: moderateScale(16)
                         }}
                     >
-                        <UtenisilIcon width={moderateScale(24)} height={moderateScale(24)} color={"#5c4639"} />
+                        <UtenisilIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} />
                     </View>
 
                     <View className="items-start gap-1 justify-center">
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             500+ Restaurants
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                            }}
                         >
                             Discover local favorites and brands.
                         </Text>
@@ -275,8 +300,10 @@ export default function VerificationSuccessScreen() {
                 </View>
 
                 <View
-                    className="flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                    className="flex-row gap-3 p-3"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(20),
                         marginTop: verticalScale(8)
@@ -290,20 +317,26 @@ export default function VerificationSuccessScreen() {
                             borderRadius: moderateScale(16)
                         }}
                     >
-                        <SecurityIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} />
+                        <SecurityIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} />
                     </View>
 
                     <View className="items-start gap-1 justify-center">
                         <Text
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Safe & Secure
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                            }}
                         >
                             Protected login and secure payments.
                         </Text>
@@ -320,15 +353,19 @@ export default function VerificationSuccessScreen() {
                             }}
                         >
                             <Text
-                                className="font-semibold text-[#1F1F1F]"
-                                style={{ fontSize: moderateScale(13) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 What should we call you?
                             </Text>
 
                             <Text
-                                className="font-medium text-[#1F1F1F]/75"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(11),
                                     marginTop: verticalScale(3)
                                 }}
@@ -338,9 +375,10 @@ export default function VerificationSuccessScreen() {
                         </View>
         
                         <View
-                            className={`flex-row items-center overflow-hidden
-                            ${nameError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                            className="flex-row items-center overflow-hidden"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: nameError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(6),
                                 paddingRight: scale(10),
@@ -350,20 +388,22 @@ export default function VerificationSuccessScreen() {
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#E5E4E2]/65"
+                                className="items-center justify-center"
                                 style={{
                                     width: moderateScale(36),
                                     height: moderateScale(36),
-                                    borderRadius: moderateScale(10)
+                                    borderRadius: moderateScale(10),
+                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65)
                                 }}
                             >
-                                <UserIcon width={scale(20)} height={scale(20)} color={"#1F1F1F"} /> 
+                                <UserIcon width={scale(20)} height={scale(20)} color={COLORS.primaryTextColor} /> 
                             </View>
         
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                                 <TextInput
-                                    className="p-0 tracking-wide font-medium text-[#151515]"
+                                    className="p-0 tracking-wide font-medium"
                                     style={{
+                                        color: COLORS.inputTextColor,
                                         height: verticalScale(40),
                                         fontSize: moderateScale(13),
                                         textAlignVertical: "center",
@@ -375,18 +415,23 @@ export default function VerificationSuccessScreen() {
                                         setNameError(false)
                                     }}
                                     placeholder="Enter your full name"
-                                    placeholderTextColor="#9A9A9A"
+                                    placeholderTextColor={ COLORS.placeholderTextColor }
                                     keyboardType="default"
                                     returnKeyType="default"
-                                    selectionColor="#79685e"
+                                    selectionColor={ COLORS.selectionColor }
                                 />
                             </View>
                         </View>
         
                         {nameError && (
                             <Text
-                                className="self-start font-medium text-[#E05252]"
-                                style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                                className="self-start font-medium"
+                                style={{
+                                    marginTop: verticalScale(4),
+                                    marginLeft: scale(8),
+                                    fontSize: moderateScale(11),
+                                    color: COLORS.errorTextColor
+                                }}
                             >
                                 Please enter your full name
                             </Text>
@@ -396,27 +441,27 @@ export default function VerificationSuccessScreen() {
 
                 <GestureDetector gesture={panGesture}>
                     <View
-                        className="flex-row items-center p-2 rounded-full w-full bg-[#3F2516]"
+                        className="flex-row items-center p-2 rounded-full w-full"
                         onLayout={(event) => {
                             buttonWidth.value = event.nativeEvent.layout.width
                         }}
                         style={{
-                            marginTop: userExists
-                                ? verticalScale(55)
-                                : verticalScale(20)
+                            backgroundColor: COLORS.primaryColor,
+                            marginTop: userExists ? verticalScale(55) : verticalScale(20)
                         }}
                     >
                         <Animated.View
-                            className="rounded-full bg-[#F8D56A] items-center justify-center"
+                            className="rounded-full items-center justify-center"
                             style={[
                                 {
                                     width: THUMB_SIZE,
-                                    height: THUMB_SIZE
+                                    height: THUMB_SIZE,
+                                    backgroundColor: COLORS.accentLightColor
                                 },
                                 animatedThumbStyle
                             ]}
                         >
-                            <ArrowRightIcon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={2} />
+                            <ArrowRightIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={2} />
                         </Animated.View>
 
                         <View
@@ -424,8 +469,11 @@ export default function VerificationSuccessScreen() {
                             className="absolute left-0 right-0 items-center"
                         >
                             <Text
-                                className="text-[#FFFFFF] font-semibold uppercase"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Start Ordering
                             </Text>
@@ -434,8 +482,9 @@ export default function VerificationSuccessScreen() {
                 </GestureDetector>
 
                 <Text
-                    className="text-[#1F1F1F]/65 font-medium text-center"
+                    className="font-medium text-center"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         marginTop: verticalScale(14),
                         fontSize: moderateScale(11)
                     }}

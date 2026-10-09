@@ -1,7 +1,9 @@
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
+import { COLORS } from "@/constant/colors"
 import { ComboItem } from "@/constant/ComboData"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
@@ -18,6 +20,16 @@ function ComboCard({
 }: ComboCardProps) {
     const isInactive = !item.isActive
 
+    const [imageError, setImageError] = useState(false)
+        
+    const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
+    
+    useEffect(() => {
+        setImageError(false)
+    }, [item.imageUri])
+
+    const hasImage = !!item.imageUri && !imageError
+
     return (
         <TouchableOpacity
             activeOpacity={item.isActive ? 0.95 : 1}
@@ -28,14 +40,14 @@ function ComboCard({
             }}
             className="p-2"
             style={{
-                borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 width: moderateScale(225),
                 height: moderateScale(135),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderWidth: moderateScale(0.5),
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View className="flex-row h-full gap-3">
@@ -44,7 +56,9 @@ function ComboCard({
                     style={{
                         width: "40%",
                         height: "100%",
-                        borderRadius: moderateScale(14)
+                        borderRadius: moderateScale(14),
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
@@ -65,7 +79,7 @@ function ComboCard({
                         <View
                             pointerEvents="none"
                             className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
 
@@ -78,12 +92,15 @@ function ComboCard({
                                 bottom: moderateScale(5),
                                 paddingVertical: verticalScale(4),
                                 borderRadius: moderateScale(8), 
-                                backgroundColor: "rgba(31,31,31,0.82)"
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.82)
                             }}
                         >
                             <Text
-                                className="text-[#FFFFFF] font-bold uppercase"
-                                style={{ fontSize: moderateScale(7.5) }}
+                                className="font-bold uppercase"
+                                style={{
+                                    fontSize: moderateScale(7.5),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Unavailable
                             </Text>
@@ -97,8 +114,9 @@ function ComboCard({
                                 event.stopPropagation()
                                 onAdd?.(item)
                             }}
-                            className="absolute items-center justify-center bg-white"
+                            className="absolute items-center justify-center"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
                                 right: moderateScale(5),
                                 bottom: moderateScale(5),
                                 width: moderateScale(28),
@@ -109,7 +127,7 @@ function ComboCard({
                             <PlusIcon
                                 width={moderateScale(14)}
                                 height={moderateScale(14)}
-                                color="#3F2516"
+                                color={COLORS.primaryColor}
                                 strokeWidth={3}
                             />
                         </TouchableOpacity>
@@ -119,8 +137,9 @@ function ComboCard({
                 <View className="flex-1 mb-1">
                     {item.badge && !isInactive && (
                         <View
-                            className="self-start flex-row items-center bg-[#F8D56A]"
+                            className="self-start flex-row items-center"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 marginTop: moderateScale(8),
                                 paddingHorizontal: moderateScale(7),
                                 paddingVertical: moderateScale(3),
@@ -128,8 +147,11 @@ function ComboCard({
                             }}
                         >
                             <Text
-                                className="font-semibold text-[#3F2516] uppercase"
-                                style={{ fontSize: moderateScale(9) }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(9),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 {item.badge}
                             </Text>
@@ -144,14 +166,14 @@ function ComboCard({
                                 paddingHorizontal: moderateScale(7),
                                 paddingVertical: moderateScale(3),
                                 borderRadius: moderateScale(10),
-                                backgroundColor: "rgba(31,31,31,0.08)"
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                             }}
                         >
                             <Text
                                 className="font-semibold uppercase"
                                 style={{
                                     fontSize: moderateScale(8),
-                                    color: "rgba(31,31,31,0.50)"
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.5)
                                 }}
                             >
                                 Currently Unavailable
@@ -164,7 +186,7 @@ function ComboCard({
                         className="font-bold mt-3"
                         style={{
                             fontSize: moderateScale(12),
-                            color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                            color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                         }}
                     >
                         {item.name}
@@ -176,8 +198,8 @@ function ComboCard({
                         style={{
                             fontSize: moderateScale(10),
                             color: isInactive
-                                ? "rgba(31,31,31,0.38)"
-                                : "rgba(31,31,31,0.75)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                                : hexToRgba(COLORS.primaryTextColor, 0.65)
                         }}
                     >
                         {item.description}
@@ -188,7 +210,7 @@ function ComboCard({
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(15),
-                                color: isInactive ? "rgba(31,31,31,0.45)" : "#1F1F1F"
+                                color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                             }}
                         >
                             ₹{item.price}
@@ -201,8 +223,8 @@ function ComboCard({
                                     fontSize: moderateScale(11),
                                     textDecorationLine: "line-through",
                                     color: isInactive
-                                        ? "rgba(31,31,31,0.28)"
-                                        : "rgba(31,31,31,0.45)"
+                                        ? hexToRgba(COLORS.primaryTextColor, 0.35)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.45)
                                 }}
                             >
                                 ₹{item.originalPrice}

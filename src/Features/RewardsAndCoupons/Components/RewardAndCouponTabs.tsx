@@ -1,5 +1,7 @@
 import CouponIcon from '@/assets/icon/CouponIcon.svg'
 import GiftIcon from '@/assets/icon/GiftIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { memo } from "react"
 import { Pressable, Text, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
@@ -15,12 +17,13 @@ const RewardAndCouponTabs = memo(
     ({ activeTab, onChange }: RewardAndCouponTabsProps) => {
         return (
             <View
-                className="flex-row bg-[#FAFAFA] mx-2"
+                className="flex-row mx-2"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     padding: moderateScale(4),
                     borderRadius: moderateScale(28),
-                    borderWidth: moderateScale(0.5),
-                    borderColor: "#E8E0D9"
+                    borderWidth: moderateScale(0.5)
                 }}
             >
                 <Pressable
@@ -29,28 +32,32 @@ const RewardAndCouponTabs = memo(
                     style={{
                         height: verticalScale(38),
                         borderRadius: moderateScale(24),
-                        backgroundColor:
-                            activeTab === "rewards"
-                                ? "#3F2516"
-                                : "transparent",
+                        backgroundColor: activeTab === "rewards"
+                            ? COLORS.primaryColor
+                            : "transparent",
                         gap: moderateScale(4)
                     }}
                 >
                     <GiftIcon width={moderateScale(18)} height={moderateScale(18)}
                         color={
                             activeTab === "rewards"
-                                ? "#FFFFFF"
-                                : "rgba(31,31,31,0.75)"
+                                ? COLORS.primaryBackgroundColor
+                                : hexToRgba(COLORS.primaryTextColor, 0.75)
                         }
                     />
 
                     <Text
                         className={
                             activeTab === "rewards"
-                                ? "text-[#FFFFFF] font-semibold"
-                                : "text-[#1F1F1F]/75 font-medium"
+                                ? "font-semibold"
+                                : "font-medium"
                         }
-                        style={{ fontSize: moderateScale(14) }}
+                        style={{
+                            fontSize: moderateScale(14),
+                            color: activeTab === "rewards"
+                                ? COLORS.primaryBackgroundColor
+                                : hexToRgba(COLORS.primaryTextColor, 0.75)
+                        }}
                     >
                         Rewards
                     </Text>
@@ -62,28 +69,32 @@ const RewardAndCouponTabs = memo(
                     style={{
                         height: verticalScale(38),
                         borderRadius: moderateScale(24),
-                        backgroundColor:
-                            activeTab === "coupons"
-                                ? "#3F2516"
-                                : "transparent",
+                        backgroundColor: activeTab === "coupons"
+                            ? COLORS.primaryColor
+                            : "transparent",
                         gap: moderateScale(4)
                     }}
                 >
                     <CouponIcon width={moderateScale(18)} height={moderateScale(18)}
                         color={
                             activeTab === "coupons"
-                                ? "#FFFFFF"
-                                : "rgba(31,31,31,0.75)"
+                                ? COLORS.primaryBackgroundColor
+                                : hexToRgba(COLORS.primaryTextColor, 0.75)
                         }
                     />
 
                     <Text
                         className={
                             activeTab === "coupons"
-                                ? "text-[#FFFFFF] font-semibold"
-                                : "text-[#1F1F1F]/75 font-medium"
+                                ? "font-semibold"
+                                : "font-medium"
                         }
-                        style={{ fontSize: moderateScale(14) }}
+                        style={{
+                            fontSize: moderateScale(14),
+                            color: activeTab === "coupons"
+                                ? COLORS.primaryBackgroundColor
+                                : hexToRgba(COLORS.primaryTextColor, 0.75) 
+                        }}
                     >
                         Coupons
                     </Text>

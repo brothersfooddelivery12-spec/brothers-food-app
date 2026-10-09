@@ -1,17 +1,19 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
-import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import DessertIcon from '@/assets/icon/DessertIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import TimerIcon from '@/assets/icon/TimerIcon.svg'
 import SearchBar from '@/components/SearchBar'
+import { COLORS } from '@/constant/colors'
 import { COMBO_OFFERS } from '@/constant/ComboData'
 import { popularitems } from "@/constant/PopularItemData"
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
 import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated'
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import PopularItemCard from '../Details/components/PopularItemCard'
 import FoodCard, { MenuItem } from '../Home/components/FoodCard'
@@ -124,7 +126,6 @@ export const FREQUENTLY_ADDED_TOGETHER: MenuItem[] = [
 ]
 
 export default function RestaurantMenuScreen(){
-    const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const [favourite, setFavourite] = useState(false)
     const [search, setsearch] = useState("")
@@ -205,10 +206,13 @@ export default function RestaurantMenuScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -224,27 +228,35 @@ export default function RestaurantMenuScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Restaurant Menu
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Browse your favorites and find something new
                     </Text>
@@ -300,8 +312,14 @@ export default function RestaurantMenuScreen(){
                 ListHeaderComponent={
                     <View>
                         <View
-                            className="items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), padding: moderateScale(8), borderWidth: moderateScale(0.5) }}
+                            className="items-center"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                padding: moderateScale(8),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className="flex-row gap-3 justify-center">
                                 <Image
@@ -319,44 +337,58 @@ export default function RestaurantMenuScreen(){
                             
                                 <View className='gap-2 flex-1 justify-center'>
                                     <Text
-                                        className='text-[#1F1F1F] font-bold'
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className='font-bold'
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         The Burger King
                                     </Text>
                             
                                     <View className='items-center flex-row gap-3'>
                                         <View
-                                            className={`items-center justify-center ${
-                                                isOpen ? "bg-[#22A06B]" : "bg-[#7A7D81]"
-                                            }`}
+                                            className='items-center justify-center'
                                             style={{
+                                                backgroundColor: isOpen
+                                                    ? COLORS.activeStatusTextColor
+                                                    : COLORS.neutralSurfaceColor,
                                                 paddingHorizontal: scale(7),
                                                 paddingVertical: verticalScale(3),
                                                 borderRadius: moderateScale(10)
                                             }}
                                         >
                                             <Text
-                                                className="text-[#FFFFFF] font-bold"
-                                                style={{ fontSize: moderateScale(8) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(8),
+                                                    color: isOpen
+                                                        ? COLORS.primaryBackgroundColor
+                                                        : COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {isOpen ? "OPEN NOW" : "CLOSE"}
                                             </Text>
                                         </View>
                                         
                                         <View
-                                            className="flex-row gap-1 items-center bg-[#F8D56A] self-start"
+                                            className="flex-row gap-1 items-center self-start"
                                             style={{
+                                                backgroundColor: COLORS.accentLightColor,
                                                 paddingHorizontal: moderateScale(6),
                                                 paddingVertical: moderateScale(2.5),
                                                 borderRadius: moderateScale(12)
                                             }}
                                         >
-                                            <RatingIcon width={moderateScale(12)} height={moderateScale(12)} color="#5c4639" />
+                                            <RatingIcon width={moderateScale(12)} height={moderateScale(12)} color={COLORS.primaryColor} />
 
                                             <Text
-                                                className="font-bold text-[#5c4639]"
-                                                style={{ fontSize: moderateScale(10), marginRight: moderateScale(2) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    marginRight: moderateScale(2),
+                                                    color: COLORS.primaryColor
+                                                }}
                                             >
                                                 4.9
                                             </Text>
@@ -365,19 +397,25 @@ export default function RestaurantMenuScreen(){
 
                                     <View className='items-center flex-row gap-3'>
                                         <View className='justify-center items-center flex-row gap-1'>
-                                            <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color={"#1F1F1F"} />
+                                            <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryTextColor} />
 
                                             <Text
-                                                className='text-[#1F1F1F]/75 font-medium'
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className='font-medium'
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                }}
                                             >
                                                 20-25 mins
                                             </Text>
                                         </View>
 
                                         <Text
-                                            className='text-[#1F1F1F]/75 font-medium'
-                                            style={{ fontSize: moderateScale(11) }}
+                                            className='font-medium'
+                                            style={{
+                                                fontSize: moderateScale(11),
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                            }}
                                         >
                                             ₹300 for two
                                         </Text>
@@ -388,26 +426,35 @@ export default function RestaurantMenuScreen(){
 
                         <View className="flex-row items-center gap-3 mt-5">
                             <View
-                                className="flex-row items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25 py-4 px-3 gap-2"
+                                className="flex-row items-center py-4 px-3 gap-2"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                                    borderColor: hexToRgba(COLORS.accentColor, 0.15),
+                                    borderWidth: moderateScale(0.7),
                                     width: cardWidth,
                                     height: moderateScale(55),
                                     borderRadius: moderateScale(18)
                                 }}
                             >
-                                <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color={"#3F2516"} />
+                                <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
 
                                 <View className='justify-center gap-1'>
                                     <Text
-                                        className="text-[#1F1F1F] font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(11),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         FLAT ₹125 OFF
                                     </Text>
                             
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-semibold"
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         use BROTHER125
                                     </Text>
@@ -415,26 +462,35 @@ export default function RestaurantMenuScreen(){
                             </View>
                         
                             <View
-                                className="flex-row items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25 py-4 px-3 gap-2"
+                                className="flex-row items-center py-4 px-3 gap-2"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                                    borderColor: hexToRgba(COLORS.accentColor, 0.15),
+                                    borderWidth: moderateScale(0.7),
                                     width: cardWidth,
                                     height: moderateScale(55),
                                     borderRadius: moderateScale(18)
                                 }}
                             >
-                                <DessertIcon width={moderateScale(24)} height={moderateScale(24)} color={"#3F2516"} />
+                                <DessertIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
 
                                 <View className='justify-center gap-1'>
                                     <Text
-                                        className="text-[#1F1F1F] font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(11),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         FREE DESSERT
                                     </Text>
                             
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-semibold"
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         On Orders {">"} ₹500
                                     </Text>
@@ -485,12 +541,11 @@ export default function RestaurantMenuScreen(){
                                                 <View className="items-center">
                                                     <Text
                                                         numberOfLines={1}
-                                                        className={
-                                                            isActive
-                                                                ? "font-bold text-[#3F2516]"
-                                                                : "font-medium text-[#514A46]"
-                                                        }
+                                                        className={isActive ? "font-semibold" : "font-medium"}
                                                         style={{
+                                                            color: isActive
+                                                                ? COLORS.primaryColor
+                                                                : hexToRgba(COLORS.primaryTextColor, 0.65),
                                                             fontSize: moderateScale(14),
                                                             marginBottom: verticalScale(6)
                                                         }}
@@ -502,8 +557,9 @@ export default function RestaurantMenuScreen(){
                                                         <Animated.View
                                                             entering={ZoomIn.duration(340)}
                                                             exiting={ZoomOut.duration(360)}
-                                                            className="absolute bottom-0 bg-[#3F2516]"
+                                                            className="absolute bottom-0"
                                                             style={{
+                                                                backgroundColor: COLORS.primaryColor,
                                                                 left: -scale(3),
                                                                 right: -scale(3),
                                                                 height: verticalScale(2.5),
@@ -519,10 +575,11 @@ export default function RestaurantMenuScreen(){
                             </ScrollView>
 
                             <Text
-                                className="text-[#1F1F1F] font-bold"
+                                className="font-semibold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(15),
-                                    marginTop: verticalScale(6)
+                                    marginTop: verticalScale(4)
                                 }}
                             >
                                 {TAB_TITLES[activeTab as keyof typeof TAB_TITLES]}
@@ -537,15 +594,21 @@ export default function RestaurantMenuScreen(){
                             style={{ marginTop: verticalScale(18) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Combos
                             </Text>
 
                             <Text
-                                className="text-[#3F2516] font-bold"
-                                style={{ fontSize: moderateScale(12) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 SAVE UP TO 30%
                             </Text>
@@ -567,8 +630,11 @@ export default function RestaurantMenuScreen(){
                         />
 
                         <Text
-                            className="text-[#1F1F1F] font-bold mt-5"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-5"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Frequently Ordered Together
                         </Text>

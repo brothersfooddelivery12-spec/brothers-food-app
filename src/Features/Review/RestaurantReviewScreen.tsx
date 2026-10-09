@@ -6,7 +6,9 @@ import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import RatingIcon2 from '@/assets/icon/RatingIcon2.svg'
 import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
 import UtenisilIcon from '@/assets/icon/UtensilIcon2.svg'
+import { COLORS } from '@/constant/colors'
 import { customerReviews } from "@/constant/CustomerReviewData"
+import { hexToRgba } from '@/utils/hexToRgba'
 import { getRatingStars } from "@/utils/rating"
 import { Image } from "expo-image"
 import { router } from "expo-router"
@@ -70,10 +72,13 @@ export default function RestaurantReviewScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -89,27 +94,35 @@ export default function RestaurantReviewScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Customer Reviews
                     </Text>
                                 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         See what customers are saying
                     </Text>
@@ -131,15 +144,21 @@ export default function RestaurantReviewScreen() {
                 ListHeaderComponent={
                     <View>
                         <View
-                            className="pt-4 pb-8 px-5 bg-[#E5E4E2]/40 mx-1"
+                            className="pt-4 pb-8 px-5 mx-1"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: moderateScale(15)
                             }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-black text-center mt-3"
-                                style={{ fontSize: moderateScale(38) }}
+                                className="font-black text-center mt-3"
+                                style={{
+                                    fontSize: moderateScale(38),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 {rating}
                             </Text>
@@ -151,25 +170,26 @@ export default function RestaurantReviewScreen() {
                                 {stars.map((type, index) => {
                                     if (type === "full") {
                                         return (
-                                            <RatingIcon key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                            <RatingIcon key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                         )
                                     }
 
                                     if (type === "half") {
                                         return (
-                                            <RatingIcon2 key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                            <RatingIcon2 key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                         )
                                     }
 
                                     return (
-                                        <RatingIcon3 key={index} width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                                        <RatingIcon3 key={index} width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                                     )
                                 })}
                             </View>
 
                             <Text
-                                className="text-[#5C4639]/90 font-semibold text-center"
+                                className="font-semibold text-center"
                                 style={{
+                                    color: hexToRgba(COLORS.secondaryColor, 0.85),
                                     fontSize: moderateScale(12),
                                     marginTop: moderateScale(4)
                                 }}
@@ -181,53 +201,67 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                            className="flex-row items-center gap-3 p-3"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(22)
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#5C4639]"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.secondaryColor,
                                     width: moderateScale(48),
                                     height: moderateScale(48),
                                     borderRadius: moderateScale(16)
                                 }}
                             >
-                                <UtenisilIcon width={moderateScale(24)} height={moderateScale(24)} color={"#FFFFFF"} />
+                                <UtenisilIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryBackgroundColor} />
                             </View>
 
                             <View className="items-start gap-1 justify-center flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Food Quality
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Fresh flavors, great taste, every time.
                                 </Text>
                             </View>
 
                             <View
-                                className="flex-row gap-1 items-center bg-[#F8D56A]"
+                                className="flex-row gap-1 items-center"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(4),
                                     borderRadius: moderateScale(12)
                                 }}
                             >
-                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
+                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className="font-bold text-[#5c4639]"
-                                    style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                                    className="font-bold"
+                                    style={{
+                                        color: COLORS.primaryColor,
+                                        fontSize: moderateScale(11),
+                                        marginRight: moderateScale(2)
+                                    }}
                                 >
                                     4.9
                                 </Text>
@@ -235,53 +269,67 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-center bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                            className="flex-row gap-3 items-center p-3"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(8)
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#5C4639]"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.secondaryColor,
                                     width: moderateScale(48),
                                     height: moderateScale(48),
                                     borderRadius: moderateScale(16)
                                 }}
                             >
-                                <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={"#FFFFFF"} />
+                                <DeliveryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryBackgroundColor} />
                             </View>
 
                             <View className="items-start gap-1 justify-center flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Delivery
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Fast, reliable delivery right to your door.
                                 </Text>
                             </View>
 
                             <View
-                                className="flex-row gap-1 items-center bg-[#F8D56A]"
+                                className="flex-row gap-1 items-center"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(4),
                                     borderRadius: moderateScale(12)
                                 }}
                             >
-                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
+                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className="font-bold text-[#5c4639]"
-                                    style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                                    className="font-bold"
+                                    style={{
+                                        color: COLORS.primaryColor,
+                                        fontSize: moderateScale(11),
+                                        marginRight: moderateScale(2)
+                                    }}
                                 >
                                     4.8
                                 </Text>
@@ -289,53 +337,67 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-center bg-[#FAFAFA] border-[#1F1F1F]/10 p-3"
+                            className="flex-row gap-3 items-center p-3"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(8)
                             }}
                         >
                             <View
-                                className="items-center justify-center bg-[#5C4639]"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.secondaryColor,
                                     width: moderateScale(48),
                                     height: moderateScale(48),
                                     borderRadius: moderateScale(16)
                                 }}
                             >
-                                <BoxIcon width={moderateScale(24)} height={moderateScale(24)} color={"#FFFFFF"} />
+                                <BoxIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryBackgroundColor} />
                             </View>
 
                             <View className="items-start gap-1 justify-center flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Packaging
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Neat, secure packaging that keeps food fresh.
                                 </Text>
                             </View>
 
                             <View
-                                className="flex-row gap-1 items-center bg-[#F8D56A]"
+                                className="flex-row gap-1 items-center"
                                 style={{
+                                    backgroundColor: COLORS.accentLightColor,
                                     paddingHorizontal: moderateScale(7),
                                     paddingVertical: moderateScale(4),
                                     borderRadius: moderateScale(12)
                                 }}
                             >
-                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
+                                <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className="font-bold text-[#5c4639]"
-                                    style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                                    className="font-bold"
+                                    style={{
+                                        color: COLORS.primaryColor,
+                                        fontSize: moderateScale(11),
+                                        marginRight: moderateScale(2)
+                                    }}
                                 >
                                     4.7
                                 </Text>
@@ -343,8 +405,9 @@ export default function RestaurantReviewScreen() {
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
+                            className="font-semibold"
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(15),
                                 marginTop: verticalScale(18)
                             }}
@@ -399,22 +462,24 @@ export default function RestaurantReviewScreen() {
                                             setSelectedReview(category)
                         
                                         }}
-                                        className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                        }`}
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
                                             borderWidth: 0.7,
-                                            borderColor: "rgba(31, 31, 31, 0.10)"
+                                            borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                         }}
                                     >
                                         <Text
-                                            className={`font-semibold ${
-                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                            }`}
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                            }}
                                         >
                                             {category}
                                         </Text>
@@ -431,8 +496,11 @@ export default function RestaurantReviewScreen() {
                             className="items-center justify-center mt-1"
                         >
                             <Text
-                                className="text-[#3F2516] font-semibold text-center"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold text-center"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 Load More Reviews
                             </Text>
@@ -445,19 +513,23 @@ export default function RestaurantReviewScreen() {
                                     router.push('/write-review')
                                 })
                             }
-                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
+                            <EditIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Write Review
                             </Text>

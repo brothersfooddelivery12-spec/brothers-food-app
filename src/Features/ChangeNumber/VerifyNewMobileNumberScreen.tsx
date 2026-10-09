@@ -1,6 +1,8 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import RefreshIcon from '@/assets/icon/RefreshIcon.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useRef, useState } from 'react'
 import { Keyboard, Pressable, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
@@ -147,10 +149,13 @@ export default function VerifyNewMobileNumberScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -159,21 +164,23 @@ export default function VerifyNewMobileNumberScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 {/* <View className="items-start gap-1 flex-1">
@@ -203,8 +210,9 @@ export default function VerifyNewMobileNumberScreen(){
                 showsVerticalScrollIndicator={false}
             >
                 <Text
-                    className='text-[#1F1F1F] font-extrabold text-center'
+                    className='font-extrabold text-center'
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
@@ -213,8 +221,9 @@ export default function VerifyNewMobileNumberScreen(){
                 </Text>
 
                 <Text
-                    className='text-[#1F1F1F]/65 font-medium text-center'
+                    className='font-medium text-center'
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(5)
@@ -247,21 +256,24 @@ export default function VerifyNewMobileNumberScreen(){
                             return (
                                 <View
                                     key={index}
-                                    className={`items-center justify-center bg-[#FAFAFA] ${
-                                        hasError
-                                            ? "border-red-400"
-                                            : isActive
-                                                ? "border-[#E8B93F]/75"
-                                                : "border-[#1F1F1F]/10"
-                                    }`}
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
                                         borderWidth: moderateScale(0.7),
+                                        borderColor: hasError ? COLORS.errorBorderColor
+                                            : isActive ? hexToRgba(COLORS.accentColor, 0.75) : hexToRgba(COLORS.primaryTextColor, 0.1),
                                         height: scale(50),
                                         width: scale(50),
                                         borderRadius: moderateScale(18)
                                     }}
                                 >
-                                    <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(18) }}>
+                                    <Text
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(18),
+                                            color: COLORS.inputTextColor
+                                        }}
+                                    >
                                         {digit || ""}
                                     </Text>
                                 </View>
@@ -272,38 +284,56 @@ export default function VerifyNewMobileNumberScreen(){
 
                 {otpError && (
                     <Text
-                        className="self-start font-medium text-[#E05252]"
-                        style={{ marginTop: verticalScale(6), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                        className="self-start font-medium]"
+                        style={{
+                            marginTop: verticalScale(6),
+                            marginLeft: scale(8),
+                            fontSize: moderateScale(11),
+                            color: COLORS.errorTextColor
+                        }}
                     >
                         {otpError}
                     </Text>
                 )}
 
                 <View
-                    className="flex-row items-center bg-[#FAFAFA] w-full border-[#1F1F1F]/5"
+                    className="flex-row items-center w-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         padding: scale(12),
-                        marginTop: verticalScale(28),
+                        marginTop: verticalScale(24),
                         gap: scale(10),
                         borderRadius: moderateScale(18)
                     }}
                 >
                     <View
-                        className="items-center justify-center rounded-full bg-[#3f25161d]"
-                        style={{ width: scale(40), height: scale(40) }}
+                        className="items-center justify-center rounded-full"
+                        style={{
+                            width: scale(40),
+                            height: scale(40),
+                            backgroundColor: hexToRgba(COLORS.primaryColor, 0.15)
+                        }}
                     >
-                        <RefreshIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={2.2} />
+                        <RefreshIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={2.2} />
                     </View>
 
                     <View className="flex-1 justify-center">
-                        <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(12.5) }}>
+                        <Text
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(12.5),
+                                color: COLORS.primaryTextColor
+                            }}
+                        >
                             Didn't receive the code?
                         </Text>
 
                         <Text
-                            className="font-semibold text-[#1F1F1F]/60"
+                            className="font-semibold"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.6),
                                 marginTop: verticalScale(4),
                                 fontSize: moderateScale(11)
                             }}
@@ -314,8 +344,11 @@ export default function VerifyNewMobileNumberScreen(){
                                 <>
                                     You can request a new code in{" "}
                                     <Text
-                                        className="font-semibold text-[#1F1F1F]"
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(11),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         {formatTimer(resendTimer)}
                                     </Text>
@@ -330,12 +363,9 @@ export default function VerifyNewMobileNumberScreen(){
                         hitSlop={8}
                     >
                         <Text
-                            className={`font-semibold ${
-                                canResend
-                                    ? "text-[#E8B93F]"
-                                    : "text-[#1F1F1F]/30"
-                            }`}
+                            className="font-semibold"
                             style={{
+                                color: canResend ? COLORS.accentColor : hexToRgba(COLORS.primaryTextColor, 0.3),
                                 fontSize: moderateScale(13),
                                 marginRight: scale(3)
                             }}

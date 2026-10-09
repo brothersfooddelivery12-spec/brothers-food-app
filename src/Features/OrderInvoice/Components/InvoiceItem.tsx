@@ -1,3 +1,5 @@
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import { Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -38,8 +40,11 @@ export default function InvoiceItem({
                     <View className="flex-1 gap-1">
                         <Text
                             numberOfLines={1}
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             {name}
                         </Text>
@@ -47,8 +52,11 @@ export default function InvoiceItem({
                         {description && (
                             <Text
                                 numberOfLines={2}
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {description}
                             </Text>
@@ -61,8 +69,11 @@ export default function InvoiceItem({
                     style={{ width: moderateScale(50) }}
                 >
                     <Text
-                        className="text-[#1F1F1F] font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {quantity}
                     </Text>
@@ -73,8 +84,11 @@ export default function InvoiceItem({
                     style={{ width: moderateScale(45) }}
                 >
                     <Text
-                        className="text-[#1F1F1F] font-semibold"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-semibold"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         ₹{amount}
                     </Text>
@@ -90,8 +104,10 @@ export default function InvoiceItem({
                     }}
                 >
                     <View
-                        className="bg-[#E8DDD3]/65"
-                        style={{ height: moderateScale(0.7), }}
+                        style={{
+                            backgroundColor: hexToRgba(COLORS.borderColor, 0.6),
+                            height: moderateScale(0.7)
+                        }}
                     />
                 </View>
             )}

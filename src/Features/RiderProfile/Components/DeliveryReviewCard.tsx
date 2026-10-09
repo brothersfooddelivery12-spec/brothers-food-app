@@ -1,4 +1,6 @@
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Text, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
@@ -16,8 +18,13 @@ type DeliveryReviewCardProps = {
 export default function DeliveryReviewCard({ item }: DeliveryReviewCardProps) {
     return (
         <View
-            className="bg-[#E5E4E2]/35 p-4"
-            style={{ borderRadius: moderateScale(18) }}
+            className="p-4"
+            style={{
+                borderRadius: moderateScale(18),
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                borderWidth: moderateScale(0.5)
+            }}
         >
             <View className="flex-row items-center">
                 <View className="flex-row items-center flex-1">
@@ -28,24 +35,28 @@ export default function DeliveryReviewCard({ item }: DeliveryReviewCardProps) {
                             height={moderateScale(14)}
                             color={
                                 index < item.rating
-                                    ? "#5C4639"
-                                    : "#1F1F1F30"
+                                    ? COLORS.secondaryColor
+                                    : hexToRgba(COLORS.primaryTextColor, 0.15)
                             }
                         />
                     ))}
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium"
-                    style={{ fontSize: moderateScale(12) }}
+                    className="font-medium"
+                    style={{
+                        fontSize: moderateScale(10),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                    }}
                 >
                     {item.timeAgo}
                 </Text>
             </View>
 
             <Text
-                className="text-[#1F1F1F]/75 font-medium"
+                className="font-medium"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                     fontStyle: "italic",
                     fontSize: moderateScale(12),
                     lineHeight: moderateScale(19),

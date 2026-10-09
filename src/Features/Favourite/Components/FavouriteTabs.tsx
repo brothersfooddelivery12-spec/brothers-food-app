@@ -1,5 +1,7 @@
 import FoodIcon from '@/assets/icon/FoodIcon.svg'
 import RestaurantIcon from '@/assets/icon/StoreIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { memo, useEffect } from "react"
 import { Pressable, View } from "react-native"
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
@@ -20,6 +22,8 @@ const FavouriteTabs = memo(
         const tabWidth = useSharedValue(0)
         const tabPadding = moderateScale(4)
         const tabHeight = verticalScale(38)
+
+        const inactiveTextColor = hexToRgba(COLORS.primaryTextColor, 0.75)
 
         useEffect(() => {
             progress.value =
@@ -49,7 +53,7 @@ const FavouriteTabs = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["#FFFFFF", "rgba(31,31,31,0.75)"]
+                    [COLORS.primaryBackgroundColor, inactiveTextColor]
                 )
         }))
 
@@ -58,7 +62,7 @@ const FavouriteTabs = memo(
                 interpolateColor(
                     progress.value,
                     [0, 1],
-                    ["rgba(31,31,31,0.75)", "#FFFFFF"]
+                    [inactiveTextColor, COLORS.primaryBackgroundColor]
                 )
         }))
 
@@ -88,8 +92,10 @@ const FavouriteTabs = memo(
                     const width =event.nativeEvent.layout.width
                     tabWidth.value = (width - tabPadding * 2) / 2
                 }}
-                className="flex-row bg-[#FAFAFA] mx-2 overflow-hidden border-[#1F1F1F]/10"
+                className="flex-row mx-2 overflow-hidden"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     padding: tabPadding,
                     borderRadius: moderateScale(28),
                     borderWidth: moderateScale(0.5)
@@ -104,7 +110,7 @@ const FavouriteTabs = memo(
                             top: tabPadding,
                             height: tabHeight,
                             borderRadius: moderateScale(24),
-                            backgroundColor: "#3F2516"
+                            backgroundColor: COLORS.primaryColor
                         },
                         indicatorStyle
                     ]}
@@ -139,7 +145,7 @@ const FavouriteTabs = memo(
                                 restaurantActiveIconStyle
                             ]}
                         >
-                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color="#FFFFFF" />
+                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} />
                         </Animated.View>
 
                         <Animated.View
@@ -152,7 +158,7 @@ const FavouriteTabs = memo(
                                 restaurantInactiveIconStyle
                             ]}
                         >
-                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.75)" />
+                            <RestaurantIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} />
                         </Animated.View>
                     </View>
 
@@ -199,7 +205,7 @@ const FavouriteTabs = memo(
                                 foodInactiveIconStyle
                             ]}
                         >
-                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(31,31,31,0.75)" />
+                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} />
                         </Animated.View>
 
                         <Animated.View
@@ -212,7 +218,7 @@ const FavouriteTabs = memo(
                                 foodActiveIconStyle
                             ]}
                         >
-                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color="#FFFFFF" />
+                            <FoodIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} />
                         </Animated.View>
                     </View>
 

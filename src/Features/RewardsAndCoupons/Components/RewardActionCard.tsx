@@ -1,3 +1,5 @@
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -36,11 +38,11 @@ const RewardActionCard = ({
                 borderRadius: moderateScale(18),
                 borderWidth: 0.5,
                 borderColor: isBrothersPlus
-                    ? "rgba(248, 213, 106, 0.80)"
-                    : "rgba(31,31,31,0.10)",
+                    ? hexToRgba(COLORS.accentColor, 0.15)
+                    : hexToRgba(COLORS.primaryTextColor, 0.1),
                 backgroundColor: isBrothersPlus
-                    ? "rgba(248, 213, 106, 0.25)"
-                    : "#FAFAFA"
+                    ? hexToRgba(COLORS.accentColor, 0.1)
+                    : COLORS.secondaryBackgroundColor
             }}
         >
             <View
@@ -50,11 +52,11 @@ const RewardActionCard = ({
                     height: moderateScale(40),
                     borderRadius: moderateScale(50),
                     backgroundColor: isBrothersPlus
-                        ? "#F8D56A"
-                        : "rgba(92,70,57,0.10)"
+                        ? COLORS.accentLightColor
+                        : hexToRgba(COLORS.neutralSurfaceColor, 0.75)
                 }}
             >
-                <Icon width={moderateScale(19)} height={moderateScale(19)} color="#5C4639" />
+                <Icon width={moderateScale(19)} height={moderateScale(19)} color={COLORS.primaryColor} />
             </View>
 
             <View
@@ -62,15 +64,19 @@ const RewardActionCard = ({
                 style={{ marginLeft: scale(11) }}
             >
                 <Text
-                    className="text-[#1F1F1F] font-semibold"
-                    style={{ fontSize: moderateScale(14) }}
+                    className="font-semibold"
+                    style={{
+                        fontSize: moderateScale(14),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     {item.title}
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(11),
                         marginTop: verticalScale(2)
                     }}
@@ -80,8 +86,9 @@ const RewardActionCard = ({
 
                 {item.badge && (
                     <View
-                        className="self-start bg-[#E8B93F]/15"
+                        className="self-start"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                             marginTop: verticalScale(5),
                             paddingHorizontal: scale(7),
                             paddingVertical: verticalScale(2),
@@ -89,8 +96,11 @@ const RewardActionCard = ({
                         }}
                     >
                         <Text
-                            className="text-[#5C4639] font-semibold"
-                            style={{ fontSize: moderateScale(9) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(9),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             {item.badge}
                         </Text>

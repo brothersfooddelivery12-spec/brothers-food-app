@@ -1,10 +1,12 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import SearchBar from "@/components/SearchBar"
 import { cheesePizzaResults } from "@/constant/cheesePizzaResults"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FoodSearchCard from "./Components/FoodSearchCard"
 
@@ -23,7 +25,6 @@ const SIMILAR_SEARCHES = [
 ]
 
 export default function FoodSearchScreen() {
-    const insets = useSafeAreaInsets()
     const [search, setSearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
@@ -87,24 +88,24 @@ export default function FoodSearchScreen() {
                                 key={category}
                                 activeOpacity={0.85}
                                 onPress={() => setSelectedCategory(category)}
-                                className={`items-center justify-center ${
-                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                }`}
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: isSelected
+                                        ? COLORS.primaryColor
+                                        : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                     borderRadius: moderateScale(18),
                                     paddingHorizontal: scale(16),
                                     paddingVertical: verticalScale(7),
                                     borderWidth: 0.7,
-                                    borderColor: "#E8DDD3"
+                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                 }}
                             >
                                 <Text
-                                    className={`font-semibold ${
-                                        isSelected
-                                            ? "text-white"
-                                            : "text-[#5A3825]"
-                                    }`}
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                    }}
                                 >
                                     {category}
                                 </Text>
@@ -114,8 +115,9 @@ export default function FoodSearchScreen() {
                 </ScrollView>
 
                 <Text
-                    className="text-[#1F1F1F] font-bold"
+                    className="font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(15),
                         marginTop: verticalScale(18)
                     }}
@@ -124,8 +126,9 @@ export default function FoodSearchScreen() {
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/65 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         fontSize: moderateScale(11),
                         marginTop: verticalScale(4),
                         marginBottom: verticalScale(2)
@@ -142,8 +145,9 @@ export default function FoodSearchScreen() {
         () => (
             <>
                 <Text
-                    className="text-[#1F1F1F] font-bold"
+                    className="font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(15),
                         marginTop: verticalScale(22)
                     }}
@@ -163,8 +167,10 @@ export default function FoodSearchScreen() {
                             key={item.id}
                             activeOpacity={0.85}
                             onPress={() => setSearch(item.title)}
-                            className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="flex-row items-center"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 paddingHorizontal: scale(12),
@@ -172,8 +178,11 @@ export default function FoodSearchScreen() {
                             }}
                         >
                             <Text
-                                className="font-medium text-[#1F1F1F]"
-                                style={{ fontSize: moderateScale(12) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 {item.title}
                             </Text>
@@ -186,10 +195,13 @@ export default function FoodSearchScreen() {
     )
 
     return (
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
             
@@ -205,14 +217,16 @@ export default function FoodSearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(46),
                         height: moderateScale(46)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
+                    <BackArrowIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                 </TouchableOpacity>
 
                 <View className="flex-1">

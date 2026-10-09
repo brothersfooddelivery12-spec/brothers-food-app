@@ -2,6 +2,8 @@ import AddUserIcon from '@/assets/icon/AddUserFilledIcon.svg'
 import ArrowDownIcon from "@/assets/icon/ArrowDown.svg"
 import UtensilIcon from '@/assets/icon/UtensilIcon2.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
@@ -44,10 +46,10 @@ const ReferralStep = ({
 }: ReferralStepProps) => {
     const renderIcon = () => {
         const color = completed
-            ? "#FFFFFF"
+            ? COLORS.primaryBackgroundColor
             : active
-              ? "#3F2516"
-              : "#756A63"
+              ? COLORS.primaryColor
+              : COLORS.primaryTextColor
 
         const size = moderateScale(17)
 
@@ -84,8 +86,8 @@ const ReferralStep = ({
                         width: moderateScale(34),
                         height: moderateScale(34),
                         borderRadius: moderateScale(17),
-                        backgroundColor: completed ? "#3F2516" : active
-                            ? "#EDE4DA" : "#e9e9e9",
+                        backgroundColor: completed ? COLORS.primaryColor : active
+                            ? hexToRgba(COLORS.neutralSurfaceColor, 0.75) : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                     }}
                 >
                     {renderIcon()}
@@ -108,7 +110,7 @@ const ReferralStep = ({
                                     width: moderateScale(1.2),
                                     height: verticalScale(3),
                                     borderRadius: moderateScale(2),
-                                    backgroundColor: completed ? "#CDBBAE" : "#dddddd"
+                                    backgroundColor: completed ? COLORS.secondaryColor : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                 }}
                             />
                         ))}
@@ -124,15 +126,19 @@ const ReferralStep = ({
                 }}
             >
                 <Text
-                    className="text-[#1F1F1F] font-bold"
-                    style={{ fontSize: moderateScale(13) }}
+                    className="font-bold"
+                    style={{
+                        fontSize: moderateScale(13),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     {title}
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/65 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(11),
                         lineHeight: moderateScale(15),
                         marginTop: verticalScale(3)
@@ -143,8 +149,9 @@ const ReferralStep = ({
 
                 {meta && (
                     <Text
-                        className="text-[#1F1F1F]/50 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                             fontSize: moderateScale(9.5),
                             marginTop: verticalScale(4)
                         }}
@@ -155,8 +162,9 @@ const ReferralStep = ({
 
                 {active && !completed && (
                     <View
-                        className="self-start bg-[#EDE3D8]"
+                        className="self-start"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                             marginTop: verticalScale(7),
                             paddingHorizontal: scale(8),
                             paddingVertical: verticalScale(4),
@@ -164,8 +172,11 @@ const ReferralStep = ({
                         }}
                     >
                         <Text
-                            className="text-[#5C4639] font-semibold"
-                            style={{ fontSize: moderateScale(9) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(9),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             Awaiting Action
                         </Text>
@@ -188,8 +199,9 @@ const ReferralProgressContent = memo(
 
         return (
             <View
-                className="bg-[#FFFFFF] border-[#1F1F1F]/10"
                 style={{
+                    backgroundColor: COLORS.primaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.7),
                     borderRadius: moderateScale(16),
                     paddingHorizontal: scale(12),
@@ -289,29 +301,29 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
             }
         }
 
-        const getStatusClasses = () => {
+        const getStatusStyle = () => {
             switch (item.status) {
                 case "earned":
                     return {
-                        container: "bg-[#E3F2E8]",
-                        text: "text-[#4D9151]"
+                        backgroundColor: COLORS.activeStatusBackgroundColor,
+                        textColor: COLORS.activeStatusTextColor
                     }
 
                 case "pending":
                     return {
-                        container: "bg-[#E8B93F]/15",
-                        text: "text-[#5C4639]"
+                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
+                        textColor: COLORS.primaryColor
                     }
 
                 default:
                     return {
-                        container: "bg-[#3F2516]/10",
-                        text: "text-[#3F2516]"
+                        backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
+                        textColor: COLORS.primaryTextColor
                     }
             }
         }
 
-        const statusStyle = getStatusClasses()
+        const statusStyle = getStatusStyle()
 
         const initials = item.name
             .split(" ")
@@ -326,8 +338,9 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
 
         return (
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(12),
@@ -341,16 +354,20 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                     style={{ gap: moderateScale(10) }}
                 >
                     <View
-                        className="items-center justify-center bg-[#3F2516]"
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             width: moderateScale(46),
                             height: moderateScale(46),
                             borderRadius: moderateScale(23)
                         }}
                     >
                         <Text
-                            className="text-white font-bold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             {initials}
                         </Text>
@@ -359,16 +376,20 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                     <View className="flex-1">
                         <Text
                             numberOfLines={1}
-                            className="text-[#1F1F1F] font-bold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             {item.name}
                         </Text>
 
                         <Text
                             numberOfLines={1}
-                            className="text-[#1F1F1F]/55 font-medium"
+                            className="font-medium"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                 fontSize: moderateScale(11),
                                 marginTop: verticalScale(3)
                             }}
@@ -378,16 +399,19 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                     </View>
 
                     <View
-                        className={statusStyle.container}
                         style={{
+                            backgroundColor: statusStyle.backgroundColor,
                             paddingHorizontal: scale(7),
                             paddingVertical: verticalScale(4),
                             borderRadius: moderateScale(12)
                         }}
                     >
                         <Text
-                            className={`${statusStyle.text} font-medium`}
-                            style={{ fontSize: moderateScale(9) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(9),
+                                color: statusStyle.textColor
+                            }}
                         >
                             {getStatusLabel()}
                         </Text>
@@ -398,12 +422,13 @@ const ReferralFriendCard = memo(({ item }: ReferralFriendCardProps) => {
                             arrowAnimatedStyle,
                             {
                                 width: moderateScale(28),
-                                height: moderateScale(28)
+                                height: moderateScale(28),
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                             }
                         ]}
-                        className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                        className="items-center justify-center rounded-full"
                     >
-                        <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color="#5C4639" />
+                        <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} />
                     </Animated.View>
                 </TouchableOpacity>
 

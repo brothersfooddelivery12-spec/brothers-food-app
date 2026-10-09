@@ -7,6 +7,8 @@ import RatingIcon from "@/assets/icon/RatingIcon.svg"
 import RobotIcon from '@/assets/icon/RobotIcon.svg'
 import SparkleIcon2 from '@/assets/icon/SparkleIcon.svg'
 import SearchBar from '@/components/SearchBar'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { router } from "expo-router"
@@ -14,7 +16,7 @@ import { useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { scheduleOnRN } from "react-native-worklets"
 
@@ -92,7 +94,6 @@ const THUMB_RADIUS = moderateScale(9)
 const THUMB_HALF = THUMB_SIZE / 2
 
 export default function BrothersAIScreen(){
-    const insets = useSafeAreaInsets()
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedReview, setSelectedReview] = useState("")
@@ -169,10 +170,13 @@ export default function BrothersAIScreen(){
     }, [search])
         
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -188,27 +192,35 @@ export default function BrothersAIScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Brothers AI
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Your smart assistant for faster, easier ordering
                     </Text>
@@ -295,8 +307,9 @@ export default function BrothersAIScreen(){
                                 </View>
 
                                 <View
-                                    className="absolute items-center justify-center bg-[#FFFFFF]"
+                                    className="absolute items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.primaryBackgroundColor,
                                         right: moderateScale(22),
                                         bottom: moderateScale(22),
 
@@ -304,7 +317,7 @@ export default function BrothersAIScreen(){
                                         height: moderateScale(30),
                                         borderRadius: moderateScale(17),
 
-                                        shadowColor: "#000",
+                                        shadowColor: COLORS.primaryTextColor,
                                         shadowOpacity: 0.12,
                                         shadowRadius: moderateScale(6),
                                         shadowOffset: {
@@ -320,19 +333,30 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className='items-center justify-center p-5 mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(22), borderWidth: moderateScale(0.5) }}
+                            className='items-center justify-center p-5 mx-2'
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(22),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <Text
-                                className='text-[#1F1F1F] text-center font-semibold'
-                                style={{ fontSize: moderateScale(15) }}
+                                className='text-center font-semibold'
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Good Evening Harsh, 👋
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 text-center font-medium mt-2'
-                                style={{ fontSize: moderateScale(12) }}
+                                className='text-center font-medium mt-2'
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 What can Brothers AI curate for you{"\n"}tonight?
                             </Text>
@@ -352,8 +376,11 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-semibold mt-2"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-2"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Curate by Mood
                         </Text>
@@ -381,22 +408,26 @@ export default function BrothersAIScreen(){
                                                 prev === category.title ? "" : category.title
                                             )
                                         }}
-                                        className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                        }`}
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : COLORS.secondaryBackgroundColor,
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(17),
                                             paddingVertical: verticalScale(7),
-                                            borderWidth: 0.7,
-                                            borderColor: "rgba(31, 31, 31, 0.10)"
+                                            borderWidth: moderateScale(0.5),
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                         }}
                                     >
                                         <Text
-                                            className={`font-medium ${
-                                                isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                            }`}
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: isSelected
+                                                    ? COLORS.primaryBackgroundColor
+                                                    : COLORS.primaryTextColor
+                                            }}
                                         >
                                             {category.emoji}{" "}{category.title}
                                         </Text>
@@ -410,8 +441,11 @@ export default function BrothersAIScreen(){
                             style={{ marginTop: verticalScale(14) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-semibold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Today's Best Match
                             </Text>
@@ -425,8 +459,10 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="w-full overflow-hidden bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="w-full overflow-hidden"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(12)
@@ -452,38 +488,49 @@ export default function BrothersAIScreen(){
 
                             <View className="px-4 pb-4 pt-2">
                                 <View
-                                    className="flex-row self-start items-center justify-center gap-1 bg-[#F8D56A]"
+                                    className="flex-row self-start items-center justify-center gap-1"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         paddingHorizontal: moderateScale(10),
                                         paddingVertical: moderateScale(4),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
                                     <Text
-                                        className='text-[#3F2516] font-semibold'
-                                        style={{ fontSize: moderateScale(10) }}
+                                        className='font-semibold'
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         AI CHOICE
                                     </Text>
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold mt-2'
-                                    style={{ fontSize: moderateScale(15)}}
+                                    className='font-semibold mt-2'
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     A Royal Indian Feast
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium mt-1'
-                                    style={{ fontSize: moderateScale(11)}}
+                                    className='font-medium mt-1'
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Rich, spicy and satisfying.
                                 </Text>
 
                                 <View
-                                    className=" absolute flex-row items-center justify-center gap-1 bg-[#E8B93F]/15"
+                                    className=" absolute flex-row items-center justify-center gap-1"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         right: moderateScale(12),
                                         bottom: moderateScale(12),
                                         paddingHorizontal: moderateScale(8),
@@ -491,11 +538,15 @@ export default function BrothersAIScreen(){
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
+                                    <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.secondaryColor} />
 
                                     <Text
-                                        className="font-bold text-[#5c4639]"
-                                        style={{ fontSize: moderateScale(12), marginRight: moderateScale(2) }}
+                                        className="font-bold"
+                                        style={{
+                                            color: COLORS.secondaryColor,
+                                            fontSize: moderateScale(12),
+                                            marginRight: moderateScale(2)
+                                        }}
                                     >
                                         4.9
                                     </Text>
@@ -504,8 +555,10 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="flex-row gap-3 items-start py-4 pl-4 pr-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="flex-row gap-3 items-start py-4 pl-4 pr-2"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderLeftColor: "#7052D8",
                                 borderLeftWidth: moderateScale(3),
@@ -536,8 +589,9 @@ export default function BrothersAIScreen(){
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/70 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                         fontSize: moderateScale(12),
                                         lineHeight: moderateScale(17),
                                         marginTop: verticalScale(4)
@@ -551,36 +605,45 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="items-start p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="items-start p-4"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(16)
                             }}
                         >
                             <Text
-                                className='text-[#1F1F1F] font-semibold'
-                                style={{ fontSize: moderateScale(14) }}
+                                className='font-semibold'
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 🌧️ Weather Forecast
                             </Text>
                             
                             <View
-                                className='bg-[#E5E4E2]/45 w-full justify-center py-3 px-3'
+                                className='w-full justify-center py-3 px-3'
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.55),
                                     marginTop: verticalScale(10),
                                     borderRadius: moderateScale(16)
                                 }}
                             >
                                 <View className='flex-row items-center'>
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold ml-2 flex-1"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-semibold ml-2 flex-1"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         {RAINY_WEATHER.title}
                                     </Text>
 
-                                    <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color={"#1F1F1F"} strokeWidth={1.8} />
+                                    <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                                 </View>
 
                                 <View
@@ -595,8 +658,9 @@ export default function BrothersAIScreen(){
                                             key={item.id}
                                             activeOpacity={0.85}
                                             onPress={() => {}}
-                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(18),
                                                 paddingHorizontal: scale(10),
@@ -604,8 +668,11 @@ export default function BrothersAIScreen(){
                                             }}
                                         >
                                             <Text
-                                                className="font-medium text-[#1F1F1F]"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(12),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {item.title}
                                             </Text>
@@ -616,8 +683,10 @@ export default function BrothersAIScreen(){
                         </View>
 
                         <View
-                            className="items-start py-4 px-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="items-start py-4 px-5"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(16),
@@ -625,8 +694,11 @@ export default function BrothersAIScreen(){
                         >
                             <View className="w-full flex-row items-center justify-between">
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Budget Assistant
                                 </Text>
@@ -652,8 +724,9 @@ export default function BrothersAIScreen(){
                                 >
                                     <View
                                         pointerEvents="none"
-                                        className="absolute w-full bg-[#1F1F1F]/10"
+                                        className="absolute w-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             height: moderateScale(5),
                                             borderRadius: moderateScale(10)
                                         }}
@@ -661,9 +734,10 @@ export default function BrothersAIScreen(){
 
                                     <Animated.View
                                         pointerEvents="none"
-                                        className="absolute bg-[#5C4639]"
+                                        className="absolute"
                                         style={[
                                             {
+                                                backgroundColor: COLORS.secondaryColor,
                                                 height: moderateScale(5),
                                                 borderRadius: moderateScale(10)
                                             },
@@ -673,9 +747,10 @@ export default function BrothersAIScreen(){
 
                                     <Animated.View
                                         pointerEvents="none"
-                                        className="absolute bg-[#3F2516]"
+                                        className="absolute"
                                         style={[
                                             {
+                                                backgroundColor: COLORS.secondaryColor,
                                                 width: THUMB_SIZE,
                                                 height: THUMB_SIZE,
                                                 borderRadius: THUMB_RADIUS,
@@ -692,15 +767,19 @@ export default function BrothersAIScreen(){
                                 style={{ marginTop: verticalScale(2) }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     ₹{MIN_BUDGET}
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-semibold uppercase"
+                                    className="font-semibold uppercase"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                         fontSize: moderateScale(9),
                                         letterSpacing: 0.8
                                     }}
@@ -709,8 +788,11 @@ export default function BrothersAIScreen(){
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     ₹{MAX_BUDGET}+
                                 </Text>
@@ -720,19 +802,23 @@ export default function BrothersAIScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 marginTop: verticalScale(20),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <DicesIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} strokeWidth={1.8} />
+                            <DicesIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
                                                 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Surprise Me
                             </Text>

@@ -8,6 +8,8 @@ import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
 import SendIcon from '@/assets/icon/SendIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -337,15 +339,19 @@ export default function SavedAddressScreen(){
                 />
 
                 <Text
-                    className="text-[#1F1F1F] font-extrabold text-center -mt-2"
-                    style={{ fontSize: moderateScale(17) }}
+                    className="font-extrabold text-center -mt-2"
+                    style={{
+                        fontSize: moderateScale(17),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     No saved addresses yet
                 </Text>
 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium text-center"
+                    className="font-medium text-center"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(11),
                         marginTop: verticalScale(4),
                         lineHeight: moderateScale(14),
@@ -360,19 +366,23 @@ export default function SavedAddressScreen(){
                     onPress={() => preventDoublePress(() => {
                         router.push("/add-address")
                     })}
-                    className="flex-row items-center justify-center gap-2 bg-[#3F2516]"
+                    className="flex-row items-center justify-center gap-2"
                     style={{
+                        backgroundColor: COLORS.primaryColor,
                         marginTop: verticalScale(15),
                         paddingHorizontal: scale(22),
                         paddingVertical: verticalScale(10),
                         borderRadius: moderateScale(24)
                     }}
                 >
-                    <AddLocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                    <AddLocationIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                     <Text
-                        className="text-[#FFFFFF] font-semibold"
-                        style={{ fontSize: moderateScale(13) }}
+                        className="font-semibold"
+                        style={{
+                            fontSize: moderateScale(13),
+                            color: COLORS.primaryBackgroundColor
+                        }}
                     >
                         Add New Address
                     </Text>
@@ -382,10 +392,13 @@ export default function SavedAddressScreen(){
     }
     
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -394,34 +407,42 @@ export default function SavedAddressScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Saved Addresses
                     </Text>
                                 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         View and manage delivery addresses
                     </Text>
@@ -473,8 +494,11 @@ export default function SavedAddressScreen(){
                         ListHeaderComponent={
                             <View>
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-2"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-bold mt-2"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Quick Select
                                 </Text>
@@ -500,22 +524,24 @@ export default function SavedAddressScreen(){
                                                 onPress={() => {
                                                     setSelectedCategory(category)
                                                 }}
-                                                className={`items-center justify-center ${
-                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                                }`}
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? COLORS.primaryColor
+                                                        : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                     borderRadius: moderateScale(18),
                                                     paddingHorizontal: scale(16),
                                                     paddingVertical: verticalScale(7),
                                                     borderWidth: 0.7,
-                                                    borderColor: isSelected ? "#3F2516" : "#E8DDD3"
+                                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                                 }}
                                             >
                                                 <Text
-                                                    className={`font-semibold ${
-                                                        isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {category}
                                                 </Text>
@@ -527,22 +553,27 @@ export default function SavedAddressScreen(){
                                 {defaultAddress && (
                                     <>
                                         <Text
-                                            className="text-[#1F1F1F] font-bold mt-5"
-                                            style={{ fontSize: moderateScale(15) }}
+                                            className="font-bold mt-5"
+                                            style={{
+                                                fontSize: moderateScale(15),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                         >
                                             Default Destination
                                         </Text>
         
                                         <View
-                                            className="relative bg-[#3F2516] p-4"
+                                            className="relative p-4"
                                             style={{
+                                                backgroundColor: COLORS.primaryColor,
                                                 borderRadius: moderateScale(22),
                                                 marginTop: verticalScale(8)
                                             }}
                                         >
                                             <View
-                                                className="absolute items-center justify-center bg-[#F8D56A]"
+                                                className="absolute items-center justify-center"
                                                 style={{
+                                                    backgroundColor: COLORS.accentLightColor,
                                                     top: verticalScale(12),
                                                     right: scale(12),
                                                     paddingHorizontal: scale(9),
@@ -552,8 +583,11 @@ export default function SavedAddressScreen(){
                                                 }}
                                             >
                                                 <Text
-                                                    className="font-bold text-[#5C4639]"
-                                                    style={{ fontSize: moderateScale(10) }}
+                                                    className="font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(10),
+                                                        color: COLORS.primaryColor
+                                                    }}
                                                 >
                                                     Default
                                                 </Text>
@@ -561,8 +595,9 @@ export default function SavedAddressScreen(){
         
                                             <View className="flex-row items-start gap-3">
                                                 <View
-                                                    className="items-center justify-center rounded-full bg-[#F8D56A]"
+                                                    className="items-center justify-center rounded-full"
                                                     style={{
+                                                        backgroundColor: COLORS.accentLightColor,
                                                         width: moderateScale(44),
                                                         height: moderateScale(44)
                                                     }}
@@ -574,7 +609,7 @@ export default function SavedAddressScreen(){
                                                             <Icon
                                                                 width={moderateScale(21)}
                                                                 height={moderateScale(21)}
-                                                                color="#5C4639"
+                                                                color={COLORS.primaryColor}
                                                                 strokeWidth={1.8}
                                                             />
                                                         )
@@ -584,8 +619,9 @@ export default function SavedAddressScreen(){
                                                 <View className="flex-1 mt-2">
                                                     <Text
                                                         numberOfLines={1}
-                                                        className="text-[#FFFFFF] font-bold tracking-wide"
+                                                        className="font-bold tracking-wide"
                                                         style={{
+                                                            color: COLORS.primaryBackgroundColor,
                                                             fontSize: moderateScale(16),
                                                             paddingRight: scale(65)
                                                         }}
@@ -594,8 +630,9 @@ export default function SavedAddressScreen(){
                                                     </Text>
         
                                                     <Text
-                                                        className="text-[#FFFFFF]/75 font-medium"
+                                                        className="font-medium"
                                                         style={{
+                                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                                             fontSize: moderateScale(11),
                                                             lineHeight: moderateScale(17),
                                                             marginTop: verticalScale(3)
@@ -616,8 +653,9 @@ export default function SavedAddressScreen(){
                                             </View>
         
                                             <View
-                                                className='border border-dashed border-[#FFFFFF]/35'
+                                                className='border border-dashed'
                                                 style={{
+                                                    borderColor: hexToRgba(COLORS.primaryBackgroundColor, 0.35),
                                                     marginTop: verticalScale(14),
                                                     paddingHorizontal: scale(12),
                                                     paddingVertical: verticalScale(10),
@@ -625,11 +663,12 @@ export default function SavedAddressScreen(){
                                                 }}
                                             >
                                                 <View className="flex-row items-center gap-2">
-                                                    <InformationCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="#F8D56A" strokeWidth={1.8} />
+                                                    <InformationCircleIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.accentLightColor} strokeWidth={1.5} />
         
                                                     <Text
-                                                        className="text-[#F8D56A] font-bold uppercase"
+                                                        className="font-medium uppercase"
                                                         style={{
+                                                            color: COLORS.accentLightColor,
                                                             fontSize: moderateScale(10),
                                                             letterSpacing: 0.5
                                                         }}
@@ -639,8 +678,9 @@ export default function SavedAddressScreen(){
                                                 </View>
         
                                                 <Text
-                                                    className="text-white/90 font-medium"
+                                                    className="font-medium"
                                                     style={{
+                                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.9),
                                                         fontSize: moderateScale(11),
                                                         lineHeight: moderateScale(17),
                                                         marginTop: verticalScale(6)
@@ -654,19 +694,23 @@ export default function SavedAddressScreen(){
                                                 <TouchableOpacity
                                                     activeOpacity={0.95}
                                                     onPress={() => {}}
-                                                    className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
+                                                    className='flex-row items-center justify-center gap-2'
                                                     style={{
+                                                        backgroundColor: COLORS.accentLightColor,
                                                         borderRadius: moderateScale(18),
                                                         paddingRight: scale(12),
                                                         paddingLeft: scale(8),
                                                         paddingVertical: verticalScale(8)
                                                     }}
                                                 >
-                                                    <SendIcon width={moderateScale(18)} height={moderateScale(18)} color={"#3F2516"} strokeWidth={1.8} />
+                                                    <SendIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} strokeWidth={1.8} />
         
                                                     <Text
-                                                        className='text-[#3F2516] font-semibold'
-                                                        style={{ fontSize: moderateScale(12) }}
+                                                        className='font-semibold'
+                                                        style={{
+                                                            fontSize: moderateScale(12),
+                                                            color: COLORS.primaryColor
+                                                        }}
                                                     >
                                                         Navigate
                                                     </Text>
@@ -684,13 +728,14 @@ export default function SavedAddressScreen(){
                                                             })
                                                         })
                                                     }}
-                                                    className='rounded-full flex-row items-center justify-center gap-2 bg-[#FFFFFF]/25'
+                                                    className='rounded-full flex-row items-center justify-center gap-2'
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.25),
                                                         width: moderateScale(40),
                                                         height: moderateScale(40)
                                                     }}
                                                 >
-                                                    <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.5} />
+                                                    <EditIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
                                                 </TouchableOpacity>
         
                                                 <TouchableOpacity
@@ -700,13 +745,14 @@ export default function SavedAddressScreen(){
 
                                                         setDeleteAddressDialogVisible(true)
                                                     }}
-                                                    className='rounded-full flex-row items-center justify-center gap-2 bg-[#FFFFFF]/25'
+                                                    className='rounded-full flex-row items-center justify-center gap-2'
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.25),
                                                         width: moderateScale(40),
                                                         height: moderateScale(40)
                                                     }}
                                                 >
-                                                    <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.5} />
+                                                    <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -717,16 +763,21 @@ export default function SavedAddressScreen(){
                                     style={{ marginTop: verticalScale(15) }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold"
-                                        style={{ fontSize: moderateScale(15) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(15),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Other Locations
                                     </Text>
 
                                     {filteredAddresses.length === 0 && (
                                         <View
-                                            className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                            className="items-center justify-center mx-2"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 marginTop: verticalScale(15),
                                                 paddingHorizontal: scale(20),
@@ -735,37 +786,42 @@ export default function SavedAddressScreen(){
                                             }}
                                         >
                                             <View
-                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                className='rounded-full items-center justify-center'
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     width: moderateScale(44),
                                                     height: moderateScale(44)
                                                 }}
                                             >
-                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                                             </View>
 
                                             <Text
-                                                className="text-[#1F1F1F] font-semibold"
+                                                className="font-semibold"
                                                 style={{
+                                                    color: COLORS.primaryTextColor,
                                                     fontSize: moderateScale(14),
                                                     marginTop: verticalScale(8)
                                                 }}
                                             >
                                                 {otherAddresses.length === 0
                                                     ? "No other locations"
-                                                    : "No matching addresses"}
+                                                    : "No matching addresses"
+                                                }
                                             </Text>
 
                                             <Text
-                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                className="font-medium text-center"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                     fontSize: moderateScale(11),
                                                     marginTop: verticalScale(3)
                                                 }}
                                             >
                                                 {otherAddresses.length === 0
                                                     ? "Add another delivery address to see it here."
-                                                    : "Try selecting a different address category."}
+                                                    : "Try selecting a different address category."
+                                                }
                                             </Text>
                                         </View>
                                     )}
@@ -779,19 +835,23 @@ export default function SavedAddressScreen(){
                                     onPress={() => preventDoublePress(() => {
                                         router.push("/add-address")
                                     })}
-                                    className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                                    className="flex-row gap-2 items-center justify-center mx-2"
                                     style={{
+                                        backgroundColor: COLORS.primaryColor,
                                         marginTop: verticalScale(16),
                                         borderRadius: moderateScale(28),
                                         paddingHorizontal: scale(12),
                                         paddingVertical: verticalScale(14)
                                     }}
                                 >
-                                    <AddLocationIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
+                                    <AddLocationIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
                                 
                                     <Text
-                                        className="text-[#FFFFFF] font-semibold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryBackgroundColor
+                                        }}
                                     >
                                         Add New Address
                                     </Text>
@@ -823,8 +883,11 @@ export default function SavedAddressScreen(){
 
                     {selectedMenuItem && (
                         <View
-                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            className="absolute"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderWidth: moderateScale(0.7),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,
@@ -852,16 +915,19 @@ export default function SavedAddressScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/85 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                    }}
                                 >
                                     Edit Address
                                 </Text>
                             </TouchableOpacity>
 
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: 1,
                                     marginHorizontal: scale(10)
                                 }}
@@ -883,8 +949,11 @@ export default function SavedAddressScreen(){
                                     }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F]/85 font-medium"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                        }}
                                     >
                                         Set as Default
                                     </Text>
@@ -892,8 +961,8 @@ export default function SavedAddressScreen(){
                             )}
 
                             <View
-                                className="bg-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     height: 1,
                                     marginHorizontal: scale(10)
                                 }}
@@ -914,8 +983,11 @@ export default function SavedAddressScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#EF4444] font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.errorTextColor
+                                    }}
                                 >
                                     Delete Address
                                 </Text>

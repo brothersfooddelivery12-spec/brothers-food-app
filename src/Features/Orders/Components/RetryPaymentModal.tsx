@@ -1,11 +1,13 @@
 import ClockFilledIcon from '@/assets/icon/ClockFilledIcon.svg'
 import ClockIcon from '@/assets/icon/ClockIcon3.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
+import { COLORS } from '@/constant/colors'
 import { getUpiAppIcon, getUpiAppName } from '@/Features/Checkout/CheckoutScreen'
 import { useToast } from '@/Features/hook/ToastContext'
 import { CashfreePaymentError, useCashfreeUpi } from '@/Features/hook/useCashfreeUpi'
 import { retryOrderPayment, verifyCashfreePayment } from '@/Services/api-service'
 import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import LottieView from "lottie-react-native"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
@@ -443,8 +445,11 @@ const RetryPaymentModal = memo(({
                 />
 
                 <View
-                    className="bg-[#FFFFFF] border border-[#1F1F1F]/10 overflow-hidden"
+                    className="overflow-hidden"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderWidth: moderateScale(0.7),
                         marginHorizontal: scale(8),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
@@ -470,23 +475,27 @@ const RetryPaymentModal = memo(({
                                     width: moderateScale(38),
                                     height: moderateScale(38),
                                     borderRadius: moderateScale(12),
-                                    backgroundColor: "rgba(232,185,63,0.15)"
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                                 }}
                             >
-                                <ClockFilledIcon width={moderateScale(21)} height={moderateScale(21)} color="#3F2516" strokeWidth={1.8} />
+                                <ClockFilledIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.primaryColor} strokeWidth={1.8} />
                             </View>
 
                             <View className="flex-1">
                                 <Text
-                                    className="text-[#1F1F1F] font-extrabold"
-                                    style={{ fontSize: moderateScale(16) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(16),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Payment pending
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                         fontSize: moderateScale(10.5),
                                         marginTop: verticalScale(1)
                                     }}
@@ -497,23 +506,28 @@ const RetryPaymentModal = memo(({
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
+                            className="font-medium"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 fontSize: moderateScale(12),
                                 lineHeight: moderateScale(18),
                                 marginTop: verticalScale(13)
                             }}
                         >
                             Your order from{" "}
-                            <Text className="text-[#1F1F1F] font-bold">
+                            <Text
+                                className="font-bold"
+                                style={{ color: COLORS.primaryTextColor }}    
+                            >
                                 {restaurantName}
                             </Text>{" "}
                             is waiting for payment.
                         </Text>
 
                         <View
-                            className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(14),
                                 borderRadius: moderateScale(16),
@@ -528,10 +542,10 @@ const RetryPaymentModal = memo(({
                                         width: moderateScale(34),
                                         height: moderateScale(34),
                                         borderRadius: moderateScale(11),
-                                        backgroundColor: "rgba(232,185,63,0.15)"
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                                     }}
                                 >
-                                    <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                                    <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View
@@ -539,15 +553,19 @@ const RetryPaymentModal = memo(({
                                     style={{ marginLeft: scale(10) }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold"
-                                        style={{ fontSize: moderateScale(12.5) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(12.5),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Delivery Address
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F]/75 font-medium"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                             fontSize: moderateScale(10.5),
                                             lineHeight: moderateScale(15),
                                             marginTop: verticalScale(3)
@@ -557,8 +575,9 @@ const RetryPaymentModal = memo(({
                                     </Text>
 
                                     <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                             fontSize: moderateScale(10),
                                             marginTop: verticalScale(4)
                                         }}
@@ -575,8 +594,9 @@ const RetryPaymentModal = memo(({
 
                         {items.length > 0 && (
                             <View
-                                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.7),
                                     marginTop: verticalScale(14),
                                     borderRadius: moderateScale(16),
@@ -594,16 +614,20 @@ const RetryPaymentModal = memo(({
                                             style={{ paddingVertical: verticalScale(10) }}
                                         >
                                             <View
-                                                className="items-center justify-center bg-[#3F2516]"
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: COLORS.primaryColor,
                                                     width: moderateScale(28),
                                                     height: moderateScale(28),
                                                     borderRadius: moderateScale(10)
                                                 }}
                                             >
                                                 <Text
-                                                    className="text-[#FFFFFF] font-bold"
-                                                    style={{ fontSize: moderateScale(10.5) }}
+                                                    className="font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(10.5),
+                                                        color: COLORS.primaryBackgroundColor
+                                                    }}
                                                 >
                                                     {item.quantity}×
                                                 </Text>
@@ -615,15 +639,19 @@ const RetryPaymentModal = memo(({
                                             >
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F] font-semibold"
-                                                    style={{ fontSize: moderateScale(12) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(12),
+                                                        color: COLORS.primaryTextColor
+                                                    }}
                                                 >
                                                     {item.name}
                                                 </Text>
 
                                                 <Text
-                                                    className="text-[#1F1F1F]/65 font-medium"
+                                                    className="font-medium"
                                                     style={{
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                         fontSize: moderateScale(10),
                                                         marginTop: verticalScale(2)
                                                     }}
@@ -633,8 +661,11 @@ const RetryPaymentModal = memo(({
                                             </View>
 
                                             <Text
-                                                className="text-[#1F1F1F] font-bold"
-                                                style={{ fontSize: moderateScale(13) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 ₹{item.total}
                                             </Text>
@@ -645,7 +676,7 @@ const RetryPaymentModal = memo(({
                                             <View
                                                 style={{
                                                     height: moderateScale(0.7),
-                                                    backgroundColor: "rgba(31,31,31,0.10)"
+                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                                 }}
                                             />
                                         )}
@@ -655,8 +686,9 @@ const RetryPaymentModal = memo(({
                         )}
 
                         <View
-                            className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.7),
                                 marginTop: verticalScale(14),
                                 borderRadius: moderateScale(16),
@@ -666,15 +698,21 @@ const RetryPaymentModal = memo(({
                         >
                             <View className="flex-row items-center justify-between">
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
-                                    style={{ fontSize: moderateScale(11.5) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(11.5),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     Amount to pay
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-extrabold"
-                                    style={{ fontSize: moderateScale(17) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(17),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     ₹{amount}
                                 </Text>
@@ -685,17 +723,20 @@ const RetryPaymentModal = memo(({
                                     <View
                                         style={{
                                             height: moderateScale(0.7),
-                                            backgroundColor: "rgba(31,31,31,0.10)",
+                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             marginVertical: verticalScale(10)
                                         }}
                                     />
 
                                     <View className="flex-row items-center gap-2">
-                                        <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color="#B7791F" strokeWidth={1.8} />
+                                        <ClockIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.warningTextColor} strokeWidth={1.8} />
 
                                         <Text
-                                            className="text-[#B7791F] font-medium flex-1"
-                                            style={{ fontSize: moderateScale(11.5) }}
+                                            className="font-medium flex-1"
+                                            style={{
+                                                fontSize: moderateScale(11.5),
+                                                color: COLORS.warningTextColor
+                                            }}
                                         >
                                             {paymentRetry > 0
                                                 ? `Complete payment within ${paymentRetry} min`
@@ -710,19 +751,28 @@ const RetryPaymentModal = memo(({
                         {savedDeviceUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold mt-8 mb-2"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-semibold mt-8 mb-2"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Saved Payment Method
                                 </Text>
         
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                    className="overflow-hidden"
+                                    style={{
+                                        borderRadius: moderateScale(20),
+                                        borderWidth: moderateScale(0.5),
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    }}
                                 >
                                     {savedDeviceUpiMethods.map((item, index) => {
                                         const isSelected = selectedPayment === item.id
                                         const isLast = index === savedDeviceUpiMethods.length - 1
+                                        const isProcessing = processingUpiApp === item.packageName
                                         const Icon = item.icon
         
                                         return (
@@ -735,31 +785,39 @@ const RetryPaymentModal = memo(({
                                                     className="flex-row items-center"
                                                     style={{
                                                         paddingHorizontal: scale(14),
-                                                        paddingVertical: verticalScale(10)
+                                                        paddingVertical: verticalScale(11),
+                                                        opacity: processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                        className="items-center justify-center rounded-full"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                             width: moderateScale(40),
                                                             height: moderateScale(40)
                                                         }}
                                                     >
-                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                        <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryTextColor} />
                                                     </View>
         
                                                     <View className="flex-1 ml-3">
                                                         <Text
-                                                            className="text-[#1F1F1F] font-semibold"
-                                                            style={{ fontSize: moderateScale(13) }}
+                                                            className="font-semibold"
+                                                            style={{
+                                                                fontSize: moderateScale(13),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.title}
                                                         </Text>
         
                                                         {item.description && (
                                                             <Text
-                                                                className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                                style={{ fontSize: moderateScale(10) }}
+                                                                className="font-medium mt-1"
+                                                                style={{
+                                                                    fontSize: moderateScale(10),
+                                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                                }}
                                                             >
                                                                 {item.description}
                                                             </Text>
@@ -767,16 +825,21 @@ const RetryPaymentModal = memo(({
                                                     </View>
         
                                                     <View
-                                                        className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                        className='items-center justify-center'
                                                         style={{
+                                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            borderWidth: moderateScale(0.7),
                                                             borderRadius: moderateScale(8),
                                                             paddingHorizontal: scale(8),
                                                             paddingVertical: verticalScale(3)
                                                         }}
                                                     >
                                                         <Text 
-                                                            className='text-[#1F1F1F] font-medium uppercase'
-                                                            style={{ fontSize: moderateScale(9) }}
+                                                            className='font-medium uppercase'
+                                                            style={{
+                                                                fontSize: moderateScale(9),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.paymentType}
                                                         </Text>
@@ -790,8 +853,8 @@ const RetryPaymentModal = memo(({
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
                                                             borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA"
+                                                                ? COLORS.secondaryColor
+                                                                : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -800,7 +863,7 @@ const RetryPaymentModal = memo(({
                                                                     width: moderateScale(12),
                                                                     height: moderateScale(12),
                                                                     borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639"
+                                                                    backgroundColor: COLORS.secondaryColor
                                                                 }}
                                                             />
                                                         )}
@@ -809,8 +872,8 @@ const RetryPaymentModal = memo(({
         
                                                 {!isLast && (
                                                     <View
-                                                        className="bg-[#1F1F1F]/10"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                             height: 1,
                                                             marginHorizontal: scale(14)
                                                         }}
@@ -826,8 +889,9 @@ const RetryPaymentModal = memo(({
                         {otherUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold mb-2"
+                                    className="font-semibold mb-2"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(13),
                                         marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
                                     }}
@@ -836,8 +900,13 @@ const RetryPaymentModal = memo(({
                                 </Text>
 
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                    className="overflow-hidden"
+                                    style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderRadius: moderateScale(20),
+                                        borderWidth: moderateScale(0.5)
+                                    }}
                                 >
                                     {otherUpiMethods.map((item, index) => {
                                         const Icon = item.icon
@@ -859,14 +928,13 @@ const RetryPaymentModal = memo(({
                                                     style={{
                                                         paddingHorizontal: scale(14),
                                                         paddingVertical: verticalScale(11),
-                                                        opacity: 
-                                                            processingUpiApp !== null &&
-                                                            !isProcessing ? 0.5 : 1
+                                                        opacity: processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                                        className="items-center justify-center rounded-full"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                             width: moderateScale(40),
                                                             height: moderateScale(40)
                                                         }}
@@ -876,15 +944,21 @@ const RetryPaymentModal = memo(({
 
                                                     <View className="flex-1 ml-3">
                                                         <Text
-                                                            className="text-[#1F1F1F] font-semibold"
-                                                            style={{ fontSize: moderateScale(13) }}
+                                                            className="font-semibold"
+                                                            style={{
+                                                                fontSize: moderateScale(13),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.title}
                                                         </Text>
 
                                                         <Text
-                                                            className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                            style={{ fontSize: moderateScale(10) }}
+                                                            className="font-medium mt-1"
+                                                            style={{
+                                                                fontSize: moderateScale(10),
+                                                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                            }}
                                                         >
                                                             {item.description}
                                                         </Text>
@@ -898,8 +972,8 @@ const RetryPaymentModal = memo(({
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
                                                             borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA"
+                                                                ? COLORS.secondaryColor
+                                                                : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -908,7 +982,7 @@ const RetryPaymentModal = memo(({
                                                                     width: moderateScale(12),
                                                                     height: moderateScale(12),
                                                                     borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639"
+                                                                    backgroundColor: COLORS.secondaryColor
                                                                 }}
                                                             />
                                                         )}
@@ -917,8 +991,8 @@ const RetryPaymentModal = memo(({
 
                                                 {!isLast && (
                                                     <View
-                                                        className="bg-[#1F1F1F]/10"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                             height: moderateScale(0.7),
                                                             marginHorizontal: scale(14)
                                                         }}
@@ -942,15 +1016,19 @@ const RetryPaymentModal = memo(({
                                 activeOpacity={0.95}
                                 disabled={isPaymentProcessing}
                                 onPress={onCancel}
-                                className="flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                                className="flex-1 items-center justify-center"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                     height: verticalScale(44),
                                     borderRadius: moderateScale(20)
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Not Now
                                 </Text>
@@ -960,8 +1038,9 @@ const RetryPaymentModal = memo(({
                                 activeOpacity={0.95}
                                 disabled={isPaymentProcessing}
                                 onPress={handleRetryPayment}
-                                className="flex-1 items-center justify-center bg-[#3F2516]"
+                                className="flex-1 items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     height: verticalScale(44),
                                     borderRadius: moderateScale(20)
                                 }}
@@ -980,8 +1059,11 @@ const RetryPaymentModal = memo(({
                                     />
                                 ) : (
                                     <Text
-                                        className="text-[#FFFFFF] font-semibold"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.primaryBackgroundColor
+                                        }}
                                     >
                                         Retry Payment
                                     </Text>

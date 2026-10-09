@@ -8,6 +8,8 @@ import PaytmIcon from '@/assets/icon/PaytmLogo.svg'
 import PhonePeIcon from '@/assets/icon/PhonePe.svg'
 import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
 import React, { useCallback, useMemo, useRef, useState } from 'react'
@@ -147,10 +149,13 @@ export default function PaymentMethodScreen(){
     }, [removePaymentMethod])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -159,34 +164,42 @@ export default function PaymentMethodScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Payment Methods
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Choose how you’d like to pay for your order
                     </Text>
@@ -314,15 +327,23 @@ export default function PaymentMethodScreen(){
                     <>
                     
                         <Text
-                            className='text-[#1F1F1F] font-semibold mt-2'
-                            style={{ fontSize: moderateScale(15) }}
+                            className='font-semibold mt-2'
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Saved Payment Methods
                         </Text>
 
                         <View
-                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible mt-3"
-                            style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                            className="overflow-visible mt-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(20),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             {paymentMethods.map((item, index) => {
                                 const isLast = index === paymentMethods.length - 1
@@ -340,13 +361,14 @@ export default function PaymentMethodScreen(){
                                             }}
                                         >
                                             <View
-                                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                className="items-center justify-center rounded-full"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                     width: moderateScale(42),
                                                     height: moderateScale(42)
                                                 }}
                                             >
-                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryColor} />
                                             </View>
 
                                             <View
@@ -356,24 +378,30 @@ export default function PaymentMethodScreen(){
                                                 <View className="flex-row items-center gap-2">
                                                     <Text
                                                         numberOfLines={1}
-                                                        className="text-[#1F1F1F] font-semibold"
-                                                        style={{ fontSize: moderateScale(13) }}
+                                                        className="font-semibold"
+                                                        style={{
+                                                            fontSize: moderateScale(13),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                         {item.title}
                                                     </Text>
 
                                                     {item.isDefault && (
                                                         <View
-                                                            className="bg-[#E8B93F]/15"
                                                             style={{
+                                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                                 borderRadius: moderateScale(10),
                                                                 paddingHorizontal: scale(6),
                                                                 paddingVertical: verticalScale(3)
                                                             }}
                                                         >
                                                             <Text
-                                                                className="text-[#3F2516] font-semibold uppercase"
-                                                                style={{ fontSize: moderateScale(7.5) }}
+                                                                className="font-semibold uppercase"
+                                                                style={{
+                                                                    fontSize: moderateScale(7.5),
+                                                                    color: COLORS.secondaryColor
+                                                                }}
                                                             >
                                                                 Default
                                                             </Text>
@@ -384,8 +412,9 @@ export default function PaymentMethodScreen(){
                                                 {item.description && (
                                                     <Text
                                                         numberOfLines={1}
-                                                        className="text-[#1F1F1F]/65 font-medium"
+                                                        className="font-medium"
                                                         style={{
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                             fontSize: moderateScale(11),
                                                             marginTop: verticalScale(4)
                                                         }}
@@ -404,8 +433,10 @@ export default function PaymentMethodScreen(){
                                             >
                                                 {item.paymentType && (
                                                     <View
-                                                        className="border border-[#1F1F1F]/10 items-center justify-center"
+                                                        className="items-center justify-center"
                                                         style={{
+                                                            borderWidth: moderateScale(0.7),
+                                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                             borderRadius: moderateScale(8),
                                                             paddingHorizontal: scale(7),
                                                             paddingVertical: verticalScale(3)
@@ -413,8 +444,11 @@ export default function PaymentMethodScreen(){
                                                     >
                                                         <Text
                                                             numberOfLines={1}
-                                                            className="text-[#1F1F1F]/75 font-semibold uppercase"
-                                                            style={{ fontSize: moderateScale(8.5) }}
+                                                            className="font-semibold uppercase"
+                                                            style={{
+                                                                fontSize: moderateScale(8.5),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             {item.paymentType}
                                                         </Text>
@@ -446,7 +480,7 @@ export default function PaymentMethodScreen(){
                                                         <EllipsisVerticalIcon
                                                             width={moderateScale(19)}
                                                             height={moderateScale(19)}
-                                                            color="rgba(31,31,31,0.65)"
+                                                            color={hexToRgba(COLORS.primaryTextColor, 0.65)}
                                                             strokeWidth={1.8}
                                                         />
                                                     </TouchableOpacity>
@@ -456,8 +490,8 @@ export default function PaymentMethodScreen(){
 
                                         {!isLast && (
                                             <View
-                                                className="bg-[#1F1F1F]/10"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                     height: 1,
                                                     marginHorizontal: scale(14)
                                                 }}
@@ -484,15 +518,19 @@ export default function PaymentMethodScreen(){
                         />
 
                         <Text
-                            className="text-[#1F1F1F] font-extrabold text-center"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-extrabold text-center"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             No saved payment methods yet
                         </Text>  
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium text-center"
+                            className="font-medium text-center"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 fontSize: moderateScale(11),
                                 marginTop: verticalScale(4),
                                 lineHeight: moderateScale(14),
@@ -526,13 +564,16 @@ export default function PaymentMethodScreen(){
 
                     {selectedMenuItem && (
                         <View
-                            className="absolute bg-white border border-[#1F1F1F]/10"
+                            className="absolute"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 top: menuPosition.top,
                                 left: menuPosition.left,
                                 width: MENU_WIDTH,
                                 borderRadius: moderateScale(16),
-                                paddingVertical: verticalScale(5)
+                                paddingVertical: verticalScale(5),
+                                borderWidth: moderateScale(0.7)
                             }}
                         >
                             {!selectedMenuItem.isDefault && (
@@ -546,16 +587,19 @@ export default function PaymentMethodScreen(){
                                         }}
                                     >
                                         <Text
-                                            className="text-[#1F1F1F]/85 font-medium"
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                            }}
                                         >
                                             Set as Default
                                         </Text>
                                     </TouchableOpacity>
 
                                     <View
-                                        className="bg-[#1F1F1F]/10"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             height: 1,
                                             marginHorizontal: scale(10)
                                         }}
@@ -572,8 +616,11 @@ export default function PaymentMethodScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#EF4444] font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.errorTextColor
+                                    }}
                                 >
                                     Remove
                                 </Text>

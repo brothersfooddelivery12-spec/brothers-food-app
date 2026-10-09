@@ -3,6 +3,8 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRight from '@/assets/icon/ArrowRight.svg'
 import InfoIcon from '@/assets/icon/InfoIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -442,10 +444,13 @@ export default function CartScreen() {
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -461,27 +466,35 @@ export default function CartScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         My Cart
                     </Text>
                     
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         {totalRestaurants}{" "}
                         {totalRestaurants === 1 ? "restaurant" : "restaurants"}{" "}
@@ -509,15 +522,19 @@ export default function CartScreen() {
                     />
 
                     <Text
-                        className="text-[#1F1F1F] font-extrabold text-center"
-                        style={{ fontSize: moderateScale(17) }}
+                        className="font-extrabold text-center"
+                        style={{
+                            fontSize: moderateScale(17),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Your cart is empty
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/75 font-medium text-center"
+                        className="font-medium text-center"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(11),
                             marginTop: verticalScale(4),
                             lineHeight: moderateScale(14),
@@ -533,8 +550,9 @@ export default function CartScreen() {
                         onPress={() =>
                             router.back()
                         }
-                        className="flex-row items-center justify-center bg-[#3F2516]"
+                        className="flex-row items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             gap: moderateScale(6),
                             marginTop: verticalScale(20),
                             paddingHorizontal: scale(22),
@@ -543,8 +561,11 @@ export default function CartScreen() {
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Browse Food
                         </Text>
@@ -571,10 +592,13 @@ export default function CartScreen() {
                         ListHeaderComponent={() => (
                             <View>
                                 <View
-                                    className="flex-row gap-2 p-3 items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25"
+                                    className="flex-row gap-2 p-3 items-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                                        borderColor: hexToRgba(COLORS.accentColor, 0.15),
+                                        borderWidth: moderateScale(0.7),
                                         borderRadius: moderateScale(16),
-                                        marginTop: verticalScale(10),
+                                        marginTop: verticalScale(6),
                                         marginBottom: verticalScale(8)
                                     }}
                                 >
@@ -582,15 +606,21 @@ export default function CartScreen() {
 
                                     <View className="flex-1 gap-1 items-start">
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold"
-                                            style={{ fontSize: moderateScale(12)}}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(12),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                         >
-                                            {`You can checkout items from one restaurant\nat a time`} 
+                                            You can checkout items from one restaurant{"\n"}at a time
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/65 font-medium"
-                                            style={{ fontSize: moderateScale(10) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(10),
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                            }}
                                         >
                                             Switch restaurant to checkout their items
                                         </Text>
@@ -609,8 +639,11 @@ export default function CartScreen() {
                         ListFooterComponent={
                             <View className="mt-5">
                                 <Text
-                                    className="text-[#1F1F1F] font-bold flex-1"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold flex-1"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Frequently Added Together
                                 </Text>
@@ -639,9 +672,11 @@ export default function CartScreen() {
                                 {addresses.length === 0 && (
                                     <>
                                         <View
-                                            className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                            className="items-center justify-center mx-2"
                                             style={{
-                                                borderWidth: moderateScale(0.5),
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderWidth: moderateScale(0.7),
                                                 marginTop: verticalScale(18),
                                                 paddingHorizontal: scale(20),
                                                 paddingVertical: verticalScale(20),
@@ -649,18 +684,20 @@ export default function CartScreen() {
                                             }}
                                         >
                                             <View
-                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                className='rounded-full items-center justify-center'
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     width: moderateScale(44),
                                                     height: moderateScale(44)
                                                 }}
                                             >
-                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                                                <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                                             </View>
             
                                             <Text
-                                                className="text-[#1F1F1F] font-semibold"
+                                                className="font-semibold"
                                                 style={{
+                                                    color: COLORS.primaryTextColor,
                                                     fontSize: moderateScale(14),
                                                     marginTop: verticalScale(8)
                                                 }}
@@ -669,8 +706,9 @@ export default function CartScreen() {
                                             </Text>
             
                                             <Text
-                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                className="font-medium text-center"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                     fontSize: moderateScale(11),
                                                     marginTop: verticalScale(3)
                                                 }}
@@ -684,17 +722,23 @@ export default function CartScreen() {
                                             onPress={() => preventDoublePress(() => {
                                                 router.push("/add-address")
                                             })}
-                                            className="flex-row gap-2 items-center justify-center p-4 bg-[#FFFFFF] border border-[#1F1F1F]/10"
+                                            className="flex-row gap-2 items-center justify-center p-4"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(18),
                                                 marginTop: verticalScale(8)
                                             }}
                                         >
-                                            <AddLocationIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.8} />
+                                            <AddLocationIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                 
                                             <Text
-                                                className="text-[#1F1F1F] font-semibold"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 Add Address
                                             </Text>
@@ -715,20 +759,26 @@ export default function CartScreen() {
                                 borderTopRightRadius: moderateScale(22),
                                 borderTopLeftRadius: moderateScale(22),
                                 zIndex: 100,
-                                backgroundColor: "#3F2516"
+                                backgroundColor: COLORS.primaryColor
                             }}
                         >
                             <View className="items-start gap-1 ml-4">
                                 <Text
-                                    className="text-white/75 font-normal"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-normal"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                    }}
                                 >
                                     Total to pay
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF] font-extrabold"
-                                    style={{ fontSize: moderateScale(18) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(18),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     ₹{itemsTotal.toLocaleString("en-IN")}
                                 </Text>
@@ -744,25 +794,26 @@ export default function CartScreen() {
                                     paddingLeft: scale(12),
                                     paddingRight: scale(8),
                                     paddingVertical: verticalScale(8),
-                                    backgroundColor: "#FFFFFF",
-                                    borderColor: "rgba(31,31,31,0.15)"
+                                    backgroundColor: COLORS.primaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.15)
                                 }}
                             >
                                 <Text
                                     className="font-semibold"
                                     style={{
                                         fontSize: moderateScale(14),
-                                        color: "#3F2516"
+                                        color: COLORS.primaryColor
                                     }}
                                 >
                                     {!activeCart.isOpen
                                         ? "Restaurant Closed"
                                         : hasUnavailableItems
                                         ? "Items Unavailable"
-                                        : "Proceed to Checkout"}
+                                        : "Proceed to Checkout"
+                                    }
                                 </Text>
 
-                                <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
+                                <ArrowRight width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} strokeWidth={1.8} />
                             </TouchableOpacity>
                         </View>
                     )}

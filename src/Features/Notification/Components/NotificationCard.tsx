@@ -1,9 +1,10 @@
-import ArrowRightIcon from "@/assets/icon/ArrowRight.svg"
 import CallIcon from "@/assets/icon/CallFilledIcon.svg"
 import RiderIcon from "@/assets/icon/DeliveryIcon.svg"
 import NotificationIcon from '@/assets/icon/NotificationIcon.svg'
 import TagIcon from '@/assets/icon/OfferIcon.svg'
 import ReceiptIcon from "@/assets/icon/OrderIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { formatNotificationTime } from "@/utils/notificationUtils"
 import { Image } from "expo-image"
 import { memo } from "react"
@@ -56,8 +57,13 @@ function NotificationCard({
     if (item.type === "restaurant") {
         return (
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                className="overflow-hidden"
+                style={{
+                    borderRadius: moderateScale(20),
+                    borderWidth: moderateScale(0.5),
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                }}
             >
                 <View
                     className="relative w-full p-2"
@@ -84,8 +90,9 @@ function NotificationCard({
                 >
                     <View className="flex-row items-start">
                         <Text
-                            className="flex-1 text-[#1F1F1F] font-bold"
+                            className="flex-1 font-bold"
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(15),
                                 lineHeight: moderateScale(18),
                                 paddingRight: scale(12),
@@ -96,16 +103,19 @@ function NotificationCard({
 
                         <View className="flex-row items-center justify-center">
                             <Text
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                }}
                             >
                                 {formatNotificationTime(item.createdAt)}
                             </Text>
 
                             {item.unread && (
                                 <View
-                                    className="bg-[#EF4444]"
                                     style={{
+                                        backgroundColor: COLORS.errorTextColor,
                                         width: moderateScale(8),
                                         height: moderateScale(8),
                                         borderRadius: moderateScale(5),
@@ -117,8 +127,9 @@ function NotificationCard({
                     </View>
 
                     <Text
-                        className="text-[#1F1F1F]/75 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(11),
                             lineHeight: moderateScale(16),
                             marginTop: verticalScale(5)
@@ -130,16 +141,20 @@ function NotificationCard({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => onExploreRestaurant?.(item)}
-                        className="items-center justify-center bg-[#3F2516]"
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             borderRadius: moderateScale(28),
                             paddingVertical: verticalScale(12),
                             marginTop: verticalScale(13)
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Explore Menu
                         </Text>
@@ -153,8 +168,8 @@ function NotificationCard({
         console.log(item.type, item.unread)
         return (
             <View
-                className="bg-[#3F1C0E]"
                 style={{
+                    backgroundColor: COLORS.primaryColor,
                     borderRadius: moderateScale(20),
                     paddingHorizontal: scale(18),
                     paddingVertical: verticalScale(16)
@@ -162,23 +177,25 @@ function NotificationCard({
             >
                 <View className="flex-row items-start">
                     <View
-                        className="items-center justify-center bg-[#FFD54F]"
+                        className="items-center justify-center"
                         style={{
-                            width: moderateScale(42),
-                            height: moderateScale(42),
+                            backgroundColor: COLORS.accentLightColor,
+                            width: moderateScale(40),
+                            height: moderateScale(40),
                             borderRadius: moderateScale(50),
                             marginRight: scale(12)
                         }}
                     >
-                        <TagIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                        <TagIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} />
                     </View>
 
                     <View className="flex-1">
                         <View className="flex-row items-start justify-between">
                             <Text
                                 numberOfLines={1}
-                                className="flex-1 text-[#F8D56A] font-black uppercase"
+                                className="flex-1 font-black uppercase"
                                 style={{
+                                    color: COLORS.accentLightColor,
                                     fontSize: moderateScale(10),
                                     lineHeight: moderateScale(16),
                                     paddingRight: scale(8)
@@ -192,16 +209,19 @@ function NotificationCard({
                                 style={{ flexShrink: 0 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF]/75 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.65)
+                                    }}
                                 >
                                     {formatNotificationTime(item.createdAt)}
                                 </Text>
 
                                 {item.unread === true && (
                                     <View
-                                        className="bg-[#EF4444]"
                                         style={{
+                                            backgroundColor: COLORS.errorTextColor,
                                             width: moderateScale(8),
                                             height: moderateScale(8),
                                             borderRadius: moderateScale(5),
@@ -213,8 +233,9 @@ function NotificationCard({
                         </View>
 
                         <Text
-                            className="text-[#FFFFFF] font-bold"
+                            className="font-bold"
                             style={{
+                                color: COLORS.primaryBackgroundColor,
                                 fontSize: moderateScale(16),
                                 lineHeight: moderateScale(18),
                                 marginTop: verticalScale(5)
@@ -224,9 +245,10 @@ function NotificationCard({
                         </Text>
 
                         <Text
-                            className="text-white/65 font-medium"
+                            className="font-medium"
                             style={{
-                                fontSize: moderateScale(11),
+                                color: hexToRgba(COLORS.primaryBackgroundColor, 0.65),
+                                fontSize: moderateScale(10.5),
                                 lineHeight: moderateScale(13),
                                 marginTop: verticalScale(6)
                             }}
@@ -237,8 +259,9 @@ function NotificationCard({
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => onClaimOffer?.(item)}
-                            className="self-start items-center justify-center bg-[#F8D56A]"
+                            className="self-start items-center justify-center"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 borderRadius: moderateScale(24),
                                 paddingHorizontal: scale(18),
                                 paddingVertical: verticalScale(6),
@@ -246,8 +269,11 @@ function NotificationCard({
                             }}
                         >
                             <Text
-                                className="text-[#3F2516] font-black"
-                                style={{ fontSize: moderateScale(11) }}
+                                className="font-black"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 Claim Offer
                             </Text>
@@ -264,24 +290,24 @@ function NotificationCard({
 
         return (
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(14),
                     overflow: "hidden",
                     borderLeftWidth: isOrder ? 4 : 1,
-                    borderLeftColor: isOrder ? "#3F2516" : "rgba(31,31,31,0.10)"
+                    borderLeftColor: isOrder ? COLORS.primaryColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                 }}
             >
                 <View className="flex-row items-start">
                     <View
-                        className={
-                            isOrder
-                                ? "items-center justify-center bg-[#3F2516]"
-                                : "items-center justify-center bg-[#E5E4E2]/65"
-                        }
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: isOrder
+                                ? COLORS.primaryColor
+                                : hexToRgba(COLORS.disabledBackgroundColor, 0.2),
                             width: moderateScale(46),
                             height: moderateScale(46),
                             borderRadius: moderateScale(23),
@@ -291,15 +317,16 @@ function NotificationCard({
                         <Icon
                             width={moderateScale(22)}
                             height={moderateScale(22)}
-                            color={isOrder ? "#FFFFFF" : "#3F2516"}
+                            color={isOrder ? COLORS.primaryBackgroundColor : COLORS.primaryColor}
                         />
                     </View>
 
                     <View className="flex-1">
                         <View className="flex-row items-start">
                             <Text
-                                className="flex-1 text-[#1F1F1F] font-bold"
+                                className="flex-1 font-bold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(15),
                                     lineHeight: moderateScale(18),
                                     paddingRight: scale(8)
@@ -313,16 +340,19 @@ function NotificationCard({
                                 style={{ flexShrink: 0 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     {formatNotificationTime(item.createdAt)}
                                 </Text>
 
                                 {item.unread && (
                                     <View
-                                        className="bg-[#EF4444]"
                                         style={{
+                                            backgroundColor: COLORS.errorTextColor,
                                             width: moderateScale(8),
                                             height: moderateScale(8),
                                             borderRadius: moderateScale(4),
@@ -334,8 +364,9 @@ function NotificationCard({
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
+                            className="font-medium"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 fontSize: moderateScale(11),
                                 lineHeight: moderateScale(16),
                                 marginTop: verticalScale(5)
@@ -355,15 +386,19 @@ function NotificationCard({
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={onTrackOrder}
-                                    className="flex-1 items-center justify-center bg-[#3F2516]"
+                                    className="flex-1 items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.primaryColor,
                                         paddingVertical: verticalScale(8),
                                         borderRadius: moderateScale(18)
                                     }}
                                 >
                                     <Text
-                                        className="text-[#FFFFFF] font-semibold"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: COLORS.primaryBackgroundColor
+                                        }}
                                     >
                                         Track Order
                                     </Text>
@@ -372,18 +407,22 @@ function NotificationCard({
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={onCallRider}
-                                    className="flex-1 flex-row items-center justify-center bg-[#E5E4E2]/75"
+                                    className="flex-1 flex-row items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                         paddingVertical: verticalScale(8),
                                         borderRadius: moderateScale(18),
                                         gap: scale(7)
                                     }}
                                 >
-                                    <CallIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                                    <CallIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
 
                                     <Text
-                                        className="text-[#3F2516] font-semibold"
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Call Rider
                                     </Text>
@@ -395,24 +434,26 @@ function NotificationCard({
                             <TouchableOpacity
                                 activeOpacity={0.95}
                                 onPress={onViewInvoice}
-                                className="self-start flex-row items-center bg-[#3F2516]"
+                                className="self-start flex-row items-center"
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     paddingVertical: verticalScale(8),
                                     paddingLeft: scale(14),
-                                    paddingRight: scale(8),
+                                    paddingRight: scale(14),
                                     borderRadius: moderateScale(18),
                                     marginTop: verticalScale(14),
                                     gap: scale(4)
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     View Invoice
                                 </Text>
-
-                                <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color="#FFFFFF" strokeWidth={1.8} />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -424,8 +465,9 @@ function NotificationCard({
     if (item.type === "default") {
         return (
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(20),
                     padding: moderateScale(14)
@@ -433,22 +475,24 @@ function NotificationCard({
             >
                 <View className="flex-row items-start">
                     <View
-                        className="items-center justify-center bg-[#E8B93F]/15"
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                             width: moderateScale(46),
                             height: moderateScale(46),
                             borderRadius: moderateScale(23),
                             marginRight: scale(12)
                         }}
                     >
-                        <NotificationIcon width={moderateScale(22)} height={moderateScale(22)} color="#5C4639" strokeWidth={1.8} />
+                        <NotificationIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                     </View>
 
                     <View className="flex-1">
                         <View className="flex-row items-start mt-1">
                             <Text
-                                className="flex-1 text-[#1F1F1F] font-bold"
+                                className="flex-1 font-bold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(15),
                                     lineHeight: moderateScale(18),
                                     paddingRight: scale(8)
@@ -462,16 +506,19 @@ function NotificationCard({
                                 style={{ flexShrink: 0 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     {formatNotificationTime(item.createdAt)}
                                 </Text>
 
                                 {item.unread && (
                                     <View
-                                        className="bg-[#EF4444]"
                                         style={{
+                                            backgroundColor: COLORS.errorTextColor,
                                             width: moderateScale(8),
                                             height: moderateScale(8),
                                             borderRadius: moderateScale(4),
@@ -483,8 +530,9 @@ function NotificationCard({
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F]/75 font-medium"
+                            className="font-medium"
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 fontSize: moderateScale(11),
                                 lineHeight: moderateScale(16),
                                 marginTop: verticalScale(6)

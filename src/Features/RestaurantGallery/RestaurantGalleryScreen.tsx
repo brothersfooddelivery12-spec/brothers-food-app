@@ -1,15 +1,16 @@
-import ArrowDownIcon from '@/assets/icon/ArrowDown.svg'
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import FssaiLogo from '@/assets/icon/FssaiLogo.svg'
 import MenuIcon from '@/assets/icon/MenuIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import VerificationIcon from '@/assets/icon/SecurityIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import ReelCard, { ReelItem } from './Componenets/ReelCard'
@@ -73,7 +74,6 @@ const SORT_OPTIONS = [
 ]
 
 export default function RestaurantGalleryScreen(){
-    const insets = useSafeAreaInsets()
     const preventDoublePress = usePreventDoublePress()
     const [selectedCategory, setSelectedCategory] = useState("All")
     const [showSortMenu, setShowSortMenu] = useState(false)
@@ -116,10 +116,13 @@ export default function RestaurantGalleryScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -135,27 +138,35 @@ export default function RestaurantGalleryScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Restaurant Gallery
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Explore the restaurant before you order.
                     </Text>
@@ -197,8 +208,9 @@ export default function RestaurantGalleryScreen(){
                             />
 
                             <View
-                                className="absolute bottom-2 left-2 bg-white/80"
+                                className="absolute bottom-2 left-2"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.8),
                                     paddingHorizontal: scale(10),
                                     paddingVertical: verticalScale(6),
                                     borderRadius: moderateScale(16),
@@ -207,42 +219,52 @@ export default function RestaurantGalleryScreen(){
                             >
                                 <Text
                                     numberOfLines={1}
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     The Burger King
                                 </Text>
 
                                 <View
-                                    className="mt-1 flex-row self-start items-center bg-[#E8B93F]/85"
+                                    className="mt-1 flex-row self-start items-center"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         paddingHorizontal: scale(7),
                                         paddingVertical: verticalScale(3),
                                         borderRadius: moderateScale(12),
                                         gap: scale(4)
                                     }}
                                 >
-                                    <RatingIcon width={moderateScale(13)} height={moderateScale(13)} color="#3F2516" />
+                                    <RatingIcon width={moderateScale(13)} height={moderateScale(13)} color={COLORS.primaryColor} />
 
                                     <Text
-                                        className="font-bold text-[#3F2516]"
-                                        style={{ fontSize: moderateScale(10) }}
+                                        className="font-bold"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         4.5
                                     </Text>
 
                                     <View
-                                        className="bg-[#3F2516]/25"
                                         style={{
-                                            width: 1,
+                                            backgroundColor: hexToRgba(COLORS.primaryColor, 0.25),
+                                            width: moderateScale(0.7),
                                             height: moderateScale(8)
                                         }}
                                     />
 
                                     <Text
                                         numberOfLines={1}
-                                        className="font-medium text-[#3F2516]/85"
-                                        style={{ fontSize: moderateScale(9) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(9),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         5.2K+ Ratings
                                     </Text>
@@ -271,22 +293,24 @@ export default function RestaurantGalleryScreen(){
                                         onPress={() => {
                                             setSelectedCategory(category)
                                         }}
-                                        className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                        }`}
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                             borderRadius: moderateScale(18),
                                             paddingHorizontal: scale(16),
                                             paddingVertical: verticalScale(7),
                                             borderWidth: 0.7,
-                                            borderColor: isSelected ? "3F2516" : "#E8DDD3"
+                                            borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                         }}
                                     >
                                         <Text
-                                            className={`font-semibold ${
-                                                isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                            }`}
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                            }}
                                         >
                                             {category}
                                         </Text>
@@ -303,13 +327,16 @@ export default function RestaurantGalleryScreen(){
                             }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Visual journey
                             </Text>
 
-                            <View className="relative">
+                            {/* <View className="relative">
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => setShowSortMenu((prev) => !prev)}
@@ -382,14 +409,17 @@ export default function RestaurantGalleryScreen(){
                                         })}
                                     </View>
                                 )}
-                            </View>
+                            </View> */}
                         </View>
 
                         <RestaurantGalleryView images={galleryImages} />
 
                         <Text
-                            className="text-[#1F1F1F] font-bold mt-6"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-6"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Chef Specials & Vibe
                         </Text>
@@ -410,8 +440,10 @@ export default function RestaurantGalleryScreen(){
                         />
                         
                         <View 
-                            className='bg-[#FAFAFA] border-[#1F1F1F]/10 items-center p-4'
+                            className='items-center p-4'
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(18),
                                 marginTop: verticalScale(18)
@@ -419,26 +451,31 @@ export default function RestaurantGalleryScreen(){
                         >
                             <View className='items-center self-start flex-row gap-3'>
                                 <View
-                                    className="items-center justify-center rounded-full bg-[#F8D56A]"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         width: moderateScale(40),
                                         height: moderateScale(40)
                                     }}
                                 >
-                                    <VerificationIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} />
+                                    <VerificationIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
                                 
                                 <Text
-                                    className='text-[#1F1F1F] font-bold'
-                                    style={{ fontSize: moderateScale(16) }}
+                                    className='font-bold'
+                                    style={{
+                                        fontSize: moderateScale(16),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Safety First
                                 </Text>
                             </View>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium mx-2'
+                                className='font-medium mx-2'
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(12),
                                     marginTop: verticalScale(8)
                                 }}
@@ -450,8 +487,9 @@ export default function RestaurantGalleryScreen(){
 
                             <View className='flex-row items-center self-start mt-4 gap-2'>
                                 <View
-                                    className='rounded-full overflow-hidden bg-[#E5E4E2]/55 items-center justify-center'
+                                    className='rounded-full overflow-hidden items-center justify-center'
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                         width: moderateScale(34),
                                         height: moderateScale(34)
                                     }}
@@ -460,8 +498,11 @@ export default function RestaurantGalleryScreen(){
                                 </View>
 
                                 <Text
-                                    className='text-[#22A06B] font-semibold'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className='font-semibold'
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: COLORS.activeStatusTextColor
+                                    }}
                                 >
                                     Verified Kitchen
                                 </Text>
@@ -475,19 +516,23 @@ export default function RestaurantGalleryScreen(){
                                     router.push('/restaurant-menu')
                                 })
                             }
-                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 marginTop: verticalScale(16),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <MenuIcon width={moderateScale(22)} height={moderateScale(22)} color={"#FFFFFF"} />
+                            <MenuIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryBackgroundColor} />
 
                             <Text
-                                className="text-[#FFFFFF] font-bold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 View Full Menu
                             </Text>

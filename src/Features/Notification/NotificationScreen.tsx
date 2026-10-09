@@ -3,10 +3,12 @@ import BagIcon from '@/assets/icon/CartIcon.svg'
 import CardIcon from '@/assets/icon/MoneyIcon.svg'
 import TagIcon from '@/assets/icon/OfferIcon.svg'
 import SettingIcon from '@/assets/icon/SettingIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import { useCallback, useMemo, useState } from 'react'
 import { ScrollView, SectionList, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import NotificationCard, { NotificationItem } from './Components/NotificationCard'
@@ -103,7 +105,6 @@ const NOTIFICATIONS: NotificationItem[] = [
 ]
 
 export default function NotificationScreen(){
-    const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const preventDoublePress = usePreventDoublePress()
     const [selectedCategory, setSelectedCategory] = useState("all")
@@ -177,8 +178,9 @@ export default function NotificationScreen(){
             }
         }) => (
             <Text
-                className="text-[#1F1F1F] font-semibold"
+                className="font-semibold"
                 style={{
+                    color: COLORS.primaryTextColor,
                     fontSize: moderateScale(15),
                     marginBottom: verticalScale(2),
                     marginLeft: scale(4)
@@ -190,10 +192,13 @@ export default function NotificationScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -209,27 +214,35 @@ export default function NotificationScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Notifications
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Stay updated on orders, offers, and more
                     </Text>
@@ -242,14 +255,16 @@ export default function NotificationScreen(){
                             router.push('/notification-preferences')
                         })
                     }
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <SettingIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={1.5} />
+                    <SettingIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                 </TouchableOpacity>
             </View>
 
@@ -287,41 +302,45 @@ export default function NotificationScreen(){
                                         key={category.id}
                                         activeOpacity={0.9}
                                         onPress={() => setSelectedCategory(category.id)}
-                                        className={`flex-row items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                        }`}
+                                        className="flex-row items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                             borderRadius: moderateScale(22),
                                             paddingHorizontal: scale(14),
                                             paddingVertical: verticalScale(5),
                                             gap: scale(5),
 
                                             borderWidth: 0.7,
-                                            borderColor: isSelected ? "#3F2516" : "#F1E7DC"
+                                            borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                         }}
                                     >
                                         {Icon && (
                                             <Icon
                                                 width={moderateScale(18)}
                                                 height={moderateScale(18)}
-                                                color={ isSelected ? "#FFFFFF" : "#5A3825" }
+                                                color={ isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor }
                                                 strokeWidth={1.5}
                                             />
                                         )}
 
                                         <Text
-                                            className={`font-semibold ${
-                                                isSelected ? "text-white" : "text-[#5A3825]"
-                                            }`}
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                            }}
                                         >
                                             {category.title}
                                         </Text>
 
                                         {category.count !== undefined && (
                                             <View
-                                                className={ isSelected ? "bg-white/15" : "bg-[#5A3825]/10" }
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? hexToRgba(COLORS.primaryBackgroundColor, 0.15)
+                                                        : hexToRgba(COLORS.secondaryColor, 0.1),
                                                     minWidth: moderateScale(23),
                                                     height: moderateScale(23),
                                                     paddingHorizontal: scale(4),
@@ -332,10 +351,11 @@ export default function NotificationScreen(){
                                                 }}
                                             >
                                                 <Text
-                                                    className={`font-bold ${
-                                                        isSelected ? "text-white" : "text-[#5A3825]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(9) }}
+                                                    className="font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(9),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {category.count}
                                                 </Text>
@@ -348,8 +368,10 @@ export default function NotificationScreen(){
 
                         <View className="flex-row items-center justify-center gap-3 mt-4 mb-2">
                             <View
-                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="justify-center items-center py-4 px-5 gap-1"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -357,23 +379,31 @@ export default function NotificationScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-extrabold"
-                                    style={{ fontSize: moderateScale(22) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(22),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     12
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Unread
                                 </Text>
                             </View>
 
                             <View
-                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="justify-center items-center py-4 px-5 gap-1"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -381,23 +411,31 @@ export default function NotificationScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-extrabold"
-                                    style={{ fontSize: moderateScale(22) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(22),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     8
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Today
                                 </Text>
                             </View>
 
                             <View
-                                className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-1"
+                                className="justify-center items-center py-4 px-5 gap-1"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(75),
@@ -405,15 +443,21 @@ export default function NotificationScreen(){
                                 }}
                             >
                                 <Text
-                                    className="text-[#1F1F1F] font-extrabold"
-                                    style={{ fontSize: moderateScale(22) }}
+                                    className="font-extrabold"
+                                    style={{
+                                        fontSize: moderateScale(22),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     5
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Offers
                                 </Text>

@@ -10,10 +10,12 @@ import BotIcon from '@/assets/icon/RobotIcon.svg'
 import AccountSettingsIcon from '@/assets/icon/UserFilledIcon.svg'
 import UtensilsIcon from '@/assets/icon/UtensilIcon2.svg'
 import SearchBar from '@/components/SearchBar'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import { useEffect, useState } from 'react'
 import { FlatList, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FAQCard, { FAQItem } from './Components/FAQCard'
 import HelpCenterCard, { HelpCenterItem } from './Components/HelpCenterCard'
@@ -152,7 +154,6 @@ const SUPPORT_REQUESTS: SupportRequest[] = [
 ]
 
 export default function HelpCenterScreen(){
-    const insets = useSafeAreaInsets()
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
 
@@ -165,10 +166,13 @@ export default function HelpCenterScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -177,34 +181,42 @@ export default function HelpCenterScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Help Center
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Find answers and get the support you need
                     </Text>
@@ -225,8 +237,9 @@ export default function HelpCenterScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="self-start flex-row items-center bg-[#F8D56A]"
+                            className="self-start flex-row items-center"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 marginTop: moderateScale(10),
                                 paddingHorizontal: moderateScale(7),
                                 paddingVertical: moderateScale(4),
@@ -234,16 +247,20 @@ export default function HelpCenterScreen(){
                             }}
                         >
                             <Text
-                                className="font-semibold text-[#3F2516] uppercase"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 SUPPORT 24/7
                             </Text>
                         </View>
 
                         <Text
-                            className='text-[#1F1F1F] font-black'
+                            className='font-black'
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(28),
                                 marginTop: verticalScale(10)
                             }}
@@ -252,8 +269,9 @@ export default function HelpCenterScreen(){
                         </Text>
 
                         <Text
-                            className='text-[#1F1F1F]/75 font-medium mr-4 leading-5'
+                            className='font-medium mr-4 leading-5'
                             style={{
+                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                 marginTop: verticalScale(6),
                                 fontSize: moderateScale(12)
                             }}
@@ -290,8 +308,11 @@ export default function HelpCenterScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold mt-7 ml-2"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-7 ml-2"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Reach Out Directly
                         </Text>
@@ -309,12 +330,13 @@ export default function HelpCenterScreen(){
                                                 router.push(item.route as any)
                                             }
                                         }}
-                                        className={`border ${
-                                            item.featured
-                                                ? "bg-[#4A2818] border-[#4A2818]"
-                                                : "bg-[#FAFAFA] border-[#1F1F1F]/10"
-                                        }`}
                                         style={{
+                                            backgroundColor: item.featured
+                                                ? COLORS.primaryColor
+                                                : COLORS.secondaryBackgroundColor,
+                                            borderColor: item.featured
+                                                ? COLORS.primaryColor
+                                                : hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             width: "48%",
                                             minHeight: moderateScale(140),
@@ -325,14 +347,13 @@ export default function HelpCenterScreen(){
                                     >
                                         <View className="flex-row items-start justify-between">
                                             <View
-                                                className={`items-center justify-center ${
-                                                    item.featured
-                                                        ? "bg-[#FFFFFF]/10"
-                                                        : item.id === "2"
-                                                        ? "bg-[#F8D56A]"
-                                                        : "bg-[#E5E4E2]/65"
-                                                }`}
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: item.featured
+                                                        ? hexToRgba(COLORS.primaryBackgroundColor, 0.1)
+                                                        : item.id == "2"
+                                                        ? COLORS.accentLightColor
+                                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                     width: moderateScale(42),
                                                     height: moderateScale(42),
                                                     borderRadius: moderateScale(12)
@@ -343,23 +364,29 @@ export default function HelpCenterScreen(){
                                                     height={moderateScale(24)}
                                                     color={
                                                         item.featured
-                                                            ? "#FFFFFF"
-                                                            : "#3F2516"
+                                                            ? COLORS.primaryBackgroundColor
+                                                            : item.id === "2"
+                                                            ? COLORS.primaryColor
+                                                            : COLORS.primaryTextColor
                                                     }
                                                 />
                                             </View>
 
                                             {item.badge && (
                                                 <View
-                                                    className="bg-[#F8D56A] rounded-full"
+                                                    className="rounded-full"
                                                     style={{
+                                                        backgroundColor: COLORS.accentLightColor,
                                                         paddingHorizontal: scale(7),
                                                         paddingVertical: verticalScale(3)
                                                     }}
                                                 >
                                                     <Text
-                                                        className="text-[#3F2516] font-bold"
-                                                        style={{ fontSize: moderateScale(7) }}
+                                                        className="font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(7),
+                                                            color: COLORS.primaryColor
+                                                        }}
                                                     >
                                                         {item.badge}
                                                     </Text>
@@ -369,24 +396,24 @@ export default function HelpCenterScreen(){
 
                                         <View className="flex-1 justify-end">
                                             <Text
-                                                className={`font-bold ${
-                                                    item.featured
-                                                        ? "text-[#FFFFFF]"
-                                                        : "text-[#3F2516]"
-                                                }`}
-                                                style={{ fontSize: moderateScale(16) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    color: item.featured
+                                                        ? COLORS.primaryBackgroundColor
+                                                        : COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {item.title}
                                             </Text>
 
                                             <Text
                                                 numberOfLines={2}
-                                                className={`font-medium mt-1 ${
-                                                    item.featured
-                                                        ? "text-white/60"
-                                                        : "text-[#1F1F1F]/75"
-                                                }`}
+                                                className="font-medium mt-1"
                                                 style={{
+                                                    color: item.featured
+                                                        ? hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                                        : hexToRgba(COLORS.primaryTextColor, 0.75),
                                                     fontSize: moderateScale(10),
                                                     lineHeight: moderateScale(13)
                                                 }}
@@ -404,8 +431,11 @@ export default function HelpCenterScreen(){
                             style={{ marginBottom: verticalScale(12) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Common Questions
                             </Text>
@@ -416,8 +446,11 @@ export default function HelpCenterScreen(){
                                 className="items-center"
                             >
                                 <Text
-                                    className="text-[#3F2516] font-bold"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     View All FAQ
                                 </Text>
@@ -434,8 +467,11 @@ export default function HelpCenterScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold mt-3 mb-3"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="font-semibold mt-3 mb-3"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Recent Tickets
                         </Text>

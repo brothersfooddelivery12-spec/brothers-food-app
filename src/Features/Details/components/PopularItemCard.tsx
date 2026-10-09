@@ -1,7 +1,9 @@
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
@@ -33,6 +35,16 @@ const PopularItemCard = ({
 }: PopularItemCardProps) => {
     const isInactive = !item.isActive
 
+    const [imageError, setImageError] = useState(false)
+        
+    const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
+    
+    useEffect(() => {
+        setImageError(false)
+    }, [item.imageUri])
+
+    const hasImage = !!item.imageUri && !imageError
+
     return (
         <TouchableOpacity
             activeOpacity={item.isActive ? 0.95 : 1}
@@ -44,10 +56,10 @@ const PopularItemCard = ({
             style={{
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View className="flex-row gap-3 items-center">
@@ -56,12 +68,21 @@ const PopularItemCard = ({
                     style={{
                         borderRadius: moderateScale(18),
                         width: moderateScale(88),
-                        height: moderateScale(88)
+                        height: moderateScale(88),
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
-                        source={{
-                            uri: item.imageUri
+                        source={
+                            hasImage
+                                ? {
+                                    uri: item.imageUri!
+                                }
+                                : DefaultFoodImage
+                        }
+                        onError={() => {
+                            setImageError(true)
                         }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
@@ -76,7 +97,7 @@ const PopularItemCard = ({
                         <View
                             pointerEvents="none"
                             className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
 
@@ -88,13 +109,16 @@ const PopularItemCard = ({
                                 right: moderateScale(5),
                                 bottom: moderateScale(5),
                                 paddingVertical: verticalScale(4),
-                                borderRadius: moderateScale(8),
-                                backgroundColor: "rgba(31,31,31,0.82)"
+                                borderRadius: moderateScale(14),
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.82),
                             }}
                         >
                             <Text
-                                className="text-white font-bold uppercase"
-                                style={{ fontSize: moderateScale(7.5) }}
+                                className="font-bold uppercase"
+                                style={{
+                                    fontSize: moderateScale(7.5),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Unavailable
                             </Text>
@@ -105,8 +129,9 @@ const PopularItemCard = ({
                 <View className="flex-1 justify-center mr-4 -mt-1">
                     {item.tag && !isInactive && (
                         <View
-                            className="self-start flex-row items-center bg-[#F8D56A]"
+                            className="self-start flex-row items-center"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 paddingHorizontal: moderateScale(7),
                                 paddingVertical: moderateScale(4),
                                 borderRadius: moderateScale(10),
@@ -114,8 +139,11 @@ const PopularItemCard = ({
                             }}
                         >
                             <Text
-                                className="font-semibold text-[#3F2516] uppercase"
-                                style={{ fontSize: moderateScale(9) }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(9),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 {item.tag}
                             </Text>
@@ -127,7 +155,7 @@ const PopularItemCard = ({
                         className="font-bold"
                         style={{
                             fontSize: moderateScale(16),
-                            color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                            color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                         }}
                     >
                         {item.name}
@@ -140,8 +168,8 @@ const PopularItemCard = ({
                             fontSize: moderateScale(11.5),
                             marginTop: moderateScale(2),
                             color: isInactive
-                                ? "rgba(31,31,31,0.38)"
-                                : "rgba(31,31,31,0.75)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                                : hexToRgba(COLORS.primaryTextColor, 0.65)
                         }}
                     >
                         {item.description}
@@ -165,14 +193,14 @@ const PopularItemCard = ({
                         paddingVertical: moderateScale(4),
                         borderRadius: moderateScale(12),
                         backgroundColor: isInactive
-                            ? "rgba(31,31,31,0.07)"
-                            : "rgba(232,185,63,0.15)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                            : hexToRgba(COLORS.accentColor, 0.15)
                     }}
                 >
                     <RatingIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isInactive ? "#858585" : "#5C4639"}
+                        color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                     />
 
                     <Text
@@ -180,7 +208,7 @@ const PopularItemCard = ({
                         style={{
                             fontSize: moderateScale(12),
                             marginRight: moderateScale(2),
-                            color: isInactive ? "#858585" : "#5C4639"
+                            color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                         }}
                     >
                         {item.rating}
@@ -195,15 +223,15 @@ const PopularItemCard = ({
                         paddingVertical: moderateScale(4),
                         borderRadius: moderateScale(12),
                         backgroundColor: isInactive
-                            ? "rgba(31,31,31,0.07)"
-                            : "rgba(232,185,63,0.15)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                            : hexToRgba(COLORS.accentColor, 0.15)
                     }}
                 >
                     <Text
                         className="font-bold"
                         style={{
                             fontSize: moderateScale(13),
-                            color: isInactive ? "rgba(31,31,31,0.45)" : "#5C4639"
+                            color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                         }}
                     >
                         ₹{item.price}
@@ -226,13 +254,13 @@ const PopularItemCard = ({
                         width: moderateScale(32),
                         height: moderateScale(32),
                         borderRadius: moderateScale(12),
-                        backgroundColor: isInactive ? "#B8B8B8" : "#3F2516"
+                        backgroundColor: isInactive ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                     }}
                 >
                     <PlusIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isInactive ? "#E8E8E8" : "#FFFFFF"}
+                        color={isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor}
                         strokeWidth={2}
                     />
                 </TouchableOpacity>

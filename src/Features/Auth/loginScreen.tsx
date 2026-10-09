@@ -1,8 +1,10 @@
 import GoogleIcon from '@/assets/icon/Google.svg'
 import IndiaFlag from '@/assets/icon/India.svg'
 import GradientButton from "@/components/GradientButton"
+import { COLORS } from '@/constant/colors'
 import { useAuthStore } from "@/Stores/auth-store"
 import { tokenStorage } from "@/Stores/token-storage"
+import { hexToRgba } from '@/utils/hexToRgba'
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { Image } from 'expo-image'
 import { LinearGradient } from "expo-linear-gradient"
@@ -174,7 +176,10 @@ export default function LoginScreen() {
     }, [])
 
     return(
-        <View className="flex-1 bg-[#FFFFFF]">
+        <View
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
                 backgroundColor="transparent"
@@ -227,17 +232,25 @@ export default function LoginScreen() {
                     extraKeyboardSpace={20}
                 >
                     <View 
-                        className="w-full items-center rounded-t-[22px] bg-[#FFFFFF]"
-                        style={{ paddingHorizontal: scale(14) }}
+                        className="w-full items-center"
+                        style={{
+                            paddingHorizontal: scale(14),
+                            borderTopEndRadius: moderateScale(22),
+                            borderTopStartRadius: moderateScale(22),
+                            backgroundColor: COLORS.primaryBackgroundColor
+                        }}
                     >
                         <Animated.View
-                            className="overflow-hidden rounded-[32px] border-[2px] border-[#FFFFFF]"
+                            className="overflow-hidden"
                             style={{
                                 width: logoSize,
                                 height: logoSize,
+                                borderRadius: moderateScale(32),
+                                borderWidth: moderateScale(2),
+                                borderColor: COLORS.primaryBackgroundColor,
                                 marginTop: -logoSize * 0.35,
                                 transform: [{ scale: logoScale }],
-                                shadowColor: "#FFFFFF",
+                                shadowColor: COLORS.primaryBackgroundColor,
                                 shadowOffset: {
                                     width: 0,
                                     height: verticalScale(14)
@@ -248,7 +261,10 @@ export default function LoginScreen() {
                             }}
                         >
                             <LinearGradient
-                                colors={["#3F2516", "#311707"]}
+                                colors={[
+                                    COLORS.brandGradientStart,
+                                    COLORS.brandGradientEnd
+                                ]}
                                 locations={[0, 1]}
                                 style={{
                                     flex: 1,
@@ -328,57 +344,80 @@ export default function LoginScreen() {
                         </Animated.View>
 
                         <Text
-                            className="font-extrabold text-[#1F1F1F]"
-                            style={{ marginTop: verticalScale(14), fontSize: moderateScale(22) }}
+                            className="font-extrabold"
+                            style={{
+                                marginTop: verticalScale(14),
+                                fontSize: moderateScale(22),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Welcome to Brothers
                         </Text>
 
                         <Text
-                            className="font-medium text-[#1F1F1F]/60 text-center"
-                            style={{ marginTop: verticalScale(3), fontSize: moderateScale(11.5) }}
+                            className="font-mediu text-center"
+                            style={{
+                                marginTop: verticalScale(3),
+                                fontSize: moderateScale(11.5),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                            }}
                         >
-                            {`Log in or create an account to order\nyour favorite meals`}
+                            Log in or create an account to order{"\n"}your favorite meals
                         </Text>
 
                         <Text
-                            className="font-medium text-[#1F1F1F]/85 self-start"
-                            style={{ fontSize: moderateScale(13), marginTop: verticalScale(25), marginLeft: scale(6) }}
+                            className="font-medium self-start"
+                            style={{
+                                fontSize: moderateScale(13),
+                                marginTop: verticalScale(25),
+                                marginLeft: scale(6),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             Mobile Number
                         </Text>
 
-                        <View className={`w-full flex-row overflow-hidden
-                            ${mobileNumberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                        <View className="w-full flex-row overflow-hidden"
                             style={{
                                 marginTop: verticalScale(6),
                                 height: verticalScale(48),
                                 borderRadius: moderateScale(18),
-                                borderWidth: moderateScale(0.7)
+                                borderWidth: moderateScale(0.7),
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: mobileNumberError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1)
                             }}
                         >
                             <View className="flex-row items-center justify-center relative" style={{ width: "22%" }}>
                                 <IndiaFlag width={scale(20)} height={verticalScale(22)} style={{ marginRight: scale(6) }} />
 
-                                <Text className="font-medium text-[#151515]" style={{ fontSize: moderateScale(14) }}>
+                                <Text
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.inputTextColor    
+                                    }}
+                                >
                                     +91
                                 </Text>
 
-                                <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.7) }} />
+                                <View
+                                    className="absolute right-0 top-0 bottom-0"
+                                    style={{
+                                        width: scale(0.7),
+                                        backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    }}
+                                />
                             </View>
 
                             <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                                 <TextInput
-                                    className={`p-0 tracking-wide font-medium ${
-                                        loading
-                                            ? "text-[#9CA3AF]"
-                                            : "text-[#151515]"
-                                    }`}
+                                    className="p-0 tracking-wide font-medium"
                                     style={{
                                         height: verticalScale(40),
                                         fontSize: moderateScale(13),
                                         textAlignVertical: "center",
-                                        includeFontPadding: false
+                                        includeFontPadding: false,
+                                        color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor
                                     }}
                                     value={
                                         mobileNumber
@@ -390,7 +429,7 @@ export default function LoginScreen() {
                                         setMobileNumberError(false)
                                     }}
                                     placeholder="Enter 10-digit mobile number"
-                                    placeholderTextColor="#9A9A9A"
+                                    placeholderTextColor={ COLORS.placeholderTextColor }
                                     keyboardType="phone-pad"
                                     returnKeyType="done"
                                     autoCorrect={false}
@@ -398,7 +437,7 @@ export default function LoginScreen() {
                                     textContentType="telephoneNumber"
                                     autoComplete="tel"
                                     maxLength={16}
-                                    selectionColor="#79685e"
+                                    selectionColor={ COLORS.selectionColor }
                                     editable={!loading}
                                     onSubmitEditing={() => {
                                         Keyboard.dismiss()
@@ -409,8 +448,13 @@ export default function LoginScreen() {
 
                         {mobileNumberError && (
                             <Text
-                                className="self-start font-medium text-[#E05252]"
-                                style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                                className="self-start font-medium"
+                                style={{
+                                    marginTop: verticalScale(4),
+                                    marginLeft: scale(8),
+                                    fontSize: moderateScale(11),
+                                    color: COLORS.errorTextColor
+                                }}
                             >
                                 Please enter a valid 10-digit mobile number
                             </Text>
@@ -422,24 +466,43 @@ export default function LoginScreen() {
                             className="w-full flex-row items-center justify-center"
                             style={{ marginVertical: verticalScale(18) }}
                         >
-                            <View className="bg-[#1F1F1F]/10" style={{ height: verticalScale(1), width: scale(90) }} />
+                            <View
+                                style={{
+                                    height: verticalScale(1),
+                                    width: scale(90),
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                }}
+                            />
 
                             <Text
-                                className="font-medium text-[#1F1F1F]/45"
-                                style={{ marginHorizontal: scale(8), fontSize: moderateScale(11) }}
+                                className="font-medium"
+                                style={{
+                                    marginHorizontal: scale(8),
+                                    fontSize: moderateScale(11),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.45)
+                                }}
                             >
                                 Or Continue With
                             </Text>
 
-                            <View className="bg-[#1F1F1F]/10" style={{ height: verticalScale(1), width: scale(90) }} />
+                            <View
+                                style={{
+                                    height: verticalScale(1),
+                                    width: scale(90),
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                }}
+                            />
                         </View>
 
                         <TouchableOpacity
                             disabled={loading}
                             activeOpacity={0.95}
                             onPress={handleGoogleSignIn}
-                            className="w-full flex-row items-center justify-center rounded-[32px] bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="w-full flex-row items-center justify-center"
                             style={{
+                                borderRadius: moderateScale(32),
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                backgroundColor: COLORS.secondaryBackgroundColor,
                                 marginBottom: verticalScale(14),
                                 height: verticalScale(48),
                                 paddingVertical: verticalScale(12),
@@ -448,7 +511,13 @@ export default function LoginScreen() {
                         >
                             <GoogleIcon width={scale(20)} height={scale(20)} style={{ marginRight: scale(6) }} />
 
-                            <Text className="tracking-wide font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(14) }}>
+                            <Text
+                                className="tracking-wide font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor    
+                                }}
+                            >
                                 Continue with Google
                             </Text>
                         </TouchableOpacity>

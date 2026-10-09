@@ -6,11 +6,13 @@ import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import CardIcon from '@/assets/icon/MoneyIcon.svg'
 import UserIcon from '@/assets/icon/UserIcon.svg'
 import SearchBar from '@/components/SearchBar'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { useEffect, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import FAQCard, { FAQItem } from './Components/FAQCard'
 
@@ -64,7 +66,6 @@ const FAQS: FAQItem[] = [
 ]
 
 export default function FAQsScreen(){
-    const insets = useSafeAreaInsets()
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("1")
@@ -78,10 +79,13 @@ export default function FAQsScreen(){
     }, [search])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -90,34 +94,42 @@ export default function FAQsScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         FAQs
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Find quick answers to common questions
                     </Text>
@@ -138,23 +150,28 @@ export default function FAQsScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-4 py-6 items-center flex-row"
+                            className="px-4 py-6 items-center flex-row"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
                             <View className='justify-center flex-1'>
                                 <Text
-                                    className='text-[#FFFFFF] font-extrabold ml-2'
-                                    style={{ fontSize: moderateScale(20) }}
+                                    className='font-extrabold ml-2'
+                                    style={{
+                                        fontSize: moderateScale(20),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Find Answer{"\n"}to common questions
                                 </Text>
 
                                 <Text
-                                    className='text-[#FFFFFF]/75 font-normal leading-5 ml-2'
+                                    className='font-normal leading-5 ml-2'
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                         fontSize: moderateScale(12),
                                         marginTop: verticalScale(8)
                                     }}
@@ -208,36 +225,34 @@ export default function FAQsScreen(){
                                         key={item.id}
                                         activeOpacity={0.9}
                                         onPress={() => setSelectedCategory(item.id)}
-                                        className={`items-center justify-center ${
-                                            isSelected
-                                                ? "bg-[#5C4639]/80"
-                                                : "bg-[#FAFAFA]"
-                                        }`}
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : COLORS.secondaryBackgroundColor,
                                             width: moderateScale(76),
                                             height: moderateScale(74),
                                             borderRadius: moderateScale(18),
 
                                             borderWidth: 0.5,
                                             borderColor: isSelected
-                                                ? "rgba(63, 37, 22, 0.70)"
-                                                : "rgba(31,31,31,0.10)",
+                                                ? hexToRgba(COLORS.primaryBackgroundColor, 0.25)
+                                                : hexToRgba(COLORS.primaryTextColor, 0.1),
 
                                             borderBottomWidth: isSelected ? 3 : 1,
                                             borderBottomColor: isSelected
-                                                ? "rgba(63, 37, 22, 1)"
-                                                : "rgba(31,31,31,0.10)"
+                                                ? hexToRgba(COLORS.primaryBackgroundColor, 0.25)
+                                                : hexToRgba(COLORS.primaryTextColor, 0.1),
                                         }}
                                     >
-                                        <Icon width={moderateScale(24)} height={moderateScale(24)} color={isSelected ? "#FFFFFF" : "#3F2516"} strokeWidth={1.5} />
+                                        <Icon width={moderateScale(24)} height={moderateScale(24)} color={isSelected ? COLORS.primaryBackgroundColor : COLORS.primaryTextColor} strokeWidth={1.5} />
 
                                         <Text
-                                            className={`font-medium ${
-                                                isSelected
-                                                    ? "text-[#FFFFFF]"
-                                                    : "text-[#1F1F1F]"
-                                            }`}
+                                            className="font-medium"
                                             style={{
+                                                color: isSelected
+                                                    ? COLORS.primaryBackgroundColor
+                                                    : COLORS.primaryTextColor,
                                                 fontSize: moderateScale(11),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -254,15 +269,21 @@ export default function FAQsScreen(){
                             style={{ marginBottom: verticalScale(12) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Frequently Asked Questions
                             </Text>
 
                             <Text
-                                className="text-[#3F2516] font-bold"
-                                style={{ fontSize: moderateScale(12) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 12 Questions
                             </Text>
@@ -278,8 +299,11 @@ export default function FAQsScreen(){
                         </View>
 
                         <View
-                            className="flex-row gap-2 p-3 items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25"
+                            className="flex-row gap-2 p-3 items-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                                borderColor: hexToRgba(COLORS.accentColor, 0.15),
+                                borderWidth: moderateScale(0.7),
                                 borderRadius: moderateScale(16),
                                 marginTop: verticalScale(18)
                             }}
@@ -299,15 +323,21 @@ export default function FAQsScreen(){
 
                             <View className='justify-center flex-1'>
                                 <Text
-                                    className='text-[#1F1F1F] font-bold'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className='font-bold'
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Still need help?
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-semibold mt-1"
-                                    style={{ fontSize: moderateScale(10)}}
+                                    className="font-semibold mt-1"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Our support team is available 24/7 to assist you.
                                 </Text>
@@ -316,8 +346,9 @@ export default function FAQsScreen(){
                             <TouchableOpacity
                                 activeOpacity={0.9}
                                 onPress={() => {}}
-                                className="flex-row items-center justify-center gap-1 bg-[#3F2516]"
+                                className="flex-row items-center justify-center gap-1"
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     paddingStart: scale(12),
                                     paddingEnd: scale(8),
                                     paddingVertical: verticalScale(8),
@@ -325,13 +356,16 @@ export default function FAQsScreen(){
                                 }}
                             >
                                 <Text
-                                    className="font-bold text-[#FFFFFF]"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Conatact Support
                                 </Text>
 
-                                <ArrowRightIcon width={moderateScale(13)} height={moderateScale(13)} color="#FFFFFF" strokeWidth={2.5} />
+                                <ArrowRightIcon width={moderateScale(13)} height={moderateScale(13)} color={COLORS.primaryBackgroundColor} strokeWidth={2.5} />
                             </TouchableOpacity>
                         </View>
                     </>

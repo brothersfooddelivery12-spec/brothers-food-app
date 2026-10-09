@@ -11,12 +11,14 @@ import FloatingCartBar from '@/components/FloatingCartBar'
 import { LoadingDots } from '@/components/LoadingDots'
 import RestaurantCard, { Restaurants } from "@/components/RestaurantCard"
 import VegNonVegToggle, { FoodType } from '@/components/VegNonVegToggle'
+import { COLORS } from '@/constant/colors'
 import { offers } from "@/constant/OffersCardData"
 import BannerCarousel from "@/Features/Home/components/BannerCarousel"
 import FoodCard, { MenuItem } from "@/Features/Home/components/FoodCard"
 import NearByRestaurantsList, { NearByRestaurants } from "@/Features/Home/components/NearByRestaurants"
 import OfferCard from "@/Features/Home/components/OffersCard"
 import { getCurrentLocationDetails } from '@/utils/getCurrentLocation'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { measureApi } from '@/utils/measureApiRes'
 import { Image } from "expo-image"
 import * as Location from "expo-location"
@@ -75,6 +77,13 @@ export default function HomeScreen() {
     const previousScrollY = useRef(0)
     const backToTopVisibleRef = useRef(false)
     const hideBackToTopTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const [locationLoading, setLocationLoading] = useState(false)
+    const [locationPermission, setLocationPermission] = useState<LocationPermissionState>("checking")
+    
+    const location = useLocationStore(state => state.location)
+    const setLocation = useLocationStore(state => state.setLocation)
+    const hasHydrated = useLocationStore(state => state.hasHydrated)
 
     const setBackToTopVisible = useCallback((visible: boolean) => {
         if (backToTopVisibleRef.current === visible) {
@@ -179,11 +188,11 @@ export default function HomeScreen() {
         fetchUserProfile()
     }, [])
 
-    const syncFavourites = async () => {
+    const syncFavourites = useCallback(async (latitude: number, longitude: number) => {
         try {
             const [restaurantRes, menuItemRes] = await Promise.allSettled([
-                getFavoriteRestaurants(25.149131,73.083126), 
-                getFavoriteMenuItems(25.149131,73.083126)
+                getFavoriteRestaurants(latitude, longitude), 
+                getFavoriteMenuItems(latitude, longitude)
             ])
 
             const {setRestaurantIds, setMenuItemIds} = useFavouriteStore.getState()
@@ -210,18 +219,18 @@ export default function HomeScreen() {
         } catch (error) {
             console.log("Sync favourites error:", error)
         }
-    }
-
-    useEffect(() => {
-        syncFavourites()
     },[])
 
-    const [locationLoading, setLocationLoading] = useState(false)
-    const [locationPermission, setLocationPermission] = useState<LocationPermissionState>("checking")
-    
-    const location = useLocationStore(state => state.location)
-    const setLocation = useLocationStore(state => state.setLocation)
-    const hasHydrated = useLocationStore(state => state.hasHydrated)
+    useEffect(() => {
+        if (!hasHydrated || !location) {
+            return
+        }
+
+        syncFavourites(
+            location.latitude,
+            location.longitude
+        )
+    },[location?.latitude, location?.longitude])
 
     const handleUseCurrentLocation = useCallback(async (showSuccessToast = true) => {
         if (locationLoading) return
@@ -849,9 +858,6 @@ export default function HomeScreen() {
     }, [addMenuItem, removeMenuItem])
 
     const handleAddToCart = useCallback((item: MenuItem) => {
-        console.log("Menu item:", item)
-        console.log("Preparation time:", item.preparationTime)
-
         if (!item.isAvailable) {
             showToast("This menu is currently unavailable", "info")
 
@@ -945,11 +951,12 @@ export default function HomeScreen() {
                 paddingHorizontal: scale(25)
             }}
         >
-            <LocationIcon width={moderateScale(50)} height={moderateScale(50)} color="#3F2516" />
+            <LocationIcon width={moderateScale(50)} height={moderateScale(50)} color={COLORS.primaryColor} />
 
             <Text
-                className="font-extrabold text-[#1F1F1F] text-center"
+                className="font-extrabold text-center"
                 style={{
+                    color: COLORS.primaryTextColor,
                     fontSize: moderateScale(17),
                     marginTop: verticalScale(8)
                 }}
@@ -958,8 +965,9 @@ export default function HomeScreen() {
             </Text>
 
             <Text
-                className="font-medium text-[#1F1F1F]/65 text-center"
+                className="font-medium text-center"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                     fontSize: moderateScale(11),
                     lineHeight: moderateScale(16),
                     marginTop: verticalScale(4)
@@ -973,8 +981,9 @@ export default function HomeScreen() {
                 activeOpacity={0.95} 
                 onPress={handleLocationAccess}
                 disabled={locationLoading}
-                className="w-full flex-row gap-2 bg-[#3F2516] items-center justify-center"
+                className="w-full flex-row gap-2 items-center justify-center"
                 style={{
+                    backgroundColor: COLORS.primaryColor,
                     marginTop: verticalScale(10),
                     height: verticalScale(40),
                     borderRadius: moderateScale(22)
@@ -992,11 +1001,14 @@ export default function HomeScreen() {
                     />
                 ) : (
                     <>
-                        <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color="#FFFFFF" strokeWidth={1.5} />
+                        <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
 
                         <Text
-                            className="tracking-wide font-semibold text-[#FFFFFF]"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="tracking-wide font-semibold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Use Current Location
                         </Text>
@@ -1007,8 +1019,10 @@ export default function HomeScreen() {
             <TouchableOpacity
                 activeOpacity={0.95}
                 onPress={openLocationSelector}
-                className='w-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center'
+                className='w-full items-center justify-center'
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     marginTop: verticalScale(14),
                     height: verticalScale(40),
@@ -1016,8 +1030,11 @@ export default function HomeScreen() {
                 }}
             >
                 <Text
-                    className="font-bold text-[#1F1F1F]"
-                    style={{ fontSize: moderateScale(14) }}
+                    className="font-bold"
+                    style={{
+                        fontSize: moderateScale(14),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Select Manually
                 </Text>
@@ -1026,10 +1043,13 @@ export default function HomeScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}    
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -1075,8 +1095,11 @@ export default function HomeScreen() {
                                     >
                                         <View className="flex-1 min-w-0">
                                             <Text
-                                                className="text-[#1F1F1F]/65 font-medium"
-                                                style={{ fontSize: moderateScale(13) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                }}
                                             >
                                                 {getGreeting()}, {firstName}
                                             </Text>
@@ -1092,7 +1115,7 @@ export default function HomeScreen() {
                                                 onPress={handleLocationPress}
                                             >
                                                 <View style={{ flexShrink: 0 }}>
-                                                    <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
+                                                    <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.primaryColor} />
                                                 </View>
             
                                                 <Animated.View
@@ -1118,8 +1141,9 @@ export default function HomeScreen() {
                                                 >
                                                     <Text
                                                         numberOfLines={1}
-                                                        className="text-[#3F2516] font-extrabold"
+                                                        className="font-extrabold"
                                                         style={{
+                                                            color: COLORS.primaryColor,
                                                             fontSize: moderateScale(15.5),
                                                             flexShrink: 1,
                                                             marginLeft: scale(2)
@@ -1139,12 +1163,7 @@ export default function HomeScreen() {
                                                                 marginLeft: scale(1)
                                                             }}
                                                         >
-                                                            <ArrowDownIcon
-                                                                width={moderateScale(21)}
-                                                                height={moderateScale(21)}
-                                                                color="#3F2516"
-                                                                strokeWidth={2}
-                                                            />
+                                                            <ArrowDownIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.primaryColor} strokeWidth={2} />
                                                         </View>
                                                     )}
                                                 </Animated.View>
@@ -1158,15 +1177,17 @@ export default function HomeScreen() {
                                                     router.push('/notification')
                                                 })
                                             }
-                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 width: moderateScale(44),
                                                 height: moderateScale(44),
                                                 flexShrink: 0
                                             }}
                                         >
-                                            <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
+                                            <NotificationIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                         </TouchableOpacity>
             
                                         <TouchableOpacity
@@ -1176,15 +1197,17 @@ export default function HomeScreen() {
                                                     router.push('/cart')
                                                 })
                                             }}
-                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 width: moderateScale(44),
                                                 height: moderateScale(44),
                                                 flexShrink: 0
                                             }}
                                         >
-                                            <CartIcon width={moderateScale(23)} height={moderateScale(23)} color="#1F1F1F" strokeWidth={1.5} />
+                                            <CartIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.primaryTextColor} strokeWidth={1.5} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -1197,11 +1220,12 @@ export default function HomeScreen() {
                                             paddingHorizontal: scale(25)
                                         }}
                                     >
-                                        <RestaurantIcon width={moderateScale(46)} height={moderateScale(46)} color="#3F2516" />
+                                        <RestaurantIcon width={moderateScale(46)} height={moderateScale(46)} color={COLORS.primaryColor} />
 
                                         <Text
-                                            className="font-extrabold text-[#1F1F1F] text-center"
+                                            className="font-extrabold text-center"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(17),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -1210,8 +1234,9 @@ export default function HomeScreen() {
                                         </Text>
 
                                         <Text
-                                            className="font-medium text-[#1F1F1F]/75 text-center"
+                                            className="font-medium text-center"
                                             style={{
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                 fontSize: moderateScale(11),
                                                 lineHeight: moderateScale(16),
                                                 marginTop: verticalScale(4)
@@ -1224,8 +1249,9 @@ export default function HomeScreen() {
                                             activeOpacity={0.95} 
                                             onPress={handleLocationAccess}
                                             disabled={locationLoading}
-                                            className="w-full flex-row gap-2 bg-[#3F2516] items-center justify-center"
+                                            className="w-full flex-row gap-2 items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryColor,
                                                 marginTop: verticalScale(10),
                                                 height: verticalScale(40),
                                                 borderRadius: moderateScale(22)
@@ -1243,11 +1269,14 @@ export default function HomeScreen() {
                                                 />
                                             ) : (
                                                 <>
-                                                    <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color="#FFFFFF" strokeWidth={1.5} />
+                                                    <LocateFixedIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
 
                                                     <Text
-                                                        className="tracking-wide font-semibold text-[#FFFFFF]"
-                                                        style={{ fontSize: moderateScale(14) }}
+                                                        className="tracking-wide font-semibold"
+                                                        style={{
+                                                            fontSize: moderateScale(14),
+                                                            color: COLORS.primaryBackgroundColor
+                                                        }}
                                                     >
                                                         Use Current Location
                                                     </Text>
@@ -1258,8 +1287,10 @@ export default function HomeScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={openLocationSelector}
-                                            className='w-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center'
+                                            className='w-full items-center justify-center'
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 marginTop: verticalScale(14),
                                                 height: verticalScale(40),
@@ -1267,8 +1298,11 @@ export default function HomeScreen() {
                                             }}
                                         >
                                             <Text
-                                                className="font-bold text-[#1F1F1F]"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 Choose Another Location
                                             </Text>
@@ -1295,19 +1329,24 @@ export default function HomeScreen() {
                                                             router.push('/(tabs)/search')
                                                         })
                                                     }
-                                                    className="flex-row gap-3 w-full items-center mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                                    className="flex-row gap-3 w-full items-center mt-3"
                                                     style={{
+                                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                         borderWidth: moderateScale(0.5),
                                                         borderRadius: moderateScale(22),
                                                         paddingHorizontal: scale(13),
                                                         height: verticalScale(46)
                                                     }}
                                                 >
-                                                    <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color="#3F2516" strokeWidth={2} />
+                                                    <SearchIcon height={moderateScale(24)} width={moderateScale(24)} color={COLORS.primaryColor} strokeWidth={2} />
                         
                                                     <Text
-                                                        className="font-medium text-[#1F1F1F]/65"
-                                                        style={{ fontSize: moderateScale(14) }}
+                                                        className="font-medium"
+                                                        style={{
+                                                            fontSize: moderateScale(14),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                        }}
                                                     >
                                                         What are you craving today?
                                                     </Text>
@@ -1395,22 +1434,22 @@ export default function HomeScreen() {
                                                                 onPress={() => {
                                                                     setSelectedCategoryId(category.id)
                                                                 }}
-                                                                className={`items-center justify-center ${
-                                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                                                }`}
+                                                                className="items-center justify-center"
                                                                 style={{
+                                                                    backgroundColor: isSelected ? COLORS.primaryColor : COLORS.secondaryBackgroundColor,
+                                                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                                     borderRadius: moderateScale(18),
-                                                                    paddingHorizontal: scale(17),
+                                                                    paddingHorizontal: category.name === "All" ? scale(18) : scale(16),
                                                                     paddingVertical: verticalScale(7),
-                                                                    borderWidth: moderateScale(0.7),
-                                                                    borderColor: "rgba(31, 31, 31, 0.10)"
+                                                                    borderWidth: moderateScale(0.5)
                                                                 }}
                                                             >
                                                                 <Text
-                                                                    className={`font-medium ${
-                                                                        isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                                                    }`}
-                                                                    style={{ fontSize: moderateScale(13.5) }}
+                                                                    className="font-medium"
+                                                                    style={{
+                                                                        fontSize: moderateScale(13.5),
+                                                                        color: isSelected? COLORS.primaryBackgroundColor : COLORS.primaryTextColor
+                                                                    }}
                                                                 >
                                                                     {category.name}
                                                                 </Text>
@@ -1429,8 +1468,11 @@ export default function HomeScreen() {
                                                     style={{ marginTop: verticalScale(14) }}
                                                 >
                                                     <Text
-                                                        className="text-[#1F1F1F] font-bold flex-1"
-                                                        style={{ fontSize: moderateScale(16) }}
+                                                        className="font-bold flex-1"
+                                                        style={{
+                                                            fontSize: moderateScale(16),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                         Popular Near You
                                                     </Text>
@@ -1475,8 +1517,9 @@ export default function HomeScreen() {
                                                 </View>
                         
                                                 <Text
-                                                    className="text-[#1F1F1F] font-bold"
+                                                    className="font-bold"
                                                     style={{
+                                                        color: COLORS.primaryTextColor,
                                                         fontSize: moderateScale(16),
                                                         marginTop: verticalScale(18)
                                                     }}
@@ -1508,8 +1551,9 @@ export default function HomeScreen() {
                                                 />
                         
                                                 <Text
-                                                    className="text-[#1F1F1F] font-bold"
+                                                    className="font-bold"
                                                     style={{
+                                                        color: COLORS.primaryTextColor,
                                                         fontSize: moderateScale(16),
                                                         marginTop: verticalScale(18)
                                                     }}
@@ -1518,8 +1562,10 @@ export default function HomeScreen() {
                                                 </Text>
                         
                                                 <View
-                                                    className="flex-row items-center gap-2 mt-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                                    className="flex-row items-center gap-2 mt-3"
                                                     style={{
+                                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                         borderWidth: moderateScale(0.7),
                                                         borderRadius: moderateScale(18),
                                                         paddingHorizontal: moderateScale(9),
@@ -1550,38 +1596,47 @@ export default function HomeScreen() {
                                                     <View className="justify-center flex-1">
                                                         <Text
                                                             numberOfLines={1}
-                                                            className="text-[#1F1F1F] font-bold"
-                                                            style={{ fontSize: moderateScale(14) }}
+                                                            className="font-bold"
+                                                            style={{
+                                                                fontSize: moderateScale(14),
+                                                                color: COLORS.primaryTextColor
+                                                            }}
                                                         >
                                                             The Big Burger Theory
                                                         </Text>
                         
                                                         <Text
                                                             numberOfLines={2}
-                                                            className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                            style={{ fontSize: moderateScale(11.5) }}
+                                                            className="font-medium mt-1"
+                                                            style={{
+                                                                fontSize: moderateScale(11.5),
+                                                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                            }}
                                                         >
                                                             Double Patty Cheese Burger + Fries
                                                         </Text>
-                        
                                                     </View>
                         
                                                     <TouchableOpacity
                                                         activeOpacity={0.95}
                                                         onPress={() => {}}
-                                                        className="items-center justify-center flex-row bg-[#3F2516]"
+                                                        className="items-center justify-center flex-row"
                                                         style={{
+                                                            backgroundColor: COLORS.primaryColor,
                                                             gap: moderateScale(5),
                                                             borderRadius: moderateScale(10),
                                                             paddingHorizontal: moderateScale(9),
                                                             paddingVertical: moderateScale(7)
                                                         }}
                                                     >
-                                                        <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color="#FFFFFF" strokeWidth={2.2} />
+                                                        <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryBackgroundColor} strokeWidth={2.2} />
                         
                                                         <Text
-                                                            className="text-[#FFFFFF] font-medium"
-                                                            style={{ fontSize: moderateScale(13) }}
+                                                            className="font-medium"
+                                                            style={{
+                                                                fontSize: moderateScale(13),
+                                                                color: COLORS.primaryBackgroundColor
+                                                            }}
                                                         >
                                                             Reorder
                                                         </Text>
@@ -1591,14 +1646,16 @@ export default function HomeScreen() {
                                                 {popularMenu.length > 0 && (
                                                     <>
                                                         <Text
-                                                            className="text-[#1F1F1F] font-bold"
+                                                            className="font-bold"
                                                             style={{
+                                                                color: COLORS.primaryTextColor,
                                                                 fontSize: moderateScale(16),
                                                                 marginTop: verticalScale(18)
                                                             }}
                                                         >
                                                             Trending Foods
                                                         </Text>
+
                                                         <FlatList
                                                             data={popularMenu}
                                                             horizontal
@@ -1618,8 +1675,9 @@ export default function HomeScreen() {
                         
                                                 {nearbyRestaurants.length > 0 && (
                                                     <Text
-                                                        className="text-[#1F1F1F] font-bold"
+                                                        className="font-bold"
                                                         style={{
+                                                            color: COLORS.primaryTextColor,
                                                             fontSize: moderateScale(16),
                                                             marginTop: verticalScale(18)
                                                         }}
@@ -1676,14 +1734,15 @@ export default function HomeScreen() {
                                             animated: true
                                         })
                                 }}
-                                className="flex-row items-center justify-center bg-[#3F2516]"
+                                className="flex-row items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.primaryColor,
                                     paddingVertical: verticalScale(8),
                                     paddingRight: scale(14),
                                     paddingLeft: scale(10),
                                     borderRadius: moderateScale(22),
                                     gap: moderateScale(5),
-                                    shadowColor: "#000",
+                                    shadowColor: COLORS.primaryTextColor,
                                     shadowOffset: {
                                         width: 0,
                                         height: 3
@@ -1694,11 +1753,14 @@ export default function HomeScreen() {
                                     elevation: 5
                                 }}
                             >
-                                <ArrowUpIcon width={moderateScale(17)} height={moderateScale(17)} color="#FFFFFF" strokeWidth={2} />
+                                <ArrowUpIcon width={moderateScale(17)} height={moderateScale(17)} color={COLORS.primaryBackgroundColor} strokeWidth={2} />
     
                                 <Text
-                                    className="text-[#FFFFFF] font-semibold"
-                                    style={{ fontSize: moderateScale(11.5) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(11.5),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Back to Top
                                 </Text>

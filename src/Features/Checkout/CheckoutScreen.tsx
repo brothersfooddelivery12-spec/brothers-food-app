@@ -14,10 +14,12 @@ import SuperMoneyIcon from '@/assets/icon/SuperMoneyLogo.svg'
 import ClockIcon from '@/assets/icon/TimerIcon.svg'
 import UpiIcon from '@/assets/icon/upi.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
 import OrderPriceRow from "@/Features/Cart/Components/OrderPriceRow"
 import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { useCouponStore } from '@/Stores/useCouponStore'
 import { SavedPaymentMethod, usePaymentMethodStore } from '@/Stores/usePaymentMethodStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -804,6 +806,7 @@ export default function CheckoutScreen() {
                         quantity: item.quantity
                     })
                 ),
+            coupon_id: appliedCoupon?.id ?? null,
             note: "Hello Order Kar po"
         }
 
@@ -990,10 +993,13 @@ export default function CheckoutScreen() {
     })
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -1009,27 +1015,35 @@ export default function CheckoutScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Checkout
                     </Text>
                     
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Almost there! Review your order before placing it.
                     </Text>
@@ -1064,8 +1078,13 @@ export default function CheckoutScreen() {
                             <View className="mt-3">
                                 {selectedCart && (
                                     <View
-                                        className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                        style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5)}}
+                                        className="overflow-hidden"
+                                        style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                            borderRadius: moderateScale(20),
+                                            borderWidth: moderateScale(0.5)
+                                        }}
                                     >
                                         <View className="p-3 flex-row items-center gap-2">
                                             <View
@@ -1074,7 +1093,7 @@ export default function CheckoutScreen() {
                                                     width: moderateScale(52),
                                                     height: moderateScale(52),
                                                     borderWidth: !hasImage && !selectedCart.isOpen ? 1 : 0,
-                                                    borderColor: "rgba(31,31,31,0.08)"
+                                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                                                 }}
                                             >
                                                 <Image
@@ -1101,8 +1120,11 @@ export default function CheckoutScreen() {
                                             <View className="flex-1">
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F] font-bold"
-                                                    style={{ fontSize: moderateScale(14) }}
+                                                    className="font-bold mr-2"
+                                                    style={{
+                                                        fontSize: moderateScale(14),
+                                                        color: COLORS.primaryTextColor
+                                                    }}
                                                 >
                                                     {selectedCart.restaurantName}
                                                 </Text>
@@ -1115,16 +1137,16 @@ export default function CheckoutScreen() {
                                                             paddingHorizontal: moderateScale(7),
                                                             paddingVertical: moderateScale(3),
                                                             borderRadius: moderateScale(10),
-                                                            backgroundColor: "rgba(232,185,63,0.15)"
+                                                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                                                         }}
                                                     >
-                                                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={"#5C4639"} />
+                                                        <DeliveryIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.secondaryColor} />
                         
                                                         <Text
                                                             className="font-semibold"
                                                             style={{
                                                                 fontSize: moderateScale(10),
-                                                                color: "#5C4639"
+                                                                color: COLORS.secondaryColor
                                                             }}
                                                         >
                                                             {selectedCart.deliveryFee === 0 ? "FREE" : `₹${selectedCart.deliveryFee}`}
@@ -1137,17 +1159,17 @@ export default function CheckoutScreen() {
                                                             style={{
                                                                 width: moderateScale(22),
                                                                 height: moderateScale(22),
-                                                                backgroundColor: "rgba(232,185,63,0.15)"
+                                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                                                             }}
                                                         >
-                                                            <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color={"#5C4639"} strokeWidth={1.8} />
+                                                            <ClockIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                         </View>
                         
                                                         <Text
                                                             className="font-medium"
                                                             style={{
                                                                 fontSize: moderateScale(10),
-                                                                color: "rgba(31,31,31,0.75)"
+                                                                color: hexToRgba(COLORS.primaryTextColor, 0.75)
                                                             }}
                                                         >
                                                             {averagePreparationTime} min
@@ -1161,16 +1183,19 @@ export default function CheckoutScreen() {
                                                 onPress={() =>
                                                     router.back()
                                                 }
-                                                className="bg-[#3F2516]"
                                                 style={{
+                                                    backgroundColor: COLORS.primaryColor,
                                                     paddingHorizontal: scale(14),
                                                     paddingVertical: verticalScale(7),
-                                                    borderRadius: moderateScale(12)
+                                                    borderRadius: moderateScale(14)
                                                 }}
                                             >
                                                 <Text
-                                                    className="text-[#FFFFFF] font-semibold"
-                                                    style={{ fontSize: moderateScale(11) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(11),
+                                                        color: COLORS.primaryBackgroundColor
+                                                    }}
                                                 >
                                                     View Cart
                                                 </Text>
@@ -1181,8 +1206,8 @@ export default function CheckoutScreen() {
                                             className="p-3 border mx-3 mb-3 mt-2"
                                             style={{
                                                 borderRadius: moderateScale(18),
-                                                backgroundColor: "#FFFFFF",
-                                                borderColor: "rgba(31,31,31,0.10)"
+                                                backgroundColor: COLORS.primaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                             }}
                                         >
                                             {selectedCart.items.map(
@@ -1202,7 +1227,7 @@ export default function CheckoutScreen() {
                                                                     height: verticalScale(0.7),
                                                                     marginVertical: verticalScale(8),
                                                                     marginHorizontal: verticalScale(2),
-                                                                    backgroundColor: "rgba(31,31,31,0.10)"
+                                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                                                 }}
                                                             />
                                                         )}
@@ -1214,8 +1239,9 @@ export default function CheckoutScreen() {
                                 )}
         
                                 <Text
-                                    className="text-[#1F1F1F] font-semibold"
+                                    className="font-semibold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(15),
                                         marginTop: verticalScale(18)
                                     }}
@@ -1225,8 +1251,10 @@ export default function CheckoutScreen() {
         
                                 {addresses.length === 0 ? (
                                     <View
-                                        className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="items-center justify-center mx-2"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             marginTop: verticalScale(10),
                                             paddingHorizontal: scale(20),
@@ -1235,18 +1263,20 @@ export default function CheckoutScreen() {
                                         }}
                                     >
                                         <View
-                                            className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                            className='rounded-full items-center justify-center'
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(44),
                                                 height: moderateScale(44)
                                             }}
                                         >
-                                            <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                                            <LocationIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                                         </View>
         
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold"
+                                            className="font-semibold"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(14),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -1255,8 +1285,9 @@ export default function CheckoutScreen() {
                                         </Text>
         
                                         <Text
-                                            className="text-[#1F1F1F]/75 font-medium text-center"
+                                            className="font-medium text-center"
                                             style={{
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                 fontSize: moderateScale(11),
                                                 marginTop: verticalScale(3)
                                             }}
@@ -1291,18 +1322,23 @@ export default function CheckoutScreen() {
                                     onPress={() => preventDoublePress(() => {
                                         router.push("/add-address")
                                     })}
-                                    className="flex-row gap-2 items-center justify-center p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                    className="flex-row gap-2 items-center justify-center p-4"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                         borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(18),
                                         marginTop: verticalScale(8)
                                     }}
                                 >
-                                    <AddLocationIcon width={moderateScale(20)} height={moderateScale(20)} color={"#1F1F1F"} strokeWidth={1.8} />
+                                    <AddLocationIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
         
                                     <Text
-                                        className="text-[#1F1F1F] font-semibold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Add New Address
                                     </Text>
@@ -1377,45 +1413,60 @@ export default function CheckoutScreen() {
                                 </View> */}
         
                                 <View
-                                    className="p-4 bg-[#FAFAFA] border-[#1F1F1F]/10 flex-row items-start mt-6"
-                                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                                    className="p-4 flex-row items-start mt-6"
+                                    style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderRadius: moderateScale(18),
+                                        borderWidth: moderateScale(0.5)
+                                    }}
                                 >
-                                    <DescriptionIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" />
+                                    <DescriptionIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} />
         
                                     <TextInput
                                         multiline
                                         numberOfLines={4}
                                         textAlignVertical="top"
                                         placeholder="Add delivery instructions (e.g., Leave at the gate)"
-                                        placeholderTextColor="#7A7D81"
-                                        className="flex-1 ml-3 text-[#151515]"
+                                        placeholderTextColor={COLORS.placeholderTextColor}
+                                        className="flex-1 ml-3"
                                         style={{
+                                            color: COLORS.inputTextColor,
                                             minHeight: verticalScale(25),
                                             fontSize: moderateScale(13),
                                             lineHeight: moderateScale(20),
                                             paddingTop: 0,
                                             paddingBottom: 0,
                                         }}
-                                        selectionColor="#79685e"
+                                        selectionColor={COLORS.selectionColor}
                                     />
                                 </View>
 
                                 {savedDeviceUpiMethods.length > 0 && (
                                     <>
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold mt-8 mb-2"
-                                            style={{ fontSize: moderateScale(14) }}
+                                            className="font-semibold mt-8 mb-2"
+                                            style={{
+                                                fontSize: moderateScale(14),
+                                                color: COLORS.primaryTextColor
+                                            }}
                                         >
                                             Saved Payment Method
                                         </Text>
                 
                                         <View
-                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                            style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                            className="overflow-hidden"
+                                            style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderRadius: moderateScale(20),
+                                                borderWidth: moderateScale(0.5)
+                                            }}
                                         >
                                             {savedDeviceUpiMethods.map((item, index) => {
                                                 const isSelected = selectedPayment === item.id
                                                 const isLast = index === savedDeviceUpiMethods.length - 1
+                                                const isProcessing = processingUpiApp === item.packageName
                                                 const Icon = item.icon
                 
                                                 return (
@@ -1428,31 +1479,39 @@ export default function CheckoutScreen() {
                                                             className="flex-row items-center"
                                                             style={{
                                                                 paddingHorizontal: scale(14),
-                                                                paddingVertical: verticalScale(10)
+                                                                paddingVertical: verticalScale(11),
+                                                                opacity: processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                             }}
                                                         >
                                                             <View
-                                                                className="items-center justify-center bg-[#E5E4E2]/55 rounded-full"
+                                                                className="items-center justify-center rounded-full"
                                                                 style={{
+                                                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                                     width: moderateScale(42),
                                                                     height: moderateScale(42)
                                                                 }}
                                                             >
-                                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#3F2516" />
+                                                                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryTextColor} />
                                                             </View>
                 
                                                             <View className="flex-1 ml-3">
                                                                 <Text
-                                                                    className="text-[#1F1F1F] font-semibold"
-                                                                    style={{ fontSize: moderateScale(14) }}
+                                                                    className="font-semibold"
+                                                                    style={{
+                                                                        fontSize: moderateScale(14),
+                                                                        color: COLORS.primaryTextColor
+                                                                    }}
                                                                 >
                                                                     {item.title}
                                                                 </Text>
                 
                                                                 {item.description && (
                                                                     <Text
-                                                                        className="text-[#1F1F1F]/75 font-medium mt-1"
-                                                                        style={{ fontSize: moderateScale(11) }}
+                                                                        className="font-medium mt-1"
+                                                                        style={{
+                                                                            fontSize: moderateScale(11),
+                                                                            color: hexToRgba(COLORS.primaryTextColor, 0.65)    
+                                                                        }}
                                                                     >
                                                                         {item.description}
                                                                     </Text>
@@ -1460,16 +1519,21 @@ export default function CheckoutScreen() {
                                                             </View>
                 
                                                             <View
-                                                                className='border border-[#1F1F1F]/10 items-center justify-center'
+                                                                className='items-center justify-center'
                                                                 style={{
+                                                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                                    borderWidth: moderateScale(0.7),
                                                                     borderRadius: moderateScale(8),
                                                                     paddingHorizontal: scale(8),
                                                                     paddingVertical: verticalScale(3)
                                                                 }}
                                                             >
                                                                 <Text 
-                                                                    className='text-[#1F1F1F] font-medium uppercase'
-                                                                    style={{ fontSize: moderateScale(10) }}
+                                                                    className='font-medium uppercase'
+                                                                    style={{
+                                                                        fontSize: moderateScale(10),
+                                                                        color: COLORS.primaryTextColor
+                                                                    }}
                                                                 >
                                                                     {item.paymentType}
                                                                 </Text>
@@ -1483,8 +1547,8 @@ export default function CheckoutScreen() {
                                                                     borderRadius: "100%",
                                                                     borderWidth: moderateScale(2),
                                                                     borderColor: isSelected
-                                                                        ? "#5c4639"
-                                                                        : "#D6D0CA"
+                                                                        ? COLORS.secondaryColor
+                                                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.85),
                                                                 }}
                                                             >
                                                                 {isSelected && (
@@ -1493,7 +1557,7 @@ export default function CheckoutScreen() {
                                                                             width: moderateScale(14),
                                                                             height: moderateScale(14),
                                                                             borderRadius: "100%",
-                                                                            backgroundColor: "#5c4639"
+                                                                            backgroundColor: COLORS.secondaryColor
                                                                         }}
                                                                     />
                                                                 )}
@@ -1502,9 +1566,9 @@ export default function CheckoutScreen() {
                 
                                                         {!isLast && (
                                                             <View
-                                                                className="bg-[#1F1F1F]/10"
                                                                 style={{
-                                                                    height: 1,
+                                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                                    height: moderateScale(0.5),
                                                                     marginHorizontal: scale(14)
                                                                 }}
                                                             />
@@ -1519,8 +1583,9 @@ export default function CheckoutScreen() {
                                 {otherUpiMethods.length > 0 && (
                                     <>
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold mb-2"
+                                            className="font-semibold mb-2"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(14),
                                                 marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
                                             }}
@@ -1529,8 +1594,13 @@ export default function CheckoutScreen() {
                                         </Text>
         
                                         <View
-                                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                            style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                            className="overflow-hidden"
+                                            style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderRadius: moderateScale(20),
+                                                borderWidth: moderateScale(0.5)
+                                            }}
                                         >
                                             {otherUpiMethods.map((item, index) => {
                                                 const Icon = item.icon
@@ -1552,14 +1622,13 @@ export default function CheckoutScreen() {
                                                             style={{
                                                                 paddingHorizontal: scale(14),
                                                                 paddingVertical: verticalScale(11),
-                                                                opacity: 
-                                                                    processingUpiApp !== null &&
-                                                                    !isProcessing ? 0.5 : 1
+                                                                opacity:  processingUpiApp !== null && !isProcessing ? 0.5 : 1
                                                             }}
                                                         >
                                                             <View
-                                                                className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                                                className="items-center justify-center rounded-full"
                                                                 style={{
+                                                                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65),
                                                                     width: moderateScale(42),
                                                                     height: moderateScale(42)
                                                                 }}
@@ -1569,15 +1638,21 @@ export default function CheckoutScreen() {
         
                                                             <View className="flex-1 ml-3">
                                                                 <Text
-                                                                    className="text-[#1F1F1F] font-semibold"
-                                                                    style={{ fontSize: moderateScale(14) }}
+                                                                    className="font-semibold"
+                                                                    style={{
+                                                                        fontSize: moderateScale(14),
+                                                                        color: COLORS.primaryTextColor
+                                                                    }}
                                                                 >
                                                                     {item.title}
                                                                 </Text>
         
                                                                 <Text
-                                                                    className="text-[#1F1F1F]/65 font-medium mt-1"
-                                                                    style={{ fontSize: moderateScale(11) }}
+                                                                    className="font-medium mt-1"
+                                                                    style={{
+                                                                        fontSize: moderateScale(11),
+                                                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                                    }}
                                                                 >
                                                                     {item.description}
                                                                 </Text>
@@ -1591,8 +1666,8 @@ export default function CheckoutScreen() {
                                                                     borderRadius: "100%",
                                                                     borderWidth: moderateScale(2),
                                                                     borderColor: isSelected
-                                                                        ? "#5c4639"
-                                                                        : "#D6D0CA"
+                                                                        ? COLORS.secondaryColor
+                                                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                                                 }}
                                                             >
                                                                 {isSelected && (
@@ -1601,7 +1676,7 @@ export default function CheckoutScreen() {
                                                                             width: moderateScale(14),
                                                                             height: moderateScale(14),
                                                                             borderRadius: "100%",
-                                                                            backgroundColor: "#5c4639"
+                                                                            backgroundColor: COLORS.secondaryColor
                                                                         }}
                                                                     />
                                                                 )}
@@ -1610,9 +1685,9 @@ export default function CheckoutScreen() {
         
                                                         {!isLast && (
                                                             <View
-                                                                className="bg-[#1F1F1F]/10"
                                                                 style={{
-                                                                    height: moderateScale(0.7),
+                                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                                    height: moderateScale(0.5),
                                                                     marginHorizontal: scale(14)
                                                                 }}
                                                             />
@@ -1648,15 +1723,23 @@ export default function CheckoutScreen() {
                                 </TouchableOpacity> */}
         
                                 <Text
-                                    className="text-[#1F1F1F] font-medium mt-4 mb-2"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-medium mt-4 mb-2"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Other Payment Options
                                 </Text>
         
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
-                                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                                    className="overflow-hidden"
+                                    style={{
+                                        borderRadius: moderateScale(20),
+                                        borderWidth: moderateScale(0.5),
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    }}
                                 >
                                     {OTHER_PAYMENT_METHODS.map((item, index) => {
                                         const Icon = item.icon
@@ -1675,13 +1758,14 @@ export default function CheckoutScreen() {
                                                     }}
                                                 >
                                                     <View
-                                                        className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                                        className="items-center justify-center rounded-full"
                                                         style={{
+                                                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                             width: moderateScale(42),
                                                             height: moderateScale(42)
                                                         }}
                                                     >
-                                                        <Icon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" strokeWidth={1.8} />
+                                                        <Icon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={1.8} />
                                                     </View>
         
                                                     <View
@@ -1690,24 +1774,28 @@ export default function CheckoutScreen() {
                                                     >
                                                         <View className="flex-row items-center gap-2">
                                                             <Text
-                                                                className="text-[#1F1F1F] font-semibold"
-                                                                style={{ fontSize: moderateScale(13) }}
+                                                                className="font-semibold"
+                                                                style={{
+                                                                    fontSize: moderateScale(13),
+                                                                    color: COLORS.primaryTextColor
+                                                                }}
                                                             >
                                                                 {item.title}
                                                             </Text>
         
                                                             {item.badge && (
                                                                 <View
-                                                                    className="bg-[#F8D56A]/25"
                                                                     style={{
+                                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.20),
                                                                         borderRadius: moderateScale(12),
                                                                         paddingHorizontal: scale(8),
                                                                         paddingVertical: verticalScale(3)
                                                                     }}
                                                                 >
                                                                     <Text
-                                                                        className="text-[#3F2516] font-medium"
+                                                                        className="font-medium"
                                                                         style={{
+                                                                            color: COLORS.primaryColor,
                                                                             fontSize: moderateScale(9.5)
                                                                         }}
                                                                     >
@@ -1718,8 +1806,9 @@ export default function CheckoutScreen() {
                                                         </View>
         
                                                         <Text
-                                                            className="text-[#1F1F1F]/65 font-medium"
+                                                            className="font-medium"
                                                             style={{
+                                                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                                 fontSize: moderateScale(10.5),
                                                                 marginTop: verticalScale(2)
                                                             }}
@@ -1736,8 +1825,8 @@ export default function CheckoutScreen() {
                                                             borderRadius: "100%",
                                                             borderWidth: moderateScale(2),
                                                             borderColor: isSelected
-                                                                ? "#5c4639"
-                                                                : "#D6D0CA",
+                                                                ? COLORS.secondaryColor
+                                                                : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                                         }}
                                                     >
                                                         {isSelected && (
@@ -1746,7 +1835,7 @@ export default function CheckoutScreen() {
                                                                     width: moderateScale(14),
                                                                     height: moderateScale(14),
                                                                     borderRadius: "100%",
-                                                                    backgroundColor: "#5c4639",
+                                                                    backgroundColor: COLORS.secondaryColor
                                                                 }}
                                                             />
                                                         )}
@@ -1755,9 +1844,9 @@ export default function CheckoutScreen() {
         
                                                 {!isLast && (
                                                     <View
-                                                        className="bg-[#1F1F1F]/10"
                                                         style={{
-                                                            height: moderateScale(0.7),
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            height: moderateScale(0.5),
                                                             marginHorizontal: scale(14)
                                                         }}
                                                     />
@@ -1769,36 +1858,43 @@ export default function CheckoutScreen() {
         
                                 {appliedCoupon ? (
                                     <View
-                                        className="p-4 flex-row items-center gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="p-4 flex-row items-center gap-3"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             marginTop: verticalScale(18)
                                         }}
                                     >
                                         <View
-                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(40),
                                                 height: moderateScale(40)
                                             }}
                                         >
-                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} strokeWidth={1.5} />
                                         </View>
 
                                         <View className="flex-1">
                                             <Text
                                                 numberOfLines={1}
-                                                className="text-[#1F1F1F] font-bold"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {appliedCoupon.title}
                                             </Text>
 
                                             <Text
                                                 numberOfLines={1}
-                                                className="text-[#1F1F1F]/65 font-medium"
+                                                className="font-medium"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                     fontSize: moderateScale(10.5),
                                                     marginTop: verticalScale(2)
                                                 }}
@@ -1810,16 +1906,20 @@ export default function CheckoutScreen() {
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={() => {clearAppliedCoupon()}}
-                                            className="items-center justify-center bg-[#3F2516]"
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryColor,
                                                 paddingHorizontal: moderateScale(16),
                                                 paddingVertical: moderateScale(7),
                                                 borderRadius: moderateScale(18)
                                             }}
                                         >
                                             <Text
-                                                className="text-[#FFFFFF] font-semibold"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(12),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 Remove
                                             </Text>
@@ -1827,34 +1927,43 @@ export default function CheckoutScreen() {
                                     </View>
                                 ) : (
                                     <View
-                                        className="p-4 items-center flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="p-4 items-center flex-row gap-3"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             marginTop: verticalScale(18)
                                         }}
                                     >
                                         <View
-                                            className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(40),
                                                 height: moderateScale(40)
                                             }}
                                         >
-                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                                            <CouponIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} strokeWidth={1.5} />
                                         </View>
 
                                         <View className="items-start gap-1 flex-1">
                                             <Text
-                                                className="text-[#1F1F1F] font-bold"
-                                                style={{ fontSize: moderateScale(14) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 Apply Coupon
                                             </Text>
 
                                             <Text
-                                                className="text-[#1F1F1F]/65 font-medium"
-                                                style={{ fontSize: moderateScale(10.5) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(10.5),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                }}
                                             >
                                                 Save more on your order with available offers
                                             </Text>
@@ -1867,16 +1976,20 @@ export default function CheckoutScreen() {
                                                     router.push("/apply-coupon")
                                                 })
                                             }
-                                            className="items-center justify-center bg-[#3F2516]"
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryColor,
                                                 paddingHorizontal: moderateScale(16),
                                                 paddingVertical: moderateScale(7),
                                                 borderRadius: moderateScale(18)
                                             }}
                                         >
                                             <Text
-                                                className="font-semibold text-[#FFFFFF]"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(12),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 Apply
                                             </Text>
@@ -1886,16 +1999,19 @@ export default function CheckoutScreen() {
         
                                {selectedCart && (
                                     <View
-                                        className="p-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="p-5"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(18),
                                             marginTop: verticalScale(14)
                                         }}
                                     >
                                         <Text
-                                            className="text-[#1F1F1F] font-bold"
+                                            className="font-bold"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(14),
                                                 marginBottom: verticalScale(8)
                                             }}
@@ -1930,23 +2046,30 @@ export default function CheckoutScreen() {
         
                                         {couponSavings > 0 && (
                                             <View
-                                                className="items-center flex-row justify-center bg-[#E3F2E8] mt-3 -mx-1"
+                                                className="items-center flex-row justify-center mt-3 -mx-1"
                                                 style={{
+                                                    backgroundColor: COLORS.activeStatusBackgroundColor,
                                                     paddingHorizontal: scale(12),
                                                     paddingVertical: verticalScale(8),
                                                     borderRadius: moderateScale(12)
                                                 }}
                                             >
                                                 <Text
-                                                    className="text-[#4D9151] font-semibold flex-1"
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold flex-1"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: COLORS.activeStatusTextColor
+                                                    }}
                                                 >
                                                     Coupon Savings
                                                 </Text>
         
                                                 <Text
-                                                    className="text-[#4D9151] font-bold"
-                                                    style={{ fontSize: moderateScale(14) }}
+                                                    className="font-bold"
+                                                    style={{
+                                                        fontSize: moderateScale(14),
+                                                        color: COLORS.activeStatusTextColor
+                                                    }}
                                                 >
                                                     -₹{couponSavings.toLocaleString("en-IN")}
                                                 </Text>
@@ -1954,8 +2077,9 @@ export default function CheckoutScreen() {
                                         )}
         
                                         <View
-                                            className="rounded-full bg-[#E8DDD3]/65"
+                                            className="rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                                                 height: verticalScale(0.7),
                                                 marginVertical: verticalScale(12),
                                                 marginHorizontal: verticalScale(2)
@@ -1964,15 +2088,21 @@ export default function CheckoutScreen() {
         
                                         <View className="flex-row justify-between items-center">
                                             <Text
-                                                className="text-[#1F1F1F]/85 font-extrabold"
-                                                style={{ fontSize: moderateScale(15) }}
+                                                className="font-extrabold"
+                                                style={{
+                                                    fontSize: moderateScale(15),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                                }}
                                             >
                                                 Grand Total
                                             </Text>
         
                                             <Text
-                                                className="text-[#1F1F1F] font-black tracking-wide"
-                                                style={{ fontSize: moderateScale(16) }}
+                                                className="font-black tracking-wide"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 ₹{grandTotal.toLocaleString("en-IN")}
                                             </Text>
@@ -1994,14 +2124,15 @@ export default function CheckoutScreen() {
                                 borderTopLeftRadius: moderateScale(22),
                                 zIndex: 100,
                                 backgroundColor: canPlaceOrder
-                                    ? "#3F2516"
-                                    : "#4D4D4D"
+                                    ? COLORS.primaryColor
+                                    : COLORS.inactiveContentColor
                             }}
                         >
                             <View className="items-start gap-1 ml-4">
                                 <Text
-                                    className="text-[#FFFFFF]/75 font-normal"
+                                    className="font-normal"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                         fontSize: moderateScale(14)
                                     }}
                                 >
@@ -2009,8 +2140,9 @@ export default function CheckoutScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#FFFFFF] font-extrabold"
+                                    className="font-extrabold"
                                     style={{
+                                        color: COLORS.primaryBackgroundColor,
                                         fontSize: moderateScale(18)
                                     }}
                                 >
@@ -2032,10 +2164,10 @@ export default function CheckoutScreen() {
                                     paddingVertical: verticalScale(9),
 
                                     backgroundColor: canPlaceOrder
-                                        ? "#FFFFFF"
-                                        : "#D1D1D1",
+                                        ? COLORS.primaryBackgroundColor
+                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
 
-                                    borderColor: "rgba(31,31,31,0.15)"
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.15)
                                 }}
                             >
                                 {isPaymentProcessing ? (
@@ -2050,21 +2182,20 @@ export default function CheckoutScreen() {
                                                     ]
                                                 })
                                         }
-                                        exiting={
-                                            FadeOutUp.duration(250)
-                                        }
+                                        exiting={FadeOutUp.duration(250)}
                                         className="flex-row items-center"
                                     >
                                         <Text
                                             className="font-semibold"
                                             style={{
                                                 fontSize: moderateScale(13),
-                                                color: "#3F2516"
+                                                color: COLORS.primaryColor
                                             }}
                                         >
                                             {verifyingPayment
                                                 ? "Verifying"
-                                                : "Processing"}
+                                                : "Processing"
+                                            }
                                         </Text>
 
                                         <LoadingDots />
@@ -2076,8 +2207,8 @@ export default function CheckoutScreen() {
                                             style={{
                                                 fontSize: moderateScale(14),
                                                 color: canPlaceOrder
-                                                    ? "#3F2516"
-                                                    : "#777777"
+                                                    ? COLORS.primaryColor
+                                                    : COLORS.inactiveContentColor
                                             }}
                                         >
                                             {!selectedCart.isOpen
@@ -2086,14 +2217,15 @@ export default function CheckoutScreen() {
                                                 ? "Items Unavailable"
                                                 : !selectedPayment
                                                 ? "Select Payment"
-                                                : "Place Order"}
+                                                : "Place Order"
+                                            }
                                         </Text>
 
                                         {canPlaceOrder && (
                                             <ArrowRight
                                                 width={moderateScale(18)}
                                                 height={moderateScale(18)}
-                                                color="#3F2516"
+                                                color={COLORS.primaryColor}
                                                 strokeWidth={2}
                                                 style={{ marginRight: -moderateScale(8) }}
                                             />

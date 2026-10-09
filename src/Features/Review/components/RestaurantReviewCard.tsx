@@ -3,6 +3,8 @@ import QuoteIcon from '@/assets/icon/QuoteIcon.svg'
 import ThumbsUpFilled from '@/assets/icon/ThumbsUpFilled.svg'
 import ThumbsUpOutline from '@/assets/icon/ThumbsUpOutline.svg'
 import RatingStars from "@/components/RatingStars"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import React, { useState } from "react"
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
@@ -28,13 +30,20 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
 
     return (
         <View
-            className="p-4 bg-[#FAFAFA] border-[#1F1F1F]/10 mb-5 mx-2"
-            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.7) }}
+            className="p-4 mb-5 mx-2"
+            style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                borderRadius: moderateScale(18),
+                borderWidth: moderateScale(0.5)
+            }}
         >
             <View className="flex-row gap-3 items-center">
                 <View
-                    className="items-center overflow-hidden justify-center self-start rounded-full border border-[#FFFFFF]"
+                    className="items-center overflow-hidden justify-center self-start rounded-full"
                     style={{
+                        borderColor: COLORS.primaryBackgroundColor,
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(46),
                         height: moderateScale(46)
                     }}
@@ -57,8 +66,9 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                 <View className="items-center">
                     <Text
                         numberOfLines={1}
-                        className="text-[#1F1F1F] font-bold"
+                        className="font-bold"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(14),
                             marginBottom: moderateScale(6)
                         }}
@@ -67,16 +77,20 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                     </Text>
 
                     <View
-                        className="self-start flex-row items-center bg-[#F8D56A]"
+                        className="self-start flex-row items-center"
                         style={{
+                            backgroundColor: COLORS.accentLightColor,
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
-                            className="font-semibold text-[#3F2516] uppercase"
-                            style={{ fontSize: moderateScale(8.5) }}
+                            className="font-semibold uppercase"
+                            style={{
+                                fontSize: moderateScale(8.5),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             {review.badge}
                         </Text>
@@ -92,8 +106,11 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                     </View>
 
                     <Text
-                        className="text-[#1F1F1F] font-semibold"
-                        style={{ fontSize: moderateScale(10.5) }}
+                        className="font-medium"
+                        style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                            fontSize: moderateScale(10.5)
+                        }}
                     >
                         {review.date}
                     </Text>
@@ -101,8 +118,9 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
             </View>
 
             <Text
-                className="text-[#1F1F1F]/65 mx-4 font-medium"
+                className="mx-4 font-medium"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                     fontSize: moderateScale(12),
                     marginTop: verticalScale(12),
                     lineHeight: moderateScale(14)
@@ -138,8 +156,9 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
             )}
 
             <View
-                className="rounded-full bg-[#E8DDD3]/85 mx-3"
+                className="rounded-full mx-3"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                     height: verticalScale(0.7),
                     marginVertical: verticalScale(12)
                 }}
@@ -149,22 +168,26 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => setIsHelpful((prev) => !prev)}
-                    className="flex-row justify-center gap-1 items-center bg-[#E8B93F]/20"
+                    className="flex-row justify-center gap-1 items-center"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                         paddingHorizontal: moderateScale(7),
                         paddingVertical: moderateScale(3.5),
                         borderRadius: moderateScale(14)
                     }}
                 >
                     {isHelpful ? (
-                        <ThumbsUpFilled width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                        <ThumbsUpFilled width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                     ) : (
-                        <ThumbsUpOutline width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                        <ThumbsUpOutline width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                     )}
 
                     <Text
-                        className="text-[#3F2516] font-semibold"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-semibold"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.secondaryColor
+                        }}
                     >
                         Helpful ({isHelpful ? 25 : 24})
                     </Text>
@@ -174,8 +197,11 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                     onPress={() => {}}
                 >
                     <Text
-                        className="text-[#3F2516] font-semibold"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-semibold"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: COLORS.primaryColor
+                        }}
                     >
                         Report
                     </Text>
@@ -183,30 +209,37 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
             </View>
 
             <View
-                className="items-center justify-center p-4 bg-[#E8B93F]/10"
+                className="items-center justify-center p-4"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
                     borderRadius: moderateScale(18),
                     marginTop: verticalScale(12),
                     marginLeft: scale(12),
                     borderLeftWidth: 2.5,
-                    borderLeftColor: "#3F2516"
+                    borderLeftColor: COLORS.primaryColor
                 }}
             >
                 <View className="items-center self-start flex-row gap-2">
-                    <CommentIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                    <CommentIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
 
                     <Text
                         numberOfLines={1}
-                        className="text-[#3F2516] font-bold"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         The Burger King
                     </Text>
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium mt-3"
-                    style={{ fontSize: moderateScale(10.5)}}
+                    className="font-medium mt-3"
+                    style={{
+                        fontSize: moderateScale(10.5),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                    }}
                 >
                     Thank you for your kind words,
                     Alexander! We take great pride in
@@ -218,8 +251,9 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
 
             <View className="flex-row gap-3 items-center justify-center mt-3">
                 <View
-                    className="rounded-full bg-[#E8DDD3]/85"
+                    className="rounded-full"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: verticalScale(0.7),
                         width: moderateScale(95),
                         marginVertical: verticalScale(8)
@@ -227,18 +261,20 @@ const RestaurantReviewCard = ({ review }: RestaurantReviewCardProps) => {
                 />
 
                 <View
-                    className="rounded-full bg-[#E8B93F]/20 items-center justify-center"
+                    className="rounded-full items-center justify-center"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                         width: moderateScale(20),
                         height: moderateScale(20)
                     }}
                 >
-                    <QuoteIcon width={moderateScale(14)} height={moderateScale(14)} color="#3F2516" />
+                    <QuoteIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.secondaryColor} />
                 </View>
 
                 <View
-                    className="rounded-full bg-[#E8DDD3]/85"
+                    className="rounded-full"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: verticalScale(0.7),
                         width: moderateScale(95),
                         marginVertical: verticalScale(8)

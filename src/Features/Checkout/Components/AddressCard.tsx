@@ -1,10 +1,12 @@
-import CallIcon from '@/assets/icon/CallOutlineIcon.svg'
+import CallIcon from '@/assets/icon/CallFilledIcon.svg'
 import EditIcon from "@/assets/icon/EditIcon.svg"
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { Address } from '@/Services/address-service'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { FadeInLeft, FadeInRight, FadeOutLeft, FadeOutRight } from "react-native-reanimated"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -57,8 +59,10 @@ const AddressCard = ({
         <AnimatedTouchableOpacity
             activeOpacity={0.95}
             onPress={onPress}
-            className="p-4 flex-row gap-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
+            className="p-4 flex-row gap-3"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 marginTop: verticalScale(8),
                 borderRadius: moderateScale(20)
@@ -69,10 +73,10 @@ const AddressCard = ({
                 style={{
                     width: moderateScale(44),
                     height: moderateScale(44),
-                    backgroundColor: "rgba(232,185,63,0.15)"
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
                 }}
             >
-                <Icon width={moderateScale(21)} height={moderateScale(21)} color={"#3F2516"} strokeWidth={1.5} />
+                <Icon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.primaryColor} strokeWidth={1.5} />
             </View>
 
             <View
@@ -88,8 +92,11 @@ const AddressCard = ({
                 >
                     <Text
                         numberOfLines={1}
-                        className="text-[#1F1F1F] font-bold tracking-wide"
-                        style={{ fontSize: moderateScale(14) }}
+                        className="font-bold tracking-wide"
+                        style={{
+                            fontSize: moderateScale(14),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {item.label}
                     </Text>
@@ -98,16 +105,19 @@ const AddressCard = ({
                         <Animated.View
                             entering={FadeInLeft.duration(280)}
                             exiting={FadeOutLeft.duration(230)}
-                            className='bg-[#E3F2E8]'
                             style={{
+                                backgroundColor: COLORS.activeStatusBackgroundColor,
                                 borderRadius: moderateScale(7),
                                 paddingHorizontal: scale(7),
                                 paddingVertical: verticalScale(3)
                             }}
                         >
                             <Text   
-                                className="text-[#20bb59] font-medium"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.activeStatusTextColor
+                                }}
                             >
                                 Selected
                             </Text>
@@ -117,8 +127,9 @@ const AddressCard = ({
 
                 <Text
                     numberOfLines={1}
-                    className="font-semibold text-[#1F1F1F]"
+                    className="font-semibold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(13),
                         marginTop: verticalScale(5)
                     }}
@@ -127,9 +138,10 @@ const AddressCard = ({
                 </Text>
 
                 <Text
-                    className="font-medium text-[#1F1F1F]/65"
+                    className="font-medium"
                     style={{
-                        fontSize: moderateScale(12),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                        fontSize: moderateScale(11.5),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(5),
                         width: "100%"
@@ -139,12 +151,15 @@ const AddressCard = ({
                 </Text>
 
                 <View className="flex-row gap-1 items-center mt-2">
-                    <CallIcon width={moderateScale(14)} height={moderateScale(14)} color="#1F1F1F" strokeWidth={1.8} />
+                    <CallIcon width={moderateScale(15)} height={moderateScale(15)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
 
                     <Text
                         numberOfLines={1}
-                        className="font-normal text-[#1F1F1F]"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-normal"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {item.receiver_phone}
                     </Text>
@@ -168,18 +183,22 @@ const AddressCard = ({
 
                             onEdit()
                         }}
-                        className="flex-row items-center justify-center gap-2 bg-[#3F2516]"
+                        className="flex-row items-center justify-center gap-2"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             paddingHorizontal: moderateScale(12),
                             paddingVertical: moderateScale(7),
                             borderRadius: moderateScale(14)
                         }}
                     >
-                        <EditIcon width={moderateScale(12)} height={moderateScale(12)} color="#FFFFFF" strokeWidth={1.8} />
+                        <EditIcon width={moderateScale(12)} height={moderateScale(12)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-[#FFFFFF] font-medium tracking-wider"
-                            style={{ fontSize: moderateScale(10) }}
+                            className="font-medium tracking-wider"
+                            style={{
+                                fontSize: moderateScale(10),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Edit
                         </Text>

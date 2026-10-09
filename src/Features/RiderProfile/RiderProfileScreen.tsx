@@ -15,19 +15,20 @@ import CheckCircleIcon from '@/assets/icon/SuccessIcon2.svg'
 import ThunderIcon from '@/assets/icon/ThunderIconFilled.svg'
 import VerifiedIcon from '@/assets/icon/VerifiedIcon.svg'
 import WarningFilledIcon from '@/assets/icon/WarningFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { deliveryReviews } from '@/constant/DeliveryReviewData'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
 import { useCallback, useState } from 'react'
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import DeliveryReviewCard from './Components/DeliveryReviewCard'
 
 const languages = ["Hindi", "English", "Gujarati"]
 
 export default function RiderProfileScreen() {
-    const insets = useSafeAreaInsets()
     const { width: SCREEN_WIDTH } = useWindowDimensions()
     const horizontalPadding = scale(42)
     const gap = scale(12)
@@ -48,10 +49,13 @@ export default function RiderProfileScreen() {
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -67,30 +71,38 @@ export default function RiderProfileScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Delivery Partner
                     </Text>
 
                     <View className='flex-row gap-1 items-center'>
-                        <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color={"#3F2516"} />
+                        <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
 
                         <Text
-                            className="text-[#5c4639] font-medium"
-                            style={{ fontSize: moderateScale(10) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(10),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             VERIFIED PREMIUM FEATURE
                         </Text>
@@ -115,13 +127,14 @@ export default function RiderProfileScreen() {
                 ListHeaderComponent={
                     <View>
                         <View
-                            className='bg-[#3F2516] p-4'
+                            className='p-4'
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(20),
                                 marginTop: verticalScale(4)
                             }}
                         >
-                            <View className='flex-row gap-3 items-center'>
+                            <View className='flex-row gap-3 items-center mb-2'>
                                 <View className="relative self-start">
                                     <Image
                                         source={require("@/assets/images/profile-placeholder.jpg")}
@@ -132,16 +145,19 @@ export default function RiderProfileScreen() {
                                             height: moderateScale(58),
                                             borderRadius: moderateScale(12),
                                             borderWidth: 1,
-                                            borderColor: "#E8B93F"
+                                            borderColor: COLORS.accentLightColor
                                         }}
                                     />
 
                                     <View
-                                        className={`absolute border border-[#FFFFFF] items-center justify-center ${
-                                            isOnline ? "bg-[#22A06B]" : "bg-[#7A7D81]"
-                                        }`}
+                                        className="absolute items-center justify-center"
                                         style={{
+                                            borderColor: COLORS.primaryBackgroundColor,
+                                            backgroundColor: isOnline
+                                                ? COLORS.activeStatusTextColor
+                                                : COLORS.neutralSurfaceColor,
                                             bottom: verticalScale(-5),
+                                            borderWidth: moderateScale(1),
                                             alignSelf: "center",
                                             paddingHorizontal: scale(7),
                                             paddingVertical: verticalScale(2),
@@ -149,8 +165,11 @@ export default function RiderProfileScreen() {
                                         }}
                                     >
                                         <Text
-                                            className="text-[#FFFFFF] font-bold"
-                                            style={{ fontSize: moderateScale(7) }}
+                                            className="font-bold"
+                                            style={{
+                                                fontSize: moderateScale(7),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             {isOnline ? "ONLINE" : "OFFLINE"}
                                         </Text>
@@ -160,47 +179,60 @@ export default function RiderProfileScreen() {
                                 <View className='justify-center items-start'>
                                     <View className='flex-row gap-1 justify-center items-center'>
                                         <Text
-                                            className='text-[#FFFFFF] font-bold'
-                                            style={{ fontSize: moderateScale(16) }}
+                                            className='font-bold'
+                                            style={{
+                                                fontSize: moderateScale(16),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             Rahul Sharma
                                         </Text>
 
-                                        <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} />
+                                        <VerifiedIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} />
                                     </View>
 
                                     <View className='flex-row gap-3 mt-2'>
                                         <View
-                                            className="flex-row gap-1 items-center bg-[#F8D56A] self-start"
+                                            className="flex-row gap-1 items-center self-start"
                                             style={{
+                                                backgroundColor: COLORS.accentLightColor,
                                                 paddingHorizontal: moderateScale(6),
                                                 paddingVertical: moderateScale(3),
                                                 borderRadius: moderateScale(12)
                                             }}
                                         >
-                                            <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
+                                            <RatingIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryColor} />
 
                                             <Text
-                                                className="font-bold text-[#5c4639]"
-                                                style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                                                className="font-bold"
+                                                style={{
+                                                    color: COLORS.primaryColor,
+                                                    fontSize: moderateScale(10),
+                                                    marginRight: moderateScale(2)
+                                                }}
                                             >
                                                 4.9
                                             </Text>
                                         </View>
 
                                         <View
-                                            className="flex-row gap-1 items-center bg-[#F8D56A] self-start"
+                                            className="flex-row gap-1 items-center self-start"
                                             style={{
+                                                backgroundColor: COLORS.accentLightColor,
                                                 paddingHorizontal: moderateScale(6),
                                                 paddingVertical: moderateScale(3),
                                                 borderRadius: moderateScale(12)
                                             }}
                                         >
-                                            <CrownIcon width={moderateScale(14)} height={moderateScale(14)} color="#5c4639" />
+                                            <CrownIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.primaryColor} />
 
                                             <Text
-                                                className="font-bold text-[#5c4639]"
-                                                style={{ fontSize: moderateScale(11), marginRight: moderateScale(2) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    marginRight: moderateScale(2),
+                                                    color: COLORS.primaryColor
+                                                }}
                                             >
                                                 Elite Partner
                                             </Text>
@@ -210,11 +242,12 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className="rounded-full bg-[#E8DDD3]/40 mt-4"
+                                className="rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.borderColor, 0.2),
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(8),
-                                    marginHorizontal: verticalScale(2)
+                                    marginHorizontal: verticalScale(6)
                                 }}
                             />
 
@@ -222,26 +255,33 @@ export default function RiderProfileScreen() {
                                 <View className="gap-4 flex-1 ml-2">
                                     <View className="flex-row items-center gap-2">
                                         <View
-                                            className="items-center justify-center rounded-full bg-[#FFFFFF]/15"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                                 width: moderateScale(34),
                                                 height: moderateScale(34)
                                             }}
                                         >
-                                            <ClipboardIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+                                            <ClipboardIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} />
                                         </View>
 
                                         <View className="justify-center">
                                             <Text
-                                                className="text-[#FFFFFF]/75 font-normal uppercase"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-normal uppercase"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                                }}
                                             >
                                                 Delivered
                                             </Text>
 
                                             <Text
-                                                className="text-[#FFFFFF] font-bold"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 8,452
                                             </Text>
@@ -250,26 +290,33 @@ export default function RiderProfileScreen() {
 
                                     <View className="flex-row items-center gap-2">
                                         <View
-                                            className="items-center justify-center rounded-full bg-[#FFFFFF]/15"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                                 width: moderateScale(34),
                                                 height: moderateScale(34)
                                             }}
                                         >
-                                            <StarIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+                                            <StarIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} />
                                         </View>
 
                                         <View className="justify-center">
                                             <Text
-                                                className="text-[#FFFFFF]/75 font-normal uppercase"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-normal uppercase"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                                }}
                                             >
                                                 Experience
                                             </Text>
 
                                             <Text
-                                                className="text-[#FFFFFF] font-bold"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 4 Years
                                             </Text>
@@ -280,26 +327,33 @@ export default function RiderProfileScreen() {
                                 <View className="gap-4 mr-4">
                                     <View className="flex-row items-center gap-2">
                                         <View
-                                            className="items-center justify-center rounded-full bg-[#FFFFFF]/15"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                                 width: moderateScale(34),
                                                 height: moderateScale(34)
                                             }}
                                         >
-                                            <ClockIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.5} />
+                                            <ClockIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
                                         </View>
 
                                         <View className="justify-center">
                                             <Text
-                                                className="text-[#FFFFFF]/75 font-normal uppercase"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-normal uppercase"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                                }}
                                             >
                                                 Response
                                             </Text>
 
                                             <Text
-                                                className="text-[#FFFFFF] font-bold"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 25s
                                             </Text>
@@ -308,26 +362,33 @@ export default function RiderProfileScreen() {
 
                                     <View className="flex-row items-center gap-2">
                                         <View
-                                            className="items-center justify-center rounded-full bg-[#FFFFFF]/15"
+                                            className="items-center justify-center rounded-full"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                                 width: moderateScale(34),
                                                 height: moderateScale(34)
                                             }}
                                         >
-                                            <CheckCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.5} />
+                                            <CheckCircleIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.5} />
                                         </View>
 
                                         <View className="justify-center">
                                             <Text
-                                                className="text-[#FFFFFF]/75 font-normal uppercase"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-normal uppercase"
+                                                style={{
+                                                    fontSize: moderateScale(10),
+                                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                                }}
                                             >
                                                 On Time
                                             </Text>
 
                                             <Text
-                                                className="text-[#FFFFFF] font-bold"
-                                                style={{ fontSize: moderateScale(12) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryBackgroundColor
+                                                }}
                                             >
                                                 99%
                                             </Text>
@@ -344,38 +405,55 @@ export default function RiderProfileScreen() {
                         /> */}
 
                         <View
-                            className='p-3 bg-[#FAFAFA] border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16), borderWidth: moderateScale(0.5) }}
+                            className='p-3'
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                marginTop: verticalScale(16),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
-                                    className="rounded-full items-center justify-center bg-[#E8B93F]/20"
+                                    className="rounded-full items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <VehicleIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} />
+                                    <VehicleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <View className='justify-center'>
                                     <Text
-                                        className='text-[#1F1F1F]/85 font-medium uppercase'
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className='font-medium uppercase'
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                                        }}
                                     >
                                         Vehicle
                                     </Text>
 
                                     <Text
-                                        className='text-[#1F1F1F] font-bold mt-1'
-                                        style={{ fontSize: moderateScale(13) }}
+                                        className='font-bold mt-1'
+                                        style={{
+                                            fontSize: moderateScale(13),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Honda Activa 125
                                     </Text>
 
                                     <Text
-                                        className='text-[#5c4639] font-medium'
-                                        style={{ fontSize: moderateScale(12), marginTop: moderateScale(2) }}
+                                        className='font-medium'
+                                        style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                                            fontSize: moderateScale(11),
+                                            marginTop: moderateScale(2)
+                                        }}
                                     >
                                         RJ14 AB 4587
                                     </Text>
@@ -384,8 +462,9 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className="rounded-full bg-[#E8DDD3]/55"
+                                className="rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(8),
                                     marginHorizontal: verticalScale(8)
@@ -393,8 +472,11 @@ export default function RiderProfileScreen() {
                             />
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium uppercase ml-2'
-                                style={{ fontSize: moderateScale(12) }}
+                                className='font-medium uppercase ml-2'
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 fluent in
                             </Text>
@@ -406,17 +488,19 @@ export default function RiderProfileScreen() {
                                 {languages.map((language) => (
                                     <View
                                         key={language}
-                                        className="items-center justify-center bg-[#E5E4E2]/55"
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.55),
                                             paddingHorizontal: scale(12),
                                             paddingVertical: verticalScale(4),
                                             borderRadius: moderateScale(18),
                                         }}
                                     >
                                         <Text
-                                            className="text-[#1F1F1F] font-medium"
+                                            className="font-medium"
                                             style={{
-                                                fontSize: moderateScale(12),
+                                                color: COLORS.primaryTextColor,
+                                                fontSize: moderateScale(12)
                                             }}
                                         >
                                             {language}
@@ -431,8 +515,11 @@ export default function RiderProfileScreen() {
                             style={{ marginTop: verticalScale(18) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    color: COLORS.primaryTextColor,
+                                    fontSize: moderateScale(15)
+                                }}
                             >
                                 Achievements
                             </Text>
@@ -463,8 +550,10 @@ export default function RiderProfileScreen() {
                             }}
                         >
                             <View
-                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4'
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
@@ -472,18 +561,20 @@ export default function RiderProfileScreen() {
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center bg-[#F8D56A] rounded-full"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         width: moderateScale(42),
                                         height: moderateScale(42)
                                     }}
                                 >
-                                    <MedalIcon width={moderateScale(22)} height={moderateScale(22)} color="#5c4639" />
+                                    <MedalIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold text-center'
+                                    className='font-semibold text-center'
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(12),
                                         marginTop: verticalScale(8)
                                     }}
@@ -493,8 +584,10 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4'
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
@@ -502,18 +595,20 @@ export default function RiderProfileScreen() {
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center bg-[#F8D56A] rounded-full"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         width: moderateScale(42),
                                         height: moderateScale(42)
                                     }}
                                 >
-                                    <ThunderIcon width={moderateScale(22)} height={moderateScale(22)} color="#5c4639" />
+                                    <ThunderIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold text-center'
+                                    className='font-semibold text-center'
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(12),
                                         marginTop: verticalScale(8)
                                     }}
@@ -523,8 +618,10 @@ export default function RiderProfileScreen() {
                             </View>
 
                             <View
-                                className='items-center justify-center px-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
+                                className='items-center justify-center px-4'
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     borderRadius: moderateScale(18),
                                     width: moderateScale(100),
@@ -532,18 +629,20 @@ export default function RiderProfileScreen() {
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center bg-[#F8D56A] rounded-full"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         width: moderateScale(42),
                                         height: moderateScale(42)
                                     }}
                                 >
-                                    <CircleStarIcon width={moderateScale(26)} height={moderateScale(26)} color="#5c4639" />
+                                    <CircleStarIcon width={moderateScale(26)} height={moderateScale(26)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold text-center'
+                                    className='font-semibold text-center'
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(12),
                                         marginTop: verticalScale(8)
                                     }}
@@ -554,69 +653,96 @@ export default function RiderProfileScreen() {
                         </ScrollView>
 
                         <View
-                            className='p-4 bg-[#FAFAFA] border-[#1F1F1F]/10'
-                            style={{ borderRadius: moderateScale(18), marginTop: verticalScale(16), borderWidth: moderateScale(0.5) }}
+                            className='p-4'
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                marginTop: verticalScale(16),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row gap-1 items-center'>
-                                <VerifyIcon width={moderateScale(18)} height={moderateScale(18)} color={"#5c4639"} />
+                                <VerifyIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className='text-[#5c4639] font-semibold'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className='font-semibold'
+                                    style={{
+                                        color: COLORS.primaryColor,
+                                        fontSize: moderateScale(12)
+                                    }}
                                 >
                                     Brothers Safety Seal
                                 </Text>
                             </View>
 
                             <View className='flex-row gap-2 items-center mt-3'>
-                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={"#4d9151"} strokeWidth={1.8} />
+                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.activeStatusTextColor} strokeWidth={1.8} />
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold flex-1'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold flex-1'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Government Verified Identity
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium'
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className='font-medium'
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     ID: 884X-XXXX
                                 </Text>
                             </View>
 
                             <View className='flex-row gap-2 items-center mt-3'>
-                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={"#4d9151"} strokeWidth={1.8} />
+                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.activeStatusTextColor} strokeWidth={1.8} />
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold flex-1'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold flex-1'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Background Checked
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium'
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className='font-medium'
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Clear
                                 </Text>
                             </View>
 
                             <View className='flex-row gap-2 items-center mt-3'>
-                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={"#4d9151"} strokeWidth={1.8} />
+                                <CheckCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.activeStatusTextColor} strokeWidth={1.8} />
 
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold flex-1'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold flex-1'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Masked Number Protocol
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium'
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className='font-medium'
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Active
                                 </Text>
@@ -628,15 +754,21 @@ export default function RiderProfileScreen() {
                             style={{ marginTop: verticalScale(18) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Customer Feed
                             </Text>
 
                             <Text
-                                className="text-[#3F2516] font-bold"
-                                style={{ fontSize: moderateScale(12) }}
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: COLORS.primaryColor
+                                }}
                             >
                                 98% Satisfaction
                             </Text>
@@ -648,18 +780,22 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#3F2516] items-center justify-center py-4 px-5 gap-2"
+                            className="items-center justify-center py-4 px-5 gap-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <CallFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={"#FFFFFF"} />
+                            <CallFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryBackgroundColor} />
 
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Call
                             </Text>
@@ -668,19 +804,24 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                            className="items-center justify-center py-4 px-5 gap-2"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <ChatFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} />
+                            <ChatFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} />
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Chat
                             </Text>
@@ -689,19 +830,24 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                            className="items-center justify-center py-4 px-5 gap-2"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <ShareFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} />
+                            <ShareFilledIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} />
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Share
                             </Text>
@@ -710,18 +856,22 @@ export default function RiderProfileScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="bg-[#FEE2E2] items-center justify-center border border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                            className="items-center justify-center py-4 px-5 gap-2"
                             style={{
+                                backgroundColor: COLORS.dangerBackgroundColor,
                                 width: cardWidth,
                                 height: moderateScale(75),
                                 borderRadius: moderateScale(20)
                             }}
                         >
-                            <WarningFilledIcon width={moderateScale(26)} height={moderateScale(26)} color={"#DC2626"} />
+                            <WarningFilledIcon width={moderateScale(26)} height={moderateScale(26)} color={COLORS.dangerTextColor} />
 
                             <Text
-                                className="text-[#DC2626] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.dangerTextColor
+                                }}
                             >
                                 SOS
                             </Text>

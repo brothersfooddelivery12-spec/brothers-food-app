@@ -1,6 +1,8 @@
 import MinusIcon from '@/assets/icon/MinusSignIcon.svg'
 import PlusIcon from '@/assets/icon/PlusIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { CartItem } from '@/Stores/useCartStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import { memo, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -50,7 +52,7 @@ const CartItemRow = memo(
                             height: moderateScale(68),
                             borderRadius: moderateScale(14),
                             borderWidth: !hasImage && !isUnavailable ? 0.7 : 0,
-                            borderColor: "rgba(31,31,31,0.08)"
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                         }}
                     >
                         <Image
@@ -78,7 +80,7 @@ const CartItemRow = memo(
                             <View
                                 pointerEvents="none"
                                 className="absolute inset-0"
-                                style={{ backgroundColor: "rgba(31,31,31,0.30)" }}
+                                style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                             />
                         )}
 
@@ -91,12 +93,15 @@ const CartItemRow = memo(
                                     bottom: moderateScale(4),
                                     paddingVertical: verticalScale(3.5),
                                     borderRadius: moderateScale(12),
-                                    backgroundColor: "rgba(31,31,31,0.82)"
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.82)
                                 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF] font-bold uppercase"
-                                    style={{ fontSize: moderateScale(6.5) }}
+                                    className="font-bold uppercase"
+                                    style={{
+                                        fontSize: moderateScale(6.5),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     Unavailable
                                 </Text>
@@ -110,7 +115,7 @@ const CartItemRow = memo(
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(14),
-                                color: isUnavailable ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                                color: isUnavailable ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                             }}
                         >
                             {item.name}
@@ -123,8 +128,8 @@ const CartItemRow = memo(
                                 style={{
                                     fontSize: moderateScale(10),
                                     color: isUnavailable
-                                        ? "rgba(31,31,31,0.35)"
-                                        : "rgba(31,31,31,0.65)"
+                                        ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.65)
                                 }}
                             >
                                 {item.description}
@@ -160,17 +165,16 @@ const CartItemRow = memo(
                                         borderRadius: moderateScale(10),
                                         width: moderateScale(24),
                                         height: moderateScale(24),
-                                        backgroundColor:
-                                            isUnavailable
-                                                ? "rgba(31,31,31,0.07)"
-                                                : "rgba(232,185,63,0.15)"
+                                        backgroundColor: isUnavailable
+                                            ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                            : hexToRgba(COLORS.accentColor, 0.15)
                                     }}
                                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
                                     <MinusIcon
                                         width={moderateScale(12)}
                                         height={moderateScale(12)}
-                                        color={isUnavailable ? "#777777" : "#5C4639"}
+                                        color={isUnavailable ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                                         strokeWidth={2.5}
                                     />
                                 </TouchableOpacity>
@@ -179,7 +183,7 @@ const CartItemRow = memo(
                                     className="font-extrabold"
                                     style={{
                                         fontSize: moderateScale(12),
-                                        color: isUnavailable ? "#777777" : "#1F1F1F"
+                                        color: isUnavailable ? COLORS.inactiveContentColor : COLORS.primaryTextColor
                                     }}
                                 >
                                     {item.quantity}
@@ -194,34 +198,37 @@ const CartItemRow = memo(
                                         borderRadius: moderateScale(10),
                                         width: moderateScale(24),
                                         height: moderateScale(24),
-                                        opacity: isUnavailable ? 0.35 : 1,
-                                        backgroundColor:
-                                            isUnavailable
-                                                ? "rgba(31,31,31,0.07)"
-                                                : "rgba(232,185,63,0.15)"
+                                        opacity: isUnavailable ? 0.55 : 1,
+                                        backgroundColor: isUnavailable
+                                            ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                            : hexToRgba(COLORS.accentColor, 0.15)
                                     }}
                                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
                                     <PlusIcon
                                         width={moderateScale(12)}
                                         height={moderateScale(12)}
-                                        color={isUnavailable ? "#777777" : "#5C4639"}
+                                        color={isUnavailable ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                                         strokeWidth={2.5}
                                     />
                                 </TouchableOpacity>
                             </View>
                         ) : (
                             <View
-                                className="mt-1 bg-[#E8B93F]/15"
+                                className="mt-"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     paddingHorizontal: scale(10),
                                     paddingVertical: verticalScale(3),
                                     borderRadius: moderateScale(10)
                                 }}
                             >
                                 <Text
-                                    className="text-[#5C4639] font-semibold tracking-wide"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-semibold tracking-wide"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: COLORS.secondaryColor
+                                    }}
                                 >
                                     Qty: {item.quantity}
                                 </Text>
@@ -236,12 +243,15 @@ const CartItemRow = memo(
                                 paddingHorizontal: moderateScale(10),
                                 paddingVertical: moderateScale(5),
                                 borderRadius: moderateScale(10),
-                                backgroundColor: isUnavailable ? "#B8B8B8" : "#3F2516"
+                                backgroundColor: isUnavailable ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                             }}
                         >
                             <Text
-                                className="font-medium text-[#FFFFFF]"
-                                style={{ fontSize: moderateScale(11) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: isUnavailable ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor
+                                }}
                             >
                                 ₹{item.price}
                             </Text>
@@ -251,16 +261,20 @@ const CartItemRow = memo(
                             <TouchableOpacity
                                 activeOpacity={0.95}
                                 onPress={onRemove}
-                                className="items-center justify-center bg-[#FEE2E2]"
+                                className="items-center justify-center"
                                 style={{
+                                    backgroundColor: COLORS.dangerBackgroundColor,
                                     paddingHorizontal: scale(7),
                                     paddingVertical: verticalScale(4),
                                     borderRadius: moderateScale(12)
                                 }}
                             >
                                 <Text
-                                    className="text-[#DC2626] font-semibold uppercase"
-                                    style={{ fontSize: moderateScale(9) }}
+                                    className="font-semibold uppercase"
+                                    style={{
+                                        fontSize: moderateScale(9),
+                                        color: COLORS.dangerTextColor
+                                    }}
                                 >
                                     Remove
                                 </Text>

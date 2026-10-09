@@ -1,4 +1,6 @@
 import CircleStarIcon from "@/assets/icon/CircleStarIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
@@ -34,8 +36,10 @@ export default function LoyaltyProgress({
 
     return (
         <View
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 mx-2"
+            className="mx-2"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 paddingHorizontal: scale(14),
@@ -46,23 +50,30 @@ export default function LoyaltyProgress({
         >
             <View className="flex-row items-start justify-between">
                 <Text
-                    className="text-[#1F1F1F] font-bold"
-                    style={{ fontSize: moderateScale(14) }}
+                    className="font-bold"
+                    style={{
+                        fontSize: moderateScale(14),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Loyalty Progress
                 </Text>
 
                 <View className="items-end">
                     <Text
-                        className="text-[#D9A000] font-bold"
-                        style={{ fontSize: moderateScale(15) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(15),
+                            color: COLORS.accentColor
+                        }}
                     >
                         {remainingPoints} pts
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                             fontSize: moderateScale(10),
                             marginTop: verticalScale(1)
                         }}
@@ -80,16 +91,18 @@ export default function LoyaltyProgress({
                 }}
             >
                 <View
-                    className="absolute w-full bg-[#1F1F1F]/10"
+                    className="absolute w-full"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         height: moderateScale(6),
                         borderRadius: moderateScale(18)
                     }}
                 />
 
                 <View
-                    className="absolute bg-[#E0A400]"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.accentColor,
                         width: `${safeProgress}%`,
                         height: moderateScale(6),
                         borderRadius: moderateScale(18)
@@ -97,8 +110,11 @@ export default function LoyaltyProgress({
                 />
 
                 <View
-                    className="absolute bg-[#E0A400] border border-white"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.accentColor,
+                        borderColor: COLORS.primaryBackgroundColor,
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(14),
                         height: moderateScale(14),
                         borderRadius: moderateScale(14),
@@ -119,18 +135,24 @@ export default function LoyaltyProgress({
                 style={{ marginTop: verticalScale(8) }}
             >
                 <View className="flex-row items-center">
-                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="#D9A000" />
+                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.accentColor} />
 
                     <Text
-                        className="text-[#1F1F1F] font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
-                        {currentTier}
+                        {currentTier}{" "}
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(9.5) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(9.5),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         ({currentTierPoints.toLocaleString()})
                     </Text>
@@ -140,15 +162,21 @@ export default function LoyaltyProgress({
                     <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="#B889E8" />
 
                     <Text
-                        className="text-[#1F1F1F] font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
-                        {nextTier}
+                        {nextTier}{" "}
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(9.5) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(9.5),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         ({nextTierPoints.toLocaleString()})
                     </Text>

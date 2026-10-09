@@ -1,12 +1,14 @@
 import RefreshIcon from '@/assets/icon/RefreshIcon.svg'
 import GradientButton from "@/components/GradientButton"
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { LinearGradient } from "expo-linear-gradient"
 import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useRef, useState } from "react"
 import { Animated, ImageBackground, Keyboard, Pressable, StatusBar, Text, TextInput, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { sendOtp, verifyOtp } from "../../Services/api-service"
 import { hideLoader, showLoader } from '../../Services/loader-service'
@@ -20,11 +22,7 @@ export default function VerifyOtpScreen() {
     const {showToast} = useToast()
     const logoScale = useRef(new Animated.Value(0.8)).current
     const otpInputRef = useRef<TextInput>(null)
-    const insets = useSafeAreaInsets()
     const { mobileNumber, purpose } = useLocalSearchParams<{mobileNumber: string, purpose: "LOGIN" | "VERIFY"}>()
-    const phone = Array.isArray(mobileNumber)
-    ? mobileNumber[0]
-    : mobileNumber
 
     const [otp, setOtp] = useState("")
     const [otpError, setOtpError] = useState("")
@@ -257,17 +255,25 @@ export default function VerifyOtpScreen() {
                     extraKeyboardSpace={20}
                 >
                     <View 
-                        className="w-full items-center rounded-t-[22px] bg-[#FFFFFF]"
-                        style={{ paddingHorizontal: scale(14) }}
+                        className="w-full items-center"
+                        style={{
+                            paddingHorizontal: scale(14),
+                            borderTopEndRadius: moderateScale(22),
+                            borderTopStartRadius: moderateScale(22),
+                            backgroundColor: COLORS.primaryBackgroundColor
+                        }}
                     >
                         <Animated.View
-                            className="overflow-hidden rounded-[32px] border-[2px] border-[#FFFFFF]"
+                            className="overflow-hidden"
                             style={{
                                 width: logoSize,
                                 height: logoSize,
+                                borderRadius: moderateScale(32),
+                                borderWidth: moderateScale(2),
+                                borderColor: COLORS.primaryBackgroundColor,
                                 marginTop: -logoSize * 0.35,
                                 transform: [{ scale: logoScale }],
-                                shadowColor: "#FFFFFF",
+                                shadowColor: COLORS.primaryBackgroundColor,
                                 shadowOffset: {
                                     width: 0,
                                     height: verticalScale(14)
@@ -278,7 +284,10 @@ export default function VerifyOtpScreen() {
                             }}
                         >
                             <LinearGradient
-                                colors={["#3F2516", "#311707"]}
+                                colors={[
+                                    COLORS.brandGradientStart,
+                                    COLORS.brandGradientEnd
+                                ]}
                                 locations={[0, 1]}
                                 style={{
                                     flex: 1,
@@ -358,15 +367,23 @@ export default function VerifyOtpScreen() {
                         </Animated.View>
 
                         <Text
-                            className="font-extrabold text-[#1F1F1F]"
-                            style={{ marginTop: verticalScale(14), fontSize: moderateScale(21) }}
+                            className="font-extrabold"
+                            style={{
+                                marginTop: verticalScale(14),
+                                fontSize: moderateScale(21),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Enter Verification Code
                         </Text>
 
                         <Text
-                            className="font-medium text-[#1F1F1F]/60 text-center"
-                            style={{ marginTop: verticalScale(3), fontSize: moderateScale(11) }}
+                            className="font-mediu text-center"
+                            style={{
+                                marginTop: verticalScale(3),
+                                fontSize: moderateScale(11),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                            }}
                         >
                             Enter the 6-digit code sent to your mobile number
                         </Text>
@@ -375,7 +392,13 @@ export default function VerifyOtpScreen() {
                             className="flex-row items-center justify-center"
                             style={{ marginTop: verticalScale(2) }}
                         >
-                            <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(11) }}>
+                            <Text
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: COLORS.primaryTextColor
+                                }}
+                            >
                                 +91 {formattedNumber}
                             </Text>
 
@@ -383,7 +406,13 @@ export default function VerifyOtpScreen() {
                                 style={{ marginLeft: scale(6) }}
                                 onPress={() => router.back()}
                             >
-                                <Text className="font-semibold text-[#E8B93F]" style={{ fontSize: moderateScale(13) }}>
+                                <Text
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.accentColor
+                                    }}
+                                >
                                     Change
                                 </Text>
                             </Pressable>
@@ -413,21 +442,24 @@ export default function VerifyOtpScreen() {
                                     return (
                                         <View
                                             key={index}
-                                            className={`items-center justify-center bg-[#FAFAFA] ${
-                                                hasError
-                                                    ? "border-red-400"
-                                                    : isActive
-                                                        ? "border-[#E8B93F]/75"
-                                                        : "border-[#1F1F1F]/10"
-                                            }`}
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
                                                 borderWidth: moderateScale(0.7),
+                                                borderColor: hasError ? COLORS.errorBorderColor
+                                                    : isActive ? hexToRgba(COLORS.accentColor, 0.75) : hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 height: scale(50),
                                                 width: scale(50),
                                                 borderRadius: moderateScale(18)
                                             }}
                                         >
-                                            <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(18) }}>
+                                            <Text
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(18),
+                                                    color: COLORS.inputTextColor
+                                                }}
+                                            >
                                                 {digit || ""}
                                             </Text>
                                         </View>
@@ -438,16 +470,23 @@ export default function VerifyOtpScreen() {
 
                         {otpError && (
                             <Text
-                                className="self-start font-medium text-[#E05252]"
-                                style={{ marginTop: verticalScale(6), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                                className="self-start font-medium]"
+                                style={{
+                                    marginTop: verticalScale(6),
+                                    marginLeft: scale(8),
+                                    fontSize: moderateScale(11),
+                                    color: COLORS.errorTextColor
+                                }}
                             >
                                 {otpError}
                             </Text>
                         )}
 
                         <View
-                            className="flex-row items-center bg-[#FAFAFA] w-full border-[#1F1F1F]/5"
+                            className="flex-row items-center w-full"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 padding: scale(12),
                                 marginTop: verticalScale(24),
@@ -456,20 +495,31 @@ export default function VerifyOtpScreen() {
                             }}
                         >
                             <View
-                                className="items-center justify-center rounded-full bg-[#3f25161d]"
-                                style={{ width: scale(40), height: scale(40) }}
+                                className="items-center justify-center rounded-full"
+                                style={{
+                                    width: scale(40),
+                                    height: scale(40),
+                                    backgroundColor: hexToRgba(COLORS.primaryColor, 0.15)
+                                }}
                             >
-                                <RefreshIcon width={moderateScale(20)} height={moderateScale(20)} color={"#3F2516"} strokeWidth={2.2} />
+                                <RefreshIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={2.2} />
                             </View>
 
                             <View className="flex-1 justify-center">
-                                <Text className="font-semibold text-[#1F1F1F]" style={{ fontSize: moderateScale(12.5) }}>
+                                <Text
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(12.5),
+                                        color: COLORS.primaryTextColor
+                                    }}
+                                >
                                     Didn't receive the code?
                                 </Text>
 
                                 <Text
-                                    className="font-semibold text-[#1F1F1F]/60"
+                                    className="font-semibold"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.6),
                                         marginTop: verticalScale(4),
                                         fontSize: moderateScale(11)
                                     }}
@@ -480,8 +530,11 @@ export default function VerifyOtpScreen() {
                                         <>
                                             You can request a new code in{" "}
                                             <Text
-                                                className="font-semibold text-[#1F1F1F]"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 {formatTimer(resendTimer)}
                                             </Text>
@@ -496,12 +549,9 @@ export default function VerifyOtpScreen() {
                                 hitSlop={8}
                             >
                                 <Text
-                                    className={`font-semibold ${
-                                        canResend
-                                            ? "text-[#E8B93F]"
-                                            : "text-[#1F1F1F]/30"
-                                    }`}
+                                    className="font-semibold"
                                     style={{
+                                        color: canResend ? COLORS.accentColor : hexToRgba(COLORS.primaryTextColor, 0.3),
                                         fontSize: moderateScale(13),
                                         marginRight: scale(3)
                                     }}

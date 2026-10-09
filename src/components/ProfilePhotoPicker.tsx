@@ -1,4 +1,6 @@
 import CameraIcon from '@/assets/icon/CameraIcon.svg';
+import { COLORS } from '@/constant/colors';
+import { hexToRgba } from '@/utils/hexToRgba';
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
 import { moderateScale } from "react-native-size-matters";
@@ -37,15 +39,17 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
                 height: "100%",
                 borderRadius: 100,
                 borderWidth: 3.5,
-                borderColor: "#FAFAFA"
+                borderColor: COLORS.secondaryBackgroundColor
               }}
             />
         </View>
 
         <Pressable
           onPress={onPress}
-          className="bg-[#FAFAFA] items-center justify-center border-[#1F1F1F]/10 absolute rounded-full"
+          className="items-center justify-center absolute rounded-full"
           style={{
+            backgroundColor: COLORS.secondaryBackgroundColor,
+            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
             borderWidth: moderateScale(0.7),
             right: moderateScale(14),
             bottom: moderateScale(7),
@@ -53,16 +57,17 @@ export default function ProfilePhotoPicker({ imageUri, onPress }: ProfilePhotoPi
             height: moderateScale(34)
           }}
         >
-            <CameraIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={2} />
+            <CameraIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={2} />
         </Pressable>
       </View>
 
       <Text
         style={{
+          color: COLORS.primaryTextColor,
           marginTop: moderateScale(8),
           fontSize: moderateScale(13)
         }}
-        className="font-bold text-[#1F1F1F]"
+        className="font-bold"
       >
         Add Profile Photo
       </Text>

@@ -1,7 +1,9 @@
 import PlusIcon from "@/assets/icon/PlusIcon.svg"
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
@@ -28,6 +30,16 @@ const RestaurantFoodCard = ({
 }: RestaurantFoodCardProps) => {
     const isInactive = !item.isActive
 
+    const [imageError, setImageError] = useState(false)
+        
+    const DefaultFoodImage = require("../../../../assets/images/Default_Food_Image.png")
+    
+    useEffect(() => {
+        setImageError(false)
+    }, [item.imageUri])
+
+    const hasImage = !!item.imageUri && !imageError
+
     return (
         <TouchableOpacity
             activeOpacity={item.isActive ? 0.95 : 1}
@@ -41,10 +53,10 @@ const RestaurantFoodCard = ({
                 borderWidth: moderateScale(0.5),
                 width: moderateScale(140),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FFFFFF",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View
@@ -56,7 +68,9 @@ const RestaurantFoodCard = ({
                         width: "100%",
                         height: "100%",
                         borderRadius: moderateScale(18),
-                        overflow: "hidden"
+                        overflow: "hidden",
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
@@ -75,15 +89,17 @@ const RestaurantFoodCard = ({
                     {isInactive && (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 bg-black/25"
+                            className="absolute inset-0"
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
                 </View>
 
                 {!isInactive && (
                     <View
-                        className="absolute top-4 right-4 flex-row items-center bg-[#F8D56A]"
+                        className="absolute top-4 right-4 flex-row items-center"
                         style={{
+                            backgroundColor: COLORS.accentLightColor,
                             paddingHorizontal: moderateScale(6),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10)
@@ -92,12 +108,13 @@ const RestaurantFoodCard = ({
                         <RatingIcon
                             width={moderateScale(13)}
                             height={moderateScale(13)}
-                            color="#3F2516"
+                            color={COLORS.primaryColor}
                         />
 
                         <Text
-                            className="font-bold text-[#3F2516]"
+                            className="font-bold"
                             style={{
+                                color: COLORS.primaryColor,
                                 fontSize: moderateScale(10),
                                 marginLeft: moderateScale(3)
                             }}
@@ -116,12 +133,15 @@ const RestaurantFoodCard = ({
                             bottom: moderateScale(13),
                             paddingVertical: verticalScale(5),
                             borderRadius: moderateScale(10),
-                            backgroundColor: "rgba(31,31,31,0.82)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.82)
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-bold uppercase"
-                            style={{ fontSize: moderateScale(7.5) }}
+                            className="font-bold uppercase"
+                            style={{
+                                fontSize: moderateScale(7.5),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Currently Unavailable
                         </Text>
@@ -141,7 +161,7 @@ const RestaurantFoodCard = ({
                     className="font-bold"
                     style={{
                         fontSize: moderateScale(14),
-                        color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                        color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                     }}
                 >
                     {item.name}
@@ -154,8 +174,8 @@ const RestaurantFoodCard = ({
                         fontSize: moderateScale(10.5),
                         marginTop: moderateScale(3),
                         color: isInactive
-                            ? "rgba(31,31,31,0.38)"
-                            : "rgba(31,31,31,0.75)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                            : hexToRgba(COLORS.primaryTextColor, 0.65)
                     }}
                 >
                     {item.category}
@@ -169,15 +189,15 @@ const RestaurantFoodCard = ({
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
                         <Text
                             className="font-bold tracking-wide"
                             style={{
                                 fontSize: moderateScale(13),
-                                color: isInactive ? "rgba(31,31,31,0.45)" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             ₹{item.price}
@@ -199,13 +219,13 @@ const RestaurantFoodCard = ({
                             width: moderateScale(28),
                             height: moderateScale(28),
                             borderRadius: moderateScale(12),
-                            backgroundColor: isInactive ? "#B8B8B8" : "#3F2516"
+                            backgroundColor: isInactive ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                         }}
                     >
                         <PlusIcon
                             width={moderateScale(16)}
                             height={moderateScale(16)}
-                            color={isInactive ? "#E8E8E8" : "#FFFFFF"}
+                            color={isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor}
                             strokeWidth={2}
                         />
                     </TouchableOpacity>

@@ -1,5 +1,7 @@
 import ArrowLeftIcon from '@/assets/icon/ArrowLeft.svg'
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { useEffect, useState } from "react"
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -110,8 +112,11 @@ export default function CalendarPicker({
       >
         <TouchableOpacity activeOpacity={1} onPress={() => {}}>
           <View 
-            className="bg-[#FFFFFF] w-full overflow-hidden"
-            style={{ borderRadius: moderateScale(24) }}  
+            className="w-full overflow-hidden"
+            style={{
+              borderRadius: moderateScale(24),
+              backgroundColor: COLORS.primaryBackgroundColor
+            }}  
           >
             <View className="flex-row items-center px-4 pt-4 pb-3">
               <View className="flex-1 flex-row items-center">
@@ -121,11 +126,14 @@ export default function CalendarPicker({
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   className="p-1"
                 >
-                  <ArrowLeftIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F95" strokeWidth={1.8} />
+                  <ArrowLeftIcon width={moderateScale(16)} height={moderateScale(16)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                 </TouchableOpacity>
 
                 <View className="flex-row items-center mx-1.5">
-                  <Text className=" font-semibold text-[#1F1F1F]">
+                  <Text
+                    className=" font-semibold"
+                    style={{ color: COLORS.primaryTextColor }}  
+                  >
                     {MONTHS_SHORT[calMonth]}
                   </Text>
                 </View>
@@ -136,7 +144,7 @@ export default function CalendarPicker({
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   className="p-1"
                 >
-                  <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F95" strokeWidth={1.8} />
+                  <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                 </TouchableOpacity>
               </View>
 
@@ -147,11 +155,14 @@ export default function CalendarPicker({
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   className="p-1"
                 >
-                  <ArrowLeftIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F95" strokeWidth={1.8} />
+                  <ArrowLeftIcon width={moderateScale(16)} height={moderateScale(16)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                 </TouchableOpacity>
 
                 <View className="flex-row items-center mx-1.5">
-                  <Text className=" font-semibold text-[#1F1F1F]">
+                  <Text
+                    className=" font-semibold"
+                    style={{ color: COLORS.primaryTextColor }}  
+                  >
                     {calYear}
                   </Text>
                 </View>
@@ -162,12 +173,15 @@ export default function CalendarPicker({
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   className="p-1"
                 >
-                  <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F95" strokeWidth={1.8} />
+                  <ArrowRightIcon width={moderateScale(16)} height={moderateScale(16)} color={hexToRgba(COLORS.primaryTextColor, 0.65)} strokeWidth={1.8} />
                 </TouchableOpacity>
               </View>
             </View>
 
-            <View className="h-px bg-gray-200 mx-5" />
+            <View 
+              className="h-px mx-5"
+              style={{ backgroundColor: hexToRgba(COLORS.borderColor, 0.6) }}  
+            />
 
             <View className="px-3 pt-3 pb-2">
               <View className="flex-row mb-1">
@@ -177,8 +191,11 @@ export default function CalendarPicker({
                     className="flex-1 items-center py-1"
                   >
                     <Text 
-                      className="font-semibold text-[#1F1F1F]/55"
-                      style={{ fontSize: moderateScale(10) }}
+                      className="font-semibold"
+                      style={{
+                        fontSize: moderateScale(10),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.55)
+                      }}
                     >
                       {d}
                     </Text>
@@ -217,7 +234,7 @@ export default function CalendarPicker({
                           height: DAY_SIZE,
                           borderRadius: DAY_SIZE / 2,
                           backgroundColor: isSelected
-                              ? "#3F2516"
+                              ? COLORS.primaryColor
                               : "transparent",
                           alignItems: "center",
                           justifyContent: "center",
@@ -225,43 +242,58 @@ export default function CalendarPicker({
                         }}
                       >
                         <Text
-                            className={`${
+                          className={
                               isSelected
-                                ? "text-[#FFFFFF] font-extrabold"
-                                : disabled
-                                  ? "text-[#1F1F1F]/35 font-semibold"
-                                  : isToday
-                                    ? "text-[#3F2516] font-extrabold"
-                                    : "text-[#1F1F1F]/75 font-semibold"
-                            }`}
-                            style={{ fontSize: moderateScale(12) }}
+                                  ? "font-extrabold"
+                                  : disabled
+                                      ? "font-semibold"
+                                      : isToday
+                                          ? "font-extrabold"
+                                          : "font-semibold"
+                          }
+                          style={{
+                              color: isSelected
+                                  ? COLORS.primaryBackgroundColor
+                                  : disabled
+                                      ? hexToRgba(COLORS.primaryTextColor, 0.35)
+                                      : isToday
+                                          ? COLORS.primaryColor
+                                          : hexToRgba(COLORS.primaryTextColor, 0.75)
+                          }}
                         >
-                          {day}
-                      </Text>
-                    </View>
+                            {day}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   )
                 })}
               </View>
             </View>
 
-            <View className="h-px bg-gray-200 mx-5" />
+            <View 
+              className="h-px mx-5"
+              style={{ backgroundColor: hexToRgba(COLORS.borderColor, 0.6) }}  
+            />
 
             <View className="flex-row justify-end items-center px-6 py-4 gap-4">
               <TouchableOpacity
                 activeOpacity={0.95}
                 onPress={onClose}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                className='items-center justify-center bg-[#3F2516]'
+                className='items-center justify-center'
                 style={{
+                  backgroundColor: COLORS.primaryColor,
                   paddingHorizontal: scale(16),
                   paddingVertical: verticalScale(7),
                   borderRadius: moderateScale(16)
                 }}
               >
                 <Text 
-                  className="text-[#FFFFFF] font-medium"
-                  style={{ fontSize: moderateScale(12) }}
+                  className="font-medium"
+                  style={{
+                    fontSize: moderateScale(12),
+                    color: COLORS.primaryBackgroundColor
+                  }}
                 >
                   Cancel
                 </Text>
@@ -276,16 +308,20 @@ export default function CalendarPicker({
                   }
                 }}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                className='items-center justify-center bg-[#3F2516]'
+                className='items-center justify-center'
                 style={{
+                  backgroundColor: COLORS.primaryColor,
                   paddingHorizontal: scale(16),
                   paddingVertical: verticalScale(7),
                   borderRadius: moderateScale(16)
                 }}
               >
                 <Text 
-                  className="text-[#FFFFFF] font-medium"
-                  style={{ fontSize: moderateScale(12) }}
+                  className="font-medium"
+                  style={{
+                    fontSize: moderateScale(12),
+                    color: COLORS.primaryBackgroundColor
+                  }}
                 >
                   {action}
                 </Text>

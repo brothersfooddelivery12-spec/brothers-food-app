@@ -3,7 +3,9 @@ import LocateFixedIcon from "@/assets/icon/LocateFixedIcon.svg"
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import { LoadingDots } from '@/components/LoadingDots'
 import SearchBar from "@/components/SearchBar"
+import { COLORS } from '@/constant/colors'
 import { useLocationStore } from "@/Stores/locationStore"
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Camera, CameraRef, Map, MapRef, UserLocation } from "@maplibre/maplibre-react-native"
 import * as Location from "expo-location"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
@@ -651,10 +653,13 @@ export default function MapLocationScreen() {
         : null
 
     return (
-        <View className="flex-1 bg-[#FFFFFF]">
+        <View
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -690,8 +695,9 @@ export default function MapLocationScreen() {
                     onLayout={(event) => {
                         setHeaderHeight(event.nativeEvent.layout.height)
                     }}
-                    className="absolute left-0 right-0 bg-[#FFFFFF]"
+                    className="absolute left-0 right-0"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         top: 0,
                         paddingTop: insets.top + verticalScale(10),
                         paddingBottom: verticalScale(5),
@@ -709,27 +715,35 @@ export default function MapLocationScreen() {
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => router.back()}
-                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                            className="items-center justify-center rounded-full"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 width: moderateScale(40),
                                 height: moderateScale(40)
                             }}
                         >
-                            <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                            <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                         </TouchableOpacity>
 
                         <View className="items-start gap-1 flex-1">
                             <Text
-                                className="text-[#1F1F1F] font-extrabold"
-                                style={{ fontSize: moderateScale(16) }}
+                                className="font-extrabold"
+                                style={{
+                                    fontSize: moderateScale(16),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Choose delivery location
                             </Text>
                             
                             <Text
-                                className="text-[#1F1F1F]/65 font-medium"
-                                style={{ fontSize: moderateScale(11) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                }}
                             >
                                 Select where you want your order delivered.
                             </Text>
@@ -759,8 +773,10 @@ export default function MapLocationScreen() {
 
                 {searchQuery.trim().length >= 3 && (loadingSearch || hasSearched) && (
                     <View
-                        className="absolute bg-[#FFFFFF] overflow-hidden border-[#1F1F1F]/10"
+                        className="absolute overflow-hidden"
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             top: headerHeight + verticalScale(6),
                             left: scale(12),
                             right: scale(12),
@@ -798,13 +814,16 @@ export default function MapLocationScreen() {
                                     style={{ marginTop: verticalScale(8) }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F]/65 font-medium"
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                        }}
                                     >
                                         Searching locations
                                     </Text>
 
-                                    <LoadingDots color="rgba(31,31,31,0.65)" />
+                                    <LoadingDots color={hexToRgba(COLORS.primaryTextColor, 0.65)} />
                                 </View>
                             </View>
                         ) : searchResults.length > 0 ? (
@@ -833,14 +852,17 @@ export default function MapLocationScreen() {
                                                         borderRadius: moderateScale(18)
                                                     }}
                                                 >
-                                                    <LocationIcon width={moderateScale(19)} height={moderateScale(19)}  color="#3F2516" />
+                                                    <LocationIcon width={moderateScale(19)} height={moderateScale(19)}  color={COLORS.primaryColor} />
                                                 </View>
 
                                                 <View className="flex-1 ml-3">
                                                     <Text
                                                         numberOfLines={1}
-                                                        className="text-[#1F1F1F] font-bold"
-                                                        style={{ fontSize: moderateScale(13) }}
+                                                        className="font-bold"
+                                                        style={{
+                                                            fontSize: moderateScale(13),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
                                                     >
                                                         {item.properties
                                                             .name ||
@@ -852,8 +874,11 @@ export default function MapLocationScreen() {
 
                                                     <Text
                                                         numberOfLines={2}
-                                                        className="text-[#1F1F1F]/65 font-medium mt-0.5"
-                                                        style={{ fontSize: moderateScale(10.5) }}
+                                                        className="font-medium mt-0.5"
+                                                        style={{
+                                                            fontSize: moderateScale(10.5),
+                                                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                        }}
                                                     >
                                                         {address}
                                                     </Text>
@@ -863,7 +888,7 @@ export default function MapLocationScreen() {
                                                     <View
                                                         className="absolute bottom-0"
                                                         style={{ 
-                                                            backgroundColor: "rgba(31,31,31,0.10)",
+                                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                             height: moderateScale(0.5),
                                                             left: scale(16),
                                                             right: scale(16)
@@ -880,11 +905,12 @@ export default function MapLocationScreen() {
                                 className="items-center justify-center px-5"
                                 style={{ height: verticalScale(120) }}
                             >
-                                <LocationIcon width={moderateScale(30)} height={moderateScale(30)} color="#7A7D81" />
+                                <LocationIcon width={moderateScale(30)} height={moderateScale(30)} color={COLORS.inactiveContentColor} />
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold text-center"
+                                    className="font-bold text-center"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(13),
                                         marginTop: verticalScale(8)
                                     }}
@@ -893,8 +919,9 @@ export default function MapLocationScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/55 font-medium text-center"
+                                    className="font-medium text-center"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.55),
                                         fontSize: moderateScale(10.5),
                                         marginTop: verticalScale(3)
                                     }}
@@ -913,7 +940,7 @@ export default function MapLocationScreen() {
                     style={{ zIndex: 1 }}
                 >
                     <View style={{ marginBottom: moderateScale(32) }} >
-                        <LocationIcon width={moderateScale(42)} height={moderateScale(42)} color="#3F2516" />
+                        <LocationIcon width={moderateScale(42)} height={moderateScale(42)} color={COLORS.primaryColor} />
                     </View>
                 </View>
 
@@ -921,8 +948,9 @@ export default function MapLocationScreen() {
                     activeOpacity={0.95}
                     onPress={handleLocationAccess}
                     disabled={loadingLocation}
-                    className="absolute bg-[#FFFFFF] items-center justify-center"
+                    className="absolute items-center justify-center"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         right: scale(16),
                         bottom: verticalScale(38),
                         width: moderateScale(48),
@@ -932,13 +960,15 @@ export default function MapLocationScreen() {
                         elevation: 4
                     }}
                 >
-                    <LocateFixedIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" strokeWidth={1.8} />
+                    <LocateFixedIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.primaryColor} strokeWidth={1.8} />
                 </TouchableOpacity>
             </View>
 
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10 -mt-8"
+                className="-mt-8"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderLeftWidth: moderateScale(0.5),
                     borderRightWidth: moderateScale(0.5),
                     borderTopWidth: moderateScale(0.5),
@@ -950,27 +980,34 @@ export default function MapLocationScreen() {
                 }}
             >
                 <Text
-                    className="text-[#1F1F1F] font-bold"
-                    style={{ fontSize: moderateScale(16) }}
+                    className="font-bold"
+                    style={{
+                        fontSize: moderateScale(16),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Select delivery location
                 </Text>
 
                 {locationMessage ? (
                     <View
-                        className="flex-row items-center bg-[#E8B93F]/10 border border-[#E8B93F]/20"
+                        className="flex-row items-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                            borderColor: hexToRgba(COLORS.accentColor, 0.2),
+                            borderWidth: moderateScale(0.7),
                             borderRadius: moderateScale(14),
                             paddingHorizontal: scale(10),
                             paddingVertical: verticalScale(10),
                             marginTop: verticalScale(14)
                         }}
                     >
-                        <LocationIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" />
+                        <LocationIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} />
 
                         <Text
-                            className="flex-1 text-[#3F2516] font-medium"
+                            className="flex-1 font-medium"
                             style={{
+                                color: COLORS.primaryColor,
                                 fontSize: moderateScale(11),
                                 lineHeight: moderateScale(16),
                                 marginLeft: scale(8)
@@ -1002,11 +1039,12 @@ export default function MapLocationScreen() {
                             </View>
                         ) : (
                             <View className="flex-row items-start">
-                                <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color="#3F2516" />
+                                <LocationIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.primaryColor} />
 
                                 <Text
-                                    className="flex-1 text-[#1F1F1F]/75 font-medium"
+                                    className="flex-1 font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                         fontSize: moderateScale(12),
                                         lineHeight: moderateScale(16),
                                         marginLeft: scale(6)
@@ -1036,8 +1074,9 @@ export default function MapLocationScreen() {
                             ? handleLocationAccess
                             : handleConfirmLocation
                     }
-                    className="items-center justify-center bg-[#3F2516]"
+                    className="items-center justify-center"
                     style={{
+                        backgroundColor: COLORS.primaryColor,
                         height: verticalScale(48),
                         borderRadius: moderateScale(18),
                         marginTop: verticalScale(16)
@@ -1046,22 +1085,29 @@ export default function MapLocationScreen() {
                     {loadingLocation ? (
                         <View className="flex-row items-center justify-center">
                             <Text
-                                className="text-[#FFFFFF] font-bold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Getting Location
                             </Text>
 
-                            <LoadingDots color="#FFFFFF" />
+                            <LoadingDots color={COLORS.primaryBackgroundColor} />
                         </View>
                     ) : (
                         <Text
-                            className="text-[#FFFFFF] font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             {needsLocationPermission
                                 ? "Enable Location"
-                                : "Confirm Location"}
+                                : "Confirm Location"
+                            }
                         </Text>
                     )}
                 </TouchableOpacity>

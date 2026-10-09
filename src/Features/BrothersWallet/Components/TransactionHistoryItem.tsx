@@ -2,6 +2,8 @@ import TransactionHistoryIcon from '@/assets/icon/MoneyFilledIcon.svg'
 import RefundIcon from '@/assets/icon/RefundIcon.svg'
 import UtensilsIcon from '@/assets/icon/UtensilIcon2.svg'
 import BankIcon from '@/assets/icon/WalletFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { memo } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
@@ -85,8 +87,10 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => onPress?.(item)}
-            className="flex-row items-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+            className="flex-row items-center"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 paddingHorizontal: scale(12),
@@ -94,13 +98,14 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
             }}
         >
             <View
-                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                className="items-center justify-center rounded-full"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                     width: moderateScale(42),
                     height: moderateScale(42)
                 }}
             >
-                <Icon width={moderateScale(22)} height={moderateScale(22)} color="#3F2516" />
+                <Icon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
             </View>
 
             <View
@@ -109,16 +114,20 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
             >
                 <Text
                     numberOfLines={1}
-                    className="text-[#1F1F1F] font-semibold"
-                    style={{ fontSize: moderateScale(13) }}
+                    className="font-semibold"
+                    style={{
+                        fontSize: moderateScale(13),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     {item.title}
                 </Text>
 
                 <Text
                     numberOfLines={1}
-                    className="text-[#1F1F1F]/75 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(10.5),
                         marginTop: verticalScale(2)
                     }}
@@ -128,8 +137,9 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
 
                 <Text
                     numberOfLines={1}
-                    className="text-[#1F1F1F]/65 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         fontSize: moderateScale(9.5),
                         marginTop: verticalScale(3)
                     }}
@@ -143,21 +153,21 @@ export const TransactionHistoryItem = memo(({ item, onPress }: TransactionHistor
                 style={{ marginLeft: scale(8),marginRight: scale(6) }}
             >
                 <Text
-                    className="text-[#1F1F1F] font-extrabold tracking-wide"
-                    style={{ fontSize: moderateScale(14) }}
+                    className="font-extrabold tracking-wide"
+                    style={{
+                        fontSize: moderateScale(14),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     {isCredit ? "+" : "-"}₹{item.amount.toLocaleString("en-IN")}
                 </Text>
 
                 <Text
-                    className={
-                        isProcessing
-                            ? "text-[#E58A24] font-semibold"
-                            : isCredit
-                                ? "text-[#4D9151] font-semibold"
-                                : "text-[#EF4444] font-semibold"
-                    }
+                    className="font-semibold"
                     style={{
+                        color: isProcessing ? COLORS.warningTextColor : isCredit
+                            ? COLORS.successColor
+                            : COLORS.dangerTextColor,
                         fontSize: moderateScale(10.5),
                         marginTop: verticalScale(2)
                     }}

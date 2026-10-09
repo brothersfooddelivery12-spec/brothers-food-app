@@ -2,6 +2,9 @@ import ClockIcon from "@/assets/icon/ClockIcon3.svg"
 import CopyIcon from "@/assets/icon/CopyIcon.svg"
 import InfoIcon from "@/assets/icon/InformationCircleIcon.svg"
 import UtensilsIcon from "@/assets/icon/UtensilIcon2.svg"
+import { COLORS } from "@/constant/colors"
+import { Coupon } from "@/Services/api-service"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { memo } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -17,13 +20,13 @@ export type CouponItem = {
 
     featured?: boolean
 
-    purchaseMethod:
-        | "REWARD_POINTS"
-        | "MONEY"
-        | "FREE"
+    purchaseMethod: Coupon["purchase_method"]
 
     pointsRequired: number | null
     moneyPrice: number
+
+    isActive: boolean
+    isExpired: boolean
 }
 
 type CouponCardProps = {
@@ -33,19 +36,22 @@ type CouponCardProps = {
 }
 
 function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
-    const NoteIcon =
-        item.noteType === "expiry"
-            ? ClockIcon
-            : item.noteType === "exclusive"
-            ? UtensilsIcon
-            : InfoIcon
+    const isUnavailable = !item.isActive || item.isExpired
+    
+    const NoteIcon = item.noteType === "expiry"
+        ? ClockIcon
+        : item.noteType === "exclusive"
+        ? UtensilsIcon
+        : InfoIcon
 
     const isExpiry = item.noteType === "expiry"
 
     return (
         <View
-            className="flex-row bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible"
+            className="flex-row overflow-visible"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 minHeight: verticalScale(120)
@@ -59,20 +65,20 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 }}
             >
                 <View
-                    className={`self-start flex-row items-center gap-2 ${
-                        item.featured
-                            ? "bg-[#F8D56A]"
-                            : "bg-[#E8B93F]/15"
-                    }`}
+                    className="self-start flex-row items-center gap-2"
                     style={{
+                        backgroundColor: item.featured
+                            ? COLORS.accentLightColor
+                            : hexToRgba(COLORS.accentColor, 0.15),
                         paddingHorizontal: scale(8),
                         paddingVertical: verticalScale(4),
                         borderRadius: moderateScale(20)
                     }}
                 >
                     <Text
-                        className="text-[#5C4639] font-bold uppercase"
+                        className="font-bold uppercase"
                         style={{
+                            color: COLORS.secondaryColor,
                             fontSize: moderateScale(10),
                             letterSpacing: 0.4
                         }}
@@ -83,8 +89,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <Text
                     numberOfLines={2}
-                    className="text-[#1F1F1F] font-extrabold"
+                    className="font-extrabold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
@@ -94,8 +101,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <Text
                     numberOfLines={2}
-                    className="text-[#1F1F1F]/75 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(3)
@@ -105,8 +113,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 </Text>
 
                 <View
-                    className="bg-[#E8DDD3]/65 mx-2"
+                    className="mx-2"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: 0.7,
                         marginVertical: verticalScale(8)
                     }}
@@ -116,17 +125,16 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     <NoteIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isExpiry ? "#DC2626" : "#5C4639"}
+                        color={isExpiry ? COLORS.errorTextColor : COLORS.secondaryColor}
                         strokeWidth={1.8}
                     />
 
                     <Text
-                        className={`font-medium flex-1 ${
-                            isExpiry
-                                ? "text-[#DC2626]"
-                                : "text-[#5C4639]"
-                        }`}
+                        className="font-medium flex-1"
                         style={{
+                            color: isExpiry
+                                ? COLORS.errorTextColor
+                                : COLORS.secondaryColor,
                             fontSize: moderateScale(10.5),
                             lineHeight: moderateScale(17)
                         }}
@@ -137,8 +145,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
             </View>
 
             <View
-                className="relative items-center justify-center bg-[#FFF9F2] overflow-visible"
+                className="relative items-center justify-center overflow-visible"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
                     width: scale(105),
                     paddingHorizontal: scale(10),
                     borderTopRightRadius: moderateScale(20),
@@ -158,7 +167,7 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                             style={{
                                 width: 0.7,
                                 height: verticalScale(4),
-                                backgroundColor: "rgba(232,185,63,0.55)"
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.45),
                             }}
                         />
                     ))}
@@ -166,8 +175,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#FFFFFF]"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         top: -moderateScale(11),
                         left: -moderateScale(11),
 
@@ -181,8 +191,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <View
                     pointerEvents="none"
-                    className="absolute bg-[#FFFFFF]"
+                    className="absolute"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         bottom: -moderateScale(11),
                         left: -moderateScale(11),
 
@@ -196,36 +207,57 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
 
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={() => onApply?.(item)}
-                    className="w-full items-center justify-center bg-[#3F2516]"
+                    disabled={isUnavailable}
+                    onPress={() => {
+                        if (isUnavailable) return
+
+                        onApply?.(item)
+                    }}
+                    className="w-full items-center justify-center"
                     style={{
+                        backgroundColor: isUnavailable
+                            ? COLORS.disabledBackgroundColor
+                            : COLORS.primaryColor,
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(18)
                     }}
                 >
                     <Text
-                        className="text-[#FFFFFF] font-bold"
-                        style={{ fontSize: moderateScale(13) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(13),
+                            color: COLORS.primaryBackgroundColor
+                        }}
                     >
-                        Apply
+                        {item.isExpired
+                            ? "Expired"
+                            : !item.isActive
+                                ? "Unavailable"
+                                : "Apply"
+                        }
                     </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => onCopy?.(item)}
-                    className="w-full flex-row items-center justify-center border border-[#3F2516]/65 gap-2"
+                    className="w-full flex-row items-center justify-center gap-2"
                     style={{
+                        borderColor: hexToRgba(COLORS.secondaryColor, 0.65),
+                        borderWidth: moderateScale(1),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
                 >
-                    <CopyIcon width={moderateScale(17)} height={moderateScale(17)} color="#3F2516" strokeWidth={1.8} />
+                    <CopyIcon width={moderateScale(17)} height={moderateScale(17)} color={COLORS.primaryColor} strokeWidth={1.8} />
 
                     <Text
-                        className="text-[#3F2516] font-bold"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: COLORS.primaryColor
+                        }}
                     >
                         Copy
                     </Text>

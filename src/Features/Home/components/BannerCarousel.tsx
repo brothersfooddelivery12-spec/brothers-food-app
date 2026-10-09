@@ -1,4 +1,6 @@
+import { COLORS } from "@/constant/colors"
 import { Advertisement } from "@/Services/api-service"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import LottieView from "lottie-react-native"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -261,7 +263,7 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: moderateScale(24),
-                    backgroundColor: "#FAFAFA"
+                    backgroundColor: COLORS.secondaryBackgroundColor
                 }}
             >
                 <LottieView
@@ -301,7 +303,7 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                         right: HORIZONTAL_PADDING,
                         height: BANNER_HEIGHT,
                         borderRadius: moderateScale(24),
-                        backgroundColor: "#FAFAFA",
+                        backgroundColor: COLORS.secondaryBackgroundColor,
                         justifyContent:"center",
                         alignItems:"center",
                         zIndex: 10
@@ -373,8 +375,7 @@ export default function BannerCarousel({advertisements, loading = false }: Banne
                                     height: verticalScale(6),
                                     borderRadius: moderateScale(100),
                                     backgroundColor: activeIndex === index
-                                        ? "#3F2516"
-                                        : "#D8CEC5"
+                                        ? COLORS.primaryColor : hexToRgba(COLORS.primaryTextColor, 0.15)
                                 }}
                             />
                         )

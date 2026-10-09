@@ -1,5 +1,7 @@
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import CheckCircleIcon from '@/assets/icon/SuccessIcon2.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
@@ -15,9 +17,7 @@ type OrderTimelineProps = {
     steps: OrderStep[]
 }
 
-export default function OrderTimeline({
-    steps,
-}: OrderTimelineProps) {
+export default function OrderTimeline({ steps }: OrderTimelineProps) {
     return (
         <View className="mt-6">
             {steps.map((step, index) => {
@@ -33,36 +33,32 @@ export default function OrderTimeline({
                             style={{ width: moderateScale(34) }}
                         >
                             <View
-                                className={`items-center justify-center rounded-full ${
-                                    step.completed
-                                        ? "bg-[#F8D56A]"
-                                        : "bg-[#E5E4E2]"
-                                }`}
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: step.completed
+                                        ? COLORS.accentLightColor
+                                        : COLORS.neutralSurfaceColor,
                                     width: moderateScale(30),
                                     height: moderateScale(30)
                                 }}
                             >
                                 {step.completed ? (
-                                    <CheckCircleIcon width={moderateScale(16)} height={moderateScale(16)} color="#3F2516" strokeWidth={1.8} />
+                                    <CheckCircleIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} strokeWidth={1.8} />
                                 ) : (
-                                    <LocationIcon width={moderateScale(16)} height={moderateScale(16)} color="#7A7D81" strokeWidth={1.8} />
+                                    <LocationIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                                 )}
                             </View>
 
                             {!isLast && (
                                 <View
                                     style={{
-                                        width: 1.5,
                                         height: verticalScale(15),
                                         marginVertical: verticalScale(2),
-                                        borderStyle: step.completed
-                                            ? "dashed"
-                                            : "solid",
+                                        borderStyle: step.completed ? "dashed" : "solid",
                                         borderWidth: 0.8,
                                         borderColor: step.completed
-                                            ? "#E8B93F"
-                                            : "#D1D1D1"
+                                            ? COLORS.accentColor
+                                            : hexToRgba(COLORS.primaryTextColor, 0.45)
                                     }}
                                 />
                             )}
@@ -71,25 +67,25 @@ export default function OrderTimeline({
                         <View
                             style={{
                                 marginLeft: scale(8),
-                                paddingBottom: isLast
-                                    ? 0
-                                    : verticalScale(10)
+                                paddingBottom: isLast ? 0 : verticalScale(10)
                             }}
                         >
                             <Text
-                                className={
-                                    step.completed
-                                        ? "text-[#1F1F1F] font-semibold"
-                                        : "text-[#1F1F1F]/55 font-semibold"
-                                }
-                                style={{ fontSize: moderateScale(13) }}
+                                className="font-semibold"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: step.completed
+                                        ? COLORS.primaryTextColor
+                                        : hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {step.title}
                             </Text>
 
                             <Text
-                                className="text-[#1F1F1F]/65 font-medium"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                     fontSize: moderateScale(10),
                                     marginTop: verticalScale(2)
                                 }}

@@ -2,15 +2,22 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import InvoiceIcon from '@/assets/icon/InvoiceIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { formatOrderId } from '@/utils/formatOrderID'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from "lottie-react-native"
 import { useMemo } from 'react'
 import { ScrollView, StatusBar, Text, TouchableOpacity, useWindowDimensions, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 const ORDER_STATUSES = [
+    {
+        id: "placed",
+        label: "Placed",
+        color: COLORS.activeStatusTextColor
+    },
     {
         id: "confirmed",
         label: "Confirmed",
@@ -61,22 +68,24 @@ export default function OrderSuccessScreen() {
     }, [items])
 
     const { width: SCREEN_WIDTH } = useWindowDimensions()
-    const insets = useSafeAreaInsets()
 
     const horizontalPadding = scale(45)
     const gap = scale(18)
     const cardWidth = (SCREEN_WIDTH - horizontalPadding - gap) / 3
 
-    const currentStatus = "confirmed"
+    const currentStatus = "placed"
     const currentIndex = ORDER_STATUSES.findIndex(
         (status) => status.id === currentStatus
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -91,8 +100,10 @@ export default function OrderSuccessScreen() {
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className=" absolute items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className=" absolute items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         top: moderateScale(14),
                         left: moderateScale(14),
@@ -100,7 +111,7 @@ export default function OrderSuccessScreen() {
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
 
                 <View className="items-center justify-center">
@@ -116,15 +127,19 @@ export default function OrderSuccessScreen() {
                 </View>
 
                 <Text
-                    className="text-[#1F1F1F] font-extrabold text-center -mt-4"
-                    style={{ fontSize: moderateScale(18) }}
+                    className="font-extrabold text-center -mt-4"
+                    style={{
+                        fontSize: moderateScale(18),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Order Placed Successfully!
                 </Text>
                 
                 <Text
-                    className="text-[#1F1F1F]/75 font-medium leading-5 text-center mx-4"
+                    className="font-medium leading-5 text-center mx-4"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(13),
                         marginTop: verticalScale(10)
                     }}
@@ -133,34 +148,46 @@ export default function OrderSuccessScreen() {
                 </Text>
 
                 <View
-                    className="items-center justify-center p-4 gap-2 bg-[#E5E4E2]/35 border border-[#E5E4E2]/80"
+                    className="items-center justify-center p-4 gap-2"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(18),
                         marginTop: verticalScale(18)
                     }}
                 >
                     <Text
-                        className="text-[#1F1F1F]/85 font-medium uppercase"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-medium uppercase"
+                        style={{
+                            fontSize: moderateScale(12),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                        }}
                     >
                         Estimated delivery
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(20) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(20),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {deliveryTime || "--"}{" "}
                         <Text
-                            className="text-[#3F2516] font-bold"
-                            style={{ fontSize: moderateScale(16) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(16),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             mins
                         </Text>
                     </Text>
                 </View>
 
-               <View className="flex-row items-center justify-center mt-8 gap-4">
+               <View className="flex-row items-center justify-center mt-8 gap-5">
                     {ORDER_STATUSES.map((status, index) => {
                         const isActive = index <= currentIndex
 
@@ -173,20 +200,21 @@ export default function OrderSuccessScreen() {
                                     className="rounded-full"
                                     style={{
                                         height: moderateScale(4),
-                                        width: moderateScale(75),
+                                        width: moderateScale(55),
                                         backgroundColor: isActive
                                             ? status.color
-                                            : "#E8DDD3"
+                                            : COLORS.progressTrackColor
                                     }}
                                 />
 
                                 <Text
-                                    className={`font-semibold ${
-                                        isActive
-                                            ? "text-[#1F1F1F]"
-                                            : "text-[#1F1F1F]/45"
-                                    }`}
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className="font-semibold"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: isActive
+                                            ? COLORS.primaryTextColor
+                                            : hexToRgba(COLORS.primaryTextColor, 0.45)
+                                    }}
                                 >
                                     {status.label}
                                 </Text>
@@ -196,23 +224,31 @@ export default function OrderSuccessScreen() {
                 </View>
 
                 <View
-                    className="justify-center p-5 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                    className="justify-center p-5"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(18),
                         marginTop: verticalScale(18)
                     }}
                 >
                     <Text
-                        className="text-[#1F1F1F] font-bold"
-                        style={{ fontSize: moderateScale(14) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(13.5),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {restaurantName || "Restaurant"}
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/75 font-normal mt-1"
-                        style={{ fontSize: moderateScale(12) }}
+                        className="font-normal mt-1"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                        }}
                     >
                         Order ID {formatOrderId(orderId)}
                     </Text>
@@ -224,28 +260,33 @@ export default function OrderSuccessScreen() {
                         >
                             <Text
                                 numberOfLines={1}
-                                className="flex-1 text-[#1F1F1F]/65 font-medium"
-                                style={{ fontSize: moderateScale(13) }}
+                                className="flex-1 font-medium"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {item.name} x{item.quantity}
                             </Text>
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold tracking-wide"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold tracking-wide"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
-                               ₹
-                                {(
-                                    Number(item.price ?? item.unit_price ??0) *
-                                    Number(item.quantity)
+                               ₹{(
+                                    Number(item.price ?? item.unit_price ??0) * Number(item.quantity)
                                 ).toLocaleString("en-IN")}
                             </Text>
                         </View>
                     ))}
 
                     <View
-                        className="rounded-full bg-[#E8DDD3]/55"
+                        className="rounded-full"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                             height: verticalScale(0.7),
                             marginVertical: verticalScale(8),
                             marginHorizontal: verticalScale(2)
@@ -254,8 +295,11 @@ export default function OrderSuccessScreen() {
 
                     <View className="flex-row justify-between items-center">
                         <Text
-                            className="text-[#1F1F1F]/85 font-semibold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                            }}
                         >
                             {paymentMethod === "cod"
                                 ? "Cash on Delivery"
@@ -264,8 +308,11 @@ export default function OrderSuccessScreen() {
                         </Text>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold tracking-wide"
-                            style={{ fontSize: moderateScale(16) }}
+                            className="font-bold tracking-wide"
+                            style={{
+                                fontSize: moderateScale(16),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             ₹{Number(totalAmount ?? 0).toLocaleString("en-IN")}
                         </Text>
@@ -276,19 +323,24 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-[#FAFAFA] justify-center items-center border-[#1F1F1F]/10 py-4 px-5 gap-2"
+                        className="justify-center items-center py-4 px-5 gap-2"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22)
                         }}
                     >
-                        <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                        <LocationIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                         
                         <Text
-                            className="text-[#1F1F1F] font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Track
                         </Text>
@@ -297,19 +349,24 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-[#FAFAFA] items-center border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
+                        className="items-center py-4 px-5 gap-2 justify-center"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22),
                         }}
                     >
-                        <ReorderIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                        <ReorderIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                         
                         <Text
-                            className="text-[#1F1F1F] font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Reorder
                         </Text>  
@@ -318,19 +375,24 @@ export default function OrderSuccessScreen() {
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="bg-[#FAFAFA] items-center border-[#1F1F1F]/10 py-4 px-5 gap-2 justify-center"
+                        className="items-center py-4 px-5 gap-2 justify-center"
                         style={{
+                            backgroundColor: COLORS.secondaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.5),
                             width: cardWidth,
                             height: moderateScale(75),
                             borderRadius: moderateScale(22),
                         }}
                     >
-                        <InvoiceIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                        <InvoiceIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
                         
                         <Text
-                            className="text-[#1F1F1F] font-medium"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Invoice
                         </Text> 

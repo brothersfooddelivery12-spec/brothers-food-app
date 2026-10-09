@@ -7,6 +7,8 @@ import ProfileOutlineIcon from '@/assets/icon/ProfileOutlineIcon.svg'
 import SearchFilledIcon from '@/assets/icon/SearchFilledIcon.svg'
 import SearchOulineIcon from '@/assets/icon/SearchOutline.svg'
 import ShoppingBagIcon from '@/assets/icon/ShoppingBagIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs"
 import { Pressable, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -19,7 +21,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
     )
 
     const getIcon = (routeName: string, focused: boolean) => {
-        const color = focused ? "#1F1F1F" : "#929292"
+        const color = focused ? COLORS.primaryTextColor : COLORS.placeholderTextColor
         const size = moderateScale(24)
 
         switch (routeName) {
@@ -86,12 +88,11 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                 {getIcon(route.name, focused)}
 
                 <Text
-                    className={`font-medium ${
-                        focused
-                            ? "text-[#1F1F1F]"
-                            : "text-[#929292]"
-                    }`}
-                    style={{ fontSize: moderateScale(11) }}
+                    className="font-medium"
+                    style={{
+                        fontSize: moderateScale(11),
+                        color: focused ? COLORS.primaryTextColor : COLORS.placeholderTextColor
+                    }}
                 >
                     {label}
                 </Text>
@@ -108,8 +109,10 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
             }}
         >
             <View
-                className="flex-1 flex-row items-center bg-[#FFFFFF] border-[#1F1F1F]/10 shadow-md"
+                className="flex-1 flex-row items-center shadow-md"
                 style={{
+                    backgroundColor: COLORS.primaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     borderRadius: moderateScale(22),
                     paddingHorizontal: moderateScale(8)
@@ -136,10 +139,10 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                     marginLeft: -moderateScale(33),
                     top: -moderateScale(20),
                     paddingRight: moderateScale(3.5),
-                    backgroundColor: "#3F2516",
+                    backgroundColor: COLORS.primaryColor,
                     borderWidth: moderateScale(3.5),
-                    borderColor: "#FFFFFF",
-                    shadowColor: "#79665C",
+                    borderColor: COLORS.primaryBackgroundColor,
+                    shadowColor: COLORS.primaryColor,
                     shadowOffset: { width: 0, height: 7 },
                     shadowOpacity: 0.25,
                     shadowRadius: 12,
@@ -147,7 +150,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
                     zIndex: 100
                 }}
             >
-                <ShoppingBagIcon width={moderateScale(36)} height={moderateScale(36)} color="#FFFFFF" />
+                <ShoppingBagIcon width={moderateScale(36)} height={moderateScale(36)} color={COLORS.primaryBackgroundColor} />
             </Pressable>
         </View>
     )

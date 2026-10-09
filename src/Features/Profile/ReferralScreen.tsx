@@ -10,7 +10,9 @@ import SendIcon from '@/assets/icon/SendIcon.svg'
 import ShareIcon from '@/assets/icon/ShareIcon.svg'
 import UserIcon from '@/assets/icon/UserFilledIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
 import { referralFriends } from '@/constant/referralFriends'
+import { hexToRgba } from '@/utils/hexToRgba'
 import * as Clipboard from "expo-clipboard"
 import { Image } from 'expo-image'
 import { router } from "expo-router"
@@ -66,10 +68,13 @@ export default function ReferralScreen(){
     )
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -78,34 +83,42 @@ export default function ReferralScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Refer & Earn
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Invite friends, unlock exciting rewards
                     </Text>
@@ -127,35 +140,41 @@ export default function ReferralScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-4 py-6 items-center flex-row"
+                            className="px-4 py-6 items-center flex-row"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
                             <View className='justify-center flex-1 items-start'>
                                 <View
-                                    className='flex-row items-center justify-center gap-2 bg-[#F8D56A]'
+                                    className='flex-row items-center justify-center gap-2'
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(18),
                                         paddingRight: scale(8),
                                         paddingLeft: scale(6),
                                         paddingVertical: verticalScale(3)
                                     }}
                                 >
-                                    <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={"#3F2516"} />
+                                    <CrownIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryColor} />
 
                                     <Text
-                                        className='text-[#3F2516] font-semibold uppercase'
-                                        style={{ fontSize: moderateScale(9) }}
+                                        className='font-semibold uppercase'
+                                        style={{
+                                            fontSize: moderateScale(9),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         EXCLUSIVE OFFER
                                     </Text>
                                 </View>
 
                                 <Text
-                                    className='text-[#FFFFFF] font-extrabold ml-2'
+                                    className='font-extrabold ml-2'
                                     style={{
+                                        color: COLORS.primaryBackgroundColor,
                                         fontSize: moderateScale(20),
                                         marginTop: verticalScale(10)
                                     }}
@@ -164,8 +183,9 @@ export default function ReferralScreen(){
                                 </Text>
 
                                 <Text
-                                    className='text-[#FFFFFF]/75 font-normal leading-5 ml-2'
+                                    className='font-normal leading-5 ml-2'
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                                         fontSize: moderateScale(12),
                                         marginTop: verticalScale(4)
                                     }}
@@ -190,8 +210,10 @@ export default function ReferralScreen(){
 
                         <View className="flex-row items-center gap-3 mt-5">
                             <View
-                                className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3"
+                                className="items-center justify-center py-4 px-3"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(125),
@@ -199,40 +221,52 @@ export default function ReferralScreen(){
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <UserIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} />
+                                    <UserIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium mt-2"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium mt-2"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Your Reward
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-1"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-bold mt-1"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     You Earn ₹100
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium mt-2"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium mt-2"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     Credited after their first order
                                 </Text>
                             </View>
 
                             <View
-                                className="items-center bg-[#FAFAFA] border-[#1F1F1F]/10 py-4 px-3"
+                                className="items-center py-4 px-3"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                     borderWidth: moderateScale(0.5),
                                     width: cardWidth,
                                     height: moderateScale(125),
@@ -240,32 +274,42 @@ export default function ReferralScreen(){
                                 }}
                             >
                                 <View
-                                    className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <OfferIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} />
+                                    <OfferIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} />
                                 </View>
 
                                 <Text
-                                    className="text-[#1F1F1F]/75 font-medium mt-2"
-                                    style={{ fontSize: moderateScale(11) }}
+                                    className="font-medium mt-2"
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Friend's Rewards
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-1"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-bold mt-1"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Friend Gets ₹100 OFF
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium mt-2"
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className="font-medium mt-2"
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                    }}
                                 >
                                     On their first gourmet meal
                                 </Text>
@@ -273,29 +317,39 @@ export default function ReferralScreen(){
                         </View>
 
                         <View
-                            className="py-6 px-8 bg-[#E5E4E2]/45 mx-2 items-center justify-center"
+                            className="py-6 px-8 mx-2 items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.45),
                                 borderRadius: moderateScale(22),
                                 marginTop: moderateScale(18)
                             }}
                         >
                             <Text
-                                className='text-[#1F1F1F] font-bold'
-                                style={{ fontSize: moderateScale(16) }}
+                                className='font-bold'
+                                style={{
+                                    fontSize: moderateScale(16),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Your Personal Referral Code
                             </Text>
 
                             <View
-                                className='bg-[#FFFFFF] w-full border border-dashed border-[#1F1F1F]/20 p-4 items-center justify-center'
+                                className='w-full border border-dashed p-4 items-center justify-center'
                                 style={{
+                                    backgroundColor: COLORS.primaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.15),
                                     borderRadius: moderateScale(18),
                                     marginTop: verticalScale(14)
                                 }}
                             >
                                 <Text
-                                    className='text-[#1F1F1F] font-black'
-                                    style={{ fontSize: moderateScale(18), letterSpacing: 4 }}
+                                    className='font-black'
+                                    style={{
+                                        color: COLORS.primaryTextColor,
+                                        fontSize: moderateScale(18),
+                                        letterSpacing: 4
+                                    }}
                                 >
                                     RAJ12345
                                 </Text>
@@ -311,18 +365,22 @@ export default function ReferralScreen(){
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={handleCopy}
-                                    className="flex-1 flex-row gap-2 bg-[#3F2516] items-center justify-center"
+                                    className="flex-1 flex-row gap-2 items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.primaryColor,
                                         borderRadius: moderateScale(28),
                                         paddingVertical: verticalScale(10),
                                         paddingHorizontal: scale(12)
                                     }}
                                 >
-                                    <CopyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                                    <CopyIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                                     <Text
-                                        className="text-[#FFFFFF] font-semibold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryBackgroundColor
+                                        }}
                                     >
                                         Copy
                                     </Text>
@@ -331,18 +389,22 @@ export default function ReferralScreen(){
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => {}}
-                                    className="flex-1 flex-row gap-2 bg-[#F8D56A] items-center justify-center"
+                                    className="flex-1 flex-row gap-2 items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(28),
                                         paddingVertical: verticalScale(10),
                                         paddingHorizontal: scale(12)
                                     }}
                                 >
-                                    <SendIcon width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" strokeWidth={1.8} />
+                                    <SendIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} strokeWidth={1.8} />
 
                                     <Text
-                                        className="text-[#5C4639] font-semibold"
-                                        style={{ fontSize: moderateScale(14) }}
+                                        className="font-semibold"
+                                        style={{
+                                            fontSize: moderateScale(14),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Share
                                     </Text>
@@ -351,8 +413,9 @@ export default function ReferralScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F] font-bold"
+                            className="font-semibold"
                             style={{
+                                color: COLORS.primaryTextColor,
                                 fontSize: moderateScale(15),
                                 marginTop: verticalScale(18),
                                 marginBottom: verticalScale(8)
@@ -365,15 +428,19 @@ export default function ReferralScreen(){
                 ListFooterComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] py-5 px-5 mx-1"
+                            className="py-5 px-5 mx-1"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(18)
                             }}
                         >
                             <Text
-                                className="text-white/70 font-medium"
-                                style={{ fontSize: moderateScale(12) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(12),
+                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                                }}
                             >
                                 Reward Wallet
                             </Text>
@@ -383,13 +450,16 @@ export default function ReferralScreen(){
                                 style={{ marginTop: verticalScale(5) }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF] font-black tracking-wider"
-                                    style={{ fontSize: moderateScale(24) }}
+                                    className="font-black tracking-wider"
+                                    style={{
+                                        fontSize: moderateScale(24),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     ₹1,250
                                 </Text>
 
-                                <CircleStarIcon width={moderateScale(23)} height={moderateScale(23)} color="#F8D56A" />
+                                <CircleStarIcon width={moderateScale(23)} height={moderateScale(23)} color={COLORS.accentColor} />
                             </View>
 
                             <View
@@ -400,14 +470,17 @@ export default function ReferralScreen(){
                                 }}
                             >
                                 <View
-                                    className="flex-1 flex-row items-center bg-white/10 border border-white/20"
+                                    className="flex-1 flex-row items-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.1),
+                                        borderColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
+                                        borderWidth: moderateScale(0.7),
                                         paddingHorizontal: scale(10),
                                         paddingVertical: verticalScale(6),
                                         borderRadius: moderateScale(16)
                                     }}
                                 >
-                                    <WalletIcon width={moderateScale(22)} height={moderateScale(22)} color="#FFFFFF" />
+                                    <WalletIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryBackgroundColor} />
 
                                     <View
                                         className="flex-1"
@@ -415,15 +488,19 @@ export default function ReferralScreen(){
                                     >
                                         <Text
                                             numberOfLines={1}
-                                            className="text-white/60 font-medium"
-                                            style={{ fontSize: moderateScale(10) }}
+                                            className="font-medium"
+                                            style={{
+                                                fontSize: moderateScale(10),
+                                                color: hexToRgba(COLORS.primaryBackgroundColor, 0.65)
+                                            }}
                                         >
                                             Pending Rewards
                                         </Text>
 
                                         <Text
-                                            className="text-[#FFFFFF] font-bold tracking-wider"
+                                            className="font-bold tracking-wider"
                                             style={{
+                                                color: COLORS.primaryBackgroundColor,
                                                 fontSize: moderateScale(14),
                                                 marginTop: verticalScale(2)
                                             }}
@@ -436,19 +513,21 @@ export default function ReferralScreen(){
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={() => {}}
-                                    className="flex-1 flex-row items-center justify-center bg-[#F8D56A]"
+                                    className="flex-1 flex-row items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         paddingHorizontal: scale(10),
                                         paddingVertical: verticalScale(6),
                                         borderRadius: moderateScale(16)
                                     }}
                                 >
-                                    <BankIcon width={moderateScale(20)} height={moderateScale(20)} color="#5C4639" strokeWidth={1.8} />
+                                    <BankIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={1.8} />
 
                                     <Text
                                         numberOfLines={1}
-                                        className="text-[#5C4639] font-bold"
+                                        className="font-bold"
                                         style={{
+                                            color: COLORS.primaryColor,
                                             fontSize: moderateScale(12),
                                             marginLeft: scale(6)
                                         }}
@@ -460,8 +539,10 @@ export default function ReferralScreen(){
                         </View>
 
                         <View
-                            className="bg-[#FAFAFA] border-[#1F1F1F]/10 mx-2"
+                            className="mx-2"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 borderRadius: moderateScale(22),
                                 paddingHorizontal: scale(14),
@@ -470,8 +551,9 @@ export default function ReferralScreen(){
                             }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-semibold uppercase"
+                                className="font-semibold uppercase"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(12),
                                     letterSpacing: 0.8
                                 }}
@@ -490,19 +572,21 @@ export default function ReferralScreen(){
                                         <React.Fragment key={item.id}>
                                             <View className="flex-1 items-center">
                                                 <View
-                                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                                    className="items-center justify-center"
                                                     style={{
+                                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                         width: moderateScale(42),
                                                         height: moderateScale(42),
                                                         borderRadius: moderateScale(28)
                                                     }}
                                                 >
-                                                    <Icon width={moderateScale(19)} height={moderateScale(19)} color="#5C4639" strokeWidth={1.8} />
+                                                    <Icon width={moderateScale(19)} height={moderateScale(19)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                                                 </View>
 
                                                 <Text
-                                                    className="text-[#1F1F1F] font-bold text-center"
+                                                    className="font-bold text-center"
                                                     style={{
+                                                        color: COLORS.primaryTextColor,
                                                         fontSize: moderateScale(12),
                                                         marginTop: verticalScale(8)
                                                     }}
@@ -511,8 +595,9 @@ export default function ReferralScreen(){
                                                 </Text>
 
                                                 <Text
-                                                    className="text-[#1F1F1F]/65 font-medium text-center"
+                                                    className="font-medium text-center"
                                                     style={{
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                                         fontSize: moderateScale(10),
                                                         lineHeight: moderateScale(13),
                                                         marginTop: verticalScale(4)
@@ -539,7 +624,7 @@ export default function ReferralScreen(){
                                                             style={{
                                                                 width: scale(3),
                                                                 height: 1,
-                                                                backgroundColor: "rgba(31,31,31,0.18)"
+                                                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.45)
                                                             }}
                                                         />
                                                     ))}
@@ -554,19 +639,23 @@ export default function ReferralScreen(){
                         <TouchableOpacity
                             activeOpacity={0.95}
                             onPress={() => {}}
-                            className="flex-row gap-2 items-center justify-center bg-[#3F2516] mx-2"
+                            className="flex-row gap-2 items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 marginTop: verticalScale(20),
                                 borderRadius: moderateScale(28),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(14)
                             }}
                         >
-                            <SendIcon width={moderateScale(20)} height={moderateScale(20)} color={"#FFFFFF"} strokeWidth={1.8} />
+                            <SendIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
                         
                             <Text
-                                className="text-[#FFFFFF] font-semibold"
-                                style={{ fontSize: moderateScale(14) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(14),
+                                    color: COLORS.primaryBackgroundColor
+                                }}
                             >
                                 Invite Friends Now
                             </Text>

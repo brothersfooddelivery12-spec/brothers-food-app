@@ -1,7 +1,7 @@
-import { Text, TouchableOpacity, View } from "react-native"
 import ArrowRightIcon from "@/assets/icon/ArrowRight.svg"
-import { moderateScale } from 'react-native-size-matters'
 import React from "react"
+import { Text, TouchableOpacity, View } from "react-native"
+import { moderateScale } from 'react-native-size-matters'
 
 export interface Offer {
     id: string
@@ -134,9 +134,7 @@ const OfferCard = ({ offer, onPress }: OfferCardProps) => {
                     height={moderateScale(16)}
                     color={colors.icon}
                     strokeWidth={2.5}
-                    style={{
-                        marginRight: -moderateScale(4),
-                    }}
+                    style={{ marginRight: -moderateScale(4) }}
                 />
             </View>
         </TouchableOpacity>

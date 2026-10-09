@@ -1,7 +1,9 @@
-import ClockIcon from '@/assets/icon/ClockIcon.svg'
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
+import ClockIcon from '@/assets/icon/TimerIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, verticalScale } from "react-native-size-matters"
 
@@ -26,6 +28,16 @@ const SimilarRestaurantCard = ({
 }: SimilarRestaurantCardProps) => {
     const isInactive = !isActive
 
+    const [imageError, setImageError] = useState(false)
+
+    const DefaultRestaurantImage = require("../../../../assets/images/Default_Restaurant_Cover_Image.png")
+
+    useEffect(() => {
+        setImageError(false)
+    }, [image])
+    
+    const hasImage = !!image && !imageError
+
     return (
         <TouchableOpacity
             activeOpacity={isActive ? 0.95 : 1}
@@ -36,13 +48,13 @@ const SimilarRestaurantCard = ({
             }}
             className="overflow-hidden"
             style={{
-                borderWidth: moderateScale(0.5),
                 width: moderateScale(165),
                 borderRadius: moderateScale(22),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
+                borderWidth: moderateScale(0.5),
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View
@@ -54,11 +66,22 @@ const SimilarRestaurantCard = ({
                         width: "100%",
                         height: "100%",
                         borderRadius: moderateScale(18),
-                        overflow: "hidden"
+                        overflow: "hidden",
+                        borderWidth: !hasImage && !isInactive ? 0.7 : 0,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                     }}
                 >
                     <Image
-                        source={image}
+                        source={
+                            hasImage
+                                ? {
+                                    uri: image!
+                                }
+                                : DefaultRestaurantImage
+                        }
+                        onError={() => {
+                            setImageError(true)
+                        }}
                         contentFit="cover"
                         cachePolicy="memory-disk"
                         style={{
@@ -72,7 +95,7 @@ const SimilarRestaurantCard = ({
                         <View
                             pointerEvents="none"
                             className="absolute inset-0"
-                            style={{ backgroundColor: "rgba(31,31,31,0.35)" }}
+                            style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.25) }}
                         />
                     )}
                 </View>
@@ -86,12 +109,15 @@ const SimilarRestaurantCard = ({
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: verticalScale(5),
                             borderRadius: moderateScale(9),
-                            backgroundColor: "rgba(31,31,31,0.82)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.85)
                         }}
                     >
                         <Text
-                            className="font-bold text-white uppercase"
-                            style={{ fontSize: moderateScale(8.5) }}
+                            className="font-bold uppercase"
+                            style={{
+                                fontSize: moderateScale(8.5),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Currently Closed
                         </Text>
@@ -111,7 +137,7 @@ const SimilarRestaurantCard = ({
                     className="font-bold"
                     style={{
                         fontSize: moderateScale(13),
-                        color: isInactive ? "rgba(31,31,31,0.50)" : "#1F1F1F"
+                        color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                     }}
                 >
                     {name}
@@ -125,14 +151,14 @@ const SimilarRestaurantCard = ({
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
                         <RatingIcon
                             width={moderateScale(15)}
                             height={moderateScale(15)}
-                            color={isInactive ? "#858585" : "#5C4639"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                         />
 
                         <Text
@@ -140,7 +166,7 @@ const SimilarRestaurantCard = ({
                             style={{
                                 fontSize: moderateScale(11.5),
                                 marginRight: moderateScale(2),
-                                color: isInactive ? "#858585" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             {rating.toFixed(1)}
@@ -154,14 +180,15 @@ const SimilarRestaurantCard = ({
                                 width: moderateScale(22),
                                 height: moderateScale(22),
                                 backgroundColor: isInactive
-                                    ? "rgba(31,31,31,0.07)"
-                                    : "rgba(232,185,63,0.15)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                    : hexToRgba(COLORS.accentColor, 0.15)
                             }}
                         >
                             <ClockIcon
                                 width={moderateScale(15)}
                                 height={moderateScale(15)}
-                                color={isInactive ? "#858585" : "#5C4639"}
+                                color={isInactive ? COLORS.inactiveContentColor : hexToRgba(COLORS.primaryTextColor, 0.65)}
+                                strokeWidth={1.8}
                             />
                         </View>
 
@@ -170,8 +197,8 @@ const SimilarRestaurantCard = ({
                             style={{
                                 fontSize: moderateScale(11),
                                 color: isInactive
-                                    ? "rgba(31,31,31,0.45)"
-                                    : "rgba(31,31,31,0.75)"
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                    : hexToRgba(COLORS.primaryTextColor, 0.65)
                             }}
                         >
                             {isInactive ? "Closed" : deliveryTime}

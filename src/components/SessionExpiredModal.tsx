@@ -1,5 +1,7 @@
+import { COLORS } from "@/constant/colors"
 import { useAuthStore } from "@/Stores/auth-store"
 import { useSessionStore } from "@/Stores/useSessionStore"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import { useRouter } from "expo-router"
 import { useCallback } from "react"
@@ -36,8 +38,9 @@ export default function SessionExpiredModal() {
                 style={{ paddingHorizontal: scale(22) }}
             >
                 <View
-                    className="w-full bg-white"
+                    className="w-full"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
                         maxWidth: moderateScale(380),
                         borderRadius: moderateScale(24),
                         paddingTop: verticalScale(5),
@@ -58,15 +61,19 @@ export default function SessionExpiredModal() {
                     </View>
 
                     <Text
-                        className="text-[#1F1F1F] font-bold text-center"
-                        style={{ fontSize: moderateScale(18) }}
+                        className="font-bold text-center"
+                        style={{
+                            fontSize: moderateScale(18),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Session Expired
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium text-center"
+                        className="font-medium text-center"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                             marginTop: verticalScale(5),
                             fontSize: moderateScale(12.5),
                             lineHeight: moderateScale(16)
@@ -78,16 +85,20 @@ export default function SessionExpiredModal() {
                     <TouchableOpacity
                         activeOpacity={0.9}
                         onPress={handleLoginAgain}
-                        className="bg-[#3F2516] items-center justify-center"
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             height: verticalScale(48),
                             borderRadius: moderateScale(18),
                             marginTop: verticalScale(15)
                         }}
                     >
                         <Text
-                            className="text-white font-bold"
-                            style={{ fontSize: moderateScale(14) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Log In Again
                         </Text>

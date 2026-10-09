@@ -8,9 +8,12 @@ import HandIcon from '@/assets/icon/HandHelpingIcon.svg'
 import HomeIcon from '@/assets/icon/HomeIcon.svg'
 import InfoIcon from '@/assets/icon/InformationCircleIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
+import LocationFilledIcon from '@/assets/icon/LocationIcon3.svg'
 import MortarboardIcon from '@/assets/icon/MortarboardIcon.svg'
 import OfficeIcon from '@/assets/icon/OfficeIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { router } from "expo-router"
 import { useCallback, useState } from 'react'
 import { StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
@@ -105,10 +108,13 @@ export default function DeliveryInstructionScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -117,34 +123,42 @@ export default function DeliveryInstructionScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Delivery Instructions
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Choose where and how to receive your order.
                     </Text>
@@ -162,26 +176,34 @@ export default function DeliveryInstructionScreen(){
                 bottomOffset={30}
                 extraKeyboardSpace={20}
             >
-
                 <View
-                    className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                    className="mt-3 p-3"
+                    style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderRadius: moderateScale(18),
+                        borderWidth: moderateScale(0.5)
+                    }}
                 >
                     <View className='flex-row gap-2 items-center'>
                         <View
-                            className="items-center justify-center bg-[#E8B93F]/15"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(38),
                                 height: moderateScale(38),
                                 borderRadius: moderateScale(12)
                             }}
                         >
-                            <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color={"#3F2516"} strokeWidth={1.8} />
+                            <LocationFilledIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} strokeWidth={1.8} />
                         </View>
 
                         <Text
-                            className='text-[#1F1F1F] font-bold'
-                            style={{ fontSize: moderateScale(13) }}
+                            className='font-bold'
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Select Delivery Address
                         </Text>
@@ -202,16 +224,16 @@ export default function DeliveryInstructionScreen(){
                                     key={item.id}
                                     activeOpacity={0.95}
                                     onPress={() => setSelectedAddressId(item.id)}
-                                    className="p-3 border"
+                                    className="p-3"
                                     style={{
                                         borderRadius: moderateScale(16),
                                         backgroundColor: isSelected
-                                            ? "rgba(232,185,63,0.07)"
-                                            : "#FFFFFF",
+                                            ? hexToRgba(COLORS.accentColor, 0.1)
+                                            : COLORS.primaryBackgroundColor,
                                         borderWidth: moderateScale(0.7),
                                         borderColor: isSelected
-                                            ? "rgba(63, 37, 22, 0.45)"
-                                            : "rgba(31,31,31,0.10)"
+                                            ? hexToRgba(COLORS.accentColor, 0.15)
+                                            : hexToRgba(COLORS.primaryTextColor, 0.1)
                                     }}
                                 >
                                     <View className="flex-row items-start gap-3">
@@ -219,37 +241,43 @@ export default function DeliveryInstructionScreen(){
                                             className="items-center justify-center rounded-full"
                                             style={{
                                                 backgroundColor: isSelected
-                                                    ? "#3F2516"
-                                                    : "rgba(232,185,63,0.15)",
+                                                    ? COLORS.primaryColor
+                                                    : hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(42),
                                                 height: moderateScale(42)
                                             }}
                                         >
-                                            <Icon width={moderateScale(20)} height={moderateScale(20)} color={isSelected ? "#FFFFFF" : "#3F2516"} strokeWidth={1.8} />
+                                            <Icon width={moderateScale(20)} height={moderateScale(20)} color={isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor} strokeWidth={1.8} />
                                         </View>
 
                                         <View className="flex-1">
                                             <View className="flex-row items-center gap-2">
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F] font-semibold"
-                                                    style={{ fontSize: moderateScale(14) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(14),
+                                                        color: COLORS.primaryTextColor
+                                                    }}
                                                 >
                                                     {item.title}
                                                 </Text>
 
                                                 {item.isDefault && (
                                                     <View
-                                                        className="bg-[#F8D56A]"
                                                         style={{
+                                                            backgroundColor: COLORS.accentLightColor,
                                                             borderRadius: moderateScale(10),
                                                             paddingHorizontal: scale(8),
                                                             paddingVertical: verticalScale(3)
                                                         }}
                                                     >
                                                         <Text
-                                                            className="text-[#3F2516] font-semibold uppercase"
-                                                            style={{ fontSize: moderateScale(7.5) }}
+                                                            className="font-semibold uppercase"
+                                                            style={{
+                                                                fontSize: moderateScale(7.5),
+                                                                color: COLORS.primaryColor
+                                                            }}
                                                         >
                                                             Default
                                                         </Text>
@@ -258,8 +286,9 @@ export default function DeliveryInstructionScreen(){
                                             </View>
 
                                             <Text
-                                                className="text-[#1F1F1F]/75 font-medium"
+                                                className="font-medium"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                     fontSize: moderateScale(10),
                                                     lineHeight: moderateScale(15),
                                                     marginTop: verticalScale(3)
@@ -276,8 +305,8 @@ export default function DeliveryInstructionScreen(){
                                                 height: moderateScale(22),
                                                 borderWidth: moderateScale(2),
                                                 borderColor: isSelected
-                                                    ? "#5c4639"
-                                                    : "#D6D0CA",
+                                                    ? COLORS.secondaryColor
+                                                    : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
                                             }}
                                         >
                                             {isSelected && (
@@ -286,7 +315,7 @@ export default function DeliveryInstructionScreen(){
                                                     style={{
                                                         width: moderateScale(14),
                                                         height: moderateScale(14),
-                                                        backgroundColor: "#5c4639",
+                                                        backgroundColor: COLORS.secondaryColor
                                                     }}
                                                 />
                                             )}
@@ -299,8 +328,9 @@ export default function DeliveryInstructionScreen(){
                 </View>
 
                 <View
-                    className="bg-[#FAFAFA] border-[#1F1F1F]/10"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         borderRadius: moderateScale(18),
                         padding: moderateScale(12),
@@ -309,14 +339,15 @@ export default function DeliveryInstructionScreen(){
                 >
                     <View className="flex-row items-center">
                         <View
-                            className="items-center justify-center bg-[#E8B93F]/15"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(38),
                                 height: moderateScale(38),
                                 borderRadius: moderateScale(12)
                             }}
                         >
-                            <InstructionIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={1.8} />
+                            <InstructionIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={1.8} />
                         </View>
 
                         <View
@@ -324,15 +355,19 @@ export default function DeliveryInstructionScreen(){
                             style={{ marginLeft: scale(10) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold"
-                                style={{ fontSize: moderateScale(13) }}
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Delivery Instructions
                             </Text>
 
                             <Text
-                                className="text-[#1F1F1F]/75 font-medium"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(10),
                                     marginTop: verticalScale(2)
                                 }}
@@ -342,16 +377,20 @@ export default function DeliveryInstructionScreen(){
                         </View>
 
                         <Text
-                            className="text-[#1F1F1F]/55 font-medium"
-                            style={{ fontSize: moderateScale(9) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(9),
+                                color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                            }}
                         >
                             {deliveryNote.length}/200
                         </Text>
                     </View>
 
                     <View
-                        className="border-[#1F1F1F]/10 bg-[#E5E4E2]/35"
                         style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             borderWidth: moderateScale(0.7),
                             borderRadius: moderateScale(14),
                             marginTop: verticalScale(12),
@@ -364,18 +403,19 @@ export default function DeliveryInstructionScreen(){
                             value={deliveryNote}
                             onChangeText={setDeliveryNote}
                             placeholder="E.g. Don’t ring the doorbell, call on phone, leave at the gate, etc."
-                            placeholderTextColor="#7A7D81"
+                            placeholderTextColor={COLORS.placeholderTextColor}
                             multiline
                             maxLength={200}
                             textAlignVertical="top"
-                            className="text-[#151515] font-medium flex-1"
+                            className="font-medium flex-1"
                             style={{
+                                color: COLORS.inputTextColor,
                                 fontSize: moderateScale(12),
                                 lineHeight: moderateScale(18),
                                 paddingVertical: 0,
                                 includeFontPadding: false
                             }}
-                            selectionColor="#79685e"
+                            selectionColor={COLORS.selectionColor}
                         />
                     </View>
 
@@ -405,20 +445,20 @@ export default function DeliveryInstructionScreen(){
                                         paddingVertical: verticalScale(6),
 
                                         backgroundColor: isSelected
-                                            ? "rgba(63, 37, 22, 0.85)"
-                                            : "#FFFFFF",
+                                            ? COLORS.secondaryColor
+                                            : COLORS.primaryBackgroundColor,
                                         borderColor: isSelected
-                                            ? "rgba(63, 37, 22, 0.45)"
-                                            : "rgba(31,31,31,0.10)"
+                                            ? COLORS.secondaryColor
+                                            : hexToRgba(COLORS.primaryTextColor, 0.1),
                                     }}
                                 >
-                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? "#FFFFFF" : "#3F2516"} strokeWidth={1.7} />
+                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? COLORS.primaryBackgroundColor : COLORS.primaryTextColor} strokeWidth={1.7} />
 
                                     <Text
                                         numberOfLines={1}
-                                        className="text-[#1F1F1F] font-medium flex-1"
+                                        className="font-medium flex-1"
                                         style={{
-                                            color: isSelected ? "#FFFFFF" : "#1F1F1F",
+                                            color: isSelected ? COLORS.primaryBackgroundColor : COLORS.primaryTextColor,
                                             fontSize: moderateScale(10),
                                             marginLeft: scale(8)
                                         }}
@@ -433,16 +473,20 @@ export default function DeliveryInstructionScreen(){
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="items-center justify-center bg-[#3F2516]"
+                        className="items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             borderRadius: moderateScale(18),
                             paddingVertical: verticalScale(12),
                             marginTop: verticalScale(14)
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Save Instructions
                         </Text>
@@ -450,45 +494,66 @@ export default function DeliveryInstructionScreen(){
                 </View>
 
                 <View
-                    className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18), marginTop: verticalScale(14), borderWidth: moderateScale(0.5) }}
+                    className="mt-3 p-3"
+                    style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderRadius: moderateScale(18),
+                        marginTop: verticalScale(14),
+                        borderWidth: moderateScale(0.5)
+                    }}
                 >
                     <View className='flex-row gap-2 items-center'>
                         <View
-                            className="items-center justify-center bg-[#E8B93F]/15"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(38),
                                 height: moderateScale(38),
                                 borderRadius: moderateScale(12)
                             }}
                         >
-                            <CartIcon width={moderateScale(18)} height={moderateScale(18)} color={"#3F2516"} strokeWidth={1.8} />
+                            <CartIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} strokeWidth={1.8} />
                         </View>
 
                         <Text
-                            className='text-[#1F1F1F] font-bold'
-                            style={{ fontSize: moderateScale(13) }}
+                            className='font-bold'
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Delivery Preferences
                         </Text>
                     </View>
 
                     <View
-                        className="px-3 py-4 border-[#1F1F1F]/10 bg-[#FFFFFF] mt-4"
-                        style={{ borderRadius: moderateScale(14), borderWidth: moderateScale(0.7) }}
+                        className="px-3 py-4 mt-4"
+                        style={{
+                            backgroundColor: COLORS.primaryBackgroundColor,
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                            borderRadius: moderateScale(14),
+                            borderWidth: moderateScale(0.7)
+                        }}
                     >
                         <View className='flex-row gap-2 items-center mx-2'>
                             <View className='justify-center flex-1'>
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Contactless Delivery
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium mt-1'
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className='font-medium mt-1'
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Leave my order at the doorstep.
                                 </Text>
@@ -498,8 +563,8 @@ export default function DeliveryInstructionScreen(){
                         </View>
 
                         <View
-                            className="bg-[#1F1F1F]/10"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 height: 0.7,
                                 marginVertical: verticalScale(10),
                                 marginHorizontal: moderateScale(6)
@@ -509,15 +574,21 @@ export default function DeliveryInstructionScreen(){
                         <View className='flex-row gap-2 items-center mx-2'>
                             <View className='justify-center flex-1'>
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Priority Delivery
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium mt-1'
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className='font-medium mt-1'
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Assign best available delivery partner.
                                 </Text>
@@ -527,8 +598,8 @@ export default function DeliveryInstructionScreen(){
                         </View>
 
                         <View
-                            className="bg-[#1F1F1F]/10"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 height: 1,
                                 marginVertical: verticalScale(10),
                                 marginHorizontal: moderateScale(6)
@@ -538,15 +609,21 @@ export default function DeliveryInstructionScreen(){
                         <View className='flex-row gap-2 items-center mx-2'>
                             <View className='justify-center flex-1'>
                                 <Text
-                                    className='text-[#1F1F1F] font-semibold'
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className='font-semibold'
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Safe Drop Location
                                 </Text>
 
                                 <Text
-                                    className='text-[#1F1F1F]/75 font-medium mt-1'
-                                    style={{ fontSize: moderateScale(10) }}
+                                    className='font-medium mt-1'
+                                    style={{
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                    }}
                                 >
                                     Deliver at a safe and secure place.
                                 </Text>
@@ -557,16 +634,22 @@ export default function DeliveryInstructionScreen(){
                     </View>
 
                     <View
-                        className="flex-row gap-3 p-3 items-center bg-[#E8B93F]/15 border border-[#E8B93F]/25"
+                        className="flex-row gap-3 p-3 items-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                            borderColor: hexToRgba(COLORS.accentColor, 0.15),
                             borderRadius: moderateScale(16),
+                            borderWidth: moderateScale(0.5),
                             marginTop: verticalScale(14)
                         }}
                     >
-                        <InfoIcon width={moderateScale(20)} height={moderateScale(20)} color={"#5c4639"} strokeWidth={1.8} />
+                        <InfoIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={1.5} />
                         <Text
-                            className="text-[#3F2516] font-medium flex-1"
-                            style={{ fontSize: moderateScale(10)}}
+                            className="font-medium flex-1"
+                            style={{
+                                fontSize: moderateScale(10),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             Our delivery partner will follow your instructions and contact you if needed.
                         </Text>

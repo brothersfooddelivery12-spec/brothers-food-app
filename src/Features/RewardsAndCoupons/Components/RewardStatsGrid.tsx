@@ -1,3 +1,5 @@
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import React from "react"
 import { FlatList, Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -28,8 +30,10 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
 
         return (
             <View
-                className="bg-[#FAFAFA] border-[#1F1F1F]/10 flex-row items-center flex-1"
+                className="flex-row items-center flex-1"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.5),
                     minHeight: verticalScale(44),
                     borderRadius: moderateScale(20),
@@ -41,14 +45,15 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
                 }}
             >
                 <View
-                    className="items-center justify-center bg-[#E8B93F]/15"
+                    className="items-center justify-center"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                         width: moderateScale(38),
                         height: moderateScale(38),
                         borderRadius: moderateScale(28)
                     }}
                 >
-                    <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#5C4639" />
+                    <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryColor} />
                 </View>
 
                 <View
@@ -57,8 +62,9 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
                 >
                     <Text
                         numberOfLines={2}
-                        className="text-[#1F1F1F]/75 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(10.5),
                             lineHeight: moderateScale(13)
                         }}
@@ -69,8 +75,9 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
                     <Text
                         numberOfLines={1}
                         adjustsFontSizeToFit
-                        className="text-[#1F1F1F] font-extrabold"
+                        className="font-extrabold"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(18),
                             marginTop: verticalScale(4)
                         }}

@@ -19,7 +19,9 @@ import PremiumBadgeIcon from '@/assets/icon/StarBadgeFilledIcon.svg'
 import { default as FoodIcon, default as UtensilsIcon } from '@/assets/icon/UtensilIcon2.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import SearchBar from '@/components/SearchBar'
+import { COLORS } from '@/constant/colors'
 import { Coupon, getAvailableCoupons, getCoupons } from '@/Services/api-service'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -379,7 +381,8 @@ export default function RewardsAndCouponsScreen(){
     },[])
 
     const mapAvailableCoupon = (coupon: Coupon): CouponItem => {
-        const validTo = new Date(coupon.valid_to)
+        const validTo = new Date(coupon.valid_to) 
+        const isExpired = validTo.getTime() < Date.now()
 
         const formattedExpiry =
             validTo.toLocaleDateString(
@@ -396,12 +399,16 @@ export default function RewardsAndCouponsScreen(){
             code: coupon.code,
             title: coupon.title,
             description: coupon.description,
-            note: `Valid until ${formattedExpiry}`,
+            note: isExpired
+                ? `Expired on ${formattedExpiry}`
+                : `Valid until ${formattedExpiry}`,
             noteType: "expiry",
-            featured: coupon.purchase_method === "FREE",
+            featured: coupon.purchase_method === "REWARD_POINTS",
             purchaseMethod: coupon.purchase_method,
             pointsRequired: coupon.points_required,
-            moneyPrice: Number(coupon.money_price)
+            moneyPrice: Number(coupon.money_price),
+            isActive: coupon.is_active,
+            isExpired
         }
     }
 
@@ -442,10 +449,13 @@ export default function RewardsAndCouponsScreen(){
     }, [search])
     
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
         
@@ -454,34 +464,42 @@ export default function RewardsAndCouponsScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Rewards & Coupons
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Explore your rewards and available coupons.
                     </Text>
@@ -503,35 +521,41 @@ export default function RewardsAndCouponsScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] px-4 py-4 items-center flex-row gap-2"
+                            className="px-4 py-4 items-center flex-row gap-2"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
                             <View className='justify-center flex-1 items-start'>
                                 <View
-                                    className='flex-row items-center justify-center gap-1 bg-[#F8D56A]'
+                                    className='flex-row items-center justify-center gap-1'
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(18),
                                         paddingRight: scale(6),
                                         paddingLeft: scale(4),
                                         paddingVertical: verticalScale(1)
                                     }}
                                 >
-                                    <CircleStarIcon width={moderateScale(19)} height={moderateScale(19)} color={"#3F2516"} />
+                                    <CircleStarIcon width={moderateScale(19)} height={moderateScale(19)} color={COLORS.primaryColor} />
 
                                     <Text
-                                        className='text-[#3F2516] font-semibold uppercase'
-                                        style={{ fontSize: moderateScale(9) }}
+                                        className='font-semibold uppercase'
+                                        style={{
+                                            fontSize: moderateScale(9),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Brothers rewards
                                     </Text>
                                 </View>
 
                                 <Text
-                                    className='text-[#FFFFFF]/80 font-normal ml-2'
+                                    className='font-normal ml-2'
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.8),
                                         fontSize: moderateScale(14),
                                         marginTop: verticalScale(10)
                                     }}
@@ -540,8 +564,9 @@ export default function RewardsAndCouponsScreen(){
                                 </Text>
 
                                 <Text
-                                    className='text-[#FFFFFF] tracking-wider font-black ml-2'
+                                    className='tracking-wider font-black ml-2'
                                     style={{
+                                        color: COLORS.primaryBackgroundColor,
                                         fontSize: moderateScale(28),
                                         marginTop: verticalScale(2)
                                     }}
@@ -549,8 +574,11 @@ export default function RewardsAndCouponsScreen(){
                                     2,450
 
                                     <Text
-                                        className='text-[#F8D56A] font-medium self-end'
-                                        style={{ fontSize: moderateScale(16) }}
+                                        className='font-medium self-end'
+                                        style={{
+                                            fontSize: moderateScale(16),
+                                            color: COLORS.accentColor
+                                        }}
                                     >
                                         {" "}Points
                                     </Text>
@@ -558,27 +586,32 @@ export default function RewardsAndCouponsScreen(){
                                 
                                 <View className='flex-row justify-center mt-4 gap-3'>
                                     <View
-                                        className='flex-row items-center justify-center gap-1 bg-[#FFFFFF]/20'
+                                        className='flex-row items-center justify-center gap-1'
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                             borderRadius: moderateScale(18),
                                             paddingRight: scale(6),
                                             paddingLeft: scale(4),
                                             paddingVertical: verticalScale(1)
                                         }}
                                     >
-                                        <CrownIcon width={moderateScale(19)} height={moderateScale(19)} color={"rgba(248, 213, 106, 0.80)"} />
+                                        <CrownIcon width={moderateScale(19)} height={moderateScale(19)} color={COLORS.accentLightColor} />
 
                                         <Text
-                                            className='text-[#FFFFFF] font-semibold'
-                                            style={{ fontSize: moderateScale(9) }}
+                                            className='font-semibold'
+                                            style={{
+                                                fontSize: moderateScale(9),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             Gold Member
                                         </Text>
                                     </View>
 
                                     <View
-                                        className='flex-row items-center justify-center bg-[#FFFFFF]/20'
+                                        className='flex-row items-center justify-center'
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                                             gap: moderateScale(4),
                                             borderRadius: moderateScale(18),
                                             paddingRight: scale(8),
@@ -586,11 +619,14 @@ export default function RewardsAndCouponsScreen(){
                                             paddingVertical: verticalScale(1)
                                         }}
                                     >
-                                        <DateIcon width={moderateScale(16)} height={moderateScale(16)} color={"rgba(248, 213, 106, 0.80)"} />
+                                        <DateIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.accentLightColor} />
 
                                         <Text
-                                            className='text-[#FFFFFF] font-semibold'
-                                            style={{ fontSize: moderateScale(9) }}
+                                            className='font-semibold'
+                                            style={{
+                                                fontSize: moderateScale(9),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             Member Since, July 2026
                                         </Text>
@@ -608,34 +644,42 @@ export default function RewardsAndCouponsScreen(){
                         />
 
                         <View
-                            className="bg-[#3F2516] px-5 py-5 mb-5"
+                            className="px-5 py-5 mb-5"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(14)
                             }}
                         >
                             <View className='flex-row gap-2 items-center '>
-                                <RobotIcon width={moderateScale(21)} height={moderateScale(21)} color={"rgba(248, 213, 106, 0.85)"} />
+                                <RobotIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.accentColor} />
 
                                 <Text 
-                                    className='text-[#F8D56A]/85 font-semibold'
-                                    style={{ fontSize: moderateScale(12.5) }}    
+                                    className='font-semibold'
+                                    style={{
+                                        fontSize: moderateScale(12.5),
+                                        color: COLORS.accentColor
+                                    }}    
                                 >
                                     AI Smart Goal
                                 </Text>
                             </View>
 
                             <Text
-                                className='text-[#FFFFFF]/75 font-medium leading-5'
+                                className='font-medium leading-5'
                                 style={{
-                                    fontSize: moderateScale(12),
+                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
+                                    fontSize: moderateScale(11),
                                     marginTop: verticalScale(6)
                                 }}
                             >
                                 You're only
                                 <Text
-                                    className='text-[#F8D56A]/75 font-medium'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className='font-medium'
+                                    style={{
+                                        fontSize: moderateScale(11),
+                                        color: COLORS.accentColor
+                                    }}
                                 >
                                     {" "}550 points away{" "}
                                 </Text>
@@ -656,8 +700,11 @@ export default function RewardsAndCouponsScreen(){
                                 </View>
         
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-3 mb-3"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-semibold mt-3 mb-3"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     How to Earn
                                 </Text>
@@ -676,8 +723,11 @@ export default function RewardsAndCouponsScreen(){
                                     }}
                                 >
                                     <Text
-                                        className="text-[#1F1F1F] font-bold mt-6 mb-3"
-                                        style={{ fontSize: moderateScale(15) }}
+                                        className="font-semibold mt-6 mb-3"
+                                        style={{
+                                            fontSize: moderateScale(15),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         Redeem Points
                                     </Text>
@@ -701,8 +751,10 @@ export default function RewardsAndCouponsScreen(){
                                         </View>
                                     ) : rewardCouponsLoaded && rewardCoupons.length === 0 ? (
                                         <View
-                                            className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                            className="items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 borderRadius: moderateScale(20),
                                                 paddingHorizontal: scale(20),
@@ -711,18 +763,20 @@ export default function RewardsAndCouponsScreen(){
                                             }}
                                         >
                                             <View
-                                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                                className='rounded-full items-center justify-center'
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     width: moderateScale(46),
                                                     height: moderateScale(46)
                                                 }}
                                             >
-                                                <CircleStarIcon width={moderateScale(30)} height={moderateScale(30)} color="#5A3825"/>
+                                                <CircleStarIcon width={moderateScale(30)} height={moderateScale(30)} color={COLORS.secondaryColor} />
                                             </View>
 
                                             <Text
-                                                className="text-[#1F1F1F] font-semibold"
+                                                className="font-semibold"
                                                 style={{
+                                                    color: COLORS.primaryTextColor,
                                                     fontSize: moderateScale(14),
                                                     marginTop: verticalScale(8)
                                                 }}
@@ -731,8 +785,9 @@ export default function RewardsAndCouponsScreen(){
                                             </Text>
 
                                             <Text
-                                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                                className="font-medium text-center"
                                                 style={{
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                     fontSize: moderateScale(11),
                                                     marginTop: verticalScale(3)
                                                 }}
@@ -770,8 +825,11 @@ export default function RewardsAndCouponsScreen(){
                                     {!loadingRewardCoupons && moneyCoupons.length > 0 && (
                                         <>
                                             <Text
-                                                className="text-[#1F1F1F] font-bold mb-3"
-                                                style={{ fontSize: moderateScale(15) }}
+                                                className="font-semibold mb-3"
+                                                style={{
+                                                    fontSize: moderateScale(15),
+                                                    color: COLORS.primaryTextColor
+                                                }}
                                             >
                                                 Purchase Coupons
                                             </Text>
@@ -798,8 +856,11 @@ export default function RewardsAndCouponsScreen(){
                                 </View>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-5"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-semibold mt-5"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Achievement Badges
                                 </Text>
@@ -900,25 +961,27 @@ export default function RewardsAndCouponsScreen(){
                                                 key={category.id}
                                                 activeOpacity={0.85}
                                                 onPress={() => setSelectedCategory(category.id)}
-                                                className={`flex-row gap-2 items-center justify-center ${
-                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                                }`}
+                                                className="flex-row gap-2 items-center justify-center"
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? COLORS.primaryColor
+                                                        : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                     borderRadius: moderateScale(18),
                                                     paddingHorizontal: scale(14),
                                                     paddingVertical: verticalScale(7),
                                                     borderWidth: 0.7,
-                                                    borderColor: isSelected ? "#3F2516" : "#E8DDD3"
+                                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                                 }}
                                             >
                                                 {Icon && (
-                                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? "#FFFFFF" : "#5A3825"} />
+                                                    <Icon width={moderateScale(17)} height={moderateScale(17)} color={isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor} />
                                                 )}
                                                 <Text
-                                                    className={`font-semibold ${
-                                                        isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {category.title}
                                                 </Text>
@@ -928,8 +991,11 @@ export default function RewardsAndCouponsScreen(){
                                 </ScrollView>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-5 mb-4"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-semibold mt-5 mb-4"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Active Coupons
                                 </Text>
@@ -953,8 +1019,10 @@ export default function RewardsAndCouponsScreen(){
                                     </View>
                                 ) : availableCouponsLoaded && availableCoupons.length === 0 ? (
                                     <View
-                                        className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10"
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             borderWidth: moderateScale(0.5),
                                             borderRadius: moderateScale(20),
                                             paddingHorizontal: scale(20),
@@ -962,18 +1030,20 @@ export default function RewardsAndCouponsScreen(){
                                         }}
                                     >
                                         <View
-                                            className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                            className='rounded-full items-center justify-center'
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                 width: moderateScale(46),
                                                 height: moderateScale(46)
                                             }}
                                         >
-                                            <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color="#5A3825"/>
+                                            <CouponIcon width={moderateScale(28)} height={moderateScale(28)} color={COLORS.secondaryColor} />
                                         </View>
 
                                         <Text
-                                            className="text-[#1F1F1F] font-semibold"
+                                            className="font-semibold"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(14),
                                                 marginTop: verticalScale(8)
                                             }}
@@ -982,8 +1052,9 @@ export default function RewardsAndCouponsScreen(){
                                         </Text>
 
                                         <Text
-                                            className="text-[#1F1F1F]/75 font-medium text-center"
+                                            className="font-medium text-center"
                                             style={{
+                                                color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                                 fontSize: moderateScale(11),
                                                 marginTop: verticalScale(3)
                                             }}
@@ -1013,34 +1084,42 @@ export default function RewardsAndCouponsScreen(){
                                 )}
 
                                 <View
-                                    className="bg-[#3F2516] px-5 py-5"
+                                    className="px-5 py-5"
                                     style={{
+                                        backgroundColor: COLORS.primaryColor,
                                         borderRadius: moderateScale(22),
                                         marginTop: verticalScale(18)
                                     }}
                                 >
                                     <View className='flex-row gap-2 items-center '>
-                                        <RobotIcon width={moderateScale(21)} height={moderateScale(21)} color={"rgba(248, 213, 106, 0.85)"} />
+                                        <RobotIcon width={moderateScale(21)} height={moderateScale(21)} color={COLORS.accentColor} />
 
                                         <Text 
-                                            className='text-[#F8D56A]/85 font-semibold'
-                                            style={{ fontSize: moderateScale(12.5) }}    
+                                            className='font-semibold'
+                                            style={{
+                                                fontSize: moderateScale(12.5),
+                                                color: COLORS.accentColor
+                                            }}    
                                         >
                                             Smart Recommendation
                                         </Text>
                                     </View>
 
                                     <Text
-                                        className='text-[#FFFFFF]/75 font-medium leading-5'
+                                        className='font-medium leading-5'
                                         style={{
-                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
+                                            fontSize: moderateScale(11),
                                             marginTop: verticalScale(6)
                                         }}
                                     >
                                         Use
                                         <Text
-                                            className='text-[#F8D56A]/75 font-medium'
-                                            style={{ fontSize: moderateScale(12) }}
+                                            className='font-medium'
+                                            style={{
+                                                fontSize: moderateScale(11),
+                                                color: COLORS.accentColor
+                                            }}
                                         >
                                             {" "}SAVE100{" "}
                                         </Text>
@@ -1049,8 +1128,11 @@ export default function RewardsAndCouponsScreen(){
                                 </View>
 
                                 <Text
-                                    className="text-[#1F1F1F] font-bold mt-5 mb-2"
-                                    style={{ fontSize: moderateScale(15) }}
+                                    className="font-semibold mt-5 mb-2"
+                                    style={{
+                                        fontSize: moderateScale(15),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     Upcoming Events
                                 </Text>

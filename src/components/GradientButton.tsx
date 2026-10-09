@@ -1,3 +1,4 @@
+import { COLORS } from "@/constant/colors"
 import { LinearGradient } from "expo-linear-gradient"
 import LottieView from "lottie-react-native"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -22,7 +23,7 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                     marginTop: verticalScale(22),
                     borderRadius: moderateScale(32),
 
-                    shadowColor: "#3F2516",
+                    shadowColor: COLORS.primaryColor,
                     shadowOffset: { width: 0, height: verticalScale(8) },
                     shadowOpacity: 0.35,
                     shadowRadius: moderateScale(10),
@@ -30,7 +31,10 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                 }}
             >
                 <LinearGradient
-                    colors={["#3F2516", "#311707"]}
+                    colors={[
+                        COLORS.brandGradientStart,
+                        COLORS.brandGradientEnd
+                    ]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={{
@@ -53,8 +57,11 @@ export default function GradientButton({ title, onPress, loading = false }: Grad
                         />
                     ) : (
                         <Text
-                            className="tracking-wide font-semibold text-[#FFFFFF]"
-                            style={{ fontSize: moderateScale(15) }}
+                            className="tracking-wide font-semibold"
+                            style={{
+                                fontSize: moderateScale(15),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             {title}
                         </Text>

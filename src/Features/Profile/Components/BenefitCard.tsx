@@ -1,3 +1,5 @@
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import React, { memo } from "react"
 import { Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -22,8 +24,10 @@ function BenefitCard({
 
     return (
         <View
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 items-center"
+            className="items-center"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 width: "48%",
                 minHeight: moderateScale(160),
@@ -33,18 +37,20 @@ function BenefitCard({
             }}
         >
             <View
-                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                className="items-center justify-center rounded-full"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                     width: moderateScale(56),
                     height: moderateScale(56)
                 }}
             >
-                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color="#5c4639" strokeWidth={1.8} />
+                <Icon width={moderateScale(item.size)} height={moderateScale(item.size)} color={COLORS.primaryColor} strokeWidth={1.8} />
             </View>
 
             <Text
-                className="text-[#3F2516] font-bold text-center"
+                className="font-bold text-center"
                 style={{
+                    color: COLORS.primaryTextColor,
                     fontSize: moderateScale(14),
                     marginTop: verticalScale(16)
                 }}
@@ -53,8 +59,9 @@ function BenefitCard({
             </Text>
 
             <Text
-                className="text-[#1F1F1F]/75 font-medium text-center"
+                className="font-medium text-center"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                     fontSize: moderateScale(11),
                     lineHeight: moderateScale(14),
                     marginTop: verticalScale(6)

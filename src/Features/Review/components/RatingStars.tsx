@@ -1,5 +1,6 @@
 import RatingIcon from '@/assets/icon/RatingIcon.svg'
 import RatingIcon3 from '@/assets/icon/RatingIcon3.svg'
+import { COLORS } from '@/constant/colors'
 import { memo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { moderateScale } from 'react-native-size-matters'
@@ -20,9 +21,9 @@ const RatingStars = ({ value, onChange }: RatingStarsProps) => {
                     hitSlop={4}
                 >
                     {star <= value ? (
-                        <RatingIcon width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                        <RatingIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                     ) : (
-                        <RatingIcon3 width={moderateScale(18)} height={moderateScale(18)} color="#5C4639" />
+                        <RatingIcon3 width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} />
                     )}
                 </TouchableOpacity>
             ))}

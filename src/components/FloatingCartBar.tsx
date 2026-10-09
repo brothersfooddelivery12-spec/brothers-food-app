@@ -2,6 +2,8 @@ import { usePreventDoublePress } from "@/Features/hook/usePreventDoublePress"
 import { useCartStore } from "@/Stores/useCartStore"
 import ArrowDownIcon from "@/assets/icon/ArrowDown.svg"
 import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import { router } from "expo-router"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
@@ -31,15 +33,14 @@ const CartFoodImage = memo(({ imageUrl }: CartFoodImageProps) => {
 
     return (
         <View
-            className="overflow-hidden bg-[#FFFFFF]/15"
+            className="overflow-hidden"
             style={{
+                backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                 width: moderateScale(44),
                 height: moderateScale(44),
                 borderRadius: moderateScale(12),
-                borderWidth: hasImage
-                    ? 0
-                    : moderateScale(0.7),
-                borderColor: "rgba(31,31,31,0.08)"
+                borderWidth: hasImage ? 0 : moderateScale(0.7),
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
             }}
         >
             <Image
@@ -173,8 +174,10 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
 
     const renderOtherCarts = () => (
         <View
-            className="bg-[#FFFFFF] border-[#1F1F1F]/10 mb-2"
+            className="mb-2"
             style={{
+                backgroundColor: COLORS.primaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.7),
                 borderRadius: moderateScale(22),
                 paddingHorizontal: scale(10),
@@ -183,8 +186,9 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
             }}
         >
             <Text
-                className="text-[#1F1F1F]/75 font-semibold"
+                className="font-semibold"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                     fontSize: moderateScale(12),
                     marginBottom: verticalScale(4),
                     marginLeft: scale(4)
@@ -220,15 +224,19 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                             <View className="flex-1">
                                 <Text
                                     numberOfLines={1}
-                                    className="text-[#1F1F1F] font-bold"
-                                    style={{ fontSize: moderateScale(14) }}
+                                    className="font-bold"
+                                    style={{
+                                        fontSize: moderateScale(14),
+                                        color: COLORS.primaryTextColor
+                                    }}
                                 >
                                     {cart.restaurantName}
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/65 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                         fontSize:moderateScale(11),
                                         marginTop: verticalScale(2)
                                     }}
@@ -241,13 +249,13 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                                 </Text>
                             </View>
 
-                            <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                            <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.85)} strokeWidth={2} />
                         </TouchableOpacity>
 
                         {index < otherCarts.length - 1 && (
                             <View
                                 style={{
-                                    backgroundColor: "rgba(31,31,31,0.15)",
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.15),
                                     height: moderateScale(0.5),
                                     marginVertical: verticalScale(4),
                                     marginHorizontal: scale(8)
@@ -309,14 +317,15 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
             )}
 
             <View
-                className="flex-row items-center bg-[#3F2516]"
+                className="flex-row items-center"
                 style={{
+                    backgroundColor: COLORS.primaryColor,
                     minHeight: verticalScale(62),
                     paddingHorizontal: scale(12),
                     paddingVertical: verticalScale(8),
                     borderRadius: moderateScale(24),
 
-                    shadowColor: "#000",
+                    shadowColor: COLORS.primaryTextColor,
                     shadowOffset: {
                         width: 0,
                         height: 5
@@ -330,8 +339,9 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={toggleExpanded}
-                        className="rounded-full absolute self-center items-center justify-center bg-[#3F2516]"
+                        className="rounded-full absolute self-center items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             top: -moderateScale(10),
                             left: "50%",
                             width: moderateScale(34),
@@ -345,7 +355,7 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                             ]}
                             className="items-center justify-center"
                         >
-                            <ArrowDownIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+                            <ArrowDownIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} />
                         </Animated.View>
                     </TouchableOpacity>
                 )}
@@ -382,15 +392,19 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                 >
                     <Text
                         numberOfLines={1}
-                        className="text-[#FFFFFF] font-bold"
-                        style={{ fontSize: moderateScale(14) }}
+                        className="font-bold"
+                        style={{
+                            fontSize: moderateScale(14),
+                            color: COLORS.primaryBackgroundColor
+                        }}
                     >
                         {restaurantName}
                     </Text>
 
                     <Text
-                        className="text-white/75 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
                             fontSize: moderateScale(11),
                             marginTop: verticalScale(2)
                         }}
@@ -418,8 +432,9 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                     }
                 >
                     <View
-                        className="flex-row items-center bg-white/15"
+                        className="flex-row items-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.15),
                             borderRadius: moderateScale(18),
                             paddingLeft: scale(12),
                             paddingRight: scale(6),
@@ -428,13 +443,16 @@ export default function FloatingCartBar({bottomOffset = 85}: FloatingCartBarProp
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(11) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(11),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             View Cart
                         </Text>
 
-                        <ArrowRightIcon width={moderateScale(15)} height={moderateScale(15)} color="#FFFFFF" strokeWidth={2} />
+                        <ArrowRightIcon width={moderateScale(15)} height={moderateScale(15)} color={COLORS.primaryBackgroundColor} strokeWidth={2} />
                     </View>
                 </TouchableOpacity>
             </View>

@@ -1,5 +1,7 @@
 import MinusCircleIcon from "@/assets/icon/ClockIcon3.svg"
 import ToggleSwitch from "@/components/ToggleSwitch"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { memo } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -22,8 +24,9 @@ const NotificationScheduleCard = ({
 }: NotificationScheduleCardProps) => {
     return (
         <View
-            className="bg-[#3F2516] mt-6"
+            className="mt-6"
             style={{
+                backgroundColor: COLORS.primaryColor,
                 borderRadius: moderateScale(24),
                 paddingHorizontal: scale(16),
                 paddingVertical: verticalScale(16)
@@ -31,18 +34,22 @@ const NotificationScheduleCard = ({
         >
             <View className="flex-row items-center gap-3">
                 <View
-                    className="items-center justify-center bg-[#F8D56A] rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.accentLightColor,
                         width: moderateScale(36),
                         height: moderateScale(36)
                     }}
                 >
-                    <MinusCircleIcon width={moderateScale(20)} height={moderateScale(20)} color="#3F2516" strokeWidth={2} />
+                    <MinusCircleIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.primaryColor} strokeWidth={2} />
                 </View>
 
                 <Text
-                    className="text-[#F8D56A] font-extrabold"
-                    style={{ fontSize: moderateScale(16) }}
+                    className="font-extrabold"
+                    style={{
+                        fontSize: moderateScale(16),
+                        color: COLORS.accentLightColor
+                    }}
                 >
                     Schedule
                 </Text>
@@ -53,8 +60,11 @@ const NotificationScheduleCard = ({
                 style={{ marginTop: verticalScale(14) }}
             >
                 <Text
-                    className="flex-1 text-[#FFFFFF] font-semibold"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="flex-1 font-semibold"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryBackgroundColor
+                    }}
                 >
                     Do Not Disturb
                 </Text>
@@ -63,8 +73,8 @@ const NotificationScheduleCard = ({
             </View>
 
             <View
-                className="bg-white/5"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.05),
                     borderRadius: moderateScale(20),
                     paddingHorizontal: scale(14),
                     paddingVertical: verticalScale(12),
@@ -73,8 +83,11 @@ const NotificationScheduleCard = ({
             >
                 <View className="flex-row items-center">
                     <Text
-                        className="flex-1 text-white/65 font-medium tracking-widest"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="flex-1 font-medium tracking-widest"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.75)
+                        }}
                     >
                         ACTIVE HOURS
                     </Text>
@@ -89,16 +102,20 @@ const NotificationScheduleCard = ({
                         onPress={onEditStartTime}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-black"
-                            style={{ fontSize: moderateScale(20) }}
+                            className="font-black"
+                            style={{
+                                fontSize: moderateScale(20),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             {startTime}
                         </Text>
                     </TouchableOpacity>
 
                     <Text
-                        className="text-[#FFFFFF] font-black"
+                        className="font-black"
                         style={{
+                            color: COLORS.primaryBackgroundColor,
                             fontSize: moderateScale(20),
                             marginHorizontal: scale(7)
                         }}
@@ -111,8 +128,11 @@ const NotificationScheduleCard = ({
                         onPress={onEditEndTime}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-black"
-                            style={{ fontSize: moderateScale(20) }}
+                            className="font-black"
+                            style={{
+                                fontSize: moderateScale(20),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             {endTime}
                         </Text>
@@ -121,9 +141,10 @@ const NotificationScheduleCard = ({
             </View>
 
             <Text
-                className="text-white/75 font-medium"
+                className="font-medium"
                 style={{
-                    fontSize: moderateScale(12),
+                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.75),
+                    fontSize: moderateScale(11),
                     lineHeight: moderateScale(16),
                     marginTop: verticalScale(12)
                 }}

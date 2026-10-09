@@ -1,4 +1,6 @@
 import ArrowDownIcon from "@/assets/icon/ArrowDown.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
@@ -50,8 +52,10 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
 
     return (
         <View
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+            className="overflow-hidden"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(18),
                 marginBottom: verticalScale(10)
@@ -68,8 +72,9 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                 }}
             >
                 <Text
-                    className="flex-1 text-[#1F1F1F] font-bold"
+                    className="flex-1 font-bold"
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(14),
                         lineHeight: moderateScale(20)
                     }}
@@ -82,12 +87,13 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                         arrowAnimatedStyle,
                         {
                             width: moderateScale(28),
-                            height: moderateScale(28)
+                            height: moderateScale(28),
+                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.65)
                         }
                     ]}
-                    className="items-center justify-center rounded-full bg-[#E5E4E2]/55"
+                    className="items-center justify-center rounded-full"
                 >
-                    <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color="#1F1F1F" />
+                    <ArrowDownIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryTextColor} />
                 </Animated.View>
             </TouchableOpacity>
 
@@ -110,16 +116,17 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
             >
                 <View>
                     <View
-                        className="bg-[#1F1F1F]/10"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             height: 1,
                             marginBottom: verticalScale(12)
                         }}
                     />
 
                     <Text
-                        className="text-[#1F1F1F]/70 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(12),
                             lineHeight: moderateScale(18),
                             paddingBottom: verticalScale(18)
@@ -139,16 +146,17 @@ const FAQCard = memo(({ item }: FAQCardProps) => {
                 ]}
             >
                 <View
-                    className="bg-[#1F1F1F]/10"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         height: 1,
                         marginBottom: verticalScale(12)
                     }}
                 />
 
                 <Text
-                    className="text-[#1F1F1F]/70 font-medium"
+                    className="font-medium"
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(18),
                         paddingBottom: verticalScale(18)

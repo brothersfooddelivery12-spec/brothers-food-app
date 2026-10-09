@@ -1,6 +1,8 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import HistoryIcon from '@/assets/icon/ClockIcon2.svg'
 import DeleteIcon from '@/assets/icon/DeleteIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker"
 import { router } from "expo-router"
 import { useState } from 'react'
@@ -41,8 +43,7 @@ export default function NotificationPreferencesScreen(){
         }
     }
 
-    const [orderPreferences, setOrderPreferences] =
-    useState<NotificationPreference[]>([
+    const [orderPreferences, setOrderPreferences] = useState<NotificationPreference[]>([
         {
             id: "order_accepted",
             title: "Order Accepted",
@@ -70,8 +71,7 @@ export default function NotificationPreferencesScreen(){
         }
     ])
 
-    const [offerPreferences, setOfferPreferences] =
-    useState<NotificationPreference[]>([
+    const [offerPreferences, setOfferPreferences] = useState<NotificationPreference[]>([
         {
             id: "coupons",
             title: "Coupons",
@@ -99,8 +99,7 @@ export default function NotificationPreferencesScreen(){
         }
     ])
 
-    const [accountPreferences, setAccountPreferences] =
-    useState<NotificationPreference[]>([
+    const [accountPreferences, setAccountPreferences] = useState<NotificationPreference[]>([
         {
             id: "login_activity",
             title: "Login Activity",
@@ -123,8 +122,7 @@ export default function NotificationPreferencesScreen(){
         }
     ])
 
-    const [reminderPreferences, setReminderPreferences] =
-    useState<NotificationPreference[]>([
+    const [reminderPreferences, setReminderPreferences] = useState<NotificationPreference[]>([
         {
             id: "complete_checkout",
             title: "Complete Checkout",
@@ -147,8 +145,7 @@ export default function NotificationPreferencesScreen(){
         }
     ])
 
-    const [communicationPreferences, setCommunicationPreferences] =
-    useState<NotificationPreference[]>([
+    const [communicationPreferences, setCommunicationPreferences] = useState<NotificationPreference[]>([
         {
             id: "push_notifications",
             title: "Push Notifications",
@@ -176,10 +173,7 @@ export default function NotificationPreferencesScreen(){
         }
     ])
 
-    const handleOrderToggle = (
-        id: string,
-        enabled: boolean
-    ) => {
+    const handleOrderToggle = (id: string, enabled: boolean) => {
         setOrderPreferences((prev) =>
             prev.map((item) =>
                 item.id === id
@@ -192,10 +186,7 @@ export default function NotificationPreferencesScreen(){
         )
     }
 
-    const handleOfferToggle = (
-        id: string,
-        enabled: boolean
-    ) => {
+    const handleOfferToggle = (id: string, enabled: boolean) => {
         setOfferPreferences((prev) =>
             prev.map((item) =>
                 item.id === id
@@ -208,10 +199,7 @@ export default function NotificationPreferencesScreen(){
            )
     }
 
-    const handleAccountToggle = (
-        id: string,
-        enabled: boolean
-    ) => {
+    const handleAccountToggle = (id: string, enabled: boolean) => {
         setAccountPreferences((prev) =>
             prev.map((item) =>
                 item.id === id
@@ -224,10 +212,7 @@ export default function NotificationPreferencesScreen(){
         )
     }
 
-    const handleReminderToggle = (
-        id: string,
-        enabled: boolean
-    ) => {
+    const handleReminderToggle = (id: string, enabled: boolean) => {
         setReminderPreferences((prev) =>
             prev.map((item) =>
                 item.id === id
@@ -240,10 +225,7 @@ export default function NotificationPreferencesScreen(){
         )
     }
 
-    const handleCommunicationToggle = (
-        id: string,
-        enabled: boolean
-    ) => {
+    const handleCommunicationToggle = (id: string, enabled: boolean) => {
         setCommunicationPreferences((prev) =>
             prev.map((item) =>
                 item.id === id
@@ -257,10 +239,13 @@ export default function NotificationPreferencesScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}    
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -276,27 +261,35 @@ export default function NotificationPreferencesScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Notifications
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.65)
+                        }}
                     >
                         Choose what you want to hear from us.
                     </Text>
@@ -312,8 +305,11 @@ export default function NotificationPreferencesScreen(){
                 showsVerticalScrollIndicator={false}
             >
                 <Text
-                    className="text-[#1F1F1F] font-semibold mt-4"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="font-semibold mt-4"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Order Updates
                 </Text>
@@ -324,8 +320,11 @@ export default function NotificationPreferencesScreen(){
                 />
 
                 <Text
-                    className="text-[#1F1F1F] font-semibold mt-4"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="font-semibold mt-4"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Promotions
                 </Text>
@@ -336,8 +335,11 @@ export default function NotificationPreferencesScreen(){
                 />
 
                 <Text
-                    className="text-[#1F1F1F] font-semibold mt-4"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="font-semibold mt-4"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Account Alerts
                 </Text>
@@ -348,8 +350,11 @@ export default function NotificationPreferencesScreen(){
                 />
 
                 <Text
-                    className="text-[#1F1F1F] font-semibold mt-4"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="font-semibold mt-4"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Reminders
                 </Text>
@@ -360,8 +365,11 @@ export default function NotificationPreferencesScreen(){
                 />
 
                 <Text
-                    className="text-[#1F1F1F] font-semibold mt-4"
-                    style={{ fontSize: moderateScale(15) }}
+                    className="font-semibold mt-4"
+                    style={{
+                        fontSize: moderateScale(15),
+                        color: COLORS.primaryTextColor
+                    }}
                 >
                     Communication
                 </Text>
@@ -415,31 +423,41 @@ export default function NotificationPreferencesScreen(){
                 )}
 
                 <View
-                    className="mt-6 p-4 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                    style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                    className="mt-6 p-4"
+                    style={{
+                        borderRadius: moderateScale(18),
+                        borderWidth: moderateScale(0.5),
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.15),
+                    }}
                 >
                     <View className='flex-row gap-3 items-center'>
                         <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                            className="items-center justify-center rounded-full"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(38),
                                 height: moderateScale(38)
                             }}
                         >
-                            <HistoryIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                            <HistoryIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                         </View>
 
                         <View className='justify-center flex-1'>
                             <Text
-                                className='text-[#1F1F1F] font-bold'
-                                style={{ fontSize: moderateScale(15) }}
+                                className='font-bold'
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 History
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium'
+                                className='font-medium'
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(11),
                                     marginTop: verticalScale(2)
                                 }}
@@ -449,16 +467,20 @@ export default function NotificationPreferencesScreen(){
                         </View>
 
                         <View
-                            className="items-center justify-center bg-[#F8D56A]"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: COLORS.accentLightColor,
                                 paddingHorizontal: moderateScale(8),
                                 paddingVertical: verticalScale(3),
                                 borderRadius: moderateScale(12)
                             }}
                         >
                             <Text
-                                className="font-bold text-[#5C4639]"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-bold"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.secondaryColor
+                                }}
                             >
                                 124 Items
                             </Text>
@@ -466,9 +488,10 @@ export default function NotificationPreferencesScreen(){
                     </View>
 
                     <Text
-                        className='text-[#1F1F1F]/75 font-medium'
+                        className='font-medium'
                         style={{
-                            fontSize: moderateScale(12),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                            fontSize: moderateScale(11),
                             marginTop: verticalScale(8)
                         }}
                     >
@@ -478,18 +501,22 @@ export default function NotificationPreferencesScreen(){
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={() => {}}
-                        className="flex-row gap-2 items-center justify-center bg-[#3F2516]"
+                        className="flex-row gap-2 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             borderRadius: moderateScale(28),
                             paddingVertical: verticalScale(12),
                             marginTop: verticalScale(13)
                         }}
                     >
-                        <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={"#FFFFFF"} strokeWidth={1.8} />
+                        <DeleteIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-[#FFFFFF] font-semibold"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-semibold"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Clear History
                         </Text>

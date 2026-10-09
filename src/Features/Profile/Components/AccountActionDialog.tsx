@@ -1,6 +1,8 @@
 import DeleteIcon from '@/assets/icon/DeleteIcon.svg'
 import LocationIcon from '@/assets/icon/LocationIcon2.svg'
 import LogoutIcon from '@/assets/icon/LogoutIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import LottieView from 'lottie-react-native'
 import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -97,8 +99,10 @@ export default function AccountActionDialog({
                 />
 
                 <View
-                    className="bg-white border border-[#1F1F1F]/10"
                     style={{
+                        backgroundColor: COLORS.primaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderWidth: moderateScale(0.7),
                         marginHorizontal: scale(12),
                         marginBottom: verticalScale(22),
                         borderRadius: moderateScale(24),
@@ -112,7 +116,9 @@ export default function AccountActionDialog({
                             className='items-center justify-center'
                             style={{
                                 borderRadius: moderateScale(12),
-                                backgroundColor: isDanger ? "rgb(254 226 226 / 0.8)" : "rgb(229 228 226 / 0.65)",
+                                backgroundColor: isDanger
+                                    ? hexToRgba(COLORS.errorTextColor, 0.75)
+                                    : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(34),
                                 height: moderateScale(34)
                             }}
@@ -121,14 +127,14 @@ export default function AccountActionDialog({
                                 <LogoutIcon
                                     width={moderateScale(18)}
                                     height={moderateScale(18)}
-                                    color="#1F1F1F"
+                                    color={COLORS.primaryTextColor}
                                     strokeWidth={1.8}
                                 />
                             ) : isAddressDelete || isSetDefault ? (
                                 <LocationIcon
                                     width={moderateScale(20)}
                                     height={moderateScale(20)}
-                                    color={isSetDefault ? "#3F2516" : "#1F1F1F"}
+                                    color={isSetDefault ? COLORS.primaryColor : COLORS.primaryTextColor}
                                     strokeWidth={1.8}
                                 />
                             ) : (
@@ -144,7 +150,7 @@ export default function AccountActionDialog({
                         <Text
                             className="font-bold"
                             style={{
-                                color: isDanger ? "rgba(220, 38, 38, 0.9)" : "#1F1F1F",
+                                color: isDanger ? hexToRgba(COLORS.errorTextColor, 0.95) : COLORS.primaryTextColor,
                                 fontSize: moderateScale(17)
                             }}
                         >
@@ -153,8 +159,9 @@ export default function AccountActionDialog({
                     </View>
 
                     <Text
-                        className="text-[#1F1F1F]/75 font-medium"
+                        className="font-medium"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(12),
                             lineHeight: moderateScale(17),
                             marginTop: verticalScale(8)
@@ -174,15 +181,19 @@ export default function AccountActionDialog({
                             activeOpacity={0.95}
                             disabled={loading}
                             onPress={onCancel}
-                            className="flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                            className="flex-1 items-center justify-center"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 height: verticalScale(44),
                                 borderRadius: moderateScale(20)
                             }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-medium"
-                                style={{ fontSize: moderateScale(13) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Cancel
                             </Text>
@@ -194,7 +205,7 @@ export default function AccountActionDialog({
                             onPress={onConfirm}
                             className="flex-1 items-center justify-center"
                             style={{
-                                backgroundColor: isDanger ? "rgba(220, 38, 38, 0.80)" : "#3F2516",
+                                backgroundColor: isDanger ? hexToRgba(COLORS.errorTextColor, 0.8) : COLORS.primaryColor,
                                 height: verticalScale(44),
                                 borderRadius: moderateScale(20)
                             }}
@@ -211,8 +222,11 @@ export default function AccountActionDialog({
                                 />
                             ) : (
                                 <Text
-                                    className="text-[#FFFFFF] font-medium"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryBackgroundColor
+                                    }}
                                 >
                                     {confirmText}
                                 </Text>

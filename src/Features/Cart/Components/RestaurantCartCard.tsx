@@ -3,7 +3,9 @@ import ArrowRightIcon from '@/assets/icon/ArrowRight.svg'
 import DeliveryIcon from "@/assets/icon/DeliveryIcon.svg"
 import PlusSignCircleIcon from '@/assets/icon/PlusSignCircleIcon.svg'
 import ClockIcon from "@/assets/icon/TimerIcon.svg"
+import { COLORS } from '@/constant/colors'
 import { CartItem } from '@/Stores/useCartStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import React, { memo, useCallback, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -38,8 +40,8 @@ const RestaurantCartContent = memo(
                 style={{
                     borderWidth: moderateScale(0.7),
                     borderRadius: moderateScale(18),
-                    backgroundColor: isRestaurantOpen ? "#FFFFFF" : "#F3F3F3",
-                    borderColor: "rgba(31,31,31,0.10)"
+                    backgroundColor: isRestaurantOpen ? COLORS.primaryBackgroundColor : "#F3F3F3",
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                 }}
             >
                 {items.map((item, index) => (
@@ -60,7 +62,7 @@ const RestaurantCartContent = memo(
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(10),
                                     marginHorizontal: verticalScale(2),
-                                    backgroundColor: "rgba(31,31,31,0.10)"
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
                                 }}
                             />
                         )}
@@ -79,39 +81,40 @@ const RestaurantCartContent = memo(
                     }}
                     className="items-center flex-row mt-5"
                     style={{
-                        gap: moderateScale(8),
+                        gap: moderateScale(6),
                         paddingHorizontal: moderateScale(8),
-                        paddingVertical: moderateScale(6),
+                        paddingVertical: moderateScale(6.5),
                         borderRadius: moderateScale(14),
                         backgroundColor: isRestaurantOpen
-                            ? "rgba(232,185,63,0.15)"
-                            : "rgba(31,31,31,0.06)"
+                            ? hexToRgba(COLORS.accentColor, 0.15)
+                            : hexToRgba(COLORS.primaryTextColor, 0.1)
                     }}
                 >
                     <PlusSignCircleIcon
-                        width={moderateScale(23)}
-                        height={moderateScale(23)}
-                        color={isRestaurantOpen ? "#3F2516" : "#858585"}
+                        width={moderateScale(21)}
+                        height={moderateScale(21)}
+                        color={isRestaurantOpen ? COLORS.secondaryColor : COLORS.inactiveContentColor}
                         strokeWidth={1.5}
                     />
 
                     <Text
-                        className="font-semibold flex-1"
+                        className="font-medium flex-1"
                         style={{
                             fontSize: moderateScale(11),
-                            color: isRestaurantOpen ? "#1F1F1F" : "rgba(31,31,31,0.45)"
+                            color: isRestaurantOpen ? COLORS.secondaryColor : hexToRgba(COLORS.primaryTextColor, 0.45)
                         }}
                     >
                         {isRestaurantOpen
                             ? "Add more item from this restaurant"
-                            : "Restaurant is currently unavailable"}
+                            : "Restaurant is currently unavailable"
+                        }
                     </Text>
 
                     {isRestaurantOpen && (
                         <ArrowRightIcon
                             width={moderateScale(18)}
                             height={moderateScale(18)}
-                            color="#3F2516"
+                            color={isRestaurantOpen ? COLORS.secondaryColor : COLORS.inactiveContentColor}
                             strokeWidth={1.5}
                         />
                     )}
@@ -222,10 +225,10 @@ const RestaurantCartCard = memo(
                 style={{
                     borderRadius: moderateScale(20),
                     marginTop: verticalScale(8),
-                    backgroundColor: isRestaurantOpen ? "#FAFAFA" : "#EFEFEF",
+                    backgroundColor: isRestaurantOpen ? COLORS.secondaryBackgroundColor :  COLORS.inactiveBackgroundColor,
                     borderColor: isRestaurantOpen
-                        ? "rgba(31,31,31,0.10)"
-                        : "rgba(31,31,31,0.08)",
+                        ? hexToRgba(COLORS.primaryTextColor, 0.10)
+                        : hexToRgba(COLORS.primaryTextColor, 0.08),
                     borderWidth: moderateScale(0.5)
                 }}
             >
@@ -240,7 +243,7 @@ const RestaurantCartCard = memo(
                             width: moderateScale(46),
                             height: moderateScale(46),
                             borderWidth: !hasImage && !isRestaurantOpen ? 0.7 : 0,
-                            borderColor: "rgba(31,31,31,0.08)"
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                         }}
                     >
                         <Image
@@ -268,7 +271,7 @@ const RestaurantCartCard = memo(
                             <View
                                 pointerEvents="none"
                                 className="absolute inset-0"
-                                style={{ backgroundColor: "rgba(31,31,31,0.30)" }}
+                                style={{ backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.3) }}
                             />
                         )}
                     </View>
@@ -282,7 +285,7 @@ const RestaurantCartCard = memo(
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(13),
-                                color: isRestaurantOpen ? "#1F1F1F" : "rgba(31,31,31,0.50)"
+                                color: isRestaurantOpen ? COLORS.primaryTextColor : hexToRgba(COLORS.primaryTextColor, 0.52)
                             }}
                         >
                             {restaurantName}
@@ -297,21 +300,21 @@ const RestaurantCartCard = memo(
                                     paddingVertical: moderateScale(3),
                                     borderRadius: moderateScale(10),
                                     backgroundColor: isRestaurantOpen
-                                        ? "rgba(232,185,63,0.15)"
-                                        : "rgba(31,31,31,0.07)"
+                                        ? hexToRgba(COLORS.accentColor, 0.15)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.1)
                                 }}
                             >
                                 <DeliveryIcon
                                     width={moderateScale(16)}
                                     height={moderateScale(16)}
-                                    color={isRestaurantOpen? "#5C4639" : "#858585"}
+                                    color={isRestaurantOpen? COLORS.secondaryColor : COLORS.inactiveContentColor}
                                 />
 
                                 <Text
                                     className="font-semibold"
                                     style={{
                                         fontSize: moderateScale(10),
-                                        color: isRestaurantOpen ? "#5C4639" : "#858585"
+                                        color: isRestaurantOpen ? COLORS.secondaryColor : COLORS.inactiveContentColor
                                     }}
                                 >
                                     {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
@@ -325,14 +328,15 @@ const RestaurantCartCard = memo(
                                         width: moderateScale(22),
                                         height: moderateScale(22),
                                         backgroundColor: isRestaurantOpen
-                                            ? "rgba(232,185,63,0.15)"
-                                            : "rgba(31,31,31,0.07)"
+                                            ? hexToRgba(COLORS.accentColor, 0.15)
+                                            : hexToRgba(COLORS.primaryTextColor, 0.1)
                                     }}
                                 >
                                     <ClockIcon
                                         width={moderateScale(14)}
                                         height={moderateScale(14)}
-                                        color={isRestaurantOpen ? "#5C4639" : "#858585"} strokeWidth={1.8}
+                                        color={isRestaurantOpen ? COLORS.secondaryColor : COLORS.inactiveContentColor}
+                                        strokeWidth={1.8}
                                     />
                                 </View>
 
@@ -341,8 +345,8 @@ const RestaurantCartCard = memo(
                                     style={{
                                         fontSize: moderateScale(10),
                                         color: isRestaurantOpen
-                                            ? "rgba(31,31,31,0.75)"
-                                            : "rgba(31,31,31,0.45)"
+                                            ? hexToRgba(COLORS.primaryTextColor, 0.75)
+                                            : hexToRgba(COLORS.primaryTextColor, 0.45)
                                     }}
                                 >
                                     {isRestaurantOpen ? `${deliveryTime} min` : "Currently Closed"}
@@ -358,14 +362,14 @@ const RestaurantCartCard = memo(
                                 paddingHorizontal: scale(7),
                                 paddingVertical: verticalScale(4),
                                 borderRadius: moderateScale(12),
-                                backgroundColor: "rgba(31,31,31,0.08)"
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                             }}
                         >
                             <Text
                                 className="font-semibold uppercase"
                                 style={{
                                     fontSize: moderateScale(8),
-                                    color: "rgba(31,31,31,0.50)"
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.5)
                                 }}
                             >
                                 Closed
@@ -373,32 +377,40 @@ const RestaurantCartCard = memo(
                         </View>
                     ) : isActiveCart ? (
                         <View
-                            className="items-center justify-center bg-[#E3F2E8]"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor: COLORS.activeStatusBackgroundColor,
                                 paddingHorizontal: scale(6),
                                 paddingVertical: verticalScale(4),
                                 borderRadius: moderateScale(12)
                             }}
                         >
                             <Text
-                                className="text-[#20bb59] font-semibold uppercase"
-                                style={{ fontSize: moderateScale(8) }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    fontSize: moderateScale(8),
+                                    color: COLORS.activeStatusTextColor
+                                }}
                             >
                                 Active Cart
                             </Text>
                         </View>
                     ) : (
                         <View
-                            className="items-center justify-center bg-[#E8B93F]/15"
+                            className="items-center justify-center"
                             style={{
+                                backgroundColor : hexToRgba(COLORS.accentColor, 0.15),
                                 paddingHorizontal: scale(6),
                                 paddingVertical: verticalScale(4),
                                 borderRadius: moderateScale(12)
                             }}
                         >
                             <Text
-                                className="font-medium text-[#5C4639]"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: COLORS.secondaryColor
+                                }}
                             >
                                 {items.length} items
                             </Text>
@@ -412,8 +424,8 @@ const RestaurantCartCard = memo(
                                 width: moderateScale(26),
                                 height: moderateScale(26),
                                 backgroundColor: isRestaurantOpen
-                                    ? "rgba(232,185,63,0.15)"
-                                    : "rgba(31,31,31,0.07)"
+                                    ? hexToRgba(COLORS.accentColor, 0.15)
+                                    : hexToRgba(COLORS.primaryTextColor, 0.1)
                             }
                         ]}
                         className="items-center justify-center rounded-full"
@@ -421,7 +433,7 @@ const RestaurantCartCard = memo(
                         <ArrowDownIcon
                             width={moderateScale(16)}
                             height={moderateScale(16)}
-                            color={isRestaurantOpen ? "#5C4639" : "#858585"}
+                            color={isRestaurantOpen ? COLORS.secondaryColor : COLORS.inactiveContentColor}
                             style={{ marginTop: moderateScale(2) }}
                         />
                     </Animated.View>

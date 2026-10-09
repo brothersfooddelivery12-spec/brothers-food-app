@@ -1,5 +1,7 @@
 import CloseIcon from '@/assets/icon/CancelCircleIcon2.svg';
 import SearchIcon from "@/assets/icon/SearchOutline.svg";
+import { COLORS } from '@/constant/colors';
+import { hexToRgba } from '@/utils/hexToRgba';
 import { forwardRef, memo } from "react";
 import { StyleProp, TextInput, TextInputProps, TouchableOpacity, View, ViewStyle } from "react-native";
 import { moderateScale, scale, verticalScale, } from "react-native-size-matters";
@@ -47,12 +49,12 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
         value,
         onChangeText,
 
-        backgroundColor = "#FAFAFA",
+        backgroundColor = COLORS.secondaryBackgroundColor,
         placeholder = "Search...",
         LeftIcon = SearchIcon,
         RightIcon,
-        leftIconColor = "#3F2516",
-        rightIconColor = "#3F2516",
+        leftIconColor = COLORS.primaryColor,
+        rightIconColor = COLORS.primaryColor,
         onRightPress,
         onClear,
         showClear = false,
@@ -81,10 +83,11 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
                 style={containerStyle}
             >
                 <View
-                    className="flex-1 flex-row items-center border-[#1F1F1F]/10"
+                    className="flex-1 flex-row items-center"
                     style={[
                         {   
-                            backgroundColor: backgroundColor ?? "#FAFAFA",
+                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                            backgroundColor: backgroundColor,
                             borderWidth: moderateScale(0.5),
                             borderRadius: moderateScale(22),
                             paddingHorizontal: scale(13),
@@ -103,16 +106,17 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
                         value={value}
                         onChangeText={onChangeText}
                         placeholder={placeholder}
-                        placeholderTextColor="#7A7D81"
+                        placeholderTextColor={COLORS.placeholderTextColor}
                         editable={!disabled}
                         multiline={false}
                         numberOfLines={1}
                         returnKeyType={returnKeyType}
                         autoCorrect={autoCorrect}
                         autoCapitalize={autoCapitalize}
-                        selectionColor="#79685E"
-                        className="flex-1 text-[#1F1F1F] font-medium"
+                        selectionColor={COLORS.selectionColor}
+                        className="flex-1 font-medium"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(14),
                             marginLeft: scale(8),
                             paddingVertical: 0
@@ -130,7 +134,7 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
                                 hitSlop={10}
                                 className="items-center justify-center"
                             >
-                                <CloseIcon width={moderateScale(22)} height={moderateScale(22)} color="rgba(31,31,31,0.48)" strokeWidth={1.8} />
+                                <CloseIcon width={moderateScale(22)} height={moderateScale(22)} color={hexToRgba(COLORS.primaryTextColor, 0.48)} strokeWidth={1.8} />
                             </TouchableOpacity>
                         )}
                 </View>
@@ -140,9 +144,12 @@ const SearchBar = forwardRef<TextInput, SearchBarProps>(
                         activeOpacity={0.95}
                         disabled={disabled}
                         onPress={onRightPress}
-                        className="items-center justify-center bg-white border border-[#1F1F1F]/10"
+                        className="items-center justify-center"
                         style={[
                             {
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                backgroundColor: backgroundColor,
+                                borderWidth: moderateScale(0.5),
                                 width: moderateScale(52),
                                 height: moderateScale(52),
                                 borderRadius: moderateScale(18),

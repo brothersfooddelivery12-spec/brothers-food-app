@@ -1,5 +1,7 @@
 import LocationIcon from "@/assets/icon/LocationIcon3.svg"
 import RatingIcon from "@/assets/icon/RatingIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -53,23 +55,23 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
             style={{
                 borderRadius: moderateScale(22),
                 gap: moderateScale(8),
-                backgroundColor: isInactive ? "#EFEFEF" : "#FAFAFA",
+                backgroundColor: isInactive ? COLORS.inactiveBackgroundColor : COLORS.secondaryBackgroundColor,
                 borderWidth: moderateScale(0.5),
-                borderColor: isInactive
-                    ? "rgba(31,31,31,0.08)"
-                    : "rgba(31,31,31,0.10)"
+                borderColor: isInactive 
+                    ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                    : hexToRgba(COLORS.primaryTextColor, 0.10)
             }}
         >
             <View
                 style={{
-                    backgroundColor: "#EFEFEF",
+                    backgroundColor: COLORS.inactiveBackgroundColor,
                     width: moderateScale(78),
                     height: moderateScale(78),
                     borderRadius: moderateScale(18),
                     overflow: "hidden",
                     position: "relative",
                     borderWidth: !hasImage && !isInactive ? 0.7 : 0,
-                    borderColor: "rgba(31,31,31,0.08)"
+                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                 }}
             >
                 <Image
@@ -108,12 +110,15 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             bottom: verticalScale(6),
                             paddingVertical: verticalScale(3),
                             borderRadius: moderateScale(10),
-                            backgroundColor: "rgba(31,31,31,0.80)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.8)
                         }}
                     >
                         <Text
-                            className="text-[#FFFFFF] font-bold uppercase text-center"
-                            style={{ fontSize: moderateScale(7.5) }}
+                            className="font-bold uppercase text-center"
+                            style={{
+                                fontSize: moderateScale(7.5),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Currently Closed
                         </Text>
@@ -127,7 +132,8 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                     className="font-bold"
                     style={{
                         fontSize: moderateScale(14),
-                        color: isInactive ? "rgba(31,31,31,0.55)" : "#1F1F1F" }}
+                        color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
+                    }}
                 >
                     {restaurant.name}
                 </Text>
@@ -139,8 +145,8 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                         fontSize: moderateScale(11),
                         marginTop: moderateScale(1),
                         color: isInactive
-                            ? "rgba(31,31,31,0.40)"
-                            : "rgba(31,31,31,0.65)"
+                            ? hexToRgba(COLORS.primaryTextColor, 0.38)
+                            : hexToRgba(COLORS.primaryTextColor, 0.65)
                     }}
                 >
                     {restaurant.cuisines}
@@ -155,14 +161,14 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
                         <RatingIcon
                             width={moderateScale(14)}
                             height={moderateScale(14)}
-                            color={isInactive ? "#8A8A8A" : "#5C4639"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                         />
 
                         <Text
@@ -170,7 +176,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             style={{
                                 fontSize: moderateScale(10),
                                 marginRight: moderateScale(2),
-                                color: isInactive ? "#8A8A8A" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             {(rating ?? 0).toFixed(1)}
@@ -185,14 +191,14 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(12),
                             backgroundColor: isInactive
-                                ? "rgba(31,31,31,0.07)"
-                                : "rgba(232,185,63,0.15)"
+                                ? hexToRgba(COLORS.primaryTextColor, 0.1)
+                                : hexToRgba(COLORS.accentColor, 0.15)
                         }}
                     >
                         <LocationIcon
                             width={moderateScale(14)}
                             height={moderateScale(14)}
-                            color={isInactive ? "#8A8A8A" : "#5C4639"}
+                            color={isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor}
                         />
 
                         <Text
@@ -200,7 +206,7 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             style={{
                                 fontSize: moderateScale(10),
                                 marginRight: moderateScale(2),
-                                color: isInactive ? "#8A8A8A" : "#5C4639"
+                                color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                             }}
                         >
                             {restaurant.distance ?? "-- km"}
@@ -212,8 +218,9 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
             <View className="ml-auto items-end justify-between">
                 {!isInactive && hasDiscount && (
                     <View
-                        className="self-end flex-row items-center justify-center bg-[#E8B93F]/15"
+                        className="self-end flex-row items-center justify-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                             marginTop: moderateScale(3),
                             marginRight: moderateScale(3),
                             paddingHorizontal: moderateScale(8),
@@ -222,8 +229,11 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                         }}
                     >
                         <Text
-                            className="font-bold text-[#5C4639]"
-                            style={{ fontSize: moderateScale(10) }}
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(10),
+                                color: COLORS.secondaryColor
+                            }}
                         >
                             {restaurant.discount}
                         </Text>
@@ -238,14 +248,14 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10),
-                            backgroundColor: "rgba(31,31,31,0.08)"
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.08)
                         }}
                     >
                         <Text
                             className="font-semibold uppercase"
                             style={{
                                 fontSize: moderateScale(9),
-                                color: "rgba(31,31,31,0.50)"
+                                color: hexToRgba(COLORS.primaryTextColor, 0.5)
                             }}
                         >
                             Unavailable
@@ -262,14 +272,14 @@ const NearByRestaurantsList = ({ restaurant, onPress}: RestaurantListCardProps) 
                             paddingHorizontal: moderateScale(8),
                             paddingVertical: moderateScale(4.5),
                             borderRadius: moderateScale(10),
-                            backgroundColor: isInactive ? "#B7B7B7" : "#3F2516"
+                            backgroundColor: isInactive ? COLORS.disabledBackgroundColor : COLORS.primaryColor
                         }}
                     >
                         <Text
                             className="font-bold"
                             style={{
                                 fontSize: moderateScale(11),
-                                color: isInactive ? "#FFFFFF" : "#FFFFFF"
+                                color: isInactive ? hexToRgba(COLORS.primaryBackgroundColor, 0.65) : COLORS.primaryBackgroundColor
                             }}
                         >
                             ₹{restaurant.priceForTwo} for two

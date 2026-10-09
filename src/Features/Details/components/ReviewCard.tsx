@@ -1,9 +1,11 @@
-import { View, Text } from "react-native"
-import { Image } from "expo-image"
-import RatingStars from "@/components/RatingStars"
-import QuoteIcon from '@/assets/icon/QuoteIcon.svg'
-import { moderateScale, verticalScale } from "react-native-size-matters";
+import QuoteIcon from '@/assets/icon/QuoteIcon.svg';
+import RatingStars from "@/components/RatingStars";
+import { COLORS } from "@/constant/colors";
+import { hexToRgba } from '@/utils/hexToRgba';
+import { Image } from "expo-image";
 import React from "react";
+import { Text, View } from "react-native";
+import { moderateScale, verticalScale } from "react-native-size-matters";
 
 export interface Review {
     id: string;
@@ -21,13 +23,19 @@ interface ReviewCardProps {
 const ReviewCard = ({ review }: ReviewCardProps) => {
     return (
         <View
-            className="p-4 border border-[#D9C5B9] mb-4"
-            style={{ borderRadius: moderateScale(18) }}
+            className="p-4 mb-4"
+            style={{
+                borderRadius: moderateScale(18),
+                borderColor: COLORS.borderColor,
+                borderWidth: moderateScale(0.7)
+            }}
         >
             <View className="flex-row gap-3 items-center">
                 <View
-                    className="items-center overflow-hidden justify-center self-start rounded-full border border-[#FFFFFF]"
+                    className="items-center overflow-hidden justify-center self-start rounded-full"
                     style={{
+                        borderColor: COLORS.primaryBackgroundColor,
+                        borderWidth: moderateScale(0.7),
                         width: moderateScale(46),
                         height: moderateScale(46)
                     }}
@@ -50,8 +58,9 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 <View className="items-center">
                     <Text
                         numberOfLines={1}
-                        className="text-[#1F1F1F] font-bold"
+                        className="font-bold"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(14),
                             marginBottom: moderateScale(6)
                         }}
@@ -60,16 +69,20 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                     </Text>
 
                     <View
-                        className="self-start flex-row items-center bg-[#F8D56A]"
+                        className="self-start flex-row items-center"
                         style={{
+                            backgroundColor: COLORS.accentLightColor,
                             paddingHorizontal: moderateScale(7),
                             paddingVertical: moderateScale(4),
                             borderRadius: moderateScale(10)
                         }}
                     >
                         <Text
-                            className="font-semibold text-[#3F2516] uppercase"
-                            style={{ fontSize: moderateScale(8) }}
+                            className="font-semibold uppercase"
+                            style={{
+                                fontSize: moderateScale(8),
+                                color: COLORS.primaryColor
+                            }}
                         >
                             {review.badge}
                         </Text>
@@ -85,8 +98,9 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
             </View>
 
             <Text
-                className="text-[#1F1F1F]/65 mx-4 font-medium"
+                className="mx-4 font-medium"
                 style={{
+                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                     fontSize: moderateScale(12),
                     marginTop: verticalScale(8),
                     lineHeight: moderateScale(14)
@@ -97,8 +111,9 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
 
             <View className="flex-row gap-3 items-center justify-center mt-3">
                 <View
-                    className="rounded-full bg-[#E8DDD3]/85"
+                    className="rounded-full"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: verticalScale(0.7),
                         width: moderateScale(95),
                         marginVertical: verticalScale(8)
@@ -106,18 +121,20 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 />
 
                 <View
-                    className="rounded-full bg-[#E8B93F]/20 items-center justify-center"
+                    className="rounded-full items-center justify-center"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                         width: moderateScale(20),
                         height: moderateScale(20)
                     }}
                 >
-                    <QuoteIcon width={moderateScale(14)} height={moderateScale(14)} color="#3F2516" />
+                    <QuoteIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.secondaryColor} />
                 </View>
 
                 <View
-                    className="rounded-full bg-[#E8DDD3]/85"
+                    className="rounded-full"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: verticalScale(0.7),
                         width: moderateScale(95),
                         marginVertical: verticalScale(8)

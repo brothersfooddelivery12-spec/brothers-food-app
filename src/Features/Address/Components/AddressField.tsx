@@ -1,3 +1,5 @@
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { useRef } from "react"
 import { KeyboardTypeOptions, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -56,16 +58,20 @@ export const AddressField = ({
         <View className="flex-1">
             <View className="flex-row items-center">
                 <Text
-                    className="font-medium text-[#1F1F1F]/85"
-                    style={{ fontSize: moderateScale(12) }}
+                    className="font-medium"
+                    style={{
+                        fontSize: moderateScale(12),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.85)
+                    }}
                 >
                     {label}
                 </Text>
 
                 {required && (
                     <Text
-                        className="font-bold text-[#DC2626]"
+                        className="font-bold"
                         style={{
+                            color: COLORS.errorBorderColor,
                             fontSize: moderateScale(12),
                             marginLeft: scale(2)
                         }}
@@ -79,9 +85,10 @@ export const AddressField = ({
                 activeOpacity={onPress ? 0.95 : 1}
                 onPress={handleFieldPress}
                 disabled={loading}
-                className={`flex-row items-center overflow-hidden
-                ${error ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                className="flex-row items-center overflow-hidden"
                 style={{
+                    backgroundColor: COLORS.secondaryBackgroundColor,
+                    borderColor: error ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1),
                     borderWidth: moderateScale(0.7),
                     height: verticalScale(46),
                     borderRadius: moderateScale(14),
@@ -90,19 +97,15 @@ export const AddressField = ({
                 }}
             >
                 <View
-                    className="items-center justify-center bg-[#E5E4E2]/65"
+                    className="items-center justify-center"
                     style={{
+                        backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                         width: moderateScale(34),
                         height: moderateScale(34),
                         borderRadius: moderateScale(9)
                     }}
                 >
-                    <Icon
-                        width={moderateScale(19)}
-                        height={moderateScale(19)}
-                        color="#1F1F1F"
-                        strokeWidth={1.6}
-                    />
+                    <Icon width={moderateScale(19)} height={moderateScale(19)} color={COLORS.primaryTextColor} strokeWidth={1.6} />
                 </View>
 
                 <TextInput
@@ -110,24 +113,21 @@ export const AddressField = ({
                     value={value}
                     onChangeText={onChangeText}
                     placeholder={placeholder}
-                    placeholderTextColor="#9A9A9A"
+                    placeholderTextColor={ COLORS.placeholderTextColor }
                     keyboardType={keyboardType}
                     maxLength={maxLength}
                     editable={editable && !loading && !onPress}
                     pointerEvents={ onPress ? "none" : "auto" }
                     autoCorrect={false}
-                    className={`flex-1 p-0 font-medium ${
-                        loading
-                            ? "text-[#9CA3AF]"
-                            : "text-[#151515]"
-                    }`}
+                    className="flex-1 p-0 font-medium"
                     style={{
+                        color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor,
                         fontSize: moderateScale(13),
                         marginLeft: scale(9),
                         includeFontPadding: false,
                         textAlignVertical: "center"
                     }}
-                    selectionColor="#79685e"
+                    selectionColor={ COLORS.selectionColor }
                     onPressIn={() => {
                         if(!loading) {
                             inputRef.current?.focus()

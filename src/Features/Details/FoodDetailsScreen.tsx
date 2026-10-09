@@ -11,10 +11,12 @@ import UsersIcon from '@/assets/icon/UsersIcon.svg'
 import UtensilIcon from '@/assets/icon/UtensilIcon.svg'
 import VegIcon from "@/assets/icon/VeganIcon.svg"
 import { addons } from "@/constant/addons"
+import { COLORS } from '@/constant/colors'
 import { getMenuById, MenuDetails } from '@/Services/api-service'
 import { addMenuItemToFavorites, removeMenuItemFromFavorites } from '@/Services/favorite-service'
 import { useFavouriteStore } from '@/Stores/favourite-store'
 import { useCartStore } from '@/Stores/useCartStore'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -238,10 +240,13 @@ export default function FoodDetailsScreen() {
     const isAvailable = menu?.is_available ?? false
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -260,7 +265,8 @@ export default function FoodDetailsScreen() {
             ) : (
                 <>
                     <KeyboardAwareScrollView
-                        className="flex-1 bg-[#FFFFFF]"
+                        className="flex-1"
+                        style={{ backgroundColor: COLORS.primaryBackgroundColor }}
                         contentContainerStyle={{
                             paddingBottom: verticalScale(85)
                         }}
@@ -304,38 +310,43 @@ export default function FoodDetailsScreen() {
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={() => router.back()}
-                                    className="items-center self-start justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                    className="items-center self-start justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                         borderWidth: moderateScale(0.5),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
-                                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
+                                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(3) }} />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
                                     activeOpacity={0.95}
                                     onPress={handleFavouritePress}
-                                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                                    className="items-center justify-center rounded-full"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                         borderWidth: moderateScale(0.5),
                                         width: moderateScale(38),
                                         height: moderateScale(38)
                                     }}
                                 >
                                     {isFavourite ? (
-                                        <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} style={{ marginTop: moderateScale(2) }} />
+                                        <FavouriteFilledIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} style={{ marginTop: moderateScale(2) }} />
                                     ): (
-                                        <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={"#1F1F1F"} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
+                                        <FavouriteOutlineIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={1.5} style={{ marginTop: moderateScale(2) }} />
                                     )}
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View
-                            className="w-full bg-[#FFFFFF]"
+                            className="w-full"
                             style={{
+                                backgroundColor: COLORS.primaryBackgroundColor,
                                 marginTop: verticalScale(200),
                                 minHeight: verticalScale(600),
                                 borderTopLeftRadius: moderateScale(22),
@@ -350,23 +361,27 @@ export default function FoodDetailsScreen() {
                                         style={{
                                             left: moderateScale(14),
                                             bottom: moderateScale(13),
-                                            backgroundColor: "rgba(31,31,31,0.82)",
+                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.8),
                                             paddingHorizontal: scale(8),
                                             paddingVertical: verticalScale(5),
                                             borderRadius: moderateScale(10)
                                         }}
                                     >
                                         <Text
-                                            className="text-[#FFFFFF] font-bold uppercase"
-                                            style={{ fontSize: moderateScale(7.5) }}
+                                            className="font-bold uppercase"
+                                            style={{
+                                                fontSize: moderateScale(7.5),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             Currently Unavailable
                                         </Text>
                                     </View>
                                 ) : (
                                     <View
-                                        className="self-start flex-row items-center bg-[#F8D56A]"
+                                        className="self-start flex-row items-center"
                                         style={{
+                                            backgroundColor: COLORS.accentLightColor,
                                             marginTop: moderateScale(14),
                                             paddingHorizontal: moderateScale(7),
                                             paddingVertical: moderateScale(4),
@@ -374,8 +389,11 @@ export default function FoodDetailsScreen() {
                                         }}
                                     >
                                         <Text
-                                            className="font-semibold text-[#3F2516] uppercase"
-                                            style={{ fontSize: moderateScale(10) }}
+                                            className="font-semibold uppercase"
+                                            style={{
+                                                fontSize: moderateScale(10),
+                                                color: COLORS.primaryColor
+                                            }}
                                         >
                                             BestSeller
                                         </Text>
@@ -384,8 +402,9 @@ export default function FoodDetailsScreen() {
                             )}
 
                             <Text
-                                className="font-extrabold text-[#1F1F1F]"
+                                className="font-extrabold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     marginTop: moderateScale(8),
                                     fontSize: moderateScale(20)
                                 }}
@@ -394,8 +413,9 @@ export default function FoodDetailsScreen() {
                             </Text>
 
                             <Text
-                                className="font-medium text-[#1F1F1F]/65"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                     fontSize: moderateScale(12),
                                     marginTop: moderateScale(8),
                                     lineHeight: moderateScale(16)
@@ -405,8 +425,9 @@ export default function FoodDetailsScreen() {
                             </Text>
 
                             <Text
-                                className="font-black text-[#1F1F1F]"
+                                className="font-black"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(28),
                                     marginTop: moderateScale(12)
                                 }}
@@ -419,18 +440,20 @@ export default function FoodDetailsScreen() {
                                 style={{ marginTop: moderateScale(8) }}
                             >
                                 <View
-                                    className="self-start flex-row items-center justify-center gap-1 bg-[#E8B93F]/15"
+                                    className="self-start flex-row items-center justify-center gap-1"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         paddingHorizontal: moderateScale(8),
                                         paddingVertical: moderateScale(4),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
+                                    <RatingIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.secondaryColor} />
 
                                     <Text
-                                        className="font-bold text-[#5c4639]"
+                                        className="font-bold"
                                         style={{
+                                            color: COLORS.secondaryColor,
                                             fontSize: moderateScale(12),
                                             marginRight: moderateScale(2)
                                         }}
@@ -440,18 +463,20 @@ export default function FoodDetailsScreen() {
                                 </View>
 
                                 <View
-                                    className="self-start flex-row items-center justify-center gap-1 bg-[#E8B93F]/15"
+                                    className="self-start flex-row items-center justify-center gap-1"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         paddingHorizontal: moderateScale(6),
                                         paddingVertical: moderateScale(4),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <UsersIcon width={moderateScale(16)} height={moderateScale(16)} color="#5c4639" />
+                                    <UsersIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.secondaryColor} />
 
                                     <Text
-                                        className="font-bold text-[#5c4639]"
+                                        className="font-bold"
                                         style={{
+                                            color: COLORS.secondaryColor,
                                             fontSize: moderateScale(12),
                                             marginRight: moderateScale(2)
                                         }}
@@ -462,14 +487,16 @@ export default function FoodDetailsScreen() {
                                                     ? "Review"
                                                     : "Reviews"
                                             }`
-                                            : "No Reviews"}
+                                            : "No Reviews"
+                                        }
                                     </Text>
                                 </View>
                             </View>
                                 
                             <View
-                                className="rounded-full bg-[#E8DDD3]/65"
+                                className="rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.borderColor, 0.65),
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(14),
                                     marginHorizontal: verticalScale(2)
@@ -479,31 +506,35 @@ export default function FoodDetailsScreen() {
                             <View className="flex-row gap-8 items-center justify-center">
                                 <View className="items-center">
                                     <View
-                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                        className="items-center justify-center rounded-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                             width: moderateScale(48),
                                             height: moderateScale(48)
                                         }}
                                     >
-                                        <StopWatchIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
+                                        <StopWatchIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} />
                                     </View>
 
                                     <Text
-                                        className="font-medium text-[#1F1F1F]/65"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                             fontSize: moderateScale(12),
                                             marginTop: moderateScale(5)
                                         }}
                                     >
                                         {menu?.preparation_time
-                                        ? `${menu.preparation_time} min`
-                                        : "--"}
+                                            ? `${menu.preparation_time} min`
+                                            : "--"
+                                        }
                                     </Text>
                                 </View>
 
                                 <View
-                                    className="rounded-full bg-[#E8DDD3]/65"
+                                    className="rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.borderColor, 0.65),
                                         width: scale(1),
                                         height: verticalScale(26),
                                         marginHorizontal: verticalScale(2)
@@ -512,18 +543,20 @@ export default function FoodDetailsScreen() {
 
                                 <View className="items-center">
                                     <View
-                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                        className="items-center justify-center rounded-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                             width: moderateScale(48),
                                             height: moderateScale(48)
                                         }}
                                     >
-                                        <FireIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
+                                        <FireIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} />
                                     </View>
 
                                     <Text
-                                        className="font-medium text-[#1F1F1F]/65"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                             fontSize: moderateScale(12),
                                             marginTop: moderateScale(5)
                                         }}
@@ -536,8 +569,9 @@ export default function FoodDetailsScreen() {
                                 </View>
 
                                 <View
-                                    className="rounded-full bg-[#E8DDD3]/65"
+                                    className="rounded-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.borderColor, 0.65),
                                         width: scale(1),
                                         height: verticalScale(26),
                                         marginHorizontal: verticalScale(2)
@@ -546,22 +580,24 @@ export default function FoodDetailsScreen() {
 
                                 <View className="items-center">
                                     <View
-                                        className="items-center justify-center rounded-full bg-[#E5E4E2]/65"
+                                        className="items-center justify-center rounded-full"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                             width: moderateScale(48),
                                             height: moderateScale(48)
                                         }}
                                     >
                                         {menu?.is_vegetarian ? (
-                                            <VegIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
+                                            <VegIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} />
                                         ) : (
-                                            <UtensilIcon width={moderateScale(24)} height={moderateScale(24)} color={"#1F1F1F"} strokeWidth={2} />
+                                            <UtensilIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryTextColor} strokeWidth={2} />
                                         )}
                                     </View>
 
                                     <Text
-                                        className="font-medium text-[#1F1F1F]/65"
+                                        className="font-medium"
                                         style={{
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                             fontSize: moderateScale(12),
                                             marginTop: moderateScale(5)
                                         }}
@@ -572,15 +608,19 @@ export default function FoodDetailsScreen() {
                             </View>
 
                             <View
-                                className="p-4 bg-[#F5F5F5]"
+                                className="p-4"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                    borderWidth: moderateScale(0.7),
                                     borderRadius: moderateScale(20),
                                     marginTop: moderateScale(25)
                                 }}
                             >
                                 <Text
-                                    className="mt-1 font-extrabold text-[#1F1F1F]"
+                                    className="mt-1 font-extrabold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(15),
                                         marginLeft: moderateScale(5)
                                     }}
@@ -589,8 +629,9 @@ export default function FoodDetailsScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/55 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.55),
                                         fontSize: moderateScale(11),
                                         marginVertical: verticalScale(4),
                                         marginLeft: moderateScale(5)
@@ -607,24 +648,27 @@ export default function FoodDetailsScreen() {
                                             key={addon.id}
                                             activeOpacity={0.95}
                                             onPress={() => handleAddonPress(addon.id)}
-                                            className={`mt-3 flex-row gap-4 items-center bg-white border ${
-                                                isSelected
-                                                    ? "border-[#5c4639]/45"
-                                                    : "border-[#1F1F1F]/10"
-                                            }`}
+                                            className="mt-3 flex-row gap-4 items-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryBackgroundColor,
+                                                borderColor: isSelected
+                                                    ? hexToRgba(COLORS.secondaryColor, 0.45)
+                                                    : hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderWidth: moderateScale(0.7),
                                                 paddingHorizontal: scale(14),
                                                 paddingVertical: verticalScale(15),
                                                 borderRadius: moderateScale(18)
                                             }}
                                         >
                                             <View
-                                                className={`self-center items-center justify-center border ${
-                                                    isSelected
-                                                        ? "bg-[#3F2516] border-[#3F2516]"
-                                                        : "border-[#1F1F1F]/15"
-                                                }`}
+                                                className="self-center items-center justify-center border"
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? COLORS.secondaryColor
+                                                        : "transparent",
+                                                    borderColor: isSelected
+                                                        ? COLORS.secondaryColor
+                                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
                                                     marginStart: moderateScale(4),
                                                     borderRadius: moderateScale(8),
                                                     width: moderateScale(24),
@@ -632,29 +676,38 @@ export default function FoodDetailsScreen() {
                                                 }}
                                             >
                                                 {isSelected && (
-                                                    <CheckIcon width={moderateScale(16)} height={moderateScale(16)} color={"#FFFFFF"} strokeWidth={2.5} />
+                                                    <CheckIcon width={moderateScale(16)} height={moderateScale(16)} color={COLORS.primaryBackgroundColor} strokeWidth={2.5} />
                                                 )}
                                             </View>
 
                                             <View className="flex-1 gap-1">
                                                 <Text
-                                                    className="font-semibold text-[#1F1F1F]"
-                                                    style={{ fontSize: moderateScale(14) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(14),
+                                                        color: COLORS.primaryTextColor
+                                                    }}
                                                 >
                                                     {addon.title}
                                                 </Text>
 
                                                 <Text
-                                                    className="font-medium text-[#1F1F1F]/65"
-                                                    style={{ fontSize: moderateScale(11) }}
+                                                    className="font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(11),
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                                                    }}
                                                 >
                                                     {addon.description}
                                                 </Text>
                                             </View>
 
                                             <Text
-                                                className="text-[#3F2516] font-bold"
-                                                style={{ fontSize: moderateScale(16) }}
+                                                className="font-bold"
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    color: COLORS.primaryColor
+                                                }}
                                             >
                                                 +₹{addon.price}
                                             </Text>
@@ -664,15 +717,19 @@ export default function FoodDetailsScreen() {
                             </View>
 
                             <View
-                                className="p-4 bg-[#F5F5F5]"
+                                className="p-4"
                                 style={{
+                                    backgroundColor: COLORS.secondaryBackgroundColor,
+                                    borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                    borderWidth: moderateScale(0.7),
                                     borderRadius: moderateScale(20),
                                     marginTop: moderateScale(25)
                                 }}
                             >
                                 <Text
-                                    className="mt-1 font-extrabold text-[#1F1F1F]"
+                                    className="mt-1 font-extrabold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(16),
                                         marginLeft: moderateScale(5)
                                     }}
@@ -681,8 +738,9 @@ export default function FoodDetailsScreen() {
                                 </Text>
 
                                 <Text
-                                    className="text-[#1F1F1F]/55 font-medium"
+                                    className="font-medium"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.55),
                                         fontSize: moderateScale(11),
                                         marginVertical: verticalScale(4),
                                         marginLeft: moderateScale(5)
@@ -692,8 +750,9 @@ export default function FoodDetailsScreen() {
                                 </Text>
 
                                 <Text
-                                    className="mt-4 font-bold text-[#1F1F1F]"
+                                    className="mt-4 font-bold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginLeft: moderateScale(5)
                                     }}
@@ -713,26 +772,22 @@ export default function FoodDetailsScreen() {
                                                 key={doneness}
                                                 activeOpacity={0.85}
                                                 onPress={() => setSelectedDoneness(doneness)}
-                                                className={`items-center justify-center ${
-                                                    isSelected
-                                                        ? "bg-[#3F2516]"
-                                                        : "bg-[#faf5ef]"
-                                                }`}
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor,
                                                     borderRadius: moderateScale(18),
                                                     paddingHorizontal: scale(14),
                                                     paddingVertical: verticalScale(6),
-                                                    borderWidth: isSelected ? 1 : 1,
-                                                    borderColor: "#E8DDD3"
+                                                    borderWidth: 1,
+                                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                                 }}
                                             >
                                                 <Text
-                                                    className={`font-semibold ${
-                                                        isSelected
-                                                            ? "text-white"
-                                                            : "text-[#5A3825]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {doneness}
                                                 </Text>
@@ -742,8 +797,9 @@ export default function FoodDetailsScreen() {
                                 </View>
 
                                 <Text
-                                    className="font-semibold text-[#3F2516]"
+                                    className="font-semibold"
                                     style={{
+                                        color: COLORS.primaryTextColor,
                                         fontSize: moderateScale(14),
                                         marginLeft: moderateScale(5),
                                         marginTop: verticalScale(18)
@@ -757,9 +813,13 @@ export default function FoodDetailsScreen() {
                                     numberOfLines={4}
                                     textAlignVertical="top"
                                     placeholder="e.g. No onions, extra aioli on the side..."
-                                    placeholderTextColor="#7A7D81"
-                                    className="w-full mt-3 bg-[#F8F9FA] border border-[#D9C5B9] text-[#151515]"
+                                    placeholderTextColor={COLORS.placeholderTextColor}
+                                    className="w-full mt-3"
                                     style={{
+                                        backgroundColor: COLORS.primaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                        borderWidth: moderateScale(0.7),
+                                        color: COLORS.inputTextColor,
                                         height: verticalScale(120),
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: moderateScale(16),
@@ -767,7 +827,7 @@ export default function FoodDetailsScreen() {
                                         fontSize: moderateScale(14),
                                         lineHeight: moderateScale(26)
                                     }}
-                                    selectionColor="#79685e"
+                                    selectionColor={COLORS.secondaryColor}
                                 />
                             </View>
                         </View>
@@ -782,7 +842,9 @@ export default function FoodDetailsScreen() {
                             borderTopRightRadius: moderateScale(22),
                             borderTopLeftRadius: moderateScale(22),
                             zIndex: 100, 
-                            backgroundColor: isAvailable ? "#3F2516" : "#4D4D4D"
+                            backgroundColor: isAvailable
+                                ? COLORS.primaryColor
+                                : COLORS.inactiveContentColor
                         }}
                     >
                         <View
@@ -798,15 +860,19 @@ export default function FoodDetailsScreen() {
                                     height: moderateScale(34),
                                     borderTopLeftRadius: moderateScale(24),
                                     borderBottomLeftRadius: moderateScale(24),
-                                    backgroundColor: isAvailable ? "#FFFFFF" : "#D1D1D1",
-                                    borderColor: isAvailable ? "rgba(63,37,22,0.85)" : "rgba(31,31,31,0.15)",
-                                    opacity: quantity === 1 ? 0.65 : 1
+                                    backgroundColor: isAvailable
+                                        ? COLORS.primaryBackgroundColor
+                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
+                                    borderColor: isAvailable
+                                        ? hexToRgba(COLORS.primaryColor, 0.85)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
+                                    opacity: quantity === 1 ? 0.75 : 1
                                 }}
                             >
                                 <MinusIcon
                                     width={moderateScale(16)}
                                     height={moderateScale(18)}
-                                    color={isAvailable ? "#3F2516" : "#8A8A8A"}
+                                    color={isAvailable ? COLORS.primaryColor : COLORS.inactiveContentColor}
                                     strokeWidth={3}
                                     style={{ marginLeft: moderateScale(2) }}
                                 />
@@ -817,15 +883,19 @@ export default function FoodDetailsScreen() {
                                 style={{
                                     width: moderateScale(35),
                                     height: moderateScale(34),
-                                    backgroundColor: isAvailable ? "#FFFFFF" : "#D1D1D1", 
-                                    borderColor: isAvailable ? "rgba(63,37,22,0.85)" : "rgba(31,31,31,0.15)"
+                                    backgroundColor: isAvailable
+                                        ? COLORS.primaryBackgroundColor
+                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
+                                    borderColor: isAvailable
+                                        ? hexToRgba(COLORS.primaryColor, 0.85)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
                                 }}
                             >
                                 <Text
                                     className="font-medium"
                                     style={{
                                         fontSize: moderateScale(16),
-                                        color: isAvailable ? "#1F1F1F" : "#8A8A8A"
+                                        color: isAvailable ? COLORS.primaryColor : COLORS.inactiveContentColor
                                     }}
                                 >
                                     {quantity}
@@ -842,14 +912,18 @@ export default function FoodDetailsScreen() {
                                     height: moderateScale(34),
                                     borderTopRightRadius: moderateScale(24),
                                     borderBottomRightRadius: moderateScale(24),
-                                    backgroundColor: isAvailable ? "#FFFFFF" : "#D1D1D1",
-                                    borderColor: isAvailable ? "rgba(63,37,22,0.85)" : "rgba(31,31,31,0.15)"
+                                    backgroundColor: isAvailable
+                                        ? COLORS.primaryBackgroundColor
+                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
+                                    borderColor: isAvailable
+                                        ? hexToRgba(COLORS.primaryColor, 0.85)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
                                 }}
                             >
                                 <PlusIcon
                                     width={moderateScale(18)}
                                     height={moderateScale(18)}
-                                    color={isAvailable ? "#3F2516" : "#8A8A8A"}
+                                    color={isAvailable ? COLORS.primaryColor : COLORS.inactiveContentColor}
                                     strokeWidth={2.5}
                                     style={{ marginRight: moderateScale(2) }}
                                 />
@@ -866,15 +940,19 @@ export default function FoodDetailsScreen() {
                                 borderRadius: moderateScale(24),
                                 paddingHorizontal: scale(12),
                                 paddingVertical: verticalScale(8),
-                                backgroundColor: isAvailable ? "#FFFFFF" : "#D1D1D1",
-                                borderColor: isAvailable ? "rgba(31,31,31,0.15)" : "rgba(31,31,31,0.10)"
+                                backgroundColor: isAvailable
+                                    ? COLORS.primaryBackgroundColor
+                                    : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
+                                borderColor: isAvailable
+                                    ? hexToRgba(COLORS.primaryColor, 0.85)
+                                    : hexToRgba(COLORS.primaryTextColor, 0.15),
                             }}
                         >
                             <Text
                                 className="font-semibold"
                                 style={{
                                     fontSize: moderateScale(14),
-                                    color: isAvailable ? "#3F2516" : "#777777"
+                                    color: isAvailable ? COLORS.primaryColor : COLORS.inactiveContentColor
                                 }}
                             >
                                 {isAvailable ? "Add To Cart" : "Unavailable"}
@@ -885,7 +963,9 @@ export default function FoodDetailsScreen() {
                                     width: scale(1),
                                     height: verticalScale(10),
                                     marginHorizontal: verticalScale(2),
-                                    backgroundColor: isAvailable ? "#E8DDD3" : "#AFAFAF"
+                                    backgroundColor: isAvailable
+                                        ? hexToRgba(COLORS.borderColor, 0.85)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
                                 }}
                             />
 
@@ -893,7 +973,9 @@ export default function FoodDetailsScreen() {
                                 className="font-semibold tracking-wide"
                                 style={{
                                     fontSize: moderateScale(15),
-                                    color: isAvailable ? "#1F1F1F" : "#777777"
+                                    color: isAvailable 
+                                        ? hexToRgba(COLORS.primaryColor, 0.85)
+                                        : hexToRgba(COLORS.primaryTextColor, 0.15),
                                 }}
                             >
                                 ₹{totalAmount.toLocaleString("en-IN")}

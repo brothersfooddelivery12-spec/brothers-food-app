@@ -1,3 +1,4 @@
+import { COLORS } from "@/constant/colors"
 import React, { useEffect, useState } from "react"
 import { Text, View } from "react-native"
 import { moderateScale } from "react-native-size-matters"
@@ -6,7 +7,7 @@ type LoadingDotsProps = {
     color?: string
 }
 
-export const LoadingDots = React.memo(({ color = "#3F2516" }: LoadingDotsProps) => {
+export const LoadingDots = React.memo(({ color = COLORS.primaryColor }: LoadingDotsProps) => {
     const [count, setCount] = useState(0)
 
     useEffect(() => {

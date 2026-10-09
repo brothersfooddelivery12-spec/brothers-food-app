@@ -84,7 +84,7 @@ export interface Advertisement {
 }
 
 export const getAdvertisements = () => {
-    return api.get("/admin/advertisement")
+    return api.get("/advertisements")
 }
 
 export interface PopularRestaurant {
@@ -213,6 +213,7 @@ export type CreateOrderRequest = {
     address_id: string
     items: CreateOrderItem[]
     payment_method: OrderPaymentMethod
+    coupon_id?: string | null
     note?: string
 }
 
@@ -283,8 +284,15 @@ export const getRestaurantById = (restaurantId: string, latitude: number, longit
     )
 }
 
-export const getRestaurantMenu = async (restaurantId: string) => {
-    return api.get(`/menu/restaurant/${restaurantId}`)
+export const getRestaurantMenu = async (restaurantId: string, latitude: number, longitude: number) => {
+    return api.get(`/menu/restaurant/${restaurantId}`,
+        {
+            params: {
+                latitude,
+                longitude
+            }
+        }
+    )
 }
 
 export type RestaurantCategory = {
@@ -484,17 +492,14 @@ export type Coupon = {
     title: string
     description: string
 
-    discount_type: "FLAT" | "PERCENTAGE"
+    discount_type: "FLAT" | "PERCENTAGE" | "FREE_SHIPPING"
     discount_value: string
     max_discount: string | null
     min_order_amount: string
 
     audience: string
 
-    purchase_method:
-        | "REWARD_POINTS"
-        | "MONEY"
-        | "FREE"
+    purchase_method: "REWARD_POINTS" | "MONEY"
 
     money_price: string
     points_required: number | null

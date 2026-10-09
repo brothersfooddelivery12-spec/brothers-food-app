@@ -4,8 +4,10 @@ import InvoiceIcon from "@/assets/icon/InvoiceIcon.svg"
 import MoneyIcon from '@/assets/icon/MoneyIcon.svg'
 import ReorderIcon from '@/assets/icon/ReorderIcon.svg'
 import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
+import { COLORS } from '@/constant/colors'
 import { OrderStatusType } from '@/Services/api-service'
 import { formatOrderId } from '@/utils/formatOrderID'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -135,28 +137,28 @@ const PastOrdersCard = ({
     const statusBadgeStyle = (() => {
         if (isDelivered) {
             return {
-                backgroundColor: "#E3F2E8",
-                color: "#20BB59"
+                backgroundColor: COLORS.activeStatusBackgroundColor,
+                color: COLORS.activeStatusTextColor
             }
         }
 
         if (isCancelled) {
             return {
-                backgroundColor: "#FEE2E2",
-                color: "#DC2626"
+                backgroundColor: COLORS.dangerBackgroundColor,
+                color: COLORS.dangerTextColor
             }
         }
 
         if (isPendingPayment) {
             return {
-                backgroundColor: "#FFF4D6",
-                color: "#C47B00"
+                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
+                color: COLORS.secondaryColor
             }
         }
 
         return {
-            backgroundColor: "#E8B93F20",
-            color: "#3F2516"
+            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
+            color: COLORS.secondaryColor
         }
     })()
 
@@ -270,8 +272,10 @@ const PastOrdersCard = ({
 
     return (
         <View
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 p-4"
+            className="p-4"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 marginTop: verticalScale(14)
@@ -310,16 +314,22 @@ const PastOrdersCard = ({
                 <View className="justify-center gap-1 flex-1 mx-2">
                     <Text
                         numberOfLines={2}
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(15) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(15),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {restaurantName}
                     </Text>
 
                     <Text
                         numberOfLines={2}
-                        className="text-[#1F1F1F]/75 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                        }}
                     >
                         OrderID {formatOrderId(orderId)}
                     </Text>
@@ -373,8 +383,9 @@ const PastOrdersCard = ({
             </View>
 
             <View
-                className="flex-row gap-2 py-3 px-4 items-center bg-[#E8B93F]/10"
+                className="flex-row gap-2 py-3 px-4 items-center"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
                     borderRadius: moderateScale(12),
                     marginTop: verticalScale(12),
                     marginHorizontal: scale(4)
@@ -382,16 +393,22 @@ const PastOrdersCard = ({
             >
                 <Text
                     numberOfLines={2}
-                    className="text-[#1F1F1F]/75 font-medium"
-                    style={{ fontSize: moderateScale(11) }}
+                    className="font-medium"
+                    style={{
+                        fontSize: moderateScale(11),
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                    }}
                 >
                     {statusMessage.label}
 
                     {" • "}
 
                     <Text
-                        className="text-[#1F1F1F] font-semibold"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-semibold"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {statusMessage.value}
                     </Text>
@@ -399,8 +416,9 @@ const PastOrdersCard = ({
             </View>
 
             <View
-                className="items-start bg-[#E5E4E2]/45 py-4 px-5"
+                className="items-start py-4 px-5"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.55),
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
                     marginHorizontal: scale(4)
@@ -410,16 +428,20 @@ const PastOrdersCard = ({
                     <React.Fragment key={`${item.name}-${index}`}>
                         <Text
                             numberOfLines={1}
-                            className="text-[#1F1F1F] font-medium"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             {item.name} x{item.quantity}
                         </Text>
 
                         {index < items.length - 1 && (
                             <View
-                                className="rounded-full bg-[#1F1F1F]/15 w-full"
+                                className="rounded-full  w-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.15),
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(8)
                                 }}
@@ -437,18 +459,22 @@ const PastOrdersCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onPayNow}
-                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-white font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Pay Now
                         </Text>
@@ -461,18 +487,22 @@ const PastOrdersCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onReorder}
-                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                        <ReorderIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-white font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Reorder
                         </Text>
@@ -485,18 +515,22 @@ const PastOrdersCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onInvoice}
-                        className="flex-row flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={1.8} />
+                        <InvoiceIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryTextColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-[#3F2516] font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Invoice
                         </Text>
@@ -509,20 +543,21 @@ const PastOrdersCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onCancelOrder}
-                        className="flex-row flex-1 items-center justify-center bg-[#FEE2E2]/85"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.dangerBackgroundColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
                             borderRadius: moderateScale(14)
                         }}
                     >
-                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220,38,38,0.80)" strokeWidth={1.8} />
+                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.dangerTextColor} strokeWidth={1.8} />
 
                         <Text
                             className="font-medium ml-2 mr-1"
                             style={{
                                 fontSize: moderateScale(13),
-                                color: "rgba(220,38,38,0.80)"
+                                color: COLORS.dangerTextColor
                             }}
                         >
                             Cancel Order

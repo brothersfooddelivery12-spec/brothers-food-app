@@ -1,6 +1,8 @@
 import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import IndiaFlag from '@/assets/icon/India.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import { useState } from 'react'
@@ -100,10 +102,13 @@ export default function EnterMobileNumberScreen(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -112,21 +117,23 @@ export default function EnterMobileNumberScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 {/* <View className="items-start gap-1 flex-1">
@@ -156,8 +163,9 @@ export default function EnterMobileNumberScreen(){
                 showsVerticalScrollIndicator={false}
             >
                 <Text
-                    className='text-[#1F1F1F] font-extrabold text-center'
+                    className='font-extrabold text-center'
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
@@ -166,8 +174,9 @@ export default function EnterMobileNumberScreen(){
                 </Text>
 
                 <Text
-                    className='text-[#1F1F1F]/65 font-medium text-center'
+                    className='font-medium text-center'
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(5)
@@ -177,43 +186,58 @@ export default function EnterMobileNumberScreen(){
                 </Text>
 
                 <Text
-                    className="font-medium text-[#1F1F1F]/85 self-start"
-                    style={{ fontSize: moderateScale(13), marginTop: verticalScale(25), marginLeft: scale(6) }}
+                    className="font-medium self-start"
+                    style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.85),
+                        fontSize: moderateScale(13),
+                        marginTop: verticalScale(25),
+                        marginLeft: scale(6)
+                    }}
                 >
                     Mobile Number
                 </Text>
 
-                <View className={`w-full flex-row overflow-hidden
-                    ${mobileNumberError ? "border-red-400" : "border-[#1F1F1F]/10"} bg-[#FAFAFA]`}
+                <View className="w-full flex-row overflow-hidden"
                     style={{
-                        marginTop: verticalScale(6), 
+                        marginTop: verticalScale(6),
                         height: verticalScale(48),
                         borderRadius: moderateScale(18),
-                        borderWidth: moderateScale(0.7)
+                        borderWidth: moderateScale(0.7),
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: mobileNumberError ? COLORS.errorBorderColor : hexToRgba(COLORS.primaryTextColor, 0.1)
                     }}
                 >
                     <View className="flex-row items-center justify-center relative" style={{ width: "22%" }}>
                         <IndiaFlag width={scale(20)} height={verticalScale(22)} style={{ marginRight: scale(6) }} />
 
-                        <Text className="font-medium text-[#151515]" style={{ fontSize: moderateScale(14) }}>
+                        <Text
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(14),
+                                color: COLORS.inputTextColor    
+                            }}
+                        >
                             +91
                         </Text>
 
-                        <View className="absolute right-0 top-0 bottom-0 bg-[#1F1F1F]/10" style={{ width: scale(0.7) }} />
+                        <View
+                            className="absolute right-0 top-0 bottom-0"
+                            style={{
+                                width: scale(0.7),
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                            }}
+                        />
                     </View>
 
                     <View className="flex-1 justify-center" style={{ paddingHorizontal: scale(10) }}>
                         <TextInput
-                            className={`p-0 tracking-wide font-medium ${
-                                loading
-                                    ? "text-[#9CA3AF]"
-                                    : "text-[#151515]"
-                            }`}
+                            className="p-0 tracking-wide font-medium"
                             style={{
                                 height: verticalScale(40),
                                 fontSize: moderateScale(13),
                                 textAlignVertical: "center",
-                                includeFontPadding: false
+                                includeFontPadding: false,
+                                color: loading ? COLORS.disabledTextColor : COLORS.inputTextColor
                             }}
                             value={
                                 mobileNumber
@@ -225,7 +249,7 @@ export default function EnterMobileNumberScreen(){
                                 setMobileNumberError(false)
                             }}
                             placeholder="Enter 10-digit mobile number"
-                            placeholderTextColor="#9A9A9A"
+                            placeholderTextColor={ COLORS.placeholderTextColor }
                             keyboardType="phone-pad"
                             returnKeyType="done"
                             autoCorrect={false}
@@ -233,7 +257,7 @@ export default function EnterMobileNumberScreen(){
                             textContentType="telephoneNumber"
                             autoComplete="tel"
                             maxLength={16}
-                            selectionColor="#79685e"
+                            selectionColor={ COLORS.selectionColor }
                             editable={!loading}
                             onSubmitEditing={() => {
                                 Keyboard.dismiss()
@@ -244,8 +268,13 @@ export default function EnterMobileNumberScreen(){
 
                 {mobileNumberError && (
                     <Text
-                        className="self-start font-medium text-[#E05252]"
-                        style={{ marginTop: verticalScale(4), marginLeft: scale(8), fontSize: moderateScale(11) }}
+                        className="self-start font-medium"
+                        style={{
+                            marginTop: verticalScale(4),
+                            marginLeft: scale(8),
+                            fontSize: moderateScale(11),
+                            color: COLORS.errorTextColor
+                        }}
                     >
                         Please enter a valid 10-digit mobile number
                     </Text>
@@ -266,8 +295,9 @@ export default function EnterMobileNumberScreen(){
                 </View>
 
                 <Text
-                    className='text-[#1F1F1F]/65 font-medium text-center'
+                    className='font-medium text-center'
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16)
                     }}

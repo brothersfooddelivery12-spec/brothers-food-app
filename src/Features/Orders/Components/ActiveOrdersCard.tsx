@@ -8,8 +8,10 @@ import LocationIcon from '@/assets/icon/LocationIcon3.svg'
 import MoneyIcon from '@/assets/icon/MoneyIcon.svg'
 import SuccessIcon from '@/assets/icon/SuccessIcon2.svg'
 import TimerIcon from "@/assets/icon/TimerIcon.svg"
+import { COLORS } from '@/constant/colors'
 import { OrderStatusType } from '@/Services/api-service'
 import { formatOrderId } from '@/utils/formatOrderID'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -205,8 +207,10 @@ const ActiveOrderCard = ({
 
     return (
         <View
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 p-4"
+            className="p-4"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 marginTop: verticalScale(14)
@@ -245,16 +249,22 @@ const ActiveOrderCard = ({
                 <View className="justify-center gap-1 flex-1 mx-2">
                     <Text
                         numberOfLines={2}
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(15) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(15),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         {restaurantName}
                     </Text>
 
                     <Text
                         numberOfLines={2}
-                        className="text-[#1F1F1F]/75 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                        }}
                     >
                         OrderID {formatOrderId(orderId)}
                     </Text>
@@ -262,9 +272,9 @@ const ActiveOrderCard = ({
 
                 <View className="items-end justify-between my-1">
                     <View
-                        className="flex-row items-center justify-center bg-[#F8D56A]"
+                        className="flex-row items-center justify-center"
                         style={{
-                            backgroundColor: isCancelled ? "rgb(254 226 226 / 0.85)" : "#F8D56A",
+                            backgroundColor: isCancelled ? COLORS.dangerBackgroundColor : COLORS.accentLightColor,
                             gap: moderateScale(3),
                             paddingLeft: moderateScale(6),
                             paddingRight: moderateScale(8),
@@ -272,11 +282,11 @@ const ActiveOrderCard = ({
                             borderRadius: moderateScale(12)
                         }}
                     >   
-                        <StatusIcon width={moderateScale(15)} height={moderateScale(15)} color={isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516"} strokeWidth={1.5} />
+                        <StatusIcon width={moderateScale(15)} height={moderateScale(15)} color={isCancelled ? COLORS.dangerTextColor : COLORS.primaryColor} strokeWidth={1.5} />
 
                         <Text
                             className="font-medium"
-                            style={{ fontSize: moderateScale(10), color: isCancelled ? "rgba(220, 38, 38, 0.80)" : "#3F2516" }}
+                            style={{ fontSize: moderateScale(10), color: isCancelled ? COLORS.dangerTextColor : COLORS.primaryColor }}
                         >
                             {statusLabel}
                         </Text>
@@ -285,18 +295,22 @@ const ActiveOrderCard = ({
                     {paymentDeadline != null && (
                         <View className="flex-row items-center gap-1">
                             <View
-                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     width: moderateScale(21),
                                     height: moderateScale(21)
                                 }}
                             >
-                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                             </View>
 
                             <Text
-                                className="text-[#1F1F1F]/75 font-medium"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {paymentDeadline > 0
                                     ? `Retry payment in ${paymentDeadline} min`
@@ -309,18 +323,22 @@ const ActiveOrderCard = ({
                     {etaText && (
                         <View className="flex-row items-center gap-1 mr-1">
                             <View
-                                className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                                className="items-center justify-center rounded-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     width: moderateScale(21),
                                     height: moderateScale(21)
                                 }}
                             >
-                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color="#5C4639" strokeWidth={1.8} />
+                                <TimerIcon width={moderateScale(14)} height={moderateScale(14)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                             </View>
 
                             <Text
-                                className="font-medium text-[#1F1F1F]/75"
-                                style={{ fontSize: moderateScale(10) }}
+                                className="font-medium"
+                                style={{
+                                    fontSize: moderateScale(10),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {status === "PENDING"
                                     ? etaText
@@ -335,8 +353,9 @@ const ActiveOrderCard = ({
             <OrderStatus status={status} />
 
             <View
-                className="items-start bg-[#E5E4E2]/45 py-4 px-5"
+                className="items-start py-4 px-5"
                 style={{
+                    backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.55),
                     borderRadius: moderateScale(16),
                     marginTop: verticalScale(12),
                     marginHorizontal: scale(4)
@@ -346,16 +365,20 @@ const ActiveOrderCard = ({
                     <React.Fragment key={`${item.name}-${index}`}>
                         <Text
                             numberOfLines={1}
-                            className="text-[#1F1F1F] font-medium"
-                            style={{ fontSize: moderateScale(13) }}
+                            className="font-medium"
+                            style={{
+                                fontSize: moderateScale(13),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             {item.name} x{item.quantity}
                         </Text>
 
                         {index < items.length - 1 && (
                             <View
-                                className="rounded-full bg-[#1F1F1F]/15 w-full"
+                                className="rounded-full w-full"
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.15),
                                     height: verticalScale(0.7),
                                     marginVertical: verticalScale(8)
                                 }}
@@ -373,18 +396,22 @@ const ActiveOrderCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onPayNow}
-                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" strokeWidth={1.8} />
+                        <MoneyIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} strokeWidth={1.8} />
 
                         <Text
-                            className="text-[#FFFFFF] font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Pay Now
                         </Text>
@@ -397,18 +424,22 @@ const ActiveOrderCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onTrackOrder}
-                        className="flex-row flex-1 items-center justify-center bg-[#3F2516]"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.primaryColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color="#FFFFFF" />
+                        <LocationIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryBackgroundColor} />
 
                         <Text
-                            className="text-[#FFFFFF] font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryBackgroundColor
+                            }}
                         >
                             Track Order
                         </Text>
@@ -421,20 +452,21 @@ const ActiveOrderCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onCancelOrder}
-                        className="flex-row flex-1 items-center justify-center bg-[#FEE2E2]/85"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: COLORS.dangerBackgroundColor,
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color="rgba(220,38,38,0.80)" strokeWidth={1.8} />
+                        <CancelCircleIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.dangerTextColor} strokeWidth={1.8} />
 
                         <Text
                             className="font-medium ml-2 mr-1"
                             style={{
                                 fontSize: moderateScale(12),
-                                color: "rgba(220,38,38,0.80)"
+                                color: COLORS.dangerTextColor
                             }}
                         >
                             Cancel Order
@@ -446,18 +478,22 @@ const ActiveOrderCard = ({
                     <TouchableOpacity
                         activeOpacity={0.95}
                         onPress={onContactRider}
-                        className="flex-row flex-1 items-center justify-center bg-[#E5E4E2]/65"
+                        className="flex-row flex-1 items-center justify-center"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                             paddingHorizontal: scale(12),
                             paddingVertical: verticalScale(10),
-                            borderRadius: moderateScale(14)
+                            borderRadius: moderateScale(16)
                         }}
                     >
-                        <CustomerServiceIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                        <CustomerServiceIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryTextColor} strokeWidth={2} />
 
                         <Text
-                            className="text-[#3F2516] font-medium ml-2 mr-1"
-                            style={{ fontSize: moderateScale(12) }}
+                            className="font-medium ml-2 mr-1"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryTextColor
+                            }}
                         >
                             Contact Rider
                         </Text>

@@ -4,6 +4,8 @@ import CalendarIcon from "@/assets/icon/DateIcon.svg"
 import HourglassIcon from '@/assets/icon/HourglassIcon.svg'
 import CheckIcon from "@/assets/icon/SuccessIcon2.svg"
 import TicketIcon from "@/assets/icon/TicketIcon.svg"
+import { COLORS } from "@/constant/colors"
+import { hexToRgba } from "@/utils/hexToRgba"
 import { Text, TouchableOpacity, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
@@ -28,22 +30,22 @@ const STATUS_CONFIG = {
     in_progress: {
         label: "IN PROGRESS",
         color: "#F8D56A",
-        textColor: "#6B4F00",
-        backgroundColor: "#F8D56A30"
+        textColor: COLORS.secondaryColor,
+        backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
     },
 
     resolved: {
         label: "RESOLVED",
         color: "#4D9151",
-        textColor: "#4D9151",
-        backgroundColor: "#4D915125"
+        textColor: COLORS.activeStatusTextColor,
+        backgroundColor: COLORS.activeStatusBackgroundColor
     },
 
     rejected: {
         label: "REJECTED",
         color: "#DC2626",
-        textColor: "#DC2626",
-        backgroundColor: "#DC262620"
+        textColor: COLORS.dangerTextColor,
+        backgroundColor: COLORS.dangerBackgroundColor
     },
 } as const
 
@@ -73,8 +75,10 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
         <TouchableOpacity
             activeOpacity={0.92}
             onPress={() => onPress?.(item)}
-            className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-hidden"
+            className="overflow-hidden"
             style={{
+                backgroundColor: COLORS.secondaryBackgroundColor,
+                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderLeftColor: status.color,
                 borderLeftWidth: 3,
@@ -111,16 +115,20 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
 
                         <View className="flex-1">
                             <Text
-                                className="text-[#1F1F1F] font-extrabold"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-extrabold"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 #{item.ticketId}
                             </Text>
 
                             <Text
                                 numberOfLines={1}
-                                className="text-[#1F1F1F] font-bold"
+                                className="font-bold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(14),
                                     marginTop: verticalScale(2)
                                 }}
@@ -130,8 +138,9 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
 
                             <Text
                                 numberOfLines={2}
-                                className="text-[#1F1F1F]/60 font-medium"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(10.5),
                                     lineHeight: moderateScale(15),
                                     marginTop: verticalScale(3)
@@ -168,8 +177,8 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
                     </View>
 
                     <View
-                        className="bg-[#1F1F1F]/10"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             height: moderateScale(0.7),
                             marginTop: verticalScale(16),
                             marginBottom: verticalScale(13)
@@ -178,11 +187,12 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
 
                     <View className="flex-row items-center">
                         <View className="flex-row items-center">
-                            <CalendarIcon width={moderateScale(15)} height={moderateScale(15)} color="#1F1F1F85" strokeWidth={1.5} />
+                            <CalendarIcon width={moderateScale(15)} height={moderateScale(15)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={1.5} />
 
                             <Text
-                                className="text-[#1F1F1F]/65 font-medium"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(10),
                                     marginLeft: scale(6)
                                 }}
@@ -192,20 +202,21 @@ export default function SupportRequestCard({ item, onPress }: SupportRequestCard
                         </View>
 
                         <View
-                            className="bg-[#1F1F1F]/15"
                             style={{
-                                width: 1,
+                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                width: moderateScale(0.7),
                                 height: moderateScale(12),
-                                marginHorizontal: scale(14)
+                                marginHorizontal: scale(10)
                             }}
                         />
 
                         <View className="flex-row items-center">
-                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color="#1F1F1F85" strokeWidth={1.5} />
+                            <ClockIcon width={moderateScale(15)} height={moderateScale(15)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={1.5} />
 
                             <Text
-                                className="text-[#1F1F1F]/65 font-medium"
+                                className="font-medium"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(10),
                                     marginLeft: scale(6)
                                 }}

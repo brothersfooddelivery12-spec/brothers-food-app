@@ -3,7 +3,9 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import CalendarIcon from '@/assets/icon/DateIcon.svg'
 import TransactionHistoryIcon from '@/assets/icon/TransactionHistoryIcon.svg'
 import CalendarPicker from '@/components/CalenderSheet'
+import { COLORS } from '@/constant/colors'
 import { getMyWalletTransactions, WalletTransaction } from '@/Services/wallet-service'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { DateTimePickerChangeEvent } from "@react-native-community/datetimepicker"
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -86,7 +88,7 @@ export default function TransactionHistoryScreen(){
 
     const mapWalletTransaction = (transaction: WalletTransaction): TransactionHistory => {
         switch (transaction.transaction_type) {
-            case "ADD_MONEY":
+            case "CREDIT":
                 return {
                     id: transaction.id,
                     title: "Money Added",
@@ -98,7 +100,7 @@ export default function TransactionHistoryScreen(){
                     category: "addMoney"
                 }
 
-            case "ORDER_PAYMENT":
+            case "DEBIT":
                 return {
                     id: transaction.id,
                     title: "Order Payment",
@@ -338,8 +340,9 @@ export default function TransactionHistoryScreen(){
             }
         }) => (
             <Text
-                className="text-[#1F1F1F] font-semibold"
+                className="font-semibold"
                 style={{
+                    color: COLORS.primaryTextColor,
                     fontSize: moderateScale(15),
                     marginBottom: verticalScale(2),
                     marginLeft: scale(4)
@@ -359,8 +362,10 @@ export default function TransactionHistoryScreen(){
                 style={{ paddingVertical: verticalScale(20)}}
             >
                 <View
-                    className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                    className="items-center justify-center mx-2"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         paddingHorizontal: scale(20),
                         paddingVertical: verticalScale(24),
@@ -368,18 +373,20 @@ export default function TransactionHistoryScreen(){
                     }}
                 >
                     <View
-                        className="items-center justify-center bg-[#E8B93F]/15 rounded-full"
+                        className="items-center justify-center rounded-full"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                             width: moderateScale(52),
                             height: moderateScale(52)
                         }}
                     >
-                        <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={1.5} />
+                        <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                     </View>
 
                     <Text
-                        className="text-[#1F1F1F] font-bold text-center"
+                        className="font-bold text-center"
                         style={{
+                            color: COLORS.primaryTextColor,
                             fontSize: moderateScale(15),
                             marginTop: verticalScale(12)
                         }}
@@ -388,8 +395,9 @@ export default function TransactionHistoryScreen(){
                     </Text>
 
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium text-center"
+                        className="font-medium text-center"
                         style={{
+                            color: hexToRgba(COLORS.primaryTextColor, 0.75),
                             fontSize: moderateScale(11),
                             lineHeight: moderateScale(15),
                             marginTop: verticalScale(4)
@@ -399,7 +407,8 @@ export default function TransactionHistoryScreen(){
                             ? `No wallet transactions were found between ${formatDate(
                                 startDate
                             )} and ${formatDate(endDate)}.`
-                            : "Your wallet transactions will appear here once you add money or make a payment."}
+                            : "Your wallet transactions will appear here once you add money or make a payment."
+                        }
                     </Text>
                 </View>
             </View>
@@ -407,10 +416,13 @@ export default function TransactionHistoryScreen(){
     }, [transactions.length, startDate, endDate])
     
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -419,34 +431,42 @@ export default function TransactionHistoryScreen(){
                 style={{
                     paddingHorizontal: scale(14),
                     marginTop: verticalScale(12),
-                    marginBottom: verticalScale(12),
+                    marginBottom: verticalScale(8),
                     gap: scale(8)
                 }}
             >
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Transaction History
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Track all your wallet transactions
                     </Text>
@@ -507,22 +527,24 @@ export default function TransactionHistoryScreen(){
                                                 onPress={() => {
                                                     setSelectedCategory(category.id)
                                                 }}
-                                                className={`items-center justify-center ${
-                                                    isSelected ? "bg-[#3F2516]" : "bg-[#FAFAFA]"
-                                                }`}
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: isSelected
+                                                        ? COLORS.primaryColor
+                                                        : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                                     borderRadius: moderateScale(18),
-                                                    paddingHorizontal: scale(16),
+                                                    paddingHorizontal: category.title === "All" ? scale(18) : scale(14),
                                                     paddingVertical: verticalScale(7),
                                                     borderWidth: 0.7,
-                                                    borderColor: isSelected ? "#3F2516" : "rgba(31, 31, 31, 0.10)"
+                                                    borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                                 }}
                                             >
                                                 <Text
-                                                    className={`font-semibold ${
-                                                        isSelected ? "text-[#FFFFFF]" : "text-[#1F1F1F]"
-                                                    }`}
-                                                    style={{ fontSize: moderateScale(13) }}
+                                                    className="font-semibold"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                                    }}
                                                 >
                                                     {category.title}
                                                 </Text>
@@ -532,8 +554,10 @@ export default function TransactionHistoryScreen(){
                                 </ScrollView>
         
                                 <View
-                                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 mt-2 mb-3"
+                                    className="mt-2 mb-3"
                                     style={{
+                                        backgroundColor: COLORS.secondaryBackgroundColor,
+                                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                         borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(20),
                                         paddingHorizontal: scale(12),
@@ -544,15 +568,19 @@ export default function TransactionHistoryScreen(){
                                     <View className="flex-row items-center">
                                         <View className="flex-1 items-center">
                                             <Text
-                                                className="text-[#1F1F1F]/75 font-medium"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                }}
                                             >
                                                 Total Income
                                             </Text>
         
                                             <Text
-                                                className="text-[#22863A] font-extrabold"
+                                                className="font-extrabold"
                                                 style={{
+                                                    color: COLORS.successColor,
                                                     fontSize: moderateScale(16),
                                                     marginTop: verticalScale(3)
                                                 }}
@@ -567,8 +595,9 @@ export default function TransactionHistoryScreen(){
                                         </View>
         
                                         <View
-                                            className="bg-[#1F1F1F]/10 mx-2"
+                                            className="mx-2"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 width: 0.7,
                                                 height: verticalScale(28)
                                             }}
@@ -576,15 +605,19 @@ export default function TransactionHistoryScreen(){
         
                                         <View className="flex-1 items-center">
                                             <Text
-                                                className="text-[#1F1F1F]/65 font-medium"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                }}
                                             >
                                                 Total Expense
                                             </Text>
         
                                             <Text
-                                                className="text-[#E13B2F] font-extrabold"
+                                                className="font-extrabold"
                                                 style={{
+                                                    color: COLORS.errorTextColor,
                                                     fontSize: moderateScale(16),
                                                     marginTop: verticalScale(3)
                                                 }}
@@ -599,8 +632,9 @@ export default function TransactionHistoryScreen(){
                                         </View>
         
                                         <View
-                                            className="bg-[#1F1F1F]/10 mx-2"
+                                            className="mx-2"
                                             style={{
+                                                backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 width: 0.7,
                                                 height: verticalScale(28)
                                             }}
@@ -608,15 +642,19 @@ export default function TransactionHistoryScreen(){
         
                                         <View className="flex-1 items-center">
                                             <Text
-                                                className="text-[#1F1F1F]/65 font-medium"
-                                                style={{ fontSize: moderateScale(11) }}
+                                                className="font-medium"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                }}
                                             >
                                                 Net Balance
                                             </Text>
         
                                             <Text
-                                                className="text-[#1F1F1F] font-extrabold"
+                                                className="font-extrabold"
                                                 style={{
+                                                    color: COLORS.primaryTextColor,
                                                     fontSize: moderateScale(16),
                                                     marginTop: verticalScale(3)
                                                 }}
@@ -637,8 +675,8 @@ export default function TransactionHistoryScreen(){
                                     </View>
         
                                     <View
-                                        className="bg-[#1F1F1F]/10"
                                         style={{
+                                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                             height: 0.7,
                                             marginTop: verticalScale(16),
                                             marginBottom: verticalScale(12),
@@ -653,22 +691,24 @@ export default function TransactionHistoryScreen(){
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={() => setDatePicker("start")}
-                                            className="flex-1 flex-row items-center bg-[#FFFFFF]"
+                                            className="flex-1 flex-row items-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryBackgroundColor,
                                                 borderRadius: moderateScale(14),
                                                 paddingHorizontal: scale(10),
                                                 paddingVertical: verticalScale(9)
                                             }}
                                         >
                                             <View
-                                                className="items-center justify-center bg-[#E8B93F]/15"
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     width: moderateScale(34),
                                                     height: moderateScale(34),
                                                     borderRadius: moderateScale(10)
                                                 }}
                                             >
-                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} strokeWidth={2} />
                                             </View>
         
                                             <View
@@ -676,16 +716,20 @@ export default function TransactionHistoryScreen(){
                                                 style={{ marginLeft: scale(8) }}
                                             >
                                                 <Text
-                                                    className="text-[#1F1F1F]/75 font-medium"
-                                                    style={{ fontSize: moderateScale(9.5) }}
+                                                    className="font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(9.5),
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                    }}
                                                 >
                                                     From
                                                 </Text>
         
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F] font-semibold"
+                                                    className="font-semibold"
                                                     style={{
+                                                        color: COLORS.primaryTextColor,
                                                         fontSize: moderateScale(11),
                                                         marginTop: verticalScale(1)
                                                     }}
@@ -694,28 +738,30 @@ export default function TransactionHistoryScreen(){
                                                 </Text>
                                             </View>
         
-                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
+                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                                         </TouchableOpacity>
         
                                         <TouchableOpacity
                                             activeOpacity={0.95}
                                             onPress={() => setDatePicker("end")}
-                                            className="flex-1 flex-row items-center bg-[#FFFFFF]"
+                                            className="flex-1 flex-row items-center"
                                             style={{
+                                                backgroundColor: COLORS.primaryBackgroundColor,
                                                 borderRadius: moderateScale(14),
                                                 paddingHorizontal: scale(10),
                                                 paddingVertical: verticalScale(9)
                                             }}
                                         >
                                             <View
-                                                className="items-center justify-center bg-[#E8B93F]/15"
+                                                className="items-center justify-center"
                                                 style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                                     width: moderateScale(34),
                                                     height: moderateScale(34),
                                                     borderRadius: moderateScale(10)
                                                 }}
                                             >
-                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" strokeWidth={2} />
+                                                <CalendarIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.secondaryColor} strokeWidth={2} />
                                             </View>
         
                                             <View
@@ -723,16 +769,20 @@ export default function TransactionHistoryScreen(){
                                                 style={{ marginLeft: scale(8) }}
                                             >
                                                 <Text
-                                                    className="text-[#1F1F1F]/75 font-medium"
-                                                    style={{ fontSize: moderateScale(9.5) }}
+                                                    className="font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(9.5),
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                                    }}
                                                 >
                                                     To
                                                 </Text>
         
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F] font-semibold"
+                                                    className="font-semibold"
                                                     style={{
+                                                        color: COLORS.primaryTextColor,
                                                         fontSize: moderateScale(11),
                                                         marginTop: verticalScale(1)
                                                     }}
@@ -741,7 +791,7 @@ export default function TransactionHistoryScreen(){
                                                 </Text>
                                             </View>
         
-                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color="rgba(31,31,31,0.55)" strokeWidth={2} />
+                                            <ArrowDownIcon width={moderateScale(15)} height={moderateScale(15)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>

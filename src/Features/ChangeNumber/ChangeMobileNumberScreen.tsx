@@ -2,6 +2,8 @@ import BackArrowIcon from '@/assets/icon/ArrowLeft.svg'
 import LockIcon from '@/assets/icon/LockIcon.svg'
 import SecurityIcon from '@/assets/icon/ShieldCheckIcon.svg'
 import GradientButton from '@/components/GradientButton'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -48,10 +50,13 @@ export default function ChangeMobileNumberScreen(){
 
     
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -67,14 +72,16 @@ export default function ChangeMobileNumberScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.5),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
             
                 {/* <View className="items-start gap-1 flex-1">
@@ -104,8 +111,9 @@ export default function ChangeMobileNumberScreen(){
                 showsVerticalScrollIndicator={false}
             >
                 <Text
-                    className='text-[#1F1F1F] font-extrabold text-center'
+                    className='font-extrabold text-center'
                     style={{
+                        color: COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(16)
                     }}
@@ -114,8 +122,9 @@ export default function ChangeMobileNumberScreen(){
                 </Text>
 
                 <Text
-                    className='text-[#1F1F1F]/65 font-medium text-center'
+                    className='font-medium text-center'
                     style={{
+                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(5)
@@ -137,31 +146,43 @@ export default function ChangeMobileNumberScreen(){
                 </View>
 
                 <View
-                    className="bg-[#FAFAFA] border-[#1F1F1F]/10 overflow-visible mt-5 mb-3 p-3"
-                    style={{ borderRadius: moderateScale(20), borderWidth: moderateScale(0.5) }}
+                    className="overflow-visible mt-5 mb-3 p-3"
+                    style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                        borderRadius: moderateScale(20),
+                        borderWidth: moderateScale(0.5)
+                    }}
                 >
                     <View className='flex-row gap-3 items-center'>
                         <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                            className="items-center justify-center rounded-full"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(40),
                                 height: moderateScale(40)
                             }}
                         >
-                            <LockIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                            <LockIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                         </View>
 
                         <View className='flex-1'>
                             <Text
-                                className='text-[#1F1F1F] font-semibold'
-                                style={{ fontSize: moderateScale(13) }}
+                                className='font-semibold'
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 {securityTitle}
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium mt-1'
-                                style={{ fontSize: moderateScale(11) }}
+                                className='font-medium mt-1'
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {securityDescription}
                             </Text>
@@ -169,8 +190,8 @@ export default function ChangeMobileNumberScreen(){
                     </View>
 
                     <View
-                        className="bg-[#1F1F1F]/10"
                         style={{
+                            backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                             height: moderateScale(0.7),
                             marginHorizontal: scale(10),
                             marginVertical: verticalScale(8)
@@ -179,26 +200,33 @@ export default function ChangeMobileNumberScreen(){
 
                     <View className='flex-row gap-3 items-center'>
                         <View
-                            className="items-center justify-center rounded-full bg-[#E8B93F]/15"
+                            className="items-center justify-center rounded-full"
                             style={{
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                 width: moderateScale(40),
                                 height: moderateScale(40)
                             }}
                         >
-                            <SecurityIcon width={moderateScale(22)} height={moderateScale(22)} color={"#3F2516"} strokeWidth={1.8} />
+                            <SecurityIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.secondaryColor} strokeWidth={1.8} />
                         </View>
 
                         <View className='flex-1'>
                             <Text
-                                className='text-[#1F1F1F] font-semibold'
-                                style={{ fontSize: moderateScale(13) }}
+                                className='font-semibold'
+                                style={{
+                                    fontSize: moderateScale(13),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                {dataTitle}
                             </Text>
 
                             <Text
-                                className='text-[#1F1F1F]/75 font-medium mt-1'
-                                style={{ fontSize: moderateScale(11) }}
+                                className='font-medium mt-1'
+                                style={{
+                                    fontSize: moderateScale(11),
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                }}
                             >
                                 {dataDescription}
                             </Text>

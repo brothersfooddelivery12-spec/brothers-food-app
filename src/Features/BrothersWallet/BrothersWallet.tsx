@@ -7,6 +7,8 @@ import RefundIcon from '@/assets/icon/RefundIcon.svg'
 import SendIcon from '@/assets/icon/SendHorizontalIcon.svg'
 import TransactionHistoryIcon from '@/assets/icon/TransactionHistoryIcon.svg'
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
+import { COLORS } from '@/constant/colors'
+import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from 'lottie-react-native'
@@ -163,7 +165,7 @@ export default function BrothersWalletScreen(){
 
     const mapWalletTransaction = (transaction: WalletTransaction): TransactionHistory => {
         switch (transaction.transaction_type) {
-            case "ADD_MONEY":
+            case "CREDIT":
                 return {
                     id: transaction.id,
                     title: "Money Added",
@@ -175,7 +177,7 @@ export default function BrothersWalletScreen(){
                     category: "addMoney"
                 }
 
-            case "ORDER_PAYMENT":
+            case "DEBIT":
                 return {
                     id: transaction.id,
                     title: "Order Payment",
@@ -293,10 +295,13 @@ export default function BrothersWalletScreen(){
     }, [transactions, selectedCategory])
 
     return(
-        <SafeAreaView className="flex-1 bg-[#FFFFFF]">
+        <SafeAreaView
+            className="flex-1"
+            style={{ backgroundColor: COLORS.primaryBackgroundColor }}
+        >
             <StatusBar
                 translucent
-                backgroundColor="#FFFFFF"
+                backgroundColor={COLORS.primaryBackgroundColor}
                 barStyle="dark-content"
             />
 
@@ -312,27 +317,35 @@ export default function BrothersWalletScreen(){
                 <TouchableOpacity
                     activeOpacity={0.95}
                     onPress={() => router.back()}
-                    className="items-center justify-center bg-[#FAFAFA] border-[#1F1F1F]/10 rounded-full"
+                    className="items-center justify-center rounded-full"
                     style={{
+                        backgroundColor: COLORS.secondaryBackgroundColor,
+                        borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         width: moderateScale(40),
                         height: moderateScale(40)
                     }}
                 >
-                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color="#1F1F1F" strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
+                    <BackArrowIcon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryTextColor} strokeWidth={2} style={{ marginRight: moderateScale(4) }} />
                 </TouchableOpacity>
                     
                 <View className="items-start gap-1 flex-1">
                     <Text
-                        className="text-[#1F1F1F] font-extrabold"
-                        style={{ fontSize: moderateScale(16) }}
+                        className="font-extrabold"
+                        style={{
+                            fontSize: moderateScale(16),
+                            color: COLORS.primaryTextColor
+                        }}
                     >
                         Brothers Wallet
                     </Text>
                                         
                     <Text
-                        className="text-[#1F1F1F]/65 font-medium"
-                        style={{ fontSize: moderateScale(11) }}
+                        className="font-medium"
+                        style={{
+                            fontSize: moderateScale(11),
+                            color: hexToRgba(COLORS.primaryTextColor, 0.65)
+                        }}
                     >
                         Manage your balance, rewards, and transactions
                     </Text>
@@ -374,8 +387,10 @@ export default function BrothersWalletScreen(){
                         </View>
                     ) : (
                         <View
-                            className="items-center justify-center mx-2 bg-[#FAFAFA] border-[#1F1F1F]/10"
+                            className="items-center justify-center mx-2"
                             style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                 borderWidth: moderateScale(0.5),
                                 marginTop: verticalScale(10),
                                 paddingHorizontal: scale(20),
@@ -384,18 +399,20 @@ export default function BrothersWalletScreen(){
                             }}
                         >
                             <View
-                                className='bg-[#E8B93F]/15 rounded-full items-center justify-center'
+                                className='rounded-full items-center justify-center'
                                 style={{
+                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                     width: moderateScale(44),
                                     height: moderateScale(44)
                                 }}
                             >
-                                <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color="#5A3825" strokeWidth={1.5} />
+                                <TransactionHistoryIcon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.secondaryColor} strokeWidth={1.5} />
                             </View>
 
                             <Text
-                                className="text-[#1F1F1F] font-semibold"
+                                className="font-semibold"
                                 style={{
+                                    color: COLORS.primaryTextColor,
                                     fontSize: moderateScale(14),
                                     marginTop: verticalScale(8)
                                 }}
@@ -404,8 +421,9 @@ export default function BrothersWalletScreen(){
                             </Text>
 
                             <Text
-                                className="text-[#1F1F1F]/75 font-medium text-center"
+                                className="font-medium text-center"
                                 style={{
+                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
                                     fontSize: moderateScale(11),
                                     marginTop: verticalScale(3)
                                 }}
@@ -421,8 +439,9 @@ export default function BrothersWalletScreen(){
                 ListHeaderComponent={
                     <>
                         <View
-                            className="bg-[#3F2516] flex-row items-center overflow-hidden"
+                            className="flex-row items-center overflow-hidden"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(10),
                                 paddingHorizontal: scale(18),
@@ -435,8 +454,11 @@ export default function BrothersWalletScreen(){
                                 style={{ minWidth: 0 }}
                             >
                                 <Text
-                                    className="text-[#FFFFFF]/80 font-normal"
-                                    style={{ fontSize: moderateScale(12.5) }}
+                                    className="font-normal"
+                                    style={{
+                                        fontSize: moderateScale(12.5),
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.8)
+                                    }}
                                 >
                                     Available Balance
                                 </Text>
@@ -468,9 +490,12 @@ export default function BrothersWalletScreen(){
                                         />
                                     ) : (
                                         <Text
-                                            className="text-[#FFFFFF] tracking-wider font-black"
+                                            className="tracking-wider font-black"
                                             numberOfLines={1}
-                                            style={{ fontSize: moderateScale(28.5) }}
+                                            style={{
+                                                fontSize: moderateScale(28.5),
+                                                color: COLORS.primaryBackgroundColor
+                                            }}
                                         >
                                             ₹{Number(wallet?.balance ?? 0).toFixed(2)}
                                         </Text>
@@ -478,8 +503,9 @@ export default function BrothersWalletScreen(){
                                 </View>
 
                                 <Text
-                                    className="text-[#FFFFFF]/65 font-normal"
+                                    className="font-normal"
                                     style={{
+                                        color: hexToRgba(COLORS.primaryBackgroundColor, 0.65),
                                         fontSize: moderateScale(11.5),
                                         marginTop: verticalScale(6)
                                     }}
@@ -488,9 +514,10 @@ export default function BrothersWalletScreen(){
                                 </Text>
 
                                 <Text
-                                    className="text-[#F8D56A] font-semibold uppercase"
+                                    className="font-semibold uppercase"
                                     numberOfLines={1}
                                     style={{
+                                        color: COLORS.accentColor,
                                         fontSize: moderateScale(12.5),
                                         marginTop: verticalScale(3)
                                     }}
@@ -504,7 +531,7 @@ export default function BrothersWalletScreen(){
                                 style={{
                                     width: moderateScale(135),
                                     marginLeft: scale(6),
-                                    marginRight: -moderateScale(10)
+                                    marginRight: -moderateScale(15)
                                 }}
                             >
                                 <Image
@@ -550,22 +577,25 @@ export default function BrothersWalletScreen(){
                                                     router.push(item.route as any)
                                                 })
                                             }
-                                            className="rounded-full bg-[#FAFAFA] border-[#1F1F1F]/10 items-center justify-center"
+                                            className="rounded-full items-center justify-center"
                                             style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                                                 borderWidth: moderateScale(0.5),
                                                 width: moderateScale(52),
                                                 height: moderateScale(52)
                                             }}
                                         >
-                                            <Icon width={moderateScale(24)} height={moderateScale(24)} color="#3F2516" strokeWidth={item.strokeWidth}
+                                            <Icon width={moderateScale(24)} height={moderateScale(24)} color={COLORS.primaryColor} strokeWidth={item.strokeWidth}
                                                 style={{ marginLeft: item.marginLeft ? moderateScale(4) : moderateScale(0) }}
                                             />
                                         </TouchableOpacity>
 
                                         <Text
                                             numberOfLines={1}
-                                            className="text-[#1F1F1F] font-semibold text-center"
+                                            className="font-semibold text-center"
                                             style={{
+                                                color: COLORS.primaryTextColor,
                                                 fontSize: moderateScale(12),
                                                 marginTop: verticalScale(6)
                                             }}
@@ -578,135 +608,176 @@ export default function BrothersWalletScreen(){
                         </View>
 
                         <View
-                            className="mt-6 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-6 p-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(42),
                                         height: moderateScale(42),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <CircleStarIcon width={scale(28)} height={scale(28)} color={"#3F2516"} strokeWidth={1.5} /> 
+                                    <CircleStarIcon width={scale(28)} height={scale(28)} color={COLORS.primaryColor} strokeWidth={1.5} /> 
                                 </View>
 
                                 <View className='justify-center flex-1'>
                                     <Text
-                                        className='text-[#1F1F1F]/75 font-medium'
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className='font-medium'
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         Reward Points
                                     </Text>
 
                                     <Text
-                                        className='text-[#1F1F1F] font-extrabold'
-                                        style={{ fontSize: moderateScale(16) }}
+                                        className='font-extrabold'
+                                        style={{
+                                            fontSize: moderateScale(16),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         2,450
                                     </Text>
                                 </View>
 
-                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </View>
                         </View>
 
                         <View
-                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(42),
                                         height: moderateScale(42),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <WalletIcon width={scale(25)} height={scale(25)} color={"#3F2516"} strokeWidth={1.5} /> 
+                                    <WalletIcon width={scale(25)} height={scale(25)} color={COLORS.primaryColor} strokeWidth={1.5} /> 
                                 </View>
 
                                 <View className='justify-center flex-1'>
                                     <Text
-                                        className='text-[#1F1F1F]/75 font-medium'
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className='font-medium'
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         Total Cashback
                                     </Text>
 
                                     <Text
-                                        className='text-[#1F1F1F] font-extrabold'
-                                        style={{ fontSize: moderateScale(16) }}
+                                        className='font-extrabold'
+                                        style={{
+                                            fontSize: moderateScale(16),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         ₹1,280
                                     </Text>
                                 </View>
 
-                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </View>
                         </View>
 
                         <View
-                            className="mt-3 p-3 bg-[#FAFAFA] border-[#1F1F1F]/10"
-                            style={{ borderRadius: moderateScale(18), borderWidth: moderateScale(0.5) }}
+                            className="mt-3 p-3"
+                            style={{
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                borderRadius: moderateScale(18),
+                                borderWidth: moderateScale(0.5)
+                            }}
                         >
                             <View className='flex-row gap-3 items-center'>
                                 <View
-                                    className="items-center justify-center bg-[#E8B93F]/15"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
                                         width: moderateScale(42),
                                         height: moderateScale(42),
                                         borderRadius: moderateScale(12)
                                     }}
                                 >
-                                    <RefundIcon width={scale(23)} height={scale(23)} color={"#3F2516"} strokeWidth={1.5} /> 
+                                    <RefundIcon width={scale(23)} height={scale(23)} color={COLORS.primaryColor} strokeWidth={1.5} /> 
                                 </View>
 
                                 <View className='justify-center flex-1'>
                                     <Text
-                                        className='text-[#1F1F1F]/75 font-medium'
-                                        style={{ fontSize: moderateScale(12) }}
+                                        className='font-medium'
+                                        style={{
+                                            fontSize: moderateScale(12),
+                                            color: hexToRgba(COLORS.primaryTextColor, 0.75)
+                                        }}
                                     >
                                         Pending Refunds
                                     </Text>
 
                                     <Text
-                                        className='text-[#1F1F1F] font-extrabold'
-                                        style={{ fontSize: moderateScale(16) }}
+                                        className='font-extrabold'
+                                        style={{
+                                            fontSize: moderateScale(16),
+                                            color: COLORS.primaryTextColor
+                                        }}
                                     >
                                         ₹380
                                     </Text>
                                 </View>
 
-                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color="#1F1F1F85" strokeWidth={2} />
+                                <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </View>
                         </View>
 
                         <View
-                            className="bg-[#3F2516] px-4 py-4 justify-center"
+                            className="px-4 py-4 justify-center"
                             style={{
+                                backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
                                 marginTop: verticalScale(18)
                             }}
                         >
                             <View className="flex-row items-center justify-between">
                                 <View
-                                    className="flex-row items-center justify-center gap-1 bg-[#F8D56A]"
+                                    className="flex-row items-center justify-center gap-1"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(18),
                                         paddingRight: scale(6),
                                         paddingLeft: scale(4),
                                         paddingVertical: verticalScale(1)
                                     }}
                                 >
-                                    <CircleStarIcon width={moderateScale(18)} height={moderateScale(18)} color="#3F2516" />
+                                    <CircleStarIcon width={moderateScale(18)} height={moderateScale(18)} color={COLORS.primaryColor} />
 
                                     <Text
-                                        className="text-[#3F2516] font-semibold uppercase"
-                                        style={{ fontSize: moderateScale(9) }}
+                                        className="font-semibold uppercase"
+                                        style={{
+                                            fontSize: moderateScale(9),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Brothers Rewards
                                     </Text>
@@ -719,16 +790,20 @@ export default function BrothersWalletScreen(){
                                             router.push('/rewards-coupons')
                                         })
                                     }
-                                    className="items-center justify-center bg-[#F8D56A]"
+                                    className="items-center justify-center"
                                     style={{
+                                        backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(18),
                                         paddingHorizontal: scale(12),
                                         paddingVertical: verticalScale(5)
                                     }}
                                 >
                                     <Text
-                                        className="text-[#3F2516] font-semibold uppercase"
-                                        style={{ fontSize: moderateScale(10) }}
+                                        className="font-semibold uppercase"
+                                        style={{
+                                            fontSize: moderateScale(10),
+                                            color: COLORS.primaryColor
+                                        }}
                                     >
                                         Redeem
                                     </Text>
@@ -736,16 +811,20 @@ export default function BrothersWalletScreen(){
                             </View>
 
                             <Text
-                                className='text-[#FFFFFF]/85 font-medium leading-5'
+                                className='font-medium leading-5'
                                 style={{
+                                    color: hexToRgba(COLORS.primaryBackgroundColor, 0.85),
                                     fontSize: moderateScale(12),
                                     marginTop: verticalScale(10)
                                 }}
                             >
                                 You're
                                 <Text
-                                    className='text-[#F8D56A]/85 font-medium'
-                                    style={{ fontSize: moderateScale(12) }}
+                                    className='font-medium'
+                                    style={{
+                                        fontSize: moderateScale(12),
+                                        color: COLORS.accentColor
+                                    }}
                                 >
                                     {" "}550 points away{" "}
                                 </Text>
@@ -760,16 +839,18 @@ export default function BrothersWalletScreen(){
                                 }}
                             >
                                 <View
-                                    className="absolute w-full bg-[#FFFFFF]/10"
+                                    className="absolute w-full"
                                     style={{
+                                        backgroundColor: hexToRgba(COLORS.primaryBackgroundColor, 0.1),
                                         height: moderateScale(6),
                                         borderRadius: moderateScale(18)
                                     }}
                                 />
 
                                 <View
-                                    className="absolute bg-[#E0A400]"
+                                    className="absolute"
                                     style={{
+                                        backgroundColor: COLORS.accentColor,
                                         width: `${safeProgress}%`,
                                         height: moderateScale(6),
                                         borderRadius: moderateScale(18)
@@ -777,8 +858,11 @@ export default function BrothersWalletScreen(){
                                 />
 
                                 <View
-                                    className="absolute bg-[#E0A400] border border-[#FFFFFF]/65"
+                                    className="absolute"
                                     style={{
+                                        borderWidth: moderateScale(0.7),
+                                        backgroundColor: COLORS.accentColor,
+                                        borderColor: hexToRgba(COLORS.primaryBackgroundColor, 0.65),
                                         width: moderateScale(14),
                                         height: moderateScale(14),
                                         borderRadius: moderateScale(14),
@@ -799,18 +883,24 @@ export default function BrothersWalletScreen(){
                                 style={{ marginTop: verticalScale(8) }}
                             >
                                 <View className="flex-row items-center">
-                                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="#F8D56A" />
+                                    <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color={COLORS.accentColor} />
 
                                     <Text
-                                        className="text-[#FFFFFF] font-medium"
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(11),
+                                            color: COLORS.primaryBackgroundColor
+                                        }}
                                     >
-                                        {currentTier}
+                                        {currentTier}{" "}
                                     </Text>
 
                                     <Text
-                                        className="text-[#FFFFFF]/65 font-medium"
-                                        style={{ fontSize: moderateScale(9.5) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(9.5),
+                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.65)
+                                        }}
                                     >
                                         ({currentTierPoints.toLocaleString()})
                                     </Text>
@@ -820,15 +910,21 @@ export default function BrothersWalletScreen(){
                                     <CircleStarIcon width={moderateScale(20)} height={moderateScale(20)} color="rgba(184, 137, 232, 0.90)" />
 
                                     <Text
-                                        className="text-[#FFFFFF] font-medium"
-                                        style={{ fontSize: moderateScale(11) }}
+                                        className="font-medium"
+                                        style={{
+                                            color: COLORS.primaryBackgroundColor,
+                                            fontSize: moderateScale(11)
+                                        }}
                                     >
-                                        {nextTier}
+                                        {nextTier}{" "}
                                     </Text>
 
                                     <Text
-                                        className="text-[#FFFFFF]/65 font-medium"
-                                        style={{ fontSize: moderateScale(9.5) }}
+                                        className="font-medium"
+                                        style={{
+                                            fontSize: moderateScale(9.5),
+                                            color: hexToRgba(COLORS.primaryBackgroundColor, 0.65)
+                                        }}
                                     >
                                         ({nextTierPoints.toLocaleString()})
                                     </Text>
@@ -841,8 +937,11 @@ export default function BrothersWalletScreen(){
                             style={{ marginTop: verticalScale(14) }}
                         >
                             <Text
-                                className="text-[#1F1F1F] font-bold flex-1"
-                                style={{ fontSize: moderateScale(15) }}
+                                className="font-semibold flex-1"
+                                style={{
+                                    fontSize: moderateScale(15),
+                                    color: COLORS.primaryTextColor
+                                }}
                             >
                                 Recent Transactions
                             </Text>
@@ -862,8 +961,11 @@ export default function BrothersWalletScreen(){
                                 className="items-center"
                             >
                                 <Text
-                                    className="text-[#3F2516] font-bold"
-                                    style={{ fontSize: moderateScale(13) }}
+                                    className="font-medium"
+                                    style={{
+                                        fontSize: moderateScale(13),
+                                        color: COLORS.primaryColor
+                                    }}
                                 >
                                     View All
                                 </Text>
@@ -891,22 +993,24 @@ export default function BrothersWalletScreen(){
                                         onPress={() => {
                                             setSelectedCategory(category.id)
                                         }}
-                                        className={`items-center justify-center ${
-                                            isSelected ? "bg-[#3F2516]" : "bg-[#FAF5EF]/75"
-                                        }`}
+                                        className="items-center justify-center"
                                         style={{
+                                            backgroundColor: isSelected
+                                                ? COLORS.primaryColor
+                                                : hexToRgba(COLORS.softBackgroundColor, 0.75),
                                             borderRadius: moderateScale(18),
-                                            paddingHorizontal: scale(16),
+                                            paddingHorizontal: category.title === "All" ? scale(18) : scale(14),
                                             paddingVertical: verticalScale(7),
                                             borderWidth: 0.7,
-                                            borderColor: isSelected ? "3F2516" : "#E8DDD3"
+                                            borderColor: isSelected ? COLORS.primaryColor : COLORS.softBackgroundColor
                                         }}
                                     >
                                         <Text
-                                            className={`font-semibold ${
-                                                isSelected ? "text-[#FFFFFF]" : "text-[#5A3825]"
-                                            }`}
-                                            style={{ fontSize: moderateScale(13) }}
+                                            className="font-semibold"
+                                            style={{
+                                                fontSize: moderateScale(13),
+                                                color: isSelected ? COLORS.primaryBackgroundColor : COLORS.secondaryColor
+                                            }}
                                         >
                                             {category.title}
                                         </Text>
