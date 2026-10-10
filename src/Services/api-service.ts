@@ -214,7 +214,7 @@ export type CreateOrderRequest = {
     items: CreateOrderItem[]
     payment_method: OrderPaymentMethod
     coupon_id?: string | null
-    note?: string
+    note?: string | null
 }
 
 export const createCheckoutOrder = (payload: CreateOrderRequest) => {
@@ -346,7 +346,7 @@ export interface MenuDetails {
 }
 
 export const getMenuById = (menuId: string) => {
-    return api.get(`/menu/${menuId}`)
+    return api.get(`/menu/${menuId}/item`)
 }
 
 export type CartPreviewItem = {
@@ -528,4 +528,62 @@ export const getCoupons = async (skip = 0, limit = 50) => {
 
 export const getAvailableCoupons = async () => {
     return api.get("/coupons/available")
+}
+
+export interface RewardAccount {
+    id: string
+    user_id: string
+    balance: number
+    points_per_amount: number
+    amount_unit: number
+    created_at: string
+    updated_at: string
+}
+
+export const getMyRewardAccount = async () => {
+    return api.get("/rewards/me")
+}
+
+export type RewardTransactionType =
+    | "EARN"
+    | "COUPON_PURCHASE"
+    | "REFUND"
+    | "ADJUSTMENT"
+
+export interface RewardTransaction {
+    id: string
+    user_id: string
+    reward_account_id: string
+    points: number
+    transaction_type: RewardTransactionType
+    order_id: string | null
+    description: string
+    created_at: string
+}
+
+export interface RewardTransactionsResponse {
+    total: number
+    skip: number
+    limit: number
+    transactions: RewardTransaction[]
+}
+
+export interface RewardTransactionParams {
+    skip?: number
+    limit?: number
+    transaction_type?: RewardTransactionType
+}
+
+export const getMyRewardTransactions = async (params: RewardTransactionParams = {}) => {
+    return api.get("/rewards/transactions/me",
+        {
+            params: {
+                skip: params.skip ?? 0,
+                limit: params.limit ?? 20,
+                ...(params.transaction_type && {
+                    transaction_type: params.transaction_type
+                })
+            }
+        }
+    )
 }

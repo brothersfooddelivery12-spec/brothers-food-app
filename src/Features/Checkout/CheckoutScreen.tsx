@@ -104,6 +104,7 @@ export default function CheckoutScreen() {
 
     const appliedCoupon = useCouponStore(state => state.appliedCoupon)
     const clearAppliedCoupon = useCouponStore(state => state.clearAppliedCoupon)
+    const [deliveryNote, setDeliveryNote] = useState("")
 
     const hasFetchedAddresses = useRef(false)
     const currentPaymentUpiRef = useRef<SavedPaymentMethod | null>(null)
@@ -805,7 +806,7 @@ export default function CheckoutScreen() {
                     })
                 ),
             coupon_id: appliedCoupon?.id ?? null,
-            note: "Hello Order Kar po"
+            note: deliveryNote.trim() || null
         }
 
         try {
@@ -1428,6 +1429,8 @@ export default function CheckoutScreen() {
                                         placeholder="Add delivery instructions (e.g., Leave at the gate)"
                                         placeholderTextColor={COLORS.placeholderTextColor}
                                         className="flex-1 ml-3"
+                                        value={deliveryNote}
+                                        onChangeText={setDeliveryNote}
                                         style={{
                                             color: COLORS.inputTextColor,
                                             minHeight: verticalScale(25),

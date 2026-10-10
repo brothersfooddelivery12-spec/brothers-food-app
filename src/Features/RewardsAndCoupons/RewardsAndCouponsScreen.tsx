@@ -20,7 +20,7 @@ import { default as FoodIcon, default as UtensilsIcon } from '@/assets/icon/Uten
 import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import SearchBar from '@/components/SearchBar'
 import { COLORS } from '@/constant/colors'
-import { Coupon, getAvailableCoupons, getCoupons } from '@/Services/api-service'
+import { Coupon, getAvailableCoupons, getCoupons, getMyRewardAccount, getMyRewardTransactions, RewardAccount, RewardTransaction, RewardTransactionType } from '@/Services/api-service'
 import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
@@ -250,6 +250,135 @@ export default function RewardsAndCouponsScreen(){
     const [activeTab, setActiveTab] = useState<"rewards" | "coupons">(
         params.tab === "coupons" ? "coupons" : "rewards"
     )
+
+    const [rewardAccount, setRewardAccount] = useState<RewardAccount | null>(null)
+    const [loadingRewards, setLoadingRewards] = useState(false)
+
+    const fetchRewardAccount = useCallback(async () => {
+        try {
+            setLoadingRewards(true)
+
+            const res = await getMyRewardAccount()
+
+            console.log("Reward account response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch reward account", "warning")
+
+                return
+            }
+
+            setRewardAccount(res.data.data ?? null)
+        } catch (error: any) {
+            console.log("Reward account error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                    "Unable to fetch reward account", "warning"
+            )
+        } finally {
+            setLoadingRewards(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchRewardAccount()
+    }, [fetchRewardAccount])
+
+    const [transactions, setTransactions] = useState<RewardTransaction[]>([])
+    const [loadingTransactions, setLoadingTransactions] = useState(false)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [totalTransactions, setTotalTransactions] = useState(0)
+    const [skip, setSkip] = useState(0)
+
+    const fetchRewardTransactions = useCallback(async (
+        offset = 0,
+        type?: RewardTransactionType
+    ) => {
+        try {
+            if (offset === 0) {
+                setLoadingTransactions(true)
+            } else {
+                setLoadingMore(true)
+            }
+
+            const res = await getMyRewardTransactions({
+                skip: offset,
+                transaction_type: type
+            })
+
+            console.log("Reward transactions response:", res.data)
+
+            const {transactions: newTransactions, total} = res.data.data
+
+            if (offset === 0) {
+                setTransactions(newTransactions)
+            } else {
+                setTransactions(
+                    (prev) => [
+                        ...prev,
+                        ...newTransactions
+                    ]
+                )
+            }
+
+            setTotalTransactions(total)
+
+            setSkip(offset + newTransactions.length)
+        } catch (error: any) {
+            console.log("Reward transactions error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to fetch reward transactions", "warning"
+            )
+        } finally {
+            setLoadingTransactions(false)
+            setLoadingMore(false)
+        }
+    },[])
+
+    useEffect(() => {
+        fetchRewardTransactions()
+    }, [fetchRewardTransactions])
+
+    const getTransactionTitle = (type: RewardTransactionType) => {
+        switch (type) {
+            case "EARN":
+                return "Points Earned"
+
+            case "COUPON_PURCHASE":
+                return "Coupon Redeemed"
+
+            case "REFUND":
+                return "Points Refunded"
+
+            case "ADJUSTMENT":
+                return "Points Adjustment"
+
+            default:
+                return "Reward Transaction"
+        }
+    }
+
+    const isCreditTransaction = (item: RewardTransaction) => {
+        if (item.transaction_type === "COUPON_PURCHASE") {
+            return false
+        }
+
+        return item.points >= 0
+    }
+
+    const formatTransactionDate = (date: string) => {
+        return new Date(date).toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        )
+    }
 
     const rewardsListRef = useRef<FlatList>(null)
     const [redeemSectionY, setRedeemSectionY] = useState<number | null>(null)
@@ -563,28 +692,55 @@ export default function RewardsAndCouponsScreen(){
                                     Current Balance
                                 </Text>
 
-                                <Text
-                                    className='tracking-wider font-black ml-2'
+                                <View
+                                    className="justify-center"
                                     style={{
-                                        color: COLORS.primaryBackgroundColor,
-                                        fontSize: moderateScale(28),
-                                        marginTop: verticalScale(2)
+                                        height: verticalScale(42),
+                                        overflow: "hidden"
                                     }}
                                 >
-                                    2,450
+                                    {loadingRewards ? (
+                                        <LottieView
+                                            source={require("../../../assets/animations/Loading2.json")}
+                                            autoPlay
+                                            loop
+                                            style={{
+                                                width: moderateScale(90),
+                                                height: verticalScale(40),
+                                                transform: [
+                                                    {
+                                                        translateX: -moderateScale(10)
+                                                    },
+                                                    {
+                                                        scale: 2.75
+                                                    }
+                                                ]
+                                            }}
+                                        />
+                                    ) : (
+                                        <Text
+                                            className='tracking-wider font-black ml-2'
+                                            style={{
+                                                color: COLORS.primaryBackgroundColor,
+                                                fontSize: moderateScale(28)
+                                            }}
+                                        >
+                                            {rewardAccount?.balance ?? 0}
 
-                                    <Text
-                                        className='font-medium self-end'
-                                        style={{
-                                            fontSize: moderateScale(16),
-                                            color: COLORS.accentColor
-                                        }}
-                                    >
-                                        {" "}Points
-                                    </Text>
-                                </Text>
+                                            <Text
+                                                className='font-medium self-end'
+                                                style={{
+                                                    fontSize: moderateScale(16),
+                                                    color: COLORS.accentColor
+                                                }}
+                                            >
+                                                {" "}Points
+                                            </Text>
+                                        </Text>
+                                    )}
+                                </View>
                                 
-                                <View className='flex-row justify-center mt-4 gap-3'>
+                                <View className='flex-row justify-center gap-3'>
                                     <View
                                         className='flex-row items-center justify-center gap-1'
                                         style={{
@@ -852,6 +1008,190 @@ export default function RewardsAndCouponsScreen(){
                                                 })}
                                             </View>
                                         </>
+                                    )}
+                                </View>
+
+                                <View
+                                    style={{ marginTop: verticalScale(20) }}
+                                >
+                                    <View className="flex-row items-center">
+                                        <Text
+                                            className="font-semibold flex-1"
+                                            style={{
+                                                fontSize: moderateScale(15),
+                                                color: COLORS.primaryTextColor
+                                            }}
+                                        >
+                                            Reward History
+                                        </Text>
+
+                                        {transactions.length > 0 && (
+                                            <Text
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: COLORS.primaryColor
+                                                }}
+                                            >
+                                                {totalTransactions} Transactions
+                                            </Text>
+                                        )}
+                                    </View>
+
+                                    {loadingTransactions ? (
+                                        <View
+                                            className="items-center justify-center"
+                                            style={{ height: verticalScale(150) }}
+                                        >
+                                            <LottieView
+                                                source={require(
+                                                    "../../../assets/animations/Loading3.json"
+                                                )}
+                                                autoPlay
+                                                loop
+                                                style={{
+                                                    width: moderateScale(50),
+                                                    height: moderateScale(50)
+                                                }}
+                                            />
+                                        </View>
+                                    ) : transactions.length === 0 ? (
+                                        <View
+                                            className="items-center justify-center"
+                                            style={{
+                                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                borderWidth: moderateScale(0.5),
+                                                borderRadius: moderateScale(20),
+                                                paddingHorizontal: scale(20),
+                                                paddingVertical: verticalScale(24),
+                                                marginTop: verticalScale(12)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center rounded-full"
+                                                style={{
+                                                    width: moderateScale(46),
+                                                    height: moderateScale(46),
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
+                                                }}
+                                            >
+                                                <CircleStarIcon width={moderateScale(28)} height={moderateScale(28)} color={COLORS.secondaryColor} />
+                                            </View>
+
+                                            <Text
+                                                className="font-semibold"
+                                                style={{
+                                                    fontSize: moderateScale(14),
+                                                    color: COLORS.primaryTextColor,
+                                                    marginTop: verticalScale(8)
+                                                }}
+                                            >
+                                                No Reward History
+                                            </Text>
+
+                                            <Text
+                                                className="font-medium text-center"
+                                                style={{
+                                                    fontSize: moderateScale(11),
+                                                    color: hexToRgba(COLORS.primaryTextColor, 0.7),
+                                                    marginTop: verticalScale(3)
+                                                }}
+                                            >
+                                                Your reward transactions will appear here.
+                                            </Text>
+                                        </View>
+                                    ) : (
+                                        <View
+                                            style={{
+                                                marginTop: verticalScale(12),
+                                                gap: verticalScale(10)
+                                            }}
+                                        >
+                                            {transactions.map((item) => {
+                                                const isCredit = isCreditTransaction(item)
+
+                                                return (
+                                                    <View
+                                                        key={item.id}
+                                                        className="flex-row items-center"
+                                                        style={{
+                                                            backgroundColor: COLORS.secondaryBackgroundColor,
+                                                            borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                            borderWidth: moderateScale(0.5),
+                                                            borderRadius: moderateScale(18),
+                                                            paddingHorizontal: scale(12),
+                                                            paddingVertical: verticalScale(11),
+                                                            gap: scale(10)
+                                                        }}
+                                                    >
+                                                        <View
+                                                            className="items-center justify-center rounded-full"
+                                                            style={{
+                                                                width: moderateScale(42),
+                                                                height: moderateScale(42),
+                                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.15)
+                                                            }}
+                                                        >
+                                                            <CircleStarIcon
+                                                                width={moderateScale(26)}
+                                                                height={moderateScale(26)}
+                                                                color={COLORS.secondaryColor}
+                                                            />
+                                                        </View>
+
+                                                        <View className="flex-1">
+                                                            <Text
+                                                                numberOfLines={1}
+                                                                className="font-semibold"
+                                                                style={{
+                                                                    fontSize: moderateScale(13),
+                                                                    color: COLORS.primaryTextColor
+                                                                }}
+                                                            >
+                                                                {getTransactionTitle(item.transaction_type)}
+                                                            </Text>
+
+                                                            <Text
+                                                                numberOfLines={1}
+                                                                className="font-medium"
+                                                                style={{
+                                                                    fontSize: moderateScale(10),
+                                                                    color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                                                                    marginTop: verticalScale(2)
+                                                                }}
+                                                            >
+                                                                {item.description.trim()}
+                                                            </Text>
+
+                                                            <Text
+                                                                className="font-medium"
+                                                                style={{
+                                                                    fontSize: moderateScale(9),
+                                                                    color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                                                    marginTop: verticalScale(3)
+                                                                }}
+                                                            >
+                                                                {formatTransactionDate(item.created_at)}
+                                                            </Text>
+                                                        </View>
+
+                                                        <Text
+                                                            className="font-bold"
+                                                            style={{
+                                                                fontSize: moderateScale(13),
+                                                                color: isCredit
+                                                                    ? COLORS.activeStatusTextColor
+                                                                    : COLORS.dangerTextColor
+                                                            }}
+                                                        >
+                                                            {isCredit ? "+" : "-"}
+                                                            {Math.abs(item.points)} pts
+                                                        </Text>
+                                                    </View>
+                                                )
+                                            })}
+                                        </View>
                                     )}
                                 </View>
 

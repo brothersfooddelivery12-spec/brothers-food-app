@@ -1165,7 +1165,11 @@ export default function RestaurantDetailsScreen() {
                                 </View>
                             ) : menuItems.length > 0 ? (
                                 <View
-                                    style={{ gap: verticalScale(12) }}
+                                    style={{
+                                        gap: verticalScale(12),
+                                        marginTop: moderateScale(6),
+                                        marginBottom: moderateScale(16)
+                                    }}
                                 >
                                     {menuItems.map((item) => (
                                         <RestaurantMenuItemCard

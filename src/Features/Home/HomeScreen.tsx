@@ -1068,7 +1068,7 @@ export default function HomeScreen() {
                     />
                 </View>
             ) : (
-                <>
+                <View className="flex-1">
                     <FlatList
                         ref={listRef}
                         data={location && !loadingHome ? nearbyRestaurants : []}
@@ -1691,29 +1691,42 @@ export default function HomeScreen() {
                                 )}
                             </>
                         }
-                        ListEmptyComponent={!location ? (renderLocationRequired()) : loadingHome ? (
-                            <View
-                                className="flex-1 items-center justify-center"
-                                style={{
-                                    paddingTop: verticalScale(20)
-                                }}
-                            >
-                                <LottieView
-                                    source={require(
-                                        "../../../assets/animations/Food_Loading2.json"
-                                    )}
-                                    autoPlay
-                                    loop
-                                    style={{
-                                        width: moderateScale(125),
-                                        height: moderateScale(125)
-                                    }}
-                                />
-                            </View>
-                        ) : null}
+                        ListEmptyComponent={
+                            !location && !loadingHome
+                                ? renderLocationRequired()
+                                : null
+                        }
                         renderItem={renderNearbyRestaurant}
                     />
-    
+
+                    {loadingHome && location && (
+                        <View
+                            pointerEvents="none"
+                            style={{
+                                position: "absolute",
+                                top: headerHeight,
+                                left: 0,
+                                right: 0,
+                                bottom: moderateScale(80),
+                                alignItems: "center",
+                                justifyContent: "center",
+                                zIndex: 5
+                            }}
+                        >
+                            <LottieView
+                                source={require(
+                                    "../../../assets/animations/Food_Loading2.json"
+                                )}
+                                autoPlay
+                                loop
+                                style={{
+                                    width: moderateScale(120),
+                                    height: moderateScale(120)
+                                }}
+                            />
+                        </View>
+                    )}
+
                     {showBackToTop && (
                         <Animated.View
                             entering={FadeInUp.duration(220)}
@@ -1721,7 +1734,7 @@ export default function HomeScreen() {
                             pointerEvents="box-none"
                             className="absolute left-0 right-0 items-center"
                             style={{
-                                top: insets.top + verticalScale(8),
+                                top: verticalScale(10),
                                 zIndex: 100
                             }}
                         >
@@ -1769,7 +1782,7 @@ export default function HomeScreen() {
                             </TouchableOpacity>
                         </Animated.View>
                     )}
-                </>
+                </View>
             )}
 
             {hasCartItems && !showEmptyHome && !loadingHome && (

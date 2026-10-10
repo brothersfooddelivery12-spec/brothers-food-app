@@ -154,7 +154,7 @@ const RestaurantMenuItemCard = ({
                         numberOfLines={1}
                         className="font-bold"
                         style={{
-                            fontSize: moderateScale(16),
+                            fontSize: moderateScale(14),
                             color: isInactive ? hexToRgba(COLORS.primaryTextColor, 0.52) : COLORS.primaryTextColor
                         }}
                     >
@@ -165,7 +165,7 @@ const RestaurantMenuItemCard = ({
                         numberOfLines={2}
                         className="font-medium"
                         style={{
-                            fontSize: moderateScale(11.5),
+                            fontSize: moderateScale(11),
                             marginTop: moderateScale(2),
                             color: isInactive
                                 ? hexToRgba(COLORS.primaryTextColor, 0.38)
@@ -211,7 +211,7 @@ const RestaurantMenuItemCard = ({
                             color: isInactive ? COLORS.inactiveContentColor : COLORS.secondaryColor
                         }}
                     >
-                        {item.rating}
+                        {(item.rating ?? 0).toFixed(1)}
                     </Text>
                 </View>
 
