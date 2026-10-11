@@ -26,6 +26,7 @@ import VegIcon from '@/assets/icon/VeganIcon.svg'
 import WalletFilledIcon from '@/assets/icon/WalletFilledIcon.svg'
 import ToggleSwitch from '@/components/ToggleSwitch'
 import { COLORS } from '@/constant/colors'
+import { getMyRewardAccount, RewardAccount } from '@/Services/api-service'
 import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from "expo-image"
 import { router, useFocusEffect } from 'expo-router'
@@ -180,7 +181,7 @@ export default function ProfileScreen() {
 
             const res = await getMyWallet()
 
-            console.log("Wallet response:", res.data)
+            //console.log("Wallet response:", res.data)
 
             setWallet(res.data.data)
         } catch (error: any) {
@@ -198,6 +199,41 @@ export default function ProfileScreen() {
     useFocusEffect(
         useCallback(() => {
             fetchWallet()
+        }, [])
+    )
+
+    const [rewardAccount, setRewardAccount] = useState<RewardAccount | null>(null)
+    const [loadingRewards, setLoadingRewards] = useState(false)
+
+    const fetchRewardAccount = useCallback(async () => {
+        try {
+            setLoadingRewards(true)
+
+            const res = await getMyRewardAccount()
+
+            //console.log("Reward account response:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch reward account", "warning")
+
+                return
+            }
+
+            setRewardAccount(res.data.data ?? null)
+        } catch (error: any) {
+            console.log("Reward account error:", error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                    "Unable to fetch reward account", "warning"
+            )
+        } finally {
+            setLoadingRewards(false)
+        }
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchRewardAccount()
         }, [])
     )
 
@@ -1000,15 +1036,45 @@ export default function ProfileScreen() {
                                     Reward Points
                                 </Text>
 
-                                <Text
-                                    className='font-semibold -mr-1'
-                                    style={{
-                                        fontSize: moderateScale(13),
-                                        color: COLORS.primaryColor
-                                    }}
-                                >
-                                    2,450 pts
-                                </Text>
+                                {loading ? (
+                                        <LottieView
+                                            source={require("../../../assets/animations/Loading4.json")}
+                                            autoPlay
+                                            loop
+                                            style={{
+                                                width: moderateScale(60),
+                                                height: verticalScale(15),
+                                                transform: [
+                                                    {
+                                                        translateX: moderateScale(14)
+                                                    },
+                                                    {
+                                                        scale: 3.5
+                                                    }
+                                                ]
+                                            }}
+                                        />
+                                    ) : (
+                                        <Text
+                                            className='tracking-wider font-semibold ml-2'
+                                            style={{
+                                                color: COLORS.primaryColor,
+                                                fontSize: moderateScale(13)
+                                            }}
+                                        >
+                                            {rewardAccount?.balance ?? 0}
+
+                                            <Text
+                                                className='font-medium self-end'
+                                                style={{
+                                                    fontSize: moderateScale(13),
+                                                    color: COLORS.primaryColor
+                                                }}
+                                            >
+                                                {" "}pts
+                                            </Text>
+                                        </Text>
+                                    )}
 
                                 <ArrowRightIcon width={moderateScale(18)} height={moderateScale(18)} color={hexToRgba(COLORS.primaryTextColor, 0.75)} strokeWidth={2} />
                             </TouchableOpacity>

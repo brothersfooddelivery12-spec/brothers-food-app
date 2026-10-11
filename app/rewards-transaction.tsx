@@ -1,0 +1,3 @@
+import RewardsTransactionHistoryScreen from "@/Features/RewardsAndCoupons/RewardsTransactionScreen"
+
+export default RewardsTransactionHistoryScreen

@@ -146,7 +146,7 @@ export default function CartScreen() {
 
             const res = await getAllAddresses()
 
-            console.log("Addresses response:", res.data)
+            //console.log("Addresses response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch addresses", "warning")

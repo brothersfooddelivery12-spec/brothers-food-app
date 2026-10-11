@@ -129,7 +129,7 @@ export default function CheckoutScreen() {
 
             const res = await getMyWallet()
 
-            console.log("Wallet response:", res.data)
+            //console.log("Wallet response:", res.data)
 
             setWallet(res.data.data)
         } catch (error: any) {
@@ -180,7 +180,7 @@ export default function CheckoutScreen() {
 
                 const res = await getAllAddresses()
 
-                console.log("Addresses response:", res.data)
+                //console.log("Addresses response:", res.data)
 
                 if (!res.data.success) {
                     showToast(res.data.message || "Unable to fetch addresses", "warning")

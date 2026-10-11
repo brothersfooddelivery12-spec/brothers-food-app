@@ -198,21 +198,21 @@ export default function HomeScreen() {
             const {setRestaurantIds, setMenuItemIds} = useFavouriteStore.getState()
 
             if (restaurantRes.status === "fulfilled" && restaurantRes.value.data.success) {
-                console.log("Favorite restaurants response:", restaurantRes.value.data)
+                //console.log("Favorite restaurants response:", restaurantRes.value.data)
 
                 const ids = restaurantRes.value.data.data.map((item: any) => item.id)
 
-                console.log("Favorite restaurant IDs:", ids)
+                //console.log("Favorite restaurant IDs:", ids)
 
                 setRestaurantIds(ids)
             }
 
             if (menuItemRes.status === "fulfilled" && menuItemRes.value.data.success) {
-                console.log("Favorite menus response:", menuItemRes.value.data)
+                //console.log("Favorite menus response:", menuItemRes.value.data)
 
                 const ids = menuItemRes.value.data.data.map((item: any) => item.id)
                 
-                console.log("Favorite menu IDs:", ids)
+                //console.log("Favorite menu IDs:", ids)
 
                 setMenuItemIds(ids)
             }
@@ -408,7 +408,7 @@ export default function HomeScreen() {
 
             const res = await getCategories(latitude, longitude)
 
-            console.log("Categories response:", res.data)
+            //console.log("Categories response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch categories", "warning")
@@ -450,7 +450,7 @@ export default function HomeScreen() {
 
             const res = await getAdvertisements()
 
-            console.log("Advertisements response:", res.data)
+            //console.log("Advertisements response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch advertisements", "warning")
@@ -477,7 +477,7 @@ export default function HomeScreen() {
 
             const res = await getPopularRestaurants(latitude, longitude)
 
-            console.log("Popular restaurants response:", res.data)
+            //console.log("Popular restaurants response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch popular restaurants", "warning")
@@ -528,7 +528,7 @@ export default function HomeScreen() {
 
             const res = await getPopularMenu(latitude, longitude)
 
-            console.log("Popular menu response:", res.data)
+            //console.log("Popular menu response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch popular menu", "warning")
@@ -576,7 +576,7 @@ export default function HomeScreen() {
 
             const res = await getNearbyRestaurants(latitude, longitude)
 
-            console.log("Nearby restaurants response:", res.data)
+            //console.log("Nearby restaurants response:", res.data)
 
             if (!res.data.success) {
                 showToast(res.data.message || "Unable to fetch nearby restaurants", "warning")
@@ -1707,7 +1707,7 @@ export default function HomeScreen() {
                                 top: headerHeight,
                                 left: 0,
                                 right: 0,
-                                bottom: moderateScale(80),
+                                bottom: moderateScale(40),
                                 alignItems: "center",
                                 justifyContent: "center",
                                 zIndex: 5

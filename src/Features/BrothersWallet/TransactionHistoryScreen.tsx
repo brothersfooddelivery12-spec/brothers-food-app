@@ -523,7 +523,7 @@ export default function TransactionHistoryScreen(){
                                         return (
                                             <TouchableOpacity
                                                 key={category.id}
-                                                activeOpacity={0.85}
+                                                activeOpacity={0.95}
                                                 onPress={() => {
                                                     setSelectedCategory(category.id)
                                                 }}

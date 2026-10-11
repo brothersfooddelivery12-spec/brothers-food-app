@@ -26,10 +26,11 @@ import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { FlatList, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
+import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import CouponCard, { CouponItem } from './Components/CouponCard'
 import LoyaltyProgress from './Components/LoyaltyProgress'
 import RewardActionsList from './Components/RewardActionsList'
@@ -235,8 +236,8 @@ export const REDEEM_ITEMS: RedeemItem[] = [
 ]
 
 export default function RewardsAndCouponsScreen(){
-    const insets = useSafeAreaInsets()
     const {showToast} = useToast()
+    const preventDoublePress = usePreventDoublePress()
 
     const [search, setsearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -286,44 +287,21 @@ export default function RewardsAndCouponsScreen(){
 
     const [transactions, setTransactions] = useState<RewardTransaction[]>([])
     const [loadingTransactions, setLoadingTransactions] = useState(false)
-    const [loadingMore, setLoadingMore] = useState(false)
-    const [totalTransactions, setTotalTransactions] = useState(0)
-    const [skip, setSkip] = useState(0)
 
-    const fetchRewardTransactions = useCallback(async (
-        offset = 0,
-        type?: RewardTransactionType
-    ) => {
+    const fetchRewardTransactions = useCallback(async () => {
         try {
-            if (offset === 0) {
-                setLoadingTransactions(true)
-            } else {
-                setLoadingMore(true)
-            }
+            setLoadingTransactions(true)
 
             const res = await getMyRewardTransactions({
-                skip: offset,
-                transaction_type: type
+                skip: 0,
+                limit: 10
             })
 
             console.log("Reward transactions response:", res.data)
 
-            const {transactions: newTransactions, total} = res.data.data
+            const {transactions: newTransactions } = res.data.data
 
-            if (offset === 0) {
-                setTransactions(newTransactions)
-            } else {
-                setTransactions(
-                    (prev) => [
-                        ...prev,
-                        ...newTransactions
-                    ]
-                )
-            }
-
-            setTotalTransactions(total)
-
-            setSkip(offset + newTransactions.length)
+            setTransactions((newTransactions ?? []).slice(0, 10))
         } catch (error: any) {
             console.log("Reward transactions error:", error)
 
@@ -332,9 +310,8 @@ export default function RewardsAndCouponsScreen(){
             )
         } finally {
             setLoadingTransactions(false)
-            setLoadingMore(false)
         }
-    },[])
+    }, [])
 
     useEffect(() => {
         fetchRewardTransactions()
@@ -1026,15 +1003,24 @@ export default function RewardsAndCouponsScreen(){
                                         </Text>
 
                                         {transactions.length > 0 && (
-                                            <Text
-                                                className="font-semibold"
-                                                style={{
-                                                    fontSize: moderateScale(11),
-                                                    color: COLORS.primaryColor
-                                                }}
+                                            <Pressable
+                                                onPress={() => 
+                                                    preventDoublePress(() => {
+                                                        router.push('/rewards-transaction')
+                                                    })
+                                                }
+                                                className="items-center"
                                             >
-                                                {totalTransactions} Transactions
-                                            </Text>
+                                                <Text
+                                                    className="font-medium"
+                                                    style={{
+                                                        fontSize: moderateScale(13),
+                                                        color: COLORS.primaryColor
+                                                    }}
+                                                >
+                                                    View All
+                                                </Text>
+                                            </Pressable>
                                         )}
                                     </View>
 
