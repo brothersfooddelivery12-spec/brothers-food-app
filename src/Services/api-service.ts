@@ -534,6 +534,7 @@ export interface RewardAccount {
     id: string
     user_id: string
     balance: number
+    total_earning: number
     points_per_amount: number
     amount_unit: number
     created_at: string

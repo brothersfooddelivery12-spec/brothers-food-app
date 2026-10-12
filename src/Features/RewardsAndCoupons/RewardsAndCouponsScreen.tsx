@@ -9,7 +9,6 @@ import CrownIcon from '@/assets/icon/CrownIcon.svg'
 import DateIcon from '@/assets/icon/DateIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DiamondIcon from '@/assets/icon/DiamondIcon.svg'
-import GiftIcon from '@/assets/icon/GiftFilledIcon.svg'
 import LeafIcon from '@/assets/icon/LeafIcon.svg'
 import ChallengeIcon from '@/assets/icon/MedalFilledIcon.svg'
 import MoneyFilledIcon from '@/assets/icon/MoneyFilledIcon.svg'
@@ -17,7 +16,6 @@ import RefreshIcon from '@/assets/icon/RefundIcon.svg'
 import RobotIcon from '@/assets/icon/RobotIcon.svg'
 import PremiumBadgeIcon from '@/assets/icon/StarBadgeFilledIcon.svg'
 import { default as FoodIcon, default as UtensilsIcon } from '@/assets/icon/UtensilIcon2.svg'
-import WalletIcon from '@/assets/icon/WalletFilledIcon.svg'
 import SearchBar from '@/components/SearchBar'
 import { COLORS } from '@/constant/colors'
 import { Coupon, getAvailableCoupons, getCoupons, getMyRewardAccount, getMyRewardTransactions, RewardAccount, RewardTransaction, RewardTransactionType } from '@/Services/api-service'
@@ -25,7 +23,7 @@ import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -54,37 +52,6 @@ const UPCOMING_EVENTS = [
     {
         id: "4",
         imageUrl: "https://res.cloudinary.com/dcdg3s1pf/image/upload/v1788079368/ChatGPT_Image_Aug_30_2026_02_07_06_PM_ukhbqw.png"
-    }
-]
-
-const REWARD_STATS = [
-    {
-        id: "1",
-        title: "Reward Points",
-        value: "2,450",
-        icon: GiftIcon,
-        size: 22
-    },
-    {
-        id: "2",
-        title: "Lifetime Points",
-        value: "12,580",
-        icon: CircleStarIcon,
-        size: 25
-    },
-    {
-        id: "3",
-        title: "Points Redeemed",
-        value: "8,300",
-        icon: RefreshIcon,
-        size: 21
-    },
-    {
-        id: "4",
-        title: "Available Cashback",
-        value: "₹250",
-        icon: WalletIcon,
-        size: 22
     }
 ]
 
@@ -284,6 +251,29 @@ export default function RewardsAndCouponsScreen(){
     useEffect(() => {
         fetchRewardAccount()
     }, [fetchRewardAccount])
+
+    const rewardStats = useMemo(() => {
+        const lifetimePoints = rewardAccount?.total_earning ?? 0
+        const availablePoints = rewardAccount?.balance ?? 0
+        const redeemedPoints = Math.max(lifetimePoints - availablePoints, 0)
+
+        return [
+            {
+                id: "2",
+                title: "Lifetime Points",
+                value: lifetimePoints.toLocaleString(),
+                icon: CircleStarIcon,
+                size: 25
+            },
+            {
+                id: "3",
+                title: "Points Redeemed",
+                value: redeemedPoints.toLocaleString(),
+                icon: RefreshIcon,
+                size: 21
+            }
+        ]
+    }, [rewardAccount])
 
     const [transactions, setTransactions] = useState<RewardTransaction[]>([])
     const [loadingTransactions, setLoadingTransactions] = useState(false)
@@ -829,7 +819,7 @@ export default function RewardsAndCouponsScreen(){
                                 <View
                                     style={{ marginTop: verticalScale(14) }}
                                 >
-                                    <RewardStatsGrid data={REWARD_STATS} />
+                                    <RewardStatsGrid data={rewardStats} />
                                 </View>
         
                                 <Text
