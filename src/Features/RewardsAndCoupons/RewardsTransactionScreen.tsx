@@ -473,7 +473,7 @@ export default function RewardTransactionHistoryScreen() {
                     </Text>
 
                     <Text
-                        numberOfLines={1}
+                        numberOfLines={2}
                         className="font-medium"
                         style={{
                             fontSize: moderateScale(10.5),

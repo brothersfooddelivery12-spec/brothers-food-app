@@ -576,7 +576,7 @@ export interface RewardTransactionParams {
 }
 
 export const getMyRewardTransactions = async (params: RewardTransactionParams = {}) => {
-    return api.get("/rewards/transactions/me",
+    return api.get("/rewards/transactions",
         {
             params: {
                 skip: params.skip ?? 0,
@@ -587,4 +587,8 @@ export const getMyRewardTransactions = async (params: RewardTransactionParams = 
             }
         }
     )
+}
+
+export const redeemCoupon = (couponId: string) => {
+    return api.post(`/coupons/${couponId}/redeem`)
 }

@@ -133,7 +133,7 @@ export const useCashfreeUpi = ({ onVerify, onError }: UseCashfreeUpiProps) => {
 
             const response = await CFPaymentGatewayService.getInstalledUpiApps()
 
-            console.log("Cashfree UPI apps:", response)
+            //console.log("Cashfree UPI apps:", response)
 
             const parsed =
                 typeof response === "string"

@@ -30,6 +30,7 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import { usePreventDoublePress } from '../hook/usePreventDoublePress'
 import CouponCard, { CouponItem } from './Components/CouponCard'
+import CouponRedeemPurchaseModal from './Components/CouponRedeemPurchaseModal '
 import LoyaltyProgress from './Components/LoyaltyProgress'
 import RewardActionsList from './Components/RewardActionsList'
 import RewardAndCouponTabs from './Components/RewardAndCouponTabs'
@@ -512,29 +513,10 @@ export default function RewardsAndCouponsScreen(){
         fetchCouponsByTab(activeTab)
     }, [activeTab, fetchCouponsByTab])
 
-    const handleRedeemCoupon = useCallback((coupon: Coupon) => {
-        if (coupon.purchase_method !== "REWARD_POINTS") {
-            return
-        }
-
-        console.log("Redeem coupon:", coupon.id)
-
-        console.log("Points required:", coupon.points_required)
-
-        // call redeem API here
-    },[])
-
-    const handlePurchaseCoupon = useCallback((coupon: Coupon) => {
-        if (coupon.purchase_method !== "MONEY") {
-            return
-        }
-
-        console.log("Purchase coupon:", coupon.id)
-
-        console.log("Price:", coupon.money_price)
-
-        // create payment / purchase API here
-    },[])
+    const handleCouponAction = useCallback((coupon: Coupon) => {
+        setSelectedCoupon(coupon)
+        setShowCouponModal(true)
+    }, [])
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -544,6 +526,9 @@ export default function RewardsAndCouponsScreen(){
         return () => clearTimeout(timer)
     }, [search])
     
+    const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
+    const [showCouponModal, setShowCouponModal] = useState(false)
+
     return(
         <SafeAreaView
             className="flex-1"
@@ -928,9 +913,7 @@ export default function RewardsAndCouponsScreen(){
                                                         key={coupon.id}
                                                         item={mappedCoupon}
                                                         onRedeem={() => {
-                                                            console.log("Redeem with points:", coupon)
-
-                                                            handleRedeemCoupon(coupon)
+                                                            handleCouponAction(coupon)
                                                         }}
                                                     />
                                                 )
@@ -966,9 +949,7 @@ export default function RewardsAndCouponsScreen(){
                                                             key={coupon.id}
                                                             item={mappedCoupon}
                                                             onPurchase={() => {
-                                                                console.log("Purchase coupon:", coupon)
-
-                                                                handlePurchaseCoupon(coupon)
+                                                                handleCouponAction(coupon)
                                                             }}
                                                         />
                                                     )
@@ -1129,7 +1110,7 @@ export default function RewardsAndCouponsScreen(){
                                                             </Text>
 
                                                             <Text
-                                                                numberOfLines={1}
+                                                                numberOfLines={2}
                                                                 className="font-medium"
                                                                 style={{
                                                                     fontSize: moderateScale(10),
@@ -1497,6 +1478,27 @@ export default function RewardsAndCouponsScreen(){
                     </>
                 }
             />
+
+            {showCouponModal && (
+                <CouponRedeemPurchaseModal
+                    visible={showCouponModal}
+                    coupon={selectedCoupon}
+                    rewardBalance={rewardAccount?.balance ?? 0}
+                    onCancel={() => {
+                        setShowCouponModal(false)
+                        setSelectedCoupon(null)
+                    }}
+                    onSuccess={async () => {
+                        setShowCouponModal(false)
+                        setSelectedCoupon(null)
+
+                        await Promise.all([
+                            fetchRewardAccount(),
+                            fetchCouponsByTab(activeTab)
+                        ])
+                    }}
+                />
+            )}
         </SafeAreaView>
     )
 }

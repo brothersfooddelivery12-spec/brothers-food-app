@@ -7,7 +7,7 @@ import { hexToRgba } from '@/utils/hexToRgba'
 import { measureApi } from '@/utils/measureApiRes'
 import { router, useFocusEffect } from "expo-router"
 import LottieView from "lottie-react-native"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { StatusBar, Text, useWindowDimensions, View } from "react-native"
 import Animated, { Extrapolation, interpolate, scrollTo, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
@@ -48,6 +48,11 @@ export default function OrdersScreen() {
 
     const [activeOrders, setActiveOrders] = useState<OrderListItem[]>([])
     const [pastOrders, setPastOrders] = useState<OrderListItem[]>([])
+    const [orderStats, setOrderStats] = useState({
+        active: 0,
+        past: 0,
+        completed: 0
+    })
     const [loadingOrders, setLoadingOrders] = useState(false)
     const [loadingMore, setLoadingMore] = useState(false)
 
@@ -116,7 +121,13 @@ export default function OrdersScreen() {
                 return
             }
 
-            const newOrders: OrderListItem[] = res.data.data ?? []
+            const newOrders: OrderListItem[] = res.data.data.orders ?? []
+
+            setOrderStats({
+                active: res.data.data.total_active ?? 0,
+                past: res.data.data.total_past ?? 0,
+                completed: res.data.data.completed ?? 0
+            })
 
             console.log(`${status} new orders:`, newOrders)
 
@@ -384,13 +395,6 @@ export default function OrdersScreen() {
             router.push('/order-invoice')
         })
     }, [])
-
-    const orderStats = useMemo(() => {
-        return {
-            active: activeOrders.length,
-            past: pastOrders.length
-        }
-    }, [activeOrders, pastOrders])
 
     const renderOrder = useCallback(({ item }: { item: OrderListItem }) => {
         if (activeTab === "active orders") {
@@ -687,7 +691,7 @@ export default function OrdersScreen() {
                                         color: COLORS.primaryTextColor
                                     }}
                                 >
-                                    0
+                                    {orderStats.completed}
                                 </Text>
                             </View>
                         </View>

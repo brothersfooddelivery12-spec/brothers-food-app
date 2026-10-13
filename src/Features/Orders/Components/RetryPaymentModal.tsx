@@ -136,6 +136,57 @@ const RetryPaymentModal = memo(({
         pincode
     ])
 
+    // const [loading, setLoading] = useState(true)
+    // const [wallet, setWallet] = useState<Wallet | null>(null)
+
+    // const fetchWallet = useCallback(async () => {
+    //     try {
+    //         setLoading(true)
+
+    //         const res = await getMyWallet()
+
+    //         //console.log("Wallet response:", res.data)
+
+    //         setWallet(res.data.data)
+    //     } catch (error: any) {
+    //         console.log("Fetch wallet error:", error)
+
+    //         showToast(
+    //             error?.message || "Unable to fetch wallet",
+    //             "warning"
+    //         )
+    //     } finally {
+    //         setLoading(false)
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     fetchWallet()
+    // },[fetchWallet])
+
+    // const walletBalance = wallet?.balance ?? 0
+    
+    // const OTHER_PAYMENT_METHODS = useMemo(
+    //     () => [
+    //         // {
+    //         //     id: "cod",
+    //         //     title: "Cash on Delivery",
+    //         //     description: "Pay in cash when your order is delivered",
+    //         //     icon: MoneyBagIcon
+    //         // },
+    //         {
+    //             id: "wallet",
+    //             title: "Brothers Wallet",
+    //             description: "Pay using your wallet balance",
+    //             icon: WalletIcon,
+    //             badge: loading
+    //                 ? "Loading..."
+    //                 : `Balance: ₹${walletBalance.toLocaleString("en-IN")}`
+    //         }
+    //     ],
+    //     [walletBalance, loading]
+    // )
+
     const handleVerifyPayment = useCallback(async (cashfreeOrderId: string) => {
         if (paymentHandledRef.current || paymentVerifyingRef.current) {
             return
@@ -748,16 +799,49 @@ const RetryPaymentModal = memo(({
                             )}
                         </View>
 
+                        <View
+                            className="flex-row items-end justify-between"
+                            style={{
+                                marginTop: verticalScale(14),
+                                marginBottom: verticalScale(5)
+                            }}
+                        >
+                            <View>
+                                <Text
+                                    className="font-bold"
+                                    style={{
+                                        color: COLORS.primaryTextColor,
+                                        fontSize: moderateScale(13)
+                                    }}
+                                >
+                                    Payment Method
+                                </Text>
+
+                                <Text
+                                    className="font-medium"
+                                    style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                        fontSize: moderateScale(10),
+                                        marginTop: verticalScale(2)
+                                    }}
+                                >
+                                    Choose how you'd like to pay
+                                </Text>
+                            </View>
+                        </View>
+
                         {savedDeviceUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="font-semibold mt-8 mb-2"
+                                    className="font-semibold"
                                     style={{
-                                        fontSize: moderateScale(13),
-                                        color: COLORS.primaryTextColor
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                        marginBottom: verticalScale(7),
+                                        marginTop: verticalScale(4)
                                     }}
                                 >
-                                    Saved Payment Method
+                                    SAVED
                                 </Text>
         
                                 <View
@@ -889,14 +973,15 @@ const RetryPaymentModal = memo(({
                         {otherUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="font-semibold mb-2"
+                                    className="font-semibold"
                                     style={{
-                                        color: COLORS.primaryTextColor,
-                                        fontSize: moderateScale(13),
-                                        marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
+                                        fontSize: moderateScale(10),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                        marginTop: verticalScale(12),
+                                        marginBottom: verticalScale(7)
                                     }}
                                 >
-                                    {savedPaymentMethods.length > 0 ? "Other UPI Apps" : "UPI Apps"}
+                                    {savedPaymentMethods.length > 0 ? "OTHER UPI APPS" : "UPI APPS"}
                                 </Text>
 
                                 <View
@@ -1004,6 +1089,140 @@ const RetryPaymentModal = memo(({
                                 </View>
                             </>
                         )}
+
+                        {/* <Text
+                            className="font-medium mt-4 mb-2"
+                            style={{
+                                fontSize: moderateScale(12),
+                                color: COLORS.primaryTextColor
+                            }}
+                        >
+                            Other Payment Options
+                        </Text>
+
+                        <View
+                            className="overflow-hidden"
+                            style={{
+                                borderRadius: moderateScale(20),
+                                borderWidth: moderateScale(0.5),
+                                backgroundColor: COLORS.secondaryBackgroundColor,
+                                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1)
+                            }}
+                        >
+                            {OTHER_PAYMENT_METHODS.map((item, index) => {
+                                const Icon = item.icon
+                                const isSelected = selectedPayment === item.id
+                                const isLast = index === OTHER_PAYMENT_METHODS.length - 1
+
+                                return (
+                                    <React.Fragment key={item.id}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.95}
+                                            onPress={() => setSelectedPayment(item.id)}
+                                            className="flex-row items-center"
+                                            style={{
+                                                paddingHorizontal: scale(12),
+                                                paddingVertical: verticalScale(12)
+                                            }}
+                                        >
+                                            <View
+                                                className="items-center justify-center rounded-full"
+                                                style={{
+                                                    backgroundColor: hexToRgba(COLORS.accentColor, 0.15),
+                                                    width: moderateScale(42),
+                                                    height: moderateScale(42)
+                                                }}
+                                            >
+                                                <Icon width={moderateScale(22)} height={moderateScale(22)} color={COLORS.primaryColor} strokeWidth={1.8} />
+                                            </View>
+
+                                            <View
+                                                className="flex-1"
+                                                style={{ marginLeft: scale(11) }}
+                                            >
+                                                <View className="flex-row items-center gap-2">
+                                                    <Text
+                                                        className="font-semibold"
+                                                        style={{
+                                                            fontSize: moderateScale(13),
+                                                            color: COLORS.primaryTextColor
+                                                        }}
+                                                    >
+                                                        {item.title}
+                                                    </Text>
+
+                                                    {item.badge && (
+                                                        <View
+                                                            style={{
+                                                                backgroundColor: hexToRgba(COLORS.accentColor, 0.20),
+                                                                borderRadius: moderateScale(12),
+                                                                paddingHorizontal: scale(8),
+                                                                paddingVertical: verticalScale(3)
+                                                            }}
+                                                        >
+                                                            <Text
+                                                                className="font-medium"
+                                                                style={{
+                                                                    color: COLORS.primaryColor,
+                                                                    fontSize: moderateScale(9.5)
+                                                                }}
+                                                            >
+                                                                {item.badge}
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+
+                                                <Text
+                                                    className="font-medium"
+                                                    style={{
+                                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                                        fontSize: moderateScale(10.5),
+                                                        marginTop: verticalScale(2)
+                                                    }}
+                                                >
+                                                    {item.description}
+                                                </Text>
+                                            </View>
+
+                                            <View
+                                                className="items-center justify-center"
+                                                style={{
+                                                    width: moderateScale(22),
+                                                    height: moderateScale(22),
+                                                    borderRadius: "100%",
+                                                    borderWidth: moderateScale(2),
+                                                    borderColor: isSelected
+                                                        ? COLORS.secondaryColor
+                                                        : hexToRgba(COLORS.neutralSurfaceColor, 0.85)
+                                                }}
+                                            >
+                                                {isSelected && (
+                                                    <View
+                                                        style={{
+                                                            width: moderateScale(14),
+                                                            height: moderateScale(14),
+                                                            borderRadius: "100%",
+                                                            backgroundColor: COLORS.secondaryColor
+                                                        }}
+                                                    />
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        {!isLast && (
+                                            <View
+                                                style={{
+                                                    backgroundColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                                                    height: moderateScale(0.5),
+                                                    marginHorizontal: scale(14)
+                                                }}
+                                            />
+                                        )}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </View> */}
 
                         <View
                             className="flex-row"

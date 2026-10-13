@@ -14,14 +14,25 @@ type RewardCouponCardProps = {
     onRedeem?: (item: CouponItem) => void
     onPurchase?: (item: CouponItem) => void
     onGet?: (item: CouponItem) => void
+
+    showActionButton?: boolean
+    cutoutColor?: string
+
+    variant?: "default" | "modal"
 }
 
 function RewardCouponCard({
     item,
     onRedeem,
     onPurchase,
-    onGet
+    onGet,
+    showActionButton = true,
+    cutoutColor = COLORS.primaryBackgroundColor,
+    variant = "default"
 }: RewardCouponCardProps) {
+
+    const isModal = variant === "modal"
+
     const NoteIcon =
         item.noteType === "expiry"
             ? ClockIcon
@@ -29,9 +40,14 @@ function RewardCouponCard({
                 ? UtensilsIcon
                 : InfoIcon
 
-    const isExpiry = item.noteType === "expiry"
-    const isReward = item.purchaseMethod === "REWARD_POINTS"
-    const isMoney = item.purchaseMethod === "MONEY"
+    const isExpiry =
+        item.noteType === "expiry"
+
+    const isReward =
+        item.purchaseMethod === "REWARD_POINTS"
+
+    const isMoney =
+        item.purchaseMethod === "MONEY"
 
     const actionText = isReward
         ? "Redeem"
@@ -66,25 +82,26 @@ function RewardCouponCard({
                 backgroundColor: COLORS.secondaryBackgroundColor,
                 borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
-                borderRadius: moderateScale(20),
-                minHeight: verticalScale(120)
+                borderRadius: moderateScale(isModal ? 17 : 20),
+                minHeight: verticalScale(isModal ? 100 : 120)
             }}
         >
             <View
                 className="flex-1"
                 style={{
-                    paddingHorizontal: scale(12),
-                    paddingVertical: verticalScale(12)
+                    paddingHorizontal: scale(isModal ? 10 : 12),
+                    paddingVertical: verticalScale(isModal ? 9 : 12)
                 }}
             >
                 <View
-                    className="self-start flex-row items-center gap-2"
+                    className="self-start flex-row items-center"
                     style={{
+                        gap: scale(isModal ? 4 : 8),
                         backgroundColor: item.featured
                             ? COLORS.accentLightColor
                             : hexToRgba(COLORS.accentColor, 0.15),
-                        paddingHorizontal: scale(8),
-                        paddingVertical: verticalScale(4),
+                        paddingHorizontal: scale(isModal ? 7 : 8),
+                        paddingVertical: verticalScale(isModal ? 3 : 4),
                         borderRadius: moderateScale(20)
                     }}
                 >
@@ -92,7 +109,7 @@ function RewardCouponCard({
                         className="font-bold uppercase"
                         style={{
                             color: COLORS.secondaryColor,
-                            fontSize: moderateScale(10),
+                            fontSize: moderateScale(isModal ? 8.5 : 10),
                             letterSpacing: 0.4
                         }}
                     >
@@ -105,8 +122,9 @@ function RewardCouponCard({
                     className="font-extrabold"
                     style={{
                         color: COLORS.primaryTextColor,
-                        fontSize: moderateScale(18),
-                        marginTop: verticalScale(12)
+                        fontSize: moderateScale(isModal ? 14.5 : 18),
+                        lineHeight: moderateScale(isModal ? 18 : 22),
+                        marginTop: verticalScale(isModal ? 8 : 12)
                     }}
                 >
                     {item.title}
@@ -117,8 +135,8 @@ function RewardCouponCard({
                     className="font-medium"
                     style={{
                         color: hexToRgba(COLORS.primaryTextColor, 0.75),
-                        fontSize: moderateScale(12),
-                        lineHeight: moderateScale(16),
+                        fontSize: moderateScale(isModal ? 10 : 12),
+                        lineHeight: moderateScale(isModal ? 14 : 16),
                         marginTop: verticalScale(3)
                     }}
                 >
@@ -130,15 +148,22 @@ function RewardCouponCard({
                     style={{
                         backgroundColor: hexToRgba(COLORS.borderColor, 0.75),
                         height: 0.7,
-                        marginVertical: verticalScale(8)
+                        marginVertical: verticalScale(isModal ? 6 : 8)
                     }}
                 />
 
-                <View className="flex-row items-center gap-2">
+                <View
+                    className="flex-row items-center"
+                    style={{ gap: scale(isModal ? 5 : 8) }}
+                >
                     <NoteIcon
-                        width={moderateScale(16)}
-                        height={moderateScale(16)}
-                        color={isExpiry ? COLORS.errorTextColor : COLORS.secondaryColor}
+                        width={moderateScale(isModal ? 13 : 16)}
+                        height={moderateScale(isModal ? 13 : 16)}
+                        color={
+                            isExpiry
+                                ? COLORS.errorTextColor
+                                : COLORS.secondaryColor
+                        }
                         strokeWidth={1.8}
                     />
 
@@ -148,8 +173,8 @@ function RewardCouponCard({
                             color: isExpiry
                                 ? COLORS.errorTextColor
                                 : COLORS.secondaryColor,
-                            fontSize: moderateScale(10.5),
-                            lineHeight: moderateScale(17)
+                            fontSize: moderateScale(isModal ? 9 : 10.5),
+                            lineHeight: moderateScale(isModal ? 13 : 17)
                         }}
                     >
                         {item.note}
@@ -161,26 +186,26 @@ function RewardCouponCard({
                 className="relative items-center justify-center overflow-visible"
                 style={{
                     backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
-                    width: scale(105),
-                    paddingHorizontal: scale(10),
-                    borderTopRightRadius: moderateScale(20),
-                    borderBottomRightRadius: moderateScale(20)
+                    width: scale(isModal ? 88 : 105),
+                    paddingHorizontal: scale(isModal ? 8 : 10),
+                    borderTopRightRadius: moderateScale(isModal ? 17 : 20),
+                    borderBottomRightRadius: moderateScale(isModal ? 17 : 20)
                 }}
             >
                 <View
                     className="absolute left-0 h-full items-center overflow-hidden"
                     style={{
                         width: 1,
-                        gap: verticalScale(3)
+                        gap: verticalScale(isModal ? 2 : 3)
                     }}
                 >
-                    {Array.from({ length: 30 }).map((_, index) => (
+                    {Array.from({length: 30}).map((_, index) => (
                         <View
                             key={index}
                             style={{
                                 width: 0.7,
-                                height: verticalScale(4),
-                                backgroundColor: hexToRgba(COLORS.accentColor, 0.45),
+                                height: verticalScale(isModal ? 3 : 4),
+                                backgroundColor: hexToRgba(COLORS.accentColor, 0.45)
                             }}
                         />
                     ))}
@@ -190,12 +215,12 @@ function RewardCouponCard({
                     pointerEvents="none"
                     className="absolute"
                     style={{
-                        backgroundColor: COLORS.primaryBackgroundColor,
-                        top: -moderateScale(11),
-                        left: -moderateScale(11),
-                        width: moderateScale(22),
-                        height: moderateScale(22),
-                        borderRadius: moderateScale(11),
+                        backgroundColor: cutoutColor,
+                        top: -moderateScale(isModal ? 9 : 11),
+                        left: -moderateScale(isModal ? 9 : 11),
+                        width: moderateScale(isModal ? 18 : 22),
+                        height: moderateScale(isModal ? 18 : 22),
+                        borderRadius: moderateScale(isModal ? 9 : 11),
                         zIndex: 20
                     }}
                 />
@@ -204,47 +229,49 @@ function RewardCouponCard({
                     pointerEvents="none"
                     className="absolute"
                     style={{
-                        backgroundColor: COLORS.primaryBackgroundColor,
-                        bottom: -moderateScale(11),
-                        left: -moderateScale(11),
-                        width: moderateScale(22),
-                        height: moderateScale(22),
-                        borderRadius: moderateScale(11),
+                        backgroundColor: cutoutColor,
+                        bottom: -moderateScale(isModal ? 9 : 11),
+                        left: -moderateScale(isModal ? 9 : 11),
+                        width: moderateScale(isModal ? 18 : 22),
+                        height: moderateScale(isModal ? 18 : 22),
+                        borderRadius: moderateScale(isModal ? 9 : 11),
                         zIndex: 20
                     }}
                 />
 
                 <Text
-                    className="font-extrabold"
+                    className="font-extrabold text-center"
                     style={{
                         color: COLORS.primaryColor,
-                        fontSize: moderateScale(15.5),
-                        marginBottom: verticalScale(9)
+                        fontSize: moderateScale(isModal ? 13.5 : 15.5),
+                        marginBottom: showActionButton ? verticalScale(isModal ? 6 : 9) : 0
                     }}
                 >
                     {costText}
                 </Text>
 
-                <TouchableOpacity
-                    activeOpacity={0.95}
-                    onPress={handleAction}
-                    className="w-full items-center justify-center"
-                    style={{
-                        backgroundColor: COLORS.primaryColor,
-                        paddingVertical: verticalScale(8),
-                        borderRadius: moderateScale(18)
-                    }}
-                >
-                    <Text
-                        className="font-bold"
+                {showActionButton && (
+                    <TouchableOpacity
+                        activeOpacity={0.95}
+                        onPress={handleAction}
+                        className="w-full items-center justify-center"
                         style={{
-                            fontSize: moderateScale(12),
-                            color: COLORS.primaryBackgroundColor
+                            backgroundColor: COLORS.primaryColor,
+                            paddingVertical: verticalScale(isModal ? 6 : 8),
+                            borderRadius: moderateScale(18)
                         }}
                     >
-                        {actionText}
-                    </Text>
-                </TouchableOpacity>
+                        <Text
+                            className="font-bold"
+                            style={{
+                                fontSize: moderateScale(isModal ? 10 : 12),
+                                color: COLORS.primaryBackgroundColor
+                            }}
+                        >
+                            {actionText}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     )
