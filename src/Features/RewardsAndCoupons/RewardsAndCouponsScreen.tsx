@@ -12,6 +12,7 @@ import DiamondIcon from '@/assets/icon/DiamondIcon.svg'
 import LeafIcon from '@/assets/icon/LeafIcon.svg'
 import ChallengeIcon from '@/assets/icon/MedalFilledIcon.svg'
 import MoneyFilledIcon from '@/assets/icon/MoneyFilledIcon.svg'
+import PlusIcon from '@/assets/icon/PlusIcon.svg'
 import RefreshIcon from '@/assets/icon/RefundIcon.svg'
 import RobotIcon from '@/assets/icon/RobotIcon.svg'
 import PremiumBadgeIcon from '@/assets/icon/StarBadgeFilledIcon.svg'
@@ -288,7 +289,7 @@ export default function RewardsAndCouponsScreen(){
                 limit: 10
             })
 
-            console.log("Reward transactions response:", res.data)
+            //console.log("Reward transactions response:", res.data)
 
             const {transactions: newTransactions } = res.data.data
 
@@ -606,16 +607,16 @@ export default function RewardsAndCouponsScreen(){
                             style={{
                                 backgroundColor: COLORS.primaryColor,
                                 borderRadius: moderateScale(22),
-                                marginTop: verticalScale(14)
+                                marginTop: verticalScale(10)
                             }}
                         >
                             <View className='justify-center flex-1 items-start'>
                                 <View
-                                    className='flex-row items-center justify-center gap-1'
+                                    className='flex-row items-center justify-center'
                                     style={{
                                         backgroundColor: COLORS.accentLightColor,
                                         borderRadius: moderateScale(18),
-                                        paddingRight: scale(6),
+                                        paddingRight: scale(8),
                                         paddingLeft: scale(4),
                                         paddingVertical: verticalScale(1)
                                     }}
@@ -632,6 +633,34 @@ export default function RewardsAndCouponsScreen(){
                                         Brothers rewards
                                     </Text>
                                 </View>
+
+                                <TouchableOpacity
+                                    activeOpacity={0.95}
+                                    onPress={() => {
+                                    }}
+                                    className=" absolute flex-row items-center justify-center gap-1"
+                                    style={{
+                                        top: moderateScale(1),
+                                        right: moderateScale(1),
+                                        backgroundColor: COLORS.accentLightColor,
+                                        paddingRight: scale(10),
+                                        paddingLeft: scale(7),
+                                        paddingVertical: verticalScale(6),
+                                        borderRadius: moderateScale(18)
+                                    }}
+                                >
+                                    <PlusIcon width={moderateScale(15)} height={moderateScale(15)} color={COLORS.primaryColor} strokeWidth={2} />
+
+                                    <Text
+                                        className="font-semibold"
+                                        style={{
+                                            color: COLORS.primaryColor,
+                                            fontSize: moderateScale(11)
+                                        }}
+                                    >
+                                        Buy Points
+                                    </Text>
+                                </TouchableOpacity>
 
                                 <Text
                                     className='font-normal ml-2'
@@ -804,7 +833,7 @@ export default function RewardsAndCouponsScreen(){
                                 <View
                                     style={{ marginTop: verticalScale(14) }}
                                 >
-                                    <RewardStatsGrid data={rewardStats} />
+                                    <RewardStatsGrid data={rewardStats} loading={loadingRewards} />
                                 </View>
         
                                 <Text

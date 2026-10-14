@@ -28,6 +28,7 @@ import ToggleSwitch from '@/components/ToggleSwitch'
 import { COLORS } from '@/constant/colors'
 import { getMyRewardAccount, RewardAccount } from '@/Services/api-service'
 import { hexToRgba } from '@/utils/hexToRgba'
+import { measureApi } from '@/utils/measureApiRes'
 import { Image } from "expo-image"
 import { router, useFocusEffect } from 'expo-router'
 import LottieView from 'lottie-react-native'
@@ -179,7 +180,10 @@ export default function ProfileScreen() {
         try {
             setLoading(true)
 
-            const res = await getMyWallet()
+            const res = await measureApi(
+                "Fetch Wallet",
+                getMyWallet
+            )
 
             //console.log("Wallet response:", res.data)
 
@@ -209,7 +213,10 @@ export default function ProfileScreen() {
         try {
             setLoadingRewards(true)
 
-            const res = await getMyRewardAccount()
+            const res = await measureApi(
+                "Fetch Reward Account",
+                getMyRewardAccount
+            )
 
             //console.log("Reward account response:", res.data)
 
@@ -573,7 +580,7 @@ export default function ProfileScreen() {
                                         router.push('/brothers-plus')
                                     })
                                 }
-                                className="flex-row items-center justify-center gap-1"
+                                className="flex-row items-center justify-center"
                                 style={{
                                     backgroundColor: COLORS.accentLightColor,
                                     paddingStart: scale(9),
@@ -583,7 +590,7 @@ export default function ProfileScreen() {
                                 }}
                             >
                                 <Text
-                                    className="font-bold"
+                                    className="font-semibold"
                                     style={{
                                         fontSize: moderateScale(10),
                                         color: COLORS.primaryColor
@@ -1036,7 +1043,7 @@ export default function ProfileScreen() {
                                     Reward Points
                                 </Text>
 
-                                {loading ? (
+                                {loadingRewards ? (
                                         <LottieView
                                             source={require("../../../assets/animations/Loading4.json")}
                                             autoPlay

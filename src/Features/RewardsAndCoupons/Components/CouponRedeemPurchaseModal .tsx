@@ -11,6 +11,7 @@ import { hexToRgba } from "@/utils/hexToRgba"
 import LottieView from "lottie-react-native"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { CouponItem } from "./CouponCard"
 import RewardCouponCard from "./RewardCouponCard"
@@ -32,6 +33,7 @@ const CouponRedeemPurchaseModal = memo(({
     onSuccess
 }: CouponRedeemPurchaseModalProps) => {
     const { showToast } = useToast()
+    const insets = useSafeAreaInsets()
 
     const {savedPaymentMethods, addPaymentMethod} = usePaymentMethodStore()
     const [processing, setProcessing] = useState(false)
@@ -351,7 +353,7 @@ const CouponRedeemPurchaseModal = memo(({
         }
 
         if (!hasEnoughPoints) {
-            showToast(`You need ${requiredPoints} points to redeem this coupon`, "warning")
+            showToast(`You need ${requiredPoints} points to redeem this coupon`, "info")
 
             return
         }
@@ -359,7 +361,7 @@ const CouponRedeemPurchaseModal = memo(({
         try {
             setProcessing(true)
 
-            const res = await redeemCoupon(coupon.id)
+            const res = await redeemCoupon(coupon.id, false)
 
             console.log("Redeem coupon:", res.data)
 
@@ -394,9 +396,10 @@ const CouponRedeemPurchaseModal = memo(({
             return
         }
 
-        if (!selectedUpiMethod) {
-            showToast("Please select a payment method", "info")
+        const isWalletPayment = selectedPayment === "wallet"
 
+        if (!isWalletPayment && !selectedUpiMethod) {
+            showToast("Please select a payment method", "info")
             return
         }
 
@@ -406,19 +409,36 @@ const CouponRedeemPurchaseModal = memo(({
             paymentHandledRef.current = false
             paymentVerifyingRef.current = false
 
-            currentPaymentUpiRef.current =
-                {
-                    id: selectedUpiMethod.id,
-                    type: "UPI",
-                    name: selectedUpiMethod.title,
-                    packageName: selectedUpiMethod.packageName
+            if (isWalletPayment) {
+                const res = await redeemCoupon(coupon.id, true)
+
+                console.log("Wallet coupon purchase response:", res.data)
+
+                if (!res.data.success) {
+                    throw new Error(res.data.message || "Unable to purchase coupon")
                 }
+
+                showToast(res.data.message || "Coupon purchased successfully", "success")
+
+                return
+            }
+
+            if (!selectedUpiMethod) {
+                return
+            }
+
+            currentPaymentUpiRef.current = {
+                id: selectedUpiMethod.id,
+                type: "UPI",
+                name: selectedUpiMethod.title,
+                packageName: selectedUpiMethod.packageName
+            }
 
             setProcessingUpiApp(selectedUpiMethod.packageName)
 
-            const res = await redeemCoupon(coupon.id)
+            const res = await redeemCoupon(coupon.id, false)
 
-            console.log("Purchase coupon response:", res.data)
+            console.log("UPI coupon purchase response:", res.data)
 
             if (!res.data.success) {
                 throw new Error(res.data.message || "Unable to purchase coupon")
@@ -434,9 +454,7 @@ const CouponRedeemPurchaseModal = memo(({
 
             await startUpiPayment({
                 orderId: payment.payment_id,
-
                 paymentSessionId: payment.payment_session_id,
-
                 appPackage: selectedUpiMethod.packageName
             })
         } catch (error: any) {
@@ -447,13 +465,16 @@ const CouponRedeemPurchaseModal = memo(({
 
             setProcessingUpiApp(null)
 
-            showToast(error?.response?.data ?.message || error?.message || "Unable to purchase coupon", "warning")
+            showToast(error?.response?.data?.message || error?.message ||
+                "Unable to purchase coupon", "warning"
+            )
         } finally {
             setProcessing(false)
         }
     }, [
         coupon,
         isProcessing,
+        selectedPayment,
         selectedUpiMethod,
         startUpiPayment
     ])
@@ -514,7 +535,7 @@ const CouponRedeemPurchaseModal = memo(({
                         borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         marginHorizontal: scale(8),
-                        marginBottom: verticalScale(22),
+                        marginBottom: insets.bottom + verticalScale(12),
                         borderRadius: moderateScale(24),
                         maxHeight: "85%"
                     }}

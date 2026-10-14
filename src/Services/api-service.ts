@@ -589,6 +589,80 @@ export const getMyRewardTransactions = async (params: RewardTransactionParams = 
     )
 }
 
-export const redeemCoupon = (couponId: string) => {
-    return api.post(`/coupons/${couponId}/redeem`)
+export const redeemCoupon = (couponId: string, isWallet: boolean = false) => {
+    return api.post(
+        `/coupons/${couponId}/redeem`,
+        null,
+        {
+            params: {
+                is_wallet: isWallet
+            }
+        }
+    )
+}
+
+export type MembershipCode =
+    | "BASIC"
+    | "BHAICHARA_PLUS"
+    | "BHAICHARA_PLUS_VIP"
+
+export type MembershipBenefitCode =
+    | "DELIVERY_DISCOUNT"
+    | "REWARD_MULTIPLIER"
+    | "REDUCED_ADS"
+    | "PRIORITY_SUPPORT"
+    | "EARLY_COUPON_ACCESS"
+
+export interface MembershipBenefitConfig {
+    percentage?: number
+    max_discount?: number | null
+    minimum_order_amount?: number
+
+    multiplier?: number
+
+    enabled?: boolean
+    reduction_percentage?: number
+}
+
+export interface MembershipBenefit {
+    benefit_code: MembershipBenefitCode
+    config: MembershipBenefitConfig
+}
+
+export interface MembershipPlan {
+    id: string
+    code: MembershipCode
+
+    name: string
+    description: string
+
+    price: number
+    duration_days: number | null
+
+    is_active: boolean
+    is_default: boolean
+
+    created_at: string
+    updated_at: string
+
+    benefits: MembershipBenefit[]
+}
+
+export interface MembershipPlansResponse {
+    success: boolean
+    message: string
+    data: MembershipPlan[]
+}
+
+export const getMembershipPlans = async () => {
+    return api.get("/memberships/plans")
+}
+
+export interface UpgradeMembershipPayload {
+    plan_id: string
+    payment_method: "ONLINE"
+}
+
+export const upgradeMembership = (payload: UpgradeMembershipPayload) => {
+    return api.post("/memberships/upgrade", payload)
 }

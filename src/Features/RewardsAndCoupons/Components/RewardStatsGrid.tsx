@@ -1,5 +1,6 @@
 import { COLORS } from "@/constant/colors"
 import { hexToRgba } from "@/utils/hexToRgba"
+import LottieView from "lottie-react-native"
 import React from "react"
 import { FlatList, Text, View } from "react-native"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
@@ -15,9 +16,10 @@ type RewardStatItem = {
 
 type RewardStatsGridProps = {
     data: RewardStatItem[]
+    loading: boolean
 }
 
-const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
+const RewardStatsGrid = ({ data, loading=false }: RewardStatsGridProps) => {
     const renderItem = ({
         item,
         index,
@@ -71,19 +73,40 @@ const RewardStatsGrid = ({ data }: RewardStatsGridProps) => {
                     >
                         {item.title}
                     </Text>
-
-                    <Text
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                        className="font-extrabold"
-                        style={{
-                            color: COLORS.primaryTextColor,
-                            fontSize: moderateScale(18),
-                            marginTop: verticalScale(4)
-                        }}
-                    >
-                        {item.value}
-                    </Text>
+                    
+                    {loading ? (
+                        <LottieView
+                            source={require("../../../../assets/animations/Loading4.json")}
+                            autoPlay
+                            loop
+                            style={{
+                                width: moderateScale(65),
+                                height: verticalScale(20),
+                                marginTop: moderateScale(3),
+                                transform: [
+                                    {
+                                        translateX: -moderateScale(15)
+                                    },
+                                    {
+                                        scale: 3.2
+                                    }
+                                ]
+                            }}
+                        />
+                    ) : (
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            className="font-extrabold"
+                            style={{
+                                color: COLORS.primaryTextColor,
+                                fontSize: moderateScale(18),
+                                marginTop: verticalScale(4)
+                            }}
+                        >
+                            {item.value}
+                        </Text>
+                    )}
                 </View>
             </View>
         )

@@ -5,6 +5,7 @@ import { COLORS } from '@/constant/colors'
 import { hexToRgba } from '@/utils/hexToRgba'
 import LottieView from 'lottie-react-native'
 import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native"
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 type AccountActionDialogProps = {
@@ -28,6 +29,8 @@ export default function AccountActionDialog({
     onCancel,
     onConfirm
 }: AccountActionDialogProps) {
+    const insets = useSafeAreaInsets()
+
     const isLogout = type === "logout"
     const isDeleteAccount = type === "delete"
     const isAddressDelete = type === "address-delete"
@@ -104,7 +107,7 @@ export default function AccountActionDialog({
                         borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         marginHorizontal: scale(12),
-                        marginBottom: verticalScale(22),
+                        marginBottom: insets.bottom + verticalScale(12),
                         borderRadius: moderateScale(24),
                         paddingHorizontal: scale(20),
                         paddingTop: verticalScale(14),
@@ -117,7 +120,7 @@ export default function AccountActionDialog({
                             style={{
                                 borderRadius: moderateScale(12),
                                 backgroundColor: isDanger
-                                    ? hexToRgba(COLORS.errorTextColor, 0.75)
+                                    ? COLORS.dangerBackgroundColor
                                     : hexToRgba(COLORS.neutralSurfaceColor, 0.75),
                                 width: moderateScale(34),
                                 height: moderateScale(34)

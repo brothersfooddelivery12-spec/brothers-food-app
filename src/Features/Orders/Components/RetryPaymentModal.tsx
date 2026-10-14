@@ -11,6 +11,7 @@ import { hexToRgba } from '@/utils/hexToRgba'
 import LottieView from "lottie-react-native"
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 
 export type RetryPaymentItem = {
@@ -101,7 +102,9 @@ const RetryPaymentModal = memo(({
     onCancel,
     onPaymentSuccess
 }: RetryPaymentModalProps) => {
+    const insets = useSafeAreaInsets()
     const {showToast} = useToast()
+
     const [creatingOrder, setCreatingOrder] = useState(false)
     const [verifyingPayment, setVerifyingPayment] = useState(false)
     const [processingUpiApp, setProcessingUpiApp] = useState<string | null>(null)
@@ -502,7 +505,7 @@ const RetryPaymentModal = memo(({
                         borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
                         borderWidth: moderateScale(0.7),
                         marginHorizontal: scale(8),
-                        marginBottom: verticalScale(22),
+                        marginBottom: insets.bottom + verticalScale(12),
                         borderRadius: moderateScale(24),
                         maxHeight: "85%"
                     }}
