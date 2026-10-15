@@ -535,6 +535,7 @@ export interface RewardAccount {
     user_id: string
     balance: number
     total_earning: number
+    highest_points: number | null
     points_per_amount: number
     amount_unit: number
     created_at: string
@@ -665,4 +666,62 @@ export interface UpgradeMembershipPayload {
 
 export const upgradeMembership = (payload: UpgradeMembershipPayload) => {
     return api.post("/memberships/upgrade", payload)
+}
+
+export type MembershipStatus =
+    | "ACTIVE"
+    | "EXPIRED"
+    | "CANCELLED"
+    | "PENDING"
+
+export interface MembershipBenefitsSnapshot {
+    DELIVERY_DISCOUNT?: {
+        percentage?: number
+        max_discount?: number | null
+        minimum_order_amount?: number
+    }
+
+    REWARD_MULTIPLIER?: {
+        multiplier?: number
+    }
+
+    REDUCED_ADS?: {
+        enabled?: boolean
+        reduction_percentage?: number
+    }
+
+    PRIORITY_SUPPORT?: {
+        enabled?: boolean
+    }
+
+    EARLY_COUPON_ACCESS?: {
+        enabled?: boolean
+    }
+}
+
+export interface UserMembership {
+    id: string
+    user_id: string
+    plan_id: string
+
+    status: MembershipStatus
+
+    starts_at: string
+    expires_at: string | null
+
+    amount_paid: number
+
+    benefits_snapshot: MembershipBenefitsSnapshot
+
+    created_at: string
+    updated_at: string
+}
+
+export interface MyMembershipResponse {
+    plan: MembershipPlan
+    membership: UserMembership
+}
+
+export const getMyMemberships = async () => {
+    return api.get("/memberships/me")
 }

@@ -268,7 +268,6 @@ const CouponRedeemPurchaseModal = memo(({
         onError: handlePaymentError
     })
 
-
     useEffect(() => {
         if (visible && isMoneyCoupon) {
             fetchUpiApps()
@@ -420,6 +419,7 @@ const CouponRedeemPurchaseModal = memo(({
 
                 showToast(res.data.message || "Coupon purchased successfully", "success")
 
+                onSuccess(coupon)
                 return
             }
 
@@ -466,7 +466,7 @@ const CouponRedeemPurchaseModal = memo(({
             setProcessingUpiApp(null)
 
             showToast(error?.response?.data?.message || error?.message ||
-                "Unable to purchase coupon", "warning"
+                "Unable to purchase coupon", "info"
             )
         } finally {
             setProcessing(false)

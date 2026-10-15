@@ -773,11 +773,8 @@ export default function RewardsAndCouponsScreen(){
                         </View>
 
                         <LoyaltyProgress
-                            currentPoints={2450}
-                            currentTierPoints={2000}
-                            nextTierPoints={3000}
-                            currentTier="Gold"
-                            nextTier="Platinum"
+                            currentPoints={rewardAccount?.balance ?? 0}
+                            highestPoints={rewardAccount?.highest_points ?? 0}
                         />
 
                         <View

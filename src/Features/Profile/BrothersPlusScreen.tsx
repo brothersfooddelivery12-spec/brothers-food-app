@@ -15,7 +15,7 @@ import StarBadgeIcon from '@/assets/icon/StarBadgeIcon.svg'
 import CheckCircleIcon from '@/assets/icon/SuccessIcon2.svg'
 import ProfileIcon from '@/assets/icon/UserIcon.svg'
 import { COLORS } from '@/constant/colors'
-import { getMembershipPlans, MembershipBenefit, MembershipPlan } from '@/Services/api-service'
+import { getMembershipPlans, getMyMemberships, MembershipBenefit, MembershipCode, MembershipPlan, MyMembershipResponse } from '@/Services/api-service'
 import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
 import { router } from "expo-router"
@@ -26,6 +26,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { moderateScale, scale, verticalScale } from "react-native-size-matters"
 import { useToast } from '../hook/ToastContext'
 import BenefitCard, { BenefitItem } from './Components/BenefitCard'
+import MembershipPlanModal from './Components/MembershipPlanModal'
 
 const MEMBERSHIP_BENEFITS: BenefitItem[] = [
     {
@@ -109,6 +110,7 @@ export default function BrothersPlusScreen(){
     const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>([])
     const [loadingPlans, setLoadingPlans] = useState(false)
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
+    const [showPlanModal, setShowPlanModal] = useState(false)
 
     const selectedPlan = useMemo(() => {
         return (
@@ -157,6 +159,39 @@ export default function BrothersPlusScreen(){
     useEffect(() => {
         fetchMembershipPlans()
     }, [fetchMembershipPlans])
+
+    const [myMembership, setMyMembership] = useState<MyMembershipResponse | null>(null)
+    const [loadingMembership, setLoadingMembership] = useState(false)
+
+    const fetchMyMembership = useCallback(async () => {
+        try {
+            setLoadingMembership(true)
+
+            const res = await getMyMemberships()
+
+            console.log("My membership:", res.data)
+
+            if (!res.data.success) {
+                showToast(res.data.message || "Unable to fetch membership", "warning")
+
+                return
+            }
+
+            setMyMembership(res.data.data ?? null)
+        } catch (error: any) {
+            console.log("My membership error:", error?.response?.data || error)
+
+            showToast(error?.response?.data?.message || error?.message ||
+                    "Unable to fetch membership", "warning"
+            )
+        } finally {
+            setLoadingMembership(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchMyMembership()
+    }, [fetchMyMembership])
 
     const getBenefitText = (benefit: MembershipBenefit): string | null => {
         const { benefit_code, config } = benefit
@@ -209,6 +244,23 @@ export default function BrothersPlusScreen(){
         }
     }
 
+    const MEMBERSHIP_LEVEL: Record<MembershipCode, number> = {
+        BASIC: 0,
+        BHAICHARA_PLUS: 1,
+        BHAICHARA_PLUS_VIP: 2
+    }
+
+    const currentMembershipCode: MembershipCode =
+        myMembership?.membership.status === "ACTIVE"
+            ? myMembership.plan.code
+            : "BASIC"
+
+    const hasActiveMembership =myMembership?.membership?.status === "ACTIVE"
+
+    const currentMembershipLevel = hasActiveMembership
+        ? MEMBERSHIP_LEVEL[myMembership.plan.code]
+        : 0
+    
     return(
         <SafeAreaView
             className="flex-1"
@@ -552,7 +604,13 @@ export default function BrothersPlusScreen(){
                                 </Text>
         
                                 {membershipPlans.map((plan, index) => {
-                                    const isSelected = selectedPlanId === plan.id
+                                    const planLevel = MEMBERSHIP_LEVEL[plan.code]
+
+                                    const isCurrentPlan = hasActiveMembership && myMembership?.plan.id === plan.id
+                                    const canUpgrade = hasActiveMembership && planLevel > currentMembershipLevel
+                                    const canSelect = !hasActiveMembership && !plan.is_default
+                                    const isDowngrade = hasActiveMembership && planLevel < currentMembershipLevel
+
                                     const isBasic = plan.code === "BASIC"
                                     const isPlus = plan.code === "BHAICHARA_PLUS"
                                     const isVip = plan.code === "BHAICHARA_PLUS_VIP"
@@ -562,12 +620,8 @@ export default function BrothersPlusScreen(){
                                         .filter((item): item is string => !!item)
         
                                     return (
-                                        <TouchableOpacity
+                                        <View
                                             key={plan.id}
-                                            activeOpacity={0.95}
-                                            onPress={() => {
-                                                setSelectedPlanId(plan.id)
-                                            }}
                                             className="relative py-6 px-5 mx-2 items-center justify-center"
                                             style={{
                                                 backgroundColor: isVip
@@ -724,37 +778,43 @@ export default function BrothersPlusScreen(){
                                                     ))}
                                                 </View>
                                             </View>
-        
-                                            <TouchableOpacity
-                                                activeOpacity={0.95}
-                                                onPress={() => {
-                                                    setSelectedPlanId(plan.id)
-        
-                                                    // Later:
-                                                    // handleSelectMembership(plan)
-                                                }}
-                                                className="w-full items-center justify-center"
-                                                style={{
-                                                    backgroundColor: COLORS.primaryColor,
-                                                    marginTop: verticalScale(20),
-                                                    borderRadius: moderateScale(28),
-                                                    paddingVertical: verticalScale(14)
-                                                }}
-                                            >
-                                                <Text
-                                                    className="font-semibold"
+                                                
+                                            {!isBasic && (isCurrentPlan || canUpgrade || canSelect) && (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.95}
+                                                    onPress={() => {
+                                                        if(!canUpgrade) {
+                                                            return
+                                                        }
+                                                        
+                                                        setSelectedPlanId(plan.id)
+                                                        setShowPlanModal(true)
+                                                    }}
+                                                    className="w-full items-center justify-center"
                                                     style={{
-                                                        fontSize: moderateScale(14),
-                                                        color: COLORS.primaryBackgroundColor
+                                                        backgroundColor: COLORS.primaryColor,
+                                                        marginTop: verticalScale(20),
+                                                        borderRadius: moderateScale(28),
+                                                        paddingVertical: verticalScale(14)
                                                     }}
                                                 >
-                                                    {plan.is_default
-                                                        ? "Current Plan"
-                                                        : "Select Plan"
-                                                    }
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </TouchableOpacity>
+                                                    <Text
+                                                        className="font-semibold"
+                                                        style={{
+                                                            fontSize: moderateScale(14),
+                                                            color: COLORS.primaryBackgroundColor
+                                                        }}
+                                                    >
+                                                        {isCurrentPlan
+                                                            ? "Current Plan"
+                                                            : canUpgrade
+                                                                ? "Upgrade Plan"
+                                                                : "Select Plan"
+                                                        }
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
                                     )
                                 })}
                             </View>
@@ -918,6 +978,24 @@ export default function BrothersPlusScreen(){
                             </TouchableOpacity>
                         </>
                     }
+                />
+            )}
+
+            {showPlanModal && (
+                <MembershipPlanModal
+                    visible={showPlanModal}
+                    plan={selectedPlan}
+                    onCancel={() => {
+                        setShowPlanModal(false)
+                    }}
+                    onSuccess={async () => {
+                        setShowPlanModal(false)
+
+                        await Promise.all([
+                            fetchMembershipPlans(),
+                            fetchMyMembership()
+                        ])
+                    }}
                 />
             )}
         </SafeAreaView>
