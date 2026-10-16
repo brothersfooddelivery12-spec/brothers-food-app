@@ -104,7 +104,7 @@ export default function BottomTabBar({ state, descriptors, navigation }: BottomT
         <View
             className="absolute left-4 right-4"
             style={{
-                bottom: insets.bottom + 8,
+                bottom: insets.bottom + verticalScale(8),
                 height: verticalScale(56)
             }}
         >

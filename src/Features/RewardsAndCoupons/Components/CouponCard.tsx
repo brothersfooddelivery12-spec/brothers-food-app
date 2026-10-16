@@ -45,13 +45,18 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
         : InfoIcon
 
     const isExpiry = item.noteType === "expiry"
+    const isExpired = item.isExpired
 
     return (
         <View
             className="flex-row overflow-visible"
             style={{
-                backgroundColor: COLORS.secondaryBackgroundColor,
-                borderColor: hexToRgba(COLORS.primaryTextColor, 0.1),
+                backgroundColor: isExpired
+                    ? hexToRgba(COLORS.primaryTextColor, 0.035)
+                    : COLORS.secondaryBackgroundColor,
+                borderColor: isExpired
+                    ? hexToRgba(COLORS.primaryTextColor, 0.12)
+                    : hexToRgba(COLORS.primaryTextColor, 0.1),
                 borderWidth: moderateScale(0.5),
                 borderRadius: moderateScale(20),
                 minHeight: verticalScale(120)
@@ -67,9 +72,11 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                 <View
                     className="self-start flex-row items-center gap-2"
                     style={{
-                        backgroundColor: item.featured
-                            ? COLORS.accentLightColor
-                            : hexToRgba(COLORS.accentColor, 0.15),
+                        backgroundColor: isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                            : item.featured
+                                ? COLORS.accentLightColor
+                                : hexToRgba(COLORS.accentColor, 0.15),
                         paddingHorizontal: scale(8),
                         paddingVertical: verticalScale(4),
                         borderRadius: moderateScale(20)
@@ -78,7 +85,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     <Text
                         className="font-bold uppercase"
                         style={{
-                            color: COLORS.secondaryColor,
+                            color: isExpired
+                                ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                : COLORS.secondaryColor,
                             fontSize: moderateScale(10),
                             letterSpacing: 0.4
                         }}
@@ -91,7 +100,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     numberOfLines={2}
                     className="font-extrabold"
                     style={{
-                        color: COLORS.primaryTextColor,
+                        color: isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.42)
+                            : COLORS.primaryTextColor,
                         fontSize: moderateScale(18),
                         marginTop: verticalScale(12)
                     }}
@@ -103,7 +114,12 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     numberOfLines={2}
                     className="font-medium"
                     style={{
-                        color: hexToRgba(COLORS.primaryTextColor, 0.75),
+                        color: isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.32)
+                            : hexToRgba(
+                                COLORS.primaryTextColor,
+                                0.75
+                            ),
                         fontSize: moderateScale(12),
                         lineHeight: moderateScale(16),
                         marginTop: verticalScale(3)
@@ -125,16 +141,23 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     <NoteIcon
                         width={moderateScale(16)}
                         height={moderateScale(16)}
-                        color={isExpiry ? COLORS.errorTextColor : COLORS.secondaryColor}
+                        color={isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                            : isExpiry
+                                ? COLORS.errorTextColor
+                                : COLORS.secondaryColor
+                        }
                         strokeWidth={1.8}
                     />
 
                     <Text
                         className="font-medium flex-1"
                         style={{
-                            color: isExpiry
-                                ? COLORS.errorTextColor
-                                : COLORS.secondaryColor,
+                            color: isExpired
+                                ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                : isExpiry
+                                    ? COLORS.errorTextColor
+                                    : COLORS.secondaryColor,
                             fontSize: moderateScale(10.5),
                             lineHeight: moderateScale(17)
                         }}
@@ -147,7 +170,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
             <View
                 className="relative items-center justify-center overflow-visible"
                 style={{
-                    backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
+                    backgroundColor: isExpired
+                        ? hexToRgba(COLORS.primaryTextColor, 0.08)
+                        : hexToRgba(COLORS.accentColor, 0.1),
                     width: scale(105),
                     paddingHorizontal: scale(10),
                     borderTopRightRadius: moderateScale(20),
@@ -167,7 +192,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                             style={{
                                 width: 0.7,
                                 height: verticalScale(4),
-                                backgroundColor: hexToRgba(COLORS.accentColor, 0.45),
+                                backgroundColor: isExpired
+                                    ? hexToRgba(COLORS.primaryTextColor, 0.18)
+                                    : hexToRgba(COLORS.accentColor, 0.45)
                             }}
                         />
                     ))}
@@ -215,9 +242,11 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     }}
                     className="w-full items-center justify-center"
                     style={{
-                        backgroundColor: isUnavailable
-                            ? COLORS.disabledBackgroundColor
-                            : COLORS.primaryColor,
+                        backgroundColor: isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.12)
+                            : !item.isActive
+                                ? COLORS.disabledBackgroundColor
+                                : COLORS.primaryColor,
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(18)
                     }}
@@ -226,7 +255,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                         className="font-bold"
                         style={{
                             fontSize: moderateScale(13),
-                            color: COLORS.primaryBackgroundColor
+                            color: isExpired
+                                ? hexToRgba(COLORS.primaryTextColor, 0.4)
+                                : COLORS.primaryBackgroundColor
                         }}
                     >
                         {item.isExpired
@@ -243,7 +274,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                     onPress={() => onCopy?.(item)}
                     className="w-full flex-row items-center justify-center gap-2"
                     style={{
-                        borderColor: hexToRgba(COLORS.secondaryColor, 0.65),
+                        borderColor: isExpired
+                            ? hexToRgba(COLORS.primaryTextColor, 0.12)
+                            : hexToRgba(COLORS.secondaryColor, 0.65),
                         borderWidth: moderateScale(1),
                         paddingVertical: verticalScale(8),
                         borderRadius: moderateScale(18),
@@ -256,7 +289,9 @@ function CouponCard({ item, onApply, onCopy }: CouponCardProps) {
                         className="font-bold"
                         style={{
                             fontSize: moderateScale(12),
-                            color: COLORS.primaryColor
+                            color: isExpired
+                                ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                : COLORS.primaryColor
                         }}
                     >
                         Copy

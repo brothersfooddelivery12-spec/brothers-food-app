@@ -126,51 +126,47 @@ const LOYALTY_TIERS = [
         id: "1",
         title: "Bronze",
         subtitle: "Foodie",
+        points: 1000,
         icon: LeafIcon,
 
         iconColor: "#FF6B1A",
         borderColor: "rgba(255, 107, 26, 0.40)",
-        backgroundColor: "rgba(255, 107, 26, 0.08)",
-
-        disabled: false,
+        backgroundColor: "rgba(255, 107, 26, 0.08)"
     },
     {
         id: "2",
         title: "Silver",
         subtitle: "Explorer",
+        points: 2500,
         icon: CompassIcon,
 
         iconColor: "#6E7F99",
         borderColor: "rgba(110, 127, 153, 0.40)",
-        backgroundColor: "rgba(110, 127, 153, 0.08)",
-
-        disabled: false,
+        backgroundColor: "rgba(110, 127, 153, 0.08)"
     },
     {
         id: "3",
         title: "Gold",
         subtitle: "Gourmet",
+        points: 5000,
         icon: UtensilsIcon,
 
         iconColor: "#C58A00",
         borderColor: "rgba(197, 138, 0, 0.40)",
-        backgroundColor: "rgba(197, 138, 0, 0.08)",
-
-        disabled: false,
+        backgroundColor: "rgba(197, 138, 0, 0.08)"
     },
     {
         id: "4",
         title: "Platinum",
         subtitle: "VIP",
+        points: 8000,
         icon: DiamondIcon,
 
         iconColor: "#B889E8",
         borderColor: "rgba(184, 137, 232, 0.40)",
-        backgroundColor: "rgba(184, 137, 232, 0.08)",
-
-        disabled: true,
-    },
-]
+        backgroundColor: "rgba(184, 137, 232, 0.08)"
+    }
+] as const
 
 export type RedeemItem = {
     id: string
@@ -529,6 +525,10 @@ export default function RewardsAndCouponsScreen(){
     
     const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
     const [showCouponModal, setShowCouponModal] = useState(false)
+
+    const currentLoyaltyTier = [...LOYALTY_TIERS]
+        .reverse()
+        .find((tier) => rewardAccount?.highest_points ?? 0 >= tier.points) ?? null
 
     return(
         <SafeAreaView
@@ -1193,40 +1193,87 @@ export default function RewardsAndCouponsScreen(){
                                     nestedScrollEnabled
                                     directionalLockEnabled
                                     showsHorizontalScrollIndicator={false}
-                                    className="-mx-5 mt-4"
+                                    className="-mx-5 mt-2"
                                     contentContainerStyle={{
                                         paddingHorizontal: scale(14),
-                                        gap: scale(6)
+                                        gap: scale(6),
+                                        paddingTop: verticalScale(10)
                                     }}
                                 >
                                     {LOYALTY_TIERS.map((item) => {
                                         const Icon = item.icon
+                                        const isUnlocked = rewardAccount?.highest_points ?? 0 >= item.points
+                                        const isCurrentTier = currentLoyaltyTier?.id === item.id
+                                        const isLocked = !isUnlocked
 
                                         return (
                                             <View
                                                 key={item.id}
                                                 className="items-center"
                                                 style={{
-                                                    width: moderateScale(78)
+                                                    width: moderateScale(78),
+                                                    opacity: isLocked ? 0.45 : 1
                                                 }}
                                             >
-                                                <View
-                                                    className="items-center justify-center"
-                                                    style={{
-                                                        width: moderateScale(62),
-                                                        height: moderateScale(62),
-                                                        borderRadius: moderateScale(31),
-                                                        borderWidth: 2,
-                                                        borderColor: item.borderColor,
-                                                        backgroundColor: item.backgroundColor
-                                                    }}
-                                                >
-                                                    <Icon width={moderateScale(25)} height={moderateScale(25)} color={item.iconColor} strokeWidth={1.8} />
+                                                <View className="relative">
+                                                    <View
+                                                        className="items-center justify-center"
+                                                        style={{
+                                                            width: moderateScale(62),
+                                                            height: moderateScale(62),
+                                                            borderRadius: moderateScale(31),
+                                                            borderWidth: isCurrentTier ? moderateScale(2.5) : moderateScale(2),
+                                                            borderColor: isLocked
+                                                                ? hexToRgba(COLORS.primaryTextColor, 0.15)
+                                                                : item.borderColor,
+                                                            backgroundColor: isLocked
+                                                                ? hexToRgba(COLORS.primaryTextColor, 0.05)
+                                                                : item.backgroundColor
+                                                        }}
+                                                    >
+                                                        <Icon
+                                                            width={moderateScale(25)}
+                                                            height={moderateScale(25)}
+                                                            color={
+                                                                isLocked
+                                                                    ? hexToRgba(COLORS.primaryTextColor, 0.35)
+                                                                    : item.iconColor
+                                                            }
+                                                            strokeWidth={1.8}
+                                                        />
+                                                    </View>
+
+                                                    {isCurrentTier && (
+                                                        <View
+                                                            className="absolute items-center justify-center"
+                                                            style={{
+                                                                backgroundColor: item.iconColor,
+                                                                top: -verticalScale(4),
+                                                                alignSelf: "center",
+                                                                paddingHorizontal: scale(7),
+                                                                paddingVertical: verticalScale(2),
+                                                                borderRadius: moderateScale(10)
+                                                            }}
+                                                        >
+                                                            <Text
+                                                                className="font-bold uppercase"
+                                                                style={{
+                                                                    color: "#FFFFFF",
+                                                                    fontSize: moderateScale(7.5)
+                                                                }}
+                                                            >
+                                                                Current
+                                                            </Text>
+                                                        </View>
+                                                    )}
                                                 </View>
 
                                                 <Text
-                                                    className="text-[#1F1F1F] font-semibold text-center"
+                                                    className="font-semibold text-center"
                                                     style={{
+                                                        color: isLocked
+                                                            ? hexToRgba(COLORS.primaryTextColor, 0.45)
+                                                            : COLORS.primaryTextColor,
                                                         fontSize: moderateScale(12),
                                                         marginTop: verticalScale(4)
                                                     }}
@@ -1236,13 +1283,30 @@ export default function RewardsAndCouponsScreen(){
 
                                                 <Text
                                                     numberOfLines={1}
-                                                    className="text-[#1F1F1F]/75 font-medium text-center"
+                                                    className="font-medium text-center"
                                                     style={{
+                                                        color: isLocked
+                                                            ? hexToRgba(COLORS.primaryTextColor, 0.35)
+                                                            : hexToRgba(COLORS.primaryTextColor, 0.75),
                                                         fontSize: moderateScale(10),
                                                         marginTop: verticalScale(2)
                                                     }}
                                                 >
                                                     {item.subtitle}
+                                                </Text>
+
+                                                <Text
+                                                    className="font-medium text-center"
+                                                    style={{
+                                                        color: isLocked
+                                                            ? hexToRgba(COLORS.primaryTextColor, 0.35)
+                                                            : item.iconColor,
+
+                                                        fontSize: moderateScale(8.5),
+                                                        marginTop: verticalScale(2)
+                                                    }}
+                                                >
+                                                    {item.points.toLocaleString()} pts
                                                 </Text>
                                             </View>
                                         )
