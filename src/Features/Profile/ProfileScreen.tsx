@@ -1095,7 +1095,13 @@ export default function ProfileScreen() {
                                 }}
                             />
 
-                            <ProfileMenuItem label="Membership Status" icon={StarBadgeIcon} showDivider={true} onPress={()=> {}} />
+                            <ProfileMenuItem label="Membership Status" icon={StarBadgeIcon} showDivider={true}
+                                onPress={() => 
+                                    preventDoublePress(() => {
+                                        router.push('/membership-status')
+                                    })
+                                }
+                            />
 
                             <ProfileMenuItem label="Referral Program" icon={ShareIcon} showDivider={false}
                                 onPress={()=>

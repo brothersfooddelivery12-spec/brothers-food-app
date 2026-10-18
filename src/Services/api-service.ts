@@ -725,3 +725,26 @@ export interface MyMembershipResponse {
 export const getMyMemberships = async () => {
     return api.get("/memberships/me")
 }
+
+export const purchaseRewardPoints = (points: number) => {
+    return api.post("/rewards/purchase",
+        null,
+        {
+            params: {
+                points
+            }
+        }
+    )
+}
+
+export interface RewardConfig {
+    points_per_amount: number
+    amount_unit: number
+    points_purchase: number
+    money_price: number
+    is_active: boolean
+}
+
+export const getRewardsConfig = async () => {
+    return api.get('/rewards/config')
+}

@@ -702,16 +702,44 @@ export default function AddMoneyScreen(){
                             Min ₹100  •  Max ₹50,000
                         </Text>
 
+                         <View
+                            className="flex-row items-end justify-between"
+                            style={{ marginTop: verticalScale(14) }}
+                        >
+                            <View>
+                                <Text
+                                    className="font-bold"
+                                    style={{
+                                        color: COLORS.primaryTextColor,
+                                        fontSize: moderateScale(14)
+                                    }}
+                                >
+                                    Payment Method
+                                </Text>
+
+                                <Text
+                                    className="font-medium"
+                                    style={{
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
+                                        fontSize: moderateScale(11),
+                                        marginTop: verticalScale(2)
+                                    }}
+                                >
+                                    Choose how you'd like to pay
+                                </Text>
+                            </View>
+                        </View>
+
                         {savedDeviceUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="font-semibold mt-8 mb-2"
+                                    className="font-medium mt-3 mb-2"
                                     style={{
-                                        fontSize: moderateScale(14),
-                                        color: COLORS.primaryTextColor
+                                        fontSize: moderateScale(12),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65),
                                     }}
                                 >
-                                    Saved Payment Method
+                                    SAVED
                                 </Text>
         
                                 <View
@@ -843,11 +871,10 @@ export default function AddMoneyScreen(){
                         {otherUpiMethods.length > 0 && (
                             <>
                                 <Text
-                                    className="font-semibold mb-2"
+                                    className="font-medium mt-3 mb-2"
                                     style={{
-                                        color: COLORS.primaryTextColor,
-                                        fontSize: moderateScale(14),
-                                        marginTop: savedPaymentMethods.length > 0 ? moderateScale(14) : moderateScale(18)
+                                        fontSize: moderateScale(12),
+                                        color: hexToRgba(COLORS.primaryTextColor, 0.65)
                                     }}
                                 >
                                     {savedPaymentMethods.length > 0 ? "Other UPI Apps" : "UPI Apps"}
@@ -962,11 +989,7 @@ export default function AddMoneyScreen(){
                         <GradientButton
                             title="Add Money"
                             onPress={handleAddMoney}
-                            loading={
-                                loading ||
-                                creatingOrder ||
-                                verifyingPayment
-                            }
+                            loading={loading || creatingOrder || verifyingPayment}
                         />
                     </>
                 }

@@ -6,7 +6,7 @@ import CircleStarIcon from '@/assets/icon/CircleStarIcon.svg'
 import CompassIcon from '@/assets/icon/CompassIcon.svg'
 import CouponIcon from '@/assets/icon/CouponFilledIcon.svg'
 import CrownIcon from '@/assets/icon/CrownIcon.svg'
-import DateIcon from '@/assets/icon/DateIcon.svg'
+import DateIcon from '@/assets/icon/DateFilledIcon.svg'
 import DeliveryIcon from '@/assets/icon/DeliveryIcon.svg'
 import DiamondIcon from '@/assets/icon/DiamondIcon.svg'
 import LeafIcon from '@/assets/icon/LeafIcon.svg'
@@ -22,7 +22,7 @@ import { COLORS } from '@/constant/colors'
 import { Coupon, getAvailableCoupons, getCoupons, getMyRewardAccount, getMyRewardTransactions, RewardAccount, RewardTransaction, RewardTransactionType } from '@/Services/api-service'
 import { hexToRgba } from '@/utils/hexToRgba'
 import { Image } from 'expo-image'
-import { router, useLocalSearchParams } from "expo-router"
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import LottieView from 'lottie-react-native'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -239,16 +239,12 @@ export default function RewardsAndCouponsScreen(){
             console.log("Reward account error:", error)
 
             showToast(error?.response?.data?.message || error?.message ||
-                    "Unable to fetch reward account", "warning"
+                "Unable to fetch reward account", "warning"
             )
         } finally {
             setLoadingRewards(false)
         }
     }, [])
-
-    useEffect(() => {
-        fetchRewardAccount()
-    }, [fetchRewardAccount])
 
     const rewardStats = useMemo(() => {
         const lifetimePoints = rewardAccount?.total_earning ?? 0
@@ -301,10 +297,17 @@ export default function RewardsAndCouponsScreen(){
         }
     }, [])
 
-    useEffect(() => {
-        fetchRewardTransactions()
-    }, [fetchRewardTransactions])
-
+    useFocusEffect(
+        useCallback(() => {
+            Promise.allSettled([
+                fetchRewardAccount(),
+                fetchRewardTransactions()
+            ])
+        }, [
+            fetchRewardAccount,
+            fetchRewardTransactions
+        ])
+    )
     const getTransactionTitle = (type: RewardTransactionType) => {
         switch (type) {
             case "EARN":
@@ -636,8 +639,11 @@ export default function RewardsAndCouponsScreen(){
 
                                 <TouchableOpacity
                                     activeOpacity={0.95}
-                                    onPress={() => {
-                                    }}
+                                    onPress={() => 
+                                        preventDoublePress(() => {
+                                            router.push('/reward-points-purchase')
+                                        })
+                                    }
                                     className=" absolute flex-row items-center justify-center gap-1"
                                     style={{
                                         top: moderateScale(1),
@@ -741,7 +747,10 @@ export default function RewardsAndCouponsScreen(){
                                                 color: COLORS.primaryBackgroundColor
                                             }}
                                         >
-                                            Gold Member
+                                            {currentLoyaltyTier
+                                                ? `${currentLoyaltyTier.title} Member`
+                                                : "New Member"
+                                            }
                                         </Text>
                                     </View>
 

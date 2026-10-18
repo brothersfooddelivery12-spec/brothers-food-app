@@ -596,7 +596,7 @@ export default function CartScreen() {
                                     style={{
                                         backgroundColor: hexToRgba(COLORS.accentColor, 0.1),
                                         borderColor: hexToRgba(COLORS.accentColor, 0.15),
-                                        borderWidth: moderateScale(0.7),
+                                        borderWidth: moderateScale(0.5),
                                         borderRadius: moderateScale(16),
                                         marginTop: verticalScale(6),
                                         marginBottom: verticalScale(8)

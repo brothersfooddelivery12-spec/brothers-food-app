@@ -1,0 +1,3 @@
+import RewardPointsPurchaseScreen from "@/Features/RewardsAndCoupons/RewardPointsPurchaseScreen"
+
+export default RewardPointsPurchaseScreen
