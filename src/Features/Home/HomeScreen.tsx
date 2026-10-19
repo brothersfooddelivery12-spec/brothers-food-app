@@ -1692,9 +1692,7 @@ export default function HomeScreen() {
                             </>
                         }
                         ListEmptyComponent={
-                            !location && !loadingHome
-                                ? renderLocationRequired()
-                                : null
+                            !location ? renderLocationRequired() : null
                         }
                         renderItem={renderNearbyRestaurant}
                     />
